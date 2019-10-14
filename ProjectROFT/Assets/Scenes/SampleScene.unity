@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 496181646}
   m_Layer: 0
   m_Name: key
-  m_TagString: Untagged
+  m_TagString: key
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -294,7 +294,7 @@ GameObject:
   - component: {fileID: 687871986}
   m_Layer: 0
   m_Name: key
-  m_TagString: Untagged
+  m_TagString: key
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -373,7 +373,7 @@ GameObject:
   - component: {fileID: 830131028}
   m_Layer: 0
   m_Name: key
-  m_TagString: Untagged
+  m_TagString: key
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -498,7 +498,7 @@ GameObject:
   - component: {fileID: 1019595338}
   m_Layer: 0
   m_Name: key
-  m_TagString: Untagged
+  m_TagString: key
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -577,7 +577,7 @@ GameObject:
   - component: {fileID: 1141014227}
   m_Layer: 0
   m_Name: key
-  m_TagString: Untagged
+  m_TagString: key
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -656,7 +656,7 @@ GameObject:
   - component: {fileID: 1250117221}
   m_Layer: 0
   m_Name: key
-  m_TagString: Untagged
+  m_TagString: key
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -783,7 +783,7 @@ GameObject:
   - component: {fileID: 1387877387}
   m_Layer: 0
   m_Name: key
-  m_TagString: Untagged
+  m_TagString: key
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -862,7 +862,7 @@ GameObject:
   - component: {fileID: 1580604296}
   m_Layer: 0
   m_Name: key
-  m_TagString: Untagged
+  m_TagString: key
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -939,6 +939,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1603876133}
   - component: {fileID: 1603876134}
+  - component: {fileID: 1603876135}
   m_Layer: 0
   m_Name: 4X4_KEY_LAYOUT
   m_TagString: Untagged
@@ -977,13 +978,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keyLayout: 0
-  defaultLayout:
-  - asdf
-  - qwerasdf
-  - qwerasdfzxcv
-  - asdfghjkl;
-  - qwertyuiopasdfghjkl;zxcvbnm,./
-  bindedKeys: 
+  autoBindKeys: 1
+  keyObjects: []
+--- !u!114 &1603876135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1603876132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f766f94e2f6fa9b438aa956076be3878, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key_Layout: {fileID: 0}
 --- !u!1 &1627150579
 GameObject:
   m_ObjectHideFlags: 0
@@ -996,7 +1005,7 @@ GameObject:
   - component: {fileID: 1627150581}
   m_Layer: 0
   m_Name: key
-  m_TagString: Untagged
+  m_TagString: key
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1121,7 +1130,7 @@ GameObject:
   - component: {fileID: 1683800899}
   m_Layer: 0
   m_Name: key
-  m_TagString: Untagged
+  m_TagString: key
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1200,7 +1209,7 @@ GameObject:
   - component: {fileID: 1930375888}
   m_Layer: 0
   m_Name: key
-  m_TagString: Untagged
+  m_TagString: key
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1279,7 +1288,7 @@ GameObject:
   - component: {fileID: 1954524877}
   m_Layer: 0
   m_Name: key
-  m_TagString: Untagged
+  m_TagString: key
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1401,6 +1410,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2034316354}
+  - component: {fileID: 2034316357}
+  - component: {fileID: 2034316356}
   - component: {fileID: 2034316355}
   m_Layer: 0
   m_Name: 8X8_KEY_LAYOUT
@@ -1446,3 +1457,31 @@ MonoBehaviour:
   comments: 'This layout is still in the works!!!
 
 '
+--- !u!114 &2034316356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2034316353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f766f94e2f6fa9b438aa956076be3878, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key_Layout: {fileID: 0}
+--- !u!114 &2034316357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2034316353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2eda6d86d06954744965b0eb9d53dd1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  keyLayout: 1
+  autoBindKeys: 1
+  keyObjects: []

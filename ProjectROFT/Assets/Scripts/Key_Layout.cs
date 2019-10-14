@@ -24,11 +24,16 @@ public class Key_Layout : MonoBehaviour
 
     public KeyLayoutType keyLayout;
 
+    public bool autoBindKeys = true;
+
+    //After iterating through strings, we'll return a Input corresponding avaliable keys.
+    readonly public List<KeyCode> bindedKeys = new List<KeyCode>();
+    public List<GameObject> keyObjects = new List<GameObject>();
+
     #endregion
 
     #region Private Members
-    private List<KeyCode> bindedKeys; //After iterating through strings, we'll return a Input corresponding avaliable keys.
-    private string[] defaultLayout = new string[5]
+    readonly private string[] defaultLayout = new string[5]
     {
         "asdf",
         "qwerasdf",
@@ -42,17 +47,23 @@ public class Key_Layout : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        InitiateAutoKeyBind();
+        if(autoBindKeys) InitiateAutoKeyBind();
     }
 
     void InitiateAutoKeyBind()
     {
         KeyCode key;
+        
+        //Find all objects in parent
+        GameObject[] keysFound = GameObject.FindGameObjectsWithTag("key");
+
         for (int keyNum = 0; keyNum < defaultLayout[(int)keyLayout].Length; keyNum++)
         {
-            Debug.Log(defaultLayout[(int)keyLayout]);
             key = (KeyCode)defaultLayout[(int)keyLayout][keyNum];
             bindedKeys.Add(key);
+            keyObjects.Add(keysFound[keyNum]);
         }
+
+        
     }
 }
