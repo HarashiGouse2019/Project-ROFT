@@ -855,4 +855,4 @@ ScriptsOnlyBuild:
   platform: 19
   scenePathNames:
   - Assets/Scenes/ROFTEditor.unity
-  playerPath: C:/Users/Tokusunei/Documents/Repository Folder/GitHub/Unity/RiseOfFastTyping/Project-ROFT-Build/ProjectROFT.exe
+  playerPath: F:/Projects/Unity/Builds/Project-ROFT-Build/ProjectROFT.exe
