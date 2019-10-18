@@ -28,6 +28,7 @@ public class MapReader : MonoBehaviour
         string rftmFileName = _name + ".rftm";
         string rftmFilePath = Application.streamingAssetsPath + @"/" + rftmFileName;
 
+
         #region Read .rftm data
         if (File.Exists(rftmFilePath))
         {
@@ -36,7 +37,6 @@ public class MapReader : MonoBehaviour
             //Name it separator
             //Then use string.Split(separator, ...)
             const char separator = ',';
-
             using (StreamReader rftmReader = new StreamReader(rftmFilePath))
             {
                 while (true)
@@ -54,8 +54,9 @@ public class MapReader : MonoBehaviour
                     keys.Add(newKey);
                 }
             }
-
         }
         #endregion
+
+        
     }
 }

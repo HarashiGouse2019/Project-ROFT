@@ -60,59 +60,59 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9246}
     - Class: 114
-      Script: {instanceID: 9344}
+      Script: {instanceID: 9262}
     - Class: 114
       Script: {instanceID: 9346}
     - Class: 114
-      Script: {instanceID: 9352}
+      Script: {instanceID: 9348}
     - Class: 114
       Script: {instanceID: 9354}
     - Class: 114
-      Script: {instanceID: 9358}
+      Script: {instanceID: 9356}
     - Class: 114
-      Script: {instanceID: 9366}
+      Script: {instanceID: 9360}
     - Class: 114
-      Script: {instanceID: 9374}
+      Script: {instanceID: 9368}
     - Class: 114
-      Script: {instanceID: 9390}
+      Script: {instanceID: 9376}
     - Class: 114
       Script: {instanceID: 9392}
     - Class: 114
       Script: {instanceID: 9394}
     - Class: 114
-      Script: {instanceID: 9400}
+      Script: {instanceID: 9396}
     - Class: 114
       Script: {instanceID: 9402}
     - Class: 114
-      Script: {instanceID: 9406}
+      Script: {instanceID: 9404}
     - Class: 114
-      Script: {instanceID: 9454}
+      Script: {instanceID: 9408}
     - Class: 114
-      Script: {instanceID: 9662}
+      Script: {instanceID: 9456}
     - Class: 114
-      Script: {instanceID: 9758}
+      Script: {instanceID: 9664}
     - Class: 114
-      Script: {instanceID: 9842}
+      Script: {instanceID: 9760}
     - Class: 114
-      Script: {instanceID: 10086}
+      Script: {instanceID: 9844}
     - Class: 114
-      Script: {instanceID: 10096}
+      Script: {instanceID: 10088}
     - Class: 114
-      Script: {instanceID: 10116}
+      Script: {instanceID: 10098}
     - Class: 114
-      Script: {instanceID: 10214}
+      Script: {instanceID: 10118}
     - Class: 114
-      Script: {instanceID: 10236}
+      Script: {instanceID: 10216}
     - Class: 114
-      Script: {instanceID: 10474}
+      Script: {instanceID: 10226}
+    - Class: 114
+      Script: {instanceID: 10240}
+    - Class: 114
+      Script: {instanceID: 10480}
     - Class: 114
       Script: {instanceID: 10534}
     - Class: 114
-      Script: {instanceID: 11948}
-    - Class: 114
-      Script: {instanceID: 11984}
-    - Class: 114
-      Script: {instanceID: 33662}
+      Script: {instanceID: 10542}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -156,6 +156,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TMP_Dropdown
+  - hash:
+      serializedVersion: 2
+      Hash: 686bed2c5fbcbdef4dcccf2abbb2412f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: NoteEffect
   - hash:
       serializedVersion: 2
       Hash: e80fe8e9296d0d71c40c8bfef9bc406f
@@ -764,6 +770,12 @@ ScriptsOnlyBuild:
     className: EditorToolClass
   - hash:
       serializedVersion: 2
+      Hash: 6a2216d90e170854392c96e104bce69e
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: MapReader
+  - hash:
+      serializedVersion: 2
       Hash: ee0cef6caaac8ae485bfa82f000f0f7b
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
@@ -800,6 +812,12 @@ ScriptsOnlyBuild:
     className: TMP_StyleSheet
   - hash:
       serializedVersion: 2
+      Hash: e26d8759b1535f57d3b819e42b9110c2
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CloseInEffect
+  - hash:
+      serializedVersion: 2
       Hash: a488eb837df82a2ce971bcffbd7e115d
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
@@ -834,24 +852,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
-  - hash:
-      serializedVersion: 2
-      Hash: 686bed2c5fbcbdef4dcccf2abbb2412f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: NoteEffect
-  - hash:
-      serializedVersion: 2
-      Hash: 6a2216d90e170854392c96e104bce69e
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: MapReader
-  - hash:
-      serializedVersion: 2
-      Hash: e26d8759b1535f57d3b819e42b9110c2
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: CloseInEffect
   platform: 19
   scenePathNames:
   - Assets/Scenes/ROFTEditor.unity

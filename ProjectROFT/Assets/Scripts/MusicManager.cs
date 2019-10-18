@@ -33,6 +33,11 @@ public class MusicManager : MonoBehaviour
 
     public float[] positionSeconds;
 
+    public void Awake()
+    {
+        manager = this;
+    }
+
     public void Play(string _name, float _volume = 100)
     {
         Music a = Array.Find(getMusic, sound => sound.name == _name);
@@ -58,6 +63,20 @@ public class MusicManager : MonoBehaviour
         else
         {
             a.source.Stop();
+        }
+    }
+
+    public AudioClip GetMusic(string _name)
+    {
+        Music a = Array.Find(getMusic, sound => sound.name == _name);
+        if (a == null)
+        {
+            Debug.LogWarning("Sound name " + _name + " was not found.");
+            return null;
+        }
+        else
+        {
+            return a.clip;
         }
     }
 }

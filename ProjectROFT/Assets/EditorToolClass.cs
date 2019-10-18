@@ -267,7 +267,12 @@ public class EditorToolClass : MonoBehaviour
     void LoadMusic()
     {
         musicSource = gameObject.AddComponent<AudioSource>();
-        musicSource.clip = music;
+
+        if (record)
+            musicSource.clip = music;
+        else
+            musicSource.clip = MusicManager.manager.GetMusic(MapReader.Instance.m_name);
+
         musicLengthInSamples = musicSource.clip.length * musicSource.clip.frequency;
         musicSource.outputAudioMixerGroup = pitchMixer;
 

@@ -947,7 +947,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicVolumeAdjust: {fileID: 0}
   soundVolumeAdjust: {fileID: 0}
-  getMusic: []
+  getMusic:
+  - name: Camellia - werewolf howls
+    clip: {fileID: 8300000, guid: 0ba0520a60c53344888514c30de0560b, type: 3}
+    volume: 1
+    pitch: 1
+    enableLoop: 0
+    source: {fileID: 0}
+  - name: Exit This Earth Most Atomosphere 200-Step Remix
+    clip: {fileID: 8300000, guid: f8a327c17f8cc3c4397922c584bd3d0f, type: 3}
+    volume: 1
+    pitch: 1
+    enableLoop: 0
+    source: {fileID: 0}
+  - name: Ginkiha - EOS
+    clip: {fileID: 8300000, guid: 5cd7bbda60f36174aa511506a5889d08, type: 3}
+    volume: 1
+    pitch: 1
+    enableLoop: 0
+    source: {fileID: 0}
+  - name: Helblinde - Life starts at 200bpm - 12 Grief & Malice
+    clip: {fileID: 8300000, guid: 243c70d36ac783543ad8867eaab23729, type: 3}
+    volume: 1
+    pitch: 1
+    enableLoop: 0
+    source: {fileID: 0}
+  - name: miracle_5ympho_x
+    clip: {fileID: 8300000, guid: 256be60ab5aae6a4bbf9e4c35739f39b, type: 3}
+    volume: 1
+    pitch: 1
+    enableLoop: 0
+    source: {fileID: 0}
+  - name: Teminite & Panda Eyes - Highscore
+    clip: {fileID: 8300000, guid: 0cafef172cb36a4498167f61a8cf8afe, type: 3}
+    volume: 1
+    pitch: 1
+    enableLoop: 0
+    source: {fileID: 0}
   timeSamples: 0
   positionSeconds:
   - 0.123
@@ -1448,7 +1484,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   recordKeyInput: 0
-  keyLayout: 2
+  keyLayout: 1
   setXOffset:
   - -9
   - -8
@@ -1457,7 +1493,7 @@ MonoBehaviour:
   - -17
   setYOffset:
   - -2
-  - -1
+  - 1.5
   - 2.75
   - -4
   - 1.5
