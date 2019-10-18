@@ -28,7 +28,20 @@ public class KeyPress : MonoBehaviour
         for (int keyNum = 0; keyNum < key_Layout.bindedKeys.Count; keyNum++)
         {
             if (Input.GetKey(key_Layout.bindedKeys[keyNum]))
+            {
+                #region Write to RFTM File
+                if (EditorToolClass.Instance.record && Input.GetKeyDown(key_Layout.bindedKeys[keyNum]))
+                {
+                    string data =
+                        keyNum.ToString() + ","
+                         + EditorToolClass.musicSource.timeSamples.ToString() + ","
+                        + 0.ToString();
+
+                    EditorToolClass.Instance.WriteToRFTM(EditorToolClass.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
+                } 
+                #endregion
                 ActivateKey(keyNum, true);
+            }
             else
                 ActivateKey(keyNum, false);
         }
@@ -36,7 +49,7 @@ public class KeyPress : MonoBehaviour
 
     void ActivateKey(int _keyNum, bool _on)
     {
-        SpriteRenderer keySpriteRenderer = key_Layout.keyObjects[_keyNum].GetComponent<SpriteRenderer>();
+        SpriteRenderer keySpriteRenderer = Key_Layout.keyObjects[_keyNum].GetComponent<SpriteRenderer>();
 
         if (_on)
         {

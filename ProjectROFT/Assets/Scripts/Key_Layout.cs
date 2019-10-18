@@ -5,16 +5,19 @@ using UnityEngine;
 
 public class Key_Layout : MonoBehaviour
 {
+    public static Key_Layout Instance;
     //So I want to be able to allow the player to freely keybind key layouts (even though there's hardly any reason besides 4x4, 8x8, and 12x12)
     //Other than that, I want to go through a process of getting all homerow, toprow, and bottomrow keys.
     //KeyLayout will be given an enumerator
 
+    public bool recordKeyInput;
+
     #region Public Members
     public enum KeyLayoutType
     {
-        Layout_4x4,
-        Layout_8x8,
-        Layout_12x12,
+        Layout_1x4,
+        Layout_2x4,
+        Layout_3x4,
         Layout_HomeRow,
         Layout_3Row
     }
@@ -28,7 +31,7 @@ public class Key_Layout : MonoBehaviour
 
     //After iterating through strings, we'll return a Input corresponding avaliable keys.
     readonly public List<KeyCode> bindedKeys = new List<KeyCode>();
-    public List<GameObject> keyObjects = new List<GameObject>();
+    public static List<GameObject> keyObjects = new List<GameObject>();
 
     [Header("Creating Layout")]
     public GameObject key;
@@ -69,12 +72,8 @@ public class Key_Layout : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        Instance = this;
         if (autoBindKeys) SetUpLayout();
-    }
-
-    void Update()
-    {
-
     }
 
     void InitiateAutoKeyBind()
@@ -111,13 +110,13 @@ public class Key_Layout : MonoBehaviour
         //Determine how many columns and rows before setting up
         switch (keyLayout)
         {
-            case KeyLayoutType.Layout_4x4:
+            case KeyLayoutType.Layout_1x4:
                 numRows = 1; numCols = 4;
                 break;
-            case KeyLayoutType.Layout_8x8:
+            case KeyLayoutType.Layout_2x4:
                 numRows = 2; numCols = 4;
                 break;
-            case KeyLayoutType.Layout_12x12:
+            case KeyLayoutType.Layout_3x4:
                 numRows = 3; numCols = 4;
                 break;
             case KeyLayoutType.Layout_HomeRow:

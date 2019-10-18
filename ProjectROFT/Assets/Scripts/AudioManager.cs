@@ -87,4 +87,20 @@ public class AudioManager : MonoBehaviour
             a.source.Stop();
         }
     }
+
+    public AudioClip GetAudio(string _name, float _volume = 100)
+    {
+        Audio a = Array.Find(getAudio, sound => sound.name == _name);
+        if (a == null)
+        {
+            Debug.LogWarning("Sound name " + _name + " was not found.");
+            return null;
+        }
+        else
+        {
+            a.source.Play();
+            a.source.volume = _volume / 100;
+            return a.source.clip;
+        }
+    }
 }

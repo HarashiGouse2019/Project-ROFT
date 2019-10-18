@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.IO;
 using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,10 +8,14 @@ using TMPro;
 
 public class EditorToolClass : MonoBehaviour
 {
+    public static EditorToolClass Instance;
+
     #region Public Members
     //The EditorTool is going to be used to make creating music so much easier.
     //First, we'll get a reference of a song
     public AudioClip music;
+
+    public bool record;
 
     public enum TickSignature
     {
@@ -41,10 +46,11 @@ public class EditorToolClass : MonoBehaviour
 
     //And a pitch for play back speed;
     public AudioMixerGroup pitchMixer;
+
+    public static AudioSource musicSource;
     #endregion
 
     #region Private Members
-    private AudioSource musicSource;
     private bool musicIsPlaying = false;
     private float timeInSamples;
     private float musicLengthInSamples;
@@ -57,6 +63,7 @@ public class EditorToolClass : MonoBehaviour
 
     public int ticks; //This will carry on the value of taps
     public int totalTicksSinceStart;
+    public float firstTickSample; //The sample in which the designer started tapping
 
     public float oldPulse;
     public float newPulse;
@@ -64,15 +71,22 @@ public class EditorToolClass : MonoBehaviour
     public float bpm;
     public bool tapCalulationDone = false;
 
+    private static DateTime lastModified;
+
     readonly private KeyCode tapKey = KeyCode.T;
     readonly private int tapLimit = 16;
     readonly private int doneTapLimit = 8;
     #endregion
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
+        Instance = this;
         LoadMusic();
+    }
+
+    private void Start()
+    {
+        if (record == true) InitialRecord();
     }
 
     // Update is called once per frame
@@ -150,7 +164,7 @@ public class EditorToolClass : MonoBehaviour
 
         timeInSamples = musicSource.timeSamples;
 
-        songPercentage.text = (songTrackPosition.value * 100).ToString("F1",CultureInfo.InvariantCulture) + "%";
+        songPercentage.text = (songTrackPosition.value * 100).ToString("F1", CultureInfo.InvariantCulture) + "%";
 
         samplesText.text = minutes.ToString() + ":" + Mathf.FloorToInt(seconds).ToString();
     }
@@ -199,7 +213,9 @@ public class EditorToolClass : MonoBehaviour
                 //Add taps and check if max amount
                 taps++;
 
-                newPulse = musicSource.time / taps;
+                if (firstTickSample == 0) firstTickSample = musicSource.time;
+
+                newPulse = (musicSource.time - firstTickSample) / taps;
                 oldPulse = newPulse;
 
                 if (taps > tapLimit - 1)
@@ -227,7 +243,6 @@ public class EditorToolClass : MonoBehaviour
 
     void Tick()
     {
-        Debug.Log(musicSource.time - (determinedPulse * totalTicksSinceStart));
         if ((musicSource.time - (determinedPulse * totalTicksSinceStart)) > determinedPulse)
         {
 
@@ -255,22 +270,24 @@ public class EditorToolClass : MonoBehaviour
         musicSource.clip = music;
         musicLengthInSamples = musicSource.clip.length * musicSource.clip.frequency;
         musicSource.outputAudioMixerGroup = pitchMixer;
+
+        //Check if we are recordimg
+
     }
 
     void TimeStamp()
     {
-
-
         if (seconds > 59.99f)
         {
             seconds = 0;
             minutes++;
-        } else if (seconds < 0)
+        }
+        else if (seconds < 0)
         {
             seconds = 59;
             minutes--;
         }
-        
+
         seconds = musicSource.time - (60 * minutes);
     }
 
@@ -278,13 +295,6 @@ public class EditorToolClass : MonoBehaviour
     void UpdatePulseOnBPMChange()
     {
         determinedPulse = 60 / bpm;
-
-        if (bpm != 0 && totalTicksSinceStart == 0)
-        {
-            newPulse = determinedPulse;
-            taps = 16;
-            tapCalulationDone = true;
-        }
     }
 
     void UpdateBPM()
@@ -293,8 +303,100 @@ public class EditorToolClass : MonoBehaviour
     }
     void DetectInactivity()
     {
-       inactiveTaps++;
+        inactiveTaps++;
     }
 
-    
+    void InitialRecord()
+    {
+        CreateNewRFTM(music.name, Application.streamingAssetsPath + @"/");
+    }
+
+    public void CreateNewRFTM(string _name, string _path)
+    {
+        string rftmFileName = _name + ".rftm";
+        string rftmFilePath = _path + rftmFileName;
+        
+        //Get our file format set
+        //The Name
+        //The Layout
+        //The Author
+        //When it was created
+        //When it was modified
+        //Sounds intense, but I'm just having fun
+
+        if (!File.Exists(rftmFilePath))
+        {
+            Debug.Log("Creating new .rftm file...");
+            using (StreamWriter rftmWriter = File.CreateText(rftmFilePath))
+            {
+                #region Author
+                string user = System.Environment.UserName;
+                #endregion
+
+                #region Key Layout
+                string layout = "";
+
+                switch (Key_Layout.Instance.keyLayout)
+                {
+                    case Key_Layout.KeyLayoutType.Layout_1x4:
+                        layout = "1 x 4";
+                        break;
+                    case Key_Layout.KeyLayoutType.Layout_2x4:
+                        layout = "2 x 4";
+                        break;
+                    case Key_Layout.KeyLayoutType.Layout_3x4:
+                        layout = "3 x 4";
+                        break;
+                    case Key_Layout.KeyLayoutType.Layout_HomeRow:
+                        layout = "Homerow";
+                        break;
+                    case Key_Layout.KeyLayoutType.Layout_3Row:
+                        layout = "Three Row";
+                        break;
+                    default:
+                        break;
+                }
+                #endregion
+
+                #region First Created
+                DateTime firstCreated = File.GetCreationTime(rftmFilePath);
+                #endregion
+
+                #region Last Modified
+                lastModified = firstCreated;
+                #endregion //Although that you created it, the last modified value will be the same as creation time
+
+                #region .rftm Information
+                string[] rftmInformation = new string[]
+                {
+                   "[Author]\n" +  user,
+                   "[Layout Type]\n" +  layout,
+                   "[First Created On]\n" + firstCreated.ToLongDateString(),
+                   "[Last Modified]\n" + lastModified.ToLongTimeString() + "\n",
+                   "[Keys]\n"
+                };
+                #endregion
+
+                for (int line = 0; line < rftmInformation.Length; line++)
+                    rftmWriter.WriteLine(rftmInformation[line]);
+            }
+            Debug.Log(".rftm file created!");
+        }
+    }
+
+    public void WriteToRFTM(string _name, string _path, string _data)
+    {
+        string rftmFileName = _name + ".rftm";
+        string rftmFilePath = _path + rftmFileName;
+
+        StreamWriter rftmWriter = File.AppendText(rftmFilePath);
+
+        MapReader.Instance.m_name = _name;
+
+        Debug.Log(rftmFilePath + " loaded");
+        rftmWriter.WriteLine(_data);
+        rftmWriter.Close();
+
+        lastModified = File.GetLastWriteTime(rftmFilePath);
+    }
 }
