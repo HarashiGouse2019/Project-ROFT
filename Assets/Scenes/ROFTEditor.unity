@@ -1433,7 +1433,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ff386a084f7f1247ad3193fa2642ad0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  approachSpeed: 8
+  approachSpeed: 7.489999771118164
   alignment: 7500
   accuracy: []
   mapReader: {fileID: 531331939}
@@ -4289,7 +4289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ec2119ba0127ce439f515369208fd1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  music: {fileID: 8300000, guid: 498e7b70fd7590348909153a370a1245, type: 3}
+  music: {fileID: 8300000, guid: 5cd7bbda60f36174aa511506a5889d08, type: 3}
   record: 0
   tickSignature: 4
   playButton: {fileID: 1212851143}

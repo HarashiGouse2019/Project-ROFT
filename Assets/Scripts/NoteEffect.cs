@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class NoteEffect : MonoBehaviour
 {
     #region Public Members
-    [Header("Approach Speed"), Range(1, 10)]
-    public int approachSpeed;
+    [Header("Approach Speed"), Range(1f, 10f)]
+    public double approachSpeed;
 
     [Header("Alignment")]
     public float alignment; //To shift notes whenever
@@ -40,7 +40,7 @@ public class NoteEffect : MonoBehaviour
     #region Protected Members
     protected float percentage; //Lerping for effects
     protected int keyPosition = 0; //With the collected data, what part of it are we in?
-    protected int noteOffset; //When our note should start appearing
+    protected float noteOffset; //When our note should start appearing
     protected int noteSample; //The note where you actually hit with timing 
     #endregion
 
@@ -87,7 +87,7 @@ public class NoteEffect : MonoBehaviour
 
     void UpdateNoteOffset()
     {
-        noteOffset = maxOffset - (minOffset * (approachSpeed - 1));
+        noteOffset = maxOffset - (minOffset * ((float)approachSpeed - 1));
     }
 
     protected virtual float GetPercentage()
