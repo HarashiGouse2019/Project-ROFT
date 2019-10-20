@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5638931420957669199}
   - component: {fileID: 5638931420957669198}
   - component: {fileID: 7777517204758728278}
+  - component: {fileID: 283974779816051480}
   m_Layer: 0
   m_Name: key
   m_TagString: key
@@ -96,3 +97,23 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.64000005
+--- !u!114 &283974779816051480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5638931420957669192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec02f5fa216bdd94d8e023ff1c27ab9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemsToPool:
+  - name: Approach Circle
+    size: 5
+    prefab: {fileID: 7740991288490540822, guid: e2796b60eea1436459b59d2b488f1bf2,
+      type: 3}
+    expandPool: 1
+  pooledObjects: []
+  poolIndex: 0

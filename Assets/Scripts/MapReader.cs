@@ -47,10 +47,12 @@ public class MapReader : MonoBehaviour
                     if (line == null)
                         return;
                     //We create a new key, and assign our data value to our key
-                    Key newKey = new Key();
-                    newKey.keyNum = Convert.ToInt32(line.Split(separator)[0]);
-                    newKey.keySample = Convert.ToInt32(line.Split(separator)[1]);
-                    newKey.type = (Key.KeyType)Convert.ToInt32(line.Split(separator)[2]);
+                    Key newKey = new Key
+                    {
+                        keyNum = Convert.ToInt32(line.Split(separator)[0]),
+                        keySample = Convert.ToInt32(line.Split(separator)[1]),
+                        type = (Key.KeyType)Convert.ToInt32(line.Split(separator)[2])
+                    };
 
                     //Lastly, add our new key to the list
                     keys.Add(newKey);

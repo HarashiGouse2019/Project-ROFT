@@ -61,7 +61,7 @@ public class AudioManager : MonoBehaviour
     /// Support values between 0 and 100.
     ///
 
-    public void Play(string _name, float _volume = 100)
+    public void Play(string _name, float _volume = 100, bool _new = false)
     {
         Audio a = Array.Find(getAudio, sound => sound.name == _name);
         if (a == null)
@@ -70,8 +70,21 @@ public class AudioManager : MonoBehaviour
             return;
         } else
         {
-            a.source.Play();
-            a.source.volume = _volume / 100;
+            switch (_new)
+            {
+                case true:
+                    AudioSource newSource = gameObject.AddComponent<AudioSource>();
+                    newSource.clip = a.clip;
+                    newSource.volume = _volume;
+                    newSource.pitch = a.pitch;
+                    newSource.Play();
+                    break;
+                default:
+                    a.source.Play();
+                    a.source.volume = _volume / 100;
+                    break;
+            }
+            
         }
     }
     public void Stop(string _name)

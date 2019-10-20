@@ -5,8 +5,10 @@ using UnityEngine.UI;
 
 public class NoteEffect : MonoBehaviour
 {
+    public static NoteEffect Instance;
+
     #region Public Members
-    [Header("Approach Speed"), Range(1f, 10f)]
+    [Header("Approach Speed"), Range(1.0f, 10.0f)]
     public double approachSpeed;
 
     [Header("Alignment")]
@@ -39,10 +41,17 @@ public class NoteEffect : MonoBehaviour
 
     #region Protected Members
     protected float percentage; //Lerping for effects
-    protected int keyPosition = 0; //With the collected data, what part of it are we in?
+    public int keyPosition = 0; //With the collected data, what part of it are we in?
+    protected int keySpawnPosition;
+    public List<GameObject> spawnedKeyObj = new List<GameObject>();
     protected float noteOffset; //When our note should start appearing
     protected int noteSample; //The note where you actually hit with timing 
     #endregion
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     // Update is called once per frame
     void Update()
@@ -51,21 +60,36 @@ public class NoteEffect : MonoBehaviour
         if (!EditorToolClass.Instance.record && CheckMusicSample())
         {
             Approach();
-            
-        }    
+
+        }
     }
 
     void Approach()
     {
         CloseInEffect effect;
+
         if (keyPosition < mapReader.keys.Count)
         {
-            GameObject approachCircle = Instantiate(notePrefab, Key_Layout.keyObjects[mapReader.keys[keyPosition].keyNum].transform);
+            //GameObject approachCircle = Instantiate(notePrefab, Key_Layout.keyObjects[mapReader.keys[keyPosition].keyNum].transform);
+            ObjectPooler keyPooler = Key_Layout.keyObjects[mapReader.keys[keyPosition].keyNum].GetComponent<ObjectPooler>();
+            GameObject approachCircle = keyPooler.GetMember("Approach Circle");
+
+
+            approachCircle.SetActive(true);
+
+
+            approachCircle.transform.position = Key_Layout.keyObjects[mapReader.keys[keyPosition].keyNum].transform.position;
+            approachCircle.transform.localScale = Key_Layout.keyObjects[mapReader.keys[keyPosition].keyNum].transform.localScale;
 
             effect = approachCircle.GetComponent<CloseInEffect>();
             effect.initiatedNoteSample = noteSample;
             effect.initiatedNoteOffset = noteOffset;
             effect.offsetStart = noteSample - noteOffset;
+            effect.keyNumPosition = mapReader.keys[keyPosition].keyNum;
+            effect.accuracy = accuracy;
+            effect.keyNum = keyPosition;
+
+            GameManager.Instance.approachCircleTotal.Add(approachCircle);
 
             keyPosition++;
         }
