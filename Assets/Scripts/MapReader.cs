@@ -68,11 +68,11 @@ public class MapReader : MonoBehaviour
         float songLengthInSec = EditorToolClass.musicSource.clip.length;
         float notesPerSec = (totalNotes / songLengthInSec);
         float totalKeys = Key_Layout.keyObjects.Count;
-        const int maxDifficulty = 10;
+        const int maxKeys = 30;
 
         Debug.Log(songLengthInSec);
 
-        float calculatedRating = (totalKeys * notesPerSec) / (songLengthInSec) * 100;
+        float calculatedRating = notesPerSec + (totalKeys / maxKeys);
 
         return calculatedRating;
     }

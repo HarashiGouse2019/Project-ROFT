@@ -2117,7 +2117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ff386a084f7f1247ad3193fa2642ad0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  approachSpeed: 9.09000015258789
+  approachSpeed: 9.5
   alignment: 7500
   accuracy:
   - 2500
