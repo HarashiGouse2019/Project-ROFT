@@ -2,9 +2,7 @@
 
 [Serializable]
 public class Key
-{
-    public Key() { }
-
+{ 
     public enum KeyType
     {
         Tap,

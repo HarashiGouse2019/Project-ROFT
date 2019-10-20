@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 //This is going to be an abstract class. This will be the base class of all other layouts in the game
 
@@ -28,6 +29,9 @@ public class Key_Layout : MonoBehaviour
     public float[] setYOffset;
 
     public bool autoBindKeys = true;
+
+    [Header("Data Ui")]
+    public TextMeshProUGUI dataText;
 
     //After iterating through strings, we'll return a Input corresponding avaliable keys.
     readonly public List<KeyCode> bindedKeys = new List<KeyCode>();
@@ -153,6 +157,14 @@ public class Key_Layout : MonoBehaviour
             Vector3 shiftPosition = keyObjects[keyNum].transform.localPosition;
             Vector2 offset = new Vector2(shiftPosition.x + xOffset, shiftPosition.y + yOffset);
             keyObjects[keyNum].transform.localPosition = offset;
+
+            //Check if these notes are interactable
+            if (recordKeyInput)
+            {
+                InteractableKey newInteractable = keyObjects[keyNum].AddComponent<InteractableKey>();
+                newInteractable.SetKeyNum(keyNum);
+                keyObjects[keyNum].GetComponent<CircleCollider2D>().enabled = true;
+            }
 
         }
         InitiateAutoKeyBind();

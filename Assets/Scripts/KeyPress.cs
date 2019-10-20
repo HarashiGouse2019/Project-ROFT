@@ -38,7 +38,7 @@ public class KeyPress : MonoBehaviour
                         + 0.ToString();
 
                     EditorToolClass.Instance.WriteToRFTM(EditorToolClass.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
-                } 
+                }
                 #endregion
                 ActivateKey(keyNum, true);
             }

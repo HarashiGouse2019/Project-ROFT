@@ -1,7 +1,43 @@
 fileFormatVersion: 2
 guid: 4ea0058bdecc0cb44ab325a0ed9c3f40
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: 3609896594696133198
+    second: Ruler1by4_0
+  - first:
+      213: 5638236472229554742
+    second: Ruler1by4_1
+  - first:
+      213: -1156139817325559104
+    second: Ruler1by4_2
+  - first:
+      213: 165782816360771924
+    second: Ruler1by4_3
+  - first:
+      213: 7317615381375756687
+    second: Ruler1by4_4
+  - first:
+      213: 7889972629684354407
+    second: Ruler1by4_5
+  - first:
+      213: -6756176456181599802
+    second: Ruler1by4_6
+  - first:
+      213: -2802419997630678162
+    second: Ruler1by4_7
+  - first:
+      213: -8858902093818387230
+    second: Ruler1by4_8
+  - first:
+      213: -5777202384408347298
+    second: Ruler1by4_9
+  - first:
+      213: -6417787382409149621
+    second: Ruler1by4_10
+  - first:
+      213: 1161696830113829440
+    second: Ruler1by4_11
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -82,7 +118,70 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Ruler1by4_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 816c6cf7df5b92e4ca96d04a02250bc3
+      internalID: 3609896594696133198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ruler1by4_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b23b39a85f54684f91ba0bd4d392630
+      internalID: 5638236472229554742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ruler1by4_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd470ecabf73a0e4ab70bf9c700f42c8
+      internalID: -1156139817325559104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []

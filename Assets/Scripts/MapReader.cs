@@ -9,6 +9,8 @@ public class MapReader : MonoBehaviour
 
     public string m_name;
 
+    public float difficultyRating;
+
     public List<Key> keys = new List<Key>();
 
     private void Awake()
@@ -19,6 +21,7 @@ public class MapReader : MonoBehaviour
     private void Start()
     {
         ReadRFTM(m_name);
+        difficultyRating = CalculateDifficultyRating();
     }
 
     void ReadRFTM(string _name)
@@ -32,7 +35,6 @@ public class MapReader : MonoBehaviour
         #region Read .rftm data
         if (File.Exists(rftmFilePath))
         {
-            Debug.Log("Reading..." + _name);
             //Read each line, split with a array string
             //Name it separator
             //Then use string.Split(separator, ...)
@@ -56,7 +58,20 @@ public class MapReader : MonoBehaviour
             }
         }
         #endregion
+    }
 
-        
+    float CalculateDifficultyRating()
+    {
+        int totalNotes = keys.Count;
+        float songLengthInSec = EditorToolClass.musicSource.clip.length;
+        float notesPerSec = (totalNotes / songLengthInSec);
+        float totalKeys = Key_Layout.keyObjects.Count;
+        const int maxDifficulty = 10;
+
+        Debug.Log(songLengthInSec);
+
+        float calculatedRating = (totalKeys * notesPerSec) / (songLengthInSec) * 100;
+
+        return calculatedRating;
     }
 }
