@@ -3,16 +3,19 @@ using TMPro;
 
 public class KeyPress : MonoBehaviour
 {
+    public static KeyPress Instance;
+
     //Taking the binded keys, and making them interactive
     public Key_Layout key_Layout;
 
     public Sprite keyActive, keyInActive;
 
     public TextMeshProUGUI debugText;
-    
+
     // Start is called before the first frame update
     void Awake()
     {
+        Instance = this;
         if (key_Layout == null)
             key_Layout = GetComponent<Key_Layout>();
     }

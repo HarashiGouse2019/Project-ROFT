@@ -19,6 +19,8 @@ public class CloseInEffect : NoteEffect
 
     private readonly int m_break = 0;
 
+    private bool added = false;
+
     //So they don't have to look screwed up
     Color originalAppearance;
 
@@ -34,40 +36,45 @@ public class CloseInEffect : NoteEffect
     {
         initiatedNoteSample = noteSample;
         initiatedNoteOffset = noteOffset;
+        keyNum = NoteEffect.Instance.keyPosition;
+        added = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         if (!EditorToolClass.Instance.record)
+        {
+            InHitRange();
             CloseIn();
+        }
     }
 
     void CloseIn()
     {
-        InHitRange();
         transform.localScale = new Vector3(1 / GetPercentage(), 1 / GetPercentage(), 1f);
 
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.2f);
 
-        if (EditorToolClass.musicSource.timeSamples >= initiatedNoteSample)
+        if (EditorToolClass.musicSource.timeSamples >= initiatedNoteSample + accuracy[3])
         {
-            IncrementComboChain();
-            SendAccuracyScore();
-            AudioManager.audio.Play("Normal", 50);
+            BreakComboChain();
+            ObjectPooler pooler = GetComponentInParent<ObjectPooler>();
             gameObject.SetActive(false);
-            keySpawnPosition++;
         }
 
         if (accuracyString != "" && Input.GetKeyDown(Key_Layout.Instance.bindedKeys[keyNumPosition]))
         {
+            //I believe we have to find which one of the notes are the closes
+            //We would have to find the difference between all the notes that are in range, and get the closes one
+            //I have no idea how I'm going to do that. I just know that's something that we have to consider.....
             AudioManager.audio.Play("Normal", 50);
             IncrementComboChain();
             SendAccuracyScore();
+            ObjectPooler pooler = GetComponentInParent<ObjectPooler>();
+
 
             gameObject.SetActive(false);
-
-            keySpawnPosition++;
         }
     }
 
@@ -81,12 +88,13 @@ public class CloseInEffect : NoteEffect
     {
         for (int range = 0; range < accuracy.Length; range++)
         {
-            bool beforePerfect = EditorToolClass.musicSource.timeSamples > initiatedNoteSample - accuracy[range];
+            bool beforePerfect = EditorToolClass.musicSource.timeSamples >= initiatedNoteSample - accuracy[range];
             bool afterPerfect = EditorToolClass.musicSource.timeSamples < initiatedNoteSample + accuracy[range];
             if (beforePerfect && afterPerfect)
             {
                 accuracyString = GameManager.accuracyString[range];
                 index = range;
+
                 return accuracyString;
             }
         }
@@ -115,5 +123,11 @@ public class CloseInEffect : NoteEffect
         sprite.color = originalAppearance;
         percentage = 0;
         index = 0;
+        initiatedNoteSample = 0;
+        initiatedNoteOffset = 0;
+        offsetStart = 0;
+        accuracyString = "";
+        keyNumPosition = 0; //So we know which key the notes are closing into
+        keyNum = 0; //We know what note we're on!!
     }
 }

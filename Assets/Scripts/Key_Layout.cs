@@ -77,7 +77,6 @@ public class Key_Layout : MonoBehaviour
     void Awake()
     {
         Instance = this;
-        if (autoBindKeys) SetUpLayout();
     }
 
     void InitiateAutoKeyBind()
@@ -92,7 +91,7 @@ public class Key_Layout : MonoBehaviour
         }
     }
 
-    void SetUpLayout()
+    public void SetUpLayout()
     {
         //So I figured out the problem to the build problem, and it has to do with the referencing of keys.
         //I don't want to manually do it for all of them, so instead, I'll create a function that'll do it for me.

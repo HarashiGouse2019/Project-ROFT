@@ -42,8 +42,6 @@ public class NoteEffect : MonoBehaviour
     #region Protected Members
     protected float percentage; //Lerping for effects
     public int keyPosition = 0; //With the collected data, what part of it are we in?
-    protected int keySpawnPosition;
-    public List<GameObject> spawnedKeyObj = new List<GameObject>();
     protected float noteOffset; //When our note should start appearing
     protected int noteSample; //The note where you actually hit with timing 
     #endregion
@@ -74,22 +72,21 @@ public class NoteEffect : MonoBehaviour
             ObjectPooler keyPooler = Key_Layout.keyObjects[mapReader.keys[keyPosition].keyNum].GetComponent<ObjectPooler>();
             GameObject approachCircle = keyPooler.GetMember("Approach Circle");
 
+            if (!approachCircle.activeInHierarchy)
+            {
+                approachCircle.SetActive(true);
+                approachCircle.transform.position = Key_Layout.keyObjects[mapReader.keys[keyPosition].keyNum].transform.position;
+                approachCircle.transform.localScale = Key_Layout.keyObjects[mapReader.keys[keyPosition].keyNum].transform.localScale;
 
-            approachCircle.SetActive(true);
-
-
-            approachCircle.transform.position = Key_Layout.keyObjects[mapReader.keys[keyPosition].keyNum].transform.position;
-            approachCircle.transform.localScale = Key_Layout.keyObjects[mapReader.keys[keyPosition].keyNum].transform.localScale;
-
-            effect = approachCircle.GetComponent<CloseInEffect>();
-            effect.initiatedNoteSample = noteSample;
-            effect.initiatedNoteOffset = noteOffset;
-            effect.offsetStart = noteSample - noteOffset;
-            effect.keyNumPosition = mapReader.keys[keyPosition].keyNum;
-            effect.accuracy = accuracy;
-            effect.keyNum = keyPosition;
-
-            GameManager.Instance.approachCircleTotal.Add(approachCircle);
+                effect = approachCircle.GetComponent<CloseInEffect>();
+                effect.initiatedNoteSample = noteSample;
+                effect.initiatedNoteOffset = noteOffset;
+                effect.offsetStart = noteSample - noteOffset;
+                effect.keyNumPosition = mapReader.keys[keyPosition].keyNum;
+                effect.accuracy = accuracy;
+                effect.keyNum = keyPosition;
+            }
+            
 
             keyPosition++;
         }

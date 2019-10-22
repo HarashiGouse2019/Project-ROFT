@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Globalization;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     public TextMeshProUGUI TM_SCORE;
     public TextMeshProUGUI TM_COMBO;
+    public TextMeshProUGUI TM_MAXCOMBO;
+    public TextMeshProUGUI TM_DIFFICULTY;
     public TextMeshProUGUI TM_PERFECT;
     public TextMeshProUGUI TM_GREAT;
     public TextMeshProUGUI TM_GOOD;
@@ -89,12 +91,14 @@ public class GameManager : MonoBehaviour
     {
         TM_SCORE.text = totalScore.ToString("D8");
         TM_COMBO.text = "x" + combo.ToString();
+        TM_DIFFICULTY.text = "DIFFICULTY: " + MapReader.Instance.difficultyRating.ToString("F2", CultureInfo.InvariantCulture);
 
         //This will be temporary
         TM_PERFECT.text = "PERFECT:   " + accuracyStats[0].ToString();
-        TM_GREAT.text = "GREAT:     " + accuracyStats[1].ToString();
-        TM_GOOD.text = "GOOD:      " + accuracyStats[2].ToString();
-        TM_OK.text  = "OK:        " + accuracyStats[3].ToString();
-        TM_MISS.text = "MISSES:    " + accuracyStats[4].ToString();
+        TM_GREAT.text = "GREAT:       " + accuracyStats[1].ToString();
+        TM_GOOD.text = "GOOD:         " + accuracyStats[2].ToString();
+        TM_OK.text  = "OK:            " + accuracyStats[3].ToString();
+        TM_MISS.text = "MISSES:       " + accuracyStats[4].ToString();
+        TM_MAXCOMBO.text = "MAX COMBO:     " + maxCombo.ToString();
     }
 }

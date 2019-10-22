@@ -18,6 +18,10 @@ public class ObjectPooler : MonoBehaviour
 
     public List<ObjectPoolItem> itemsToPool;
     public List<GameObject> pooledObjects;
+    public List<GameObject> activeMember = new List<GameObject>();
+    public int position = 0;
+    public int amountOfActiveMembers;
+    public int poolMemberPosition; //Checkout our list of instanciated pools
     // Start is called before the first frame update
 
     public int poolIndex;
@@ -29,6 +33,12 @@ public class ObjectPooler : MonoBehaviour
     private void Start()
     {
         InitObjectPooler();
+    }
+
+    private void Update()
+    {
+        amountOfActiveMembers = activeMember.Count;
+
     }
 
     void InitObjectPooler()
@@ -49,11 +59,10 @@ public class ObjectPooler : MonoBehaviour
 
     public GameObject GetMember(string name)
     {
-
         #region Iteration
         for (int i = 0; i < pooledObjects.Count; i++)
         {
-            
+
             if (!pooledObjects[i].activeInHierarchy && (name + "(Clone)") == pooledObjects[i].name)
             {
                 return pooledObjects[i];
