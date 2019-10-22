@@ -1653,7 +1653,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: Perfume - Tokimeki Lights
+  m_name: Teminite & Panda Eyes - Highscore
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0
@@ -2287,11 +2287,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   approachSpeed: 8.25
-  alignment: 4500
+  alignment: 6500
   accuracy:
-  - 1000
   - 1500
   - 2000
+  - 2500
   - 3000
   mapReader: {fileID: 531331939}
   notePrefab: {fileID: 7740991288490540822, guid: e2796b60eea1436459b59d2b488f1bf2,
