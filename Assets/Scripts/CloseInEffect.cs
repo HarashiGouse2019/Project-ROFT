@@ -99,6 +99,17 @@ public class CloseInEffect : NoteEffect
     {
         GameManager.Instance.accuracyStats[index] += 1;
         GameManager.sentScore = GameManager.accuracyScore[index];
+        GameObject sign = GetComponentInParent<ObjectPooler>().GetMember("Signs");
+        if (!sign.activeInHierarchy)
+        {
+            sign.SetActive(true);
+            sign.transform.position = gameObject.transform.position;
+            if (accuracyString != "")
+                sign.GetComponent<AccuracySign>().ShowSign(accuracyString);
+            else
+                sign.GetComponent<AccuracySign>().ShowSign("miss");
+        }
+
     }
 
     public void IncrementComboChain()
