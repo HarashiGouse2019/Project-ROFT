@@ -110,3 +110,5 @@ MonoBehaviour:
   sprite: {fileID: 0}
   index: 0
   accuracyString: 
+  dispose: 0
+  missed: 0

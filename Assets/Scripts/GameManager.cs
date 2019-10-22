@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
         "Great",
         "Good",
         "Ok",
-        "CYKA!!!!"
+        "Miss"
     };
 
     public static int[] accuracyScore =

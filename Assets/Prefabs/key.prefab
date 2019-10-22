@@ -111,12 +111,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemsToPool:
   - name: Approach Circle
-    size: 10
+    size: 30
     prefab: {fileID: 7740991288490540822, guid: e2796b60eea1436459b59d2b488f1bf2,
       type: 3}
     expandPool: 1
   - name: Signs
-    size: 10
+    size: 30
     prefab: {fileID: 7472890305936929595, guid: 1d38db50b4ab6574bba6a2c70ae84dd8,
       type: 3}
     expandPool: 1

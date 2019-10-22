@@ -92,6 +92,7 @@ public class EditorToolClass : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (musicSource != null)
             musicIsPlaying = musicSource.isPlaying;
 
