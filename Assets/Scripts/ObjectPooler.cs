@@ -18,11 +18,6 @@ public class ObjectPooler : MonoBehaviour
 
     public List<ObjectPoolItem> itemsToPool;
     public List<GameObject> pooledObjects;
-    public List<GameObject> activeMember = new List<GameObject>();
-    public int position = 0;
-    public int amountOfActiveMembers;
-    public int poolMemberPosition; //Checkout our list of instanciated pools
-    // Start is called before the first frame update
 
     public int poolIndex;
     void Awake()
@@ -33,12 +28,6 @@ public class ObjectPooler : MonoBehaviour
     private void Start()
     {
         InitObjectPooler();
-    }
-
-    private void Update()
-    {
-        amountOfActiveMembers = activeMember.Count;
-
     }
 
     void InitObjectPooler()

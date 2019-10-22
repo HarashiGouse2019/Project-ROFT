@@ -19,8 +19,6 @@ public class CloseInEffect : NoteEffect
 
     private readonly int m_break = 0;
 
-    private bool added = false;
-
     //So they don't have to look screwed up
     Color originalAppearance;
 
@@ -36,8 +34,6 @@ public class CloseInEffect : NoteEffect
     {
         initiatedNoteSample = noteSample;
         initiatedNoteOffset = noteOffset;
-        keyNum = NoteEffect.Instance.keyPosition;
-        added = false;
     }
 
     // Update is called once per frame
@@ -56,10 +52,9 @@ public class CloseInEffect : NoteEffect
 
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.2f);
 
-        if (EditorToolClass.musicSource.timeSamples >= initiatedNoteSample + accuracy[3])
+        if (EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracy[3]) + 8000)
         {
             BreakComboChain();
-            ObjectPooler pooler = GetComponentInParent<ObjectPooler>();
             gameObject.SetActive(false);
         }
 
@@ -71,7 +66,6 @@ public class CloseInEffect : NoteEffect
             AudioManager.audio.Play("Normal", 50);
             IncrementComboChain();
             SendAccuracyScore();
-            ObjectPooler pooler = GetComponentInParent<ObjectPooler>();
 
 
             gameObject.SetActive(false);
@@ -88,8 +82,8 @@ public class CloseInEffect : NoteEffect
     {
         for (int range = 0; range < accuracy.Length; range++)
         {
-            bool beforePerfect = EditorToolClass.musicSource.timeSamples >= initiatedNoteSample - accuracy[range];
-            bool afterPerfect = EditorToolClass.musicSource.timeSamples < initiatedNoteSample + accuracy[range];
+            bool beforePerfect = EditorToolClass.musicSource.timeSamples >= initiatedNoteSample - accuracy[range] * 2;
+            bool afterPerfect = EditorToolClass.musicSource.timeSamples <= (initiatedNoteSample + accuracy[range]) * 2;
             if (beforePerfect && afterPerfect)
             {
                 accuracyString = GameManager.accuracyString[range];

@@ -94,7 +94,7 @@ public class MapReader : MonoBehaviour
         float approachSpeedInPercent = (float)NoteEffect.Instance.approachSpeed / 100;
         const int maxKeys = 30;
 
-        float calculatedRating = notesPerSec + (totalKeys / maxKeys) + approachSpeedInPercent;
+        float calculatedRating = notesPerSec + (totalKeys / maxKeys) + approachSpeedInPercent + (EditorToolClass.musicSource.pitch / 2);
 
         return calculatedRating;
     }
