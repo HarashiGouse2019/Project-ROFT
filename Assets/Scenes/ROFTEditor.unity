@@ -6263,7 +6263,7 @@ PrefabInstance:
     - target: {fileID: 4256890596985036157, guid: a82011a13cf26764d8350bf9def51a3a,
         type: 3}
       propertyPath: m_name
-      value: Teminite & Panda Eyes - Highscore
+      value: I Don't Want to Leave
       objectReference: {fileID: 0}
     - target: {fileID: 4256890596985036156, guid: a82011a13cf26764d8350bf9def51a3a,
         type: 3}

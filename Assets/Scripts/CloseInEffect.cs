@@ -172,7 +172,7 @@ public class CloseInEffect : NoteEffect
 
     private void RidOfExtraneous()
     {
-        if (EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracy[3]) + 10000)
+        if (EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracy[3]) + 8000)
         {
             BreakComboChain();
             missed = true;
