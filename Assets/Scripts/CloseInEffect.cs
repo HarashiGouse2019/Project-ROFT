@@ -21,8 +21,6 @@ public class CloseInEffect : NoteEffect
 
     public bool dispose;
 
-    public bool missed;
-
     //So they don't have to look screwed up
     Color originalAppearance;
 
@@ -39,9 +37,6 @@ public class CloseInEffect : NoteEffect
         initiatedNoteSample = noteSample;
         initiatedNoteOffset = noteOffset;
         keyNumPosition = keyPosition;
-
-        
-        missed = false;
     }
 
     // Update is called once per frame
@@ -71,31 +66,27 @@ public class CloseInEffect : NoteEffect
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.2f);
         if (EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracy[3]) + 8000)
         {
+            dispose = true;
+
             if (ClosestObjectClass.Instance.closestObject[keyNumPosition] == null)
                 ClosestObjectClass.Instance.closestObject[keyNumPosition] = gameObject;
 
-
             BreakComboChain();
-            missed = true;
-            accuracyString = "";
-
-            dispose = true;
         }
 
         if (accuracyString != "" && Input.GetKeyDown(Key_Layout.Instance.bindedKeys[keyNumPosition]))
         {
-
-            if (ClosestObjectClass.Instance.closestObject[keyNumPosition] == null)
-                ClosestObjectClass.Instance.closestObject[keyNumPosition] = gameObject;
-
-            //I believe we have to find which one of the notes are the closes
-            //We would have to find the difference between all the notes that are in range, and get the closes one
-            //I have no idea how I'm going to do that. I just know that's something that we have to consider.....
             AudioManager.audio.Play("Normal", 50);
+
             IncrementComboChain();
-            SendAccuracyScore();
 
             dispose = true;
+
+            if (ClosestObjectClass.Instance.closestObject[keyNumPosition] == null)
+            {
+                ClosestObjectClass.Instance.closestObject[keyNumPosition] = gameObject;
+                SendAccuracyScore();
+            }
         }
     }
 
@@ -109,12 +100,10 @@ public class CloseInEffect : NoteEffect
     {
         for (int range = 0; range < accuracy.Length; range++)
         {
-            bool beforePerfect = EditorToolClass.musicSource.timeSamples > (initiatedNoteSample) - accuracy[range];
-            bool afterPerfect = EditorToolClass.musicSource.timeSamples < (initiatedNoteSample) + accuracy[range];
+            bool beforePerfect = EditorToolClass.musicSource.timeSamples >= (initiatedNoteSample) - accuracy[range];
+            bool afterPerfect = EditorToolClass.musicSource.timeSamples <= (initiatedNoteSample) + accuracy[range];
             if (beforePerfect && afterPerfect)
             {
-                
-
                 accuracyString = GameManager.accuracyString[range];
                 
                 index = range;
@@ -133,7 +122,7 @@ public class CloseInEffect : NoteEffect
         if (!sign.activeInHierarchy)
         {
             sign.SetActive(true);
-            sign.transform.position = gameObject.transform.position;
+            sign.transform.position = ClosestObjectClass.Instance.closestObject[keyNumPosition].transform.position;
             sign.GetComponent<AccuracySign>().ShowSign(accuracyString);
         }
     }
@@ -170,17 +159,5 @@ public class CloseInEffect : NoteEffect
         accuracyString = "";
         keyNum = 0; //We know what note we're on!!
         dispose = false;
-    }
-
-    private void RidOfExtraneous()
-    {
-        if (dispose && EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracy[3]) + 8000)
-        {
-            BreakComboChain();
-            missed = true;
-            accuracyString = "";
-            dispose = true;
-            gameObject.SetActive(false);
-        }
     }
 }
