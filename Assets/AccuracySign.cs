@@ -20,7 +20,6 @@ public class AccuracySign : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(time);
         FadeOut();
         if (active) ShowFor(showDuration, 0.5f);
     }
