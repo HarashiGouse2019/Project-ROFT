@@ -75,9 +75,8 @@ public class AudioManager : MonoBehaviour
                 case true:
                     AudioSource newSource = gameObject.AddComponent<AudioSource>();
                     newSource.clip = a.clip;
-                    newSource.volume = _volume;
                     newSource.pitch = a.pitch;
-                    newSource.Play();
+                    newSource.PlayOneShot(newSource.clip, _volume / 100);
                     break;
                 default:
                     a.source.Play();

@@ -11,7 +11,10 @@ public class GameManager : MonoBehaviour
     [Header("Edit Mode")]
     public bool editMode;
 
-    [Header("UI")]
+    [Header("UI TEXT MESH PRO")]
+    public TextMeshProUGUI TM_SONGNAME;
+    public TextMeshProUGUI TM_TOTALNOTES;
+    public TextMeshProUGUI TM_TOTALKEYS;
     public TextMeshProUGUI TM_SCORE;
     public TextMeshProUGUI TM_COMBO;
     public TextMeshProUGUI TM_MAXCOMBO;
@@ -47,9 +50,6 @@ public class GameManager : MonoBehaviour
     public int combo;
     public int maxCombo;
     public int[] accuracyStats = new int[5];
-
-    public List<GameObject> approachCircleTotal;
-
     private void Awake()
     {
         if (Instance == null)
@@ -59,12 +59,6 @@ public class GameManager : MonoBehaviour
         }
         else
             Destroy(gameObject);
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-       approachCircleTotal =  new List<GameObject>();
     }
 
     // Update is called once per frame
@@ -94,11 +88,11 @@ public class GameManager : MonoBehaviour
         TM_DIFFICULTY.text = "DIFFICULTY: " + MapReader.Instance.difficultyRating.ToString("F2", CultureInfo.InvariantCulture);
 
         //This will be temporary
-        TM_PERFECT.text = "PERFECT:   " + accuracyStats[0].ToString();
-        TM_GREAT.text = "GREAT:       " + accuracyStats[1].ToString();
-        TM_GOOD.text = "GOOD:         " + accuracyStats[2].ToString();
-        TM_OK.text  = "OK:            " + accuracyStats[3].ToString();
-        TM_MISS.text = "MISSES:       " + accuracyStats[4].ToString();
-        TM_MAXCOMBO.text = "MAX COMBO:     " + maxCombo.ToString();
+        TM_PERFECT.text = "PERFECT:   " + accuracyStats[0].ToString() + " (" + ((accuracyStats[0] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+        TM_GREAT.text = "GREAT:       " + accuracyStats[1].ToString() + " (" + ((accuracyStats[1] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+        TM_GOOD.text = "GOOD:         " + accuracyStats[2].ToString() + " (" + ((accuracyStats[2] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+        TM_OK.text  = "OK:            " + accuracyStats[3].ToString() + " (" + ((accuracyStats[3] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+        TM_MISS.text = "MISSES:       " + accuracyStats[4].ToString() + " (" + ((accuracyStats[4] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+        TM_MAXCOMBO.text = "MAX COMBO:     " + maxCombo.ToString() + " (" + ((maxCombo / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture)  + "%)";
     }
 }

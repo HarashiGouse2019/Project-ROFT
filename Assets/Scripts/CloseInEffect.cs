@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CloseInEffect : NoteEffect
 {
@@ -64,7 +62,7 @@ public class CloseInEffect : NoteEffect
         transform.localScale = new Vector3(1 / GetPercentage(), 1 / GetPercentage(), 1f);
 
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.2f);
-        if (EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracy[3]) + 8000)
+        if (EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
         {
             dispose = true;
 
@@ -76,15 +74,14 @@ public class CloseInEffect : NoteEffect
 
         if (accuracyString != "" && Input.GetKeyDown(Key_Layout.Instance.bindedKeys[keyNumPosition]))
         {
-            AudioManager.audio.Play("Normal", 50);
-
-            IncrementComboChain();
+            AudioManager.audio.Play("Normal", 100);
 
             dispose = true;
 
             if (ClosestObjectClass.Instance.closestObject[keyNumPosition] == null)
             {
                 ClosestObjectClass.Instance.closestObject[keyNumPosition] = gameObject;
+                IncrementComboChain();
                 SendAccuracyScore();
             }
         }
@@ -98,10 +95,11 @@ public class CloseInEffect : NoteEffect
 
     public string InHitRange()
     {
-        for (int range = 0; range < accuracy.Length; range++)
+        for (int range = 0; range < accuracyVal.Length; range++)
         {
-            bool beforePerfect = EditorToolClass.musicSource.timeSamples >= (initiatedNoteSample) - accuracy[range];
-            bool afterPerfect = EditorToolClass.musicSource.timeSamples <= (initiatedNoteSample) + accuracy[range];
+            bool beforePerfect = EditorToolClass.musicSource.timeSamples >= (initiatedNoteSample) - accuracyVal[range];
+            bool afterPerfect = EditorToolClass.musicSource.timeSamples <= (initiatedNoteSample) + accuracyVal[range];
+
             if (beforePerfect && afterPerfect)
             {
                 accuracyString = GameManager.accuracyString[range];
@@ -119,6 +117,7 @@ public class CloseInEffect : NoteEffect
         GameManager.Instance.accuracyStats[index] += 1;
         GameManager.sentScore = GameManager.accuracyScore[index];
         GameObject sign = GetComponentInParent<ObjectPooler>().GetMember("Signs");
+
         if (!sign.activeInHierarchy)
         {
             sign.SetActive(true);

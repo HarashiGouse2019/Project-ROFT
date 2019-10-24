@@ -1,11 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ObjectPooler : MonoBehaviour
 {
 
     public static ObjectPooler Instance;
+
+    public bool overridePoolSize;
+
+    public bool readFromMusicManager;
 
     [System.Serializable]
     public class ObjectPoolItem
@@ -20,6 +25,7 @@ public class ObjectPooler : MonoBehaviour
     public List<GameObject> pooledObjects;
 
     public int poolIndex;
+
     void Awake()
     {
         Instance = this;
@@ -27,7 +33,35 @@ public class ObjectPooler : MonoBehaviour
 
     private void Start()
     {
+        if (readFromMusicManager == true)
+        {
+            OverridePoolSizeOf("Song Panel", MusicManager.manager.getMusic.Length);
+        }
+
         InitObjectPooler();
+    }
+
+    private void Update()
+    {
+        if (readFromMusicManager)
+        {
+            for (int musicIndex = 0; musicIndex < pooledObjects.Count; musicIndex++)
+                if (!pooledObjects[musicIndex].activeInHierarchy)
+                {
+                    const float defaultSpread = -1.5f;
+
+                    pooledObjects[musicIndex].SetActive(true);
+
+                    Image IMG_SONGPANEL = pooledObjects[musicIndex].GetComponent<Image>();
+
+                    RectTransform IMG_TRANSFORM = IMG_SONGPANEL.rectTransform;
+
+                    IMG_TRANSFORM.position = new Vector3(IMG_TRANSFORM.position.x, IMG_TRANSFORM.position.y + (defaultSpread * musicIndex));
+                    
+                }
+                else
+                    break;
+        }
     }
 
     void InitObjectPooler()
@@ -75,5 +109,14 @@ public class ObjectPooler : MonoBehaviour
         }
         Debug.LogWarning("We couldn't find a prefab of this name");
         return null;
+    }
+
+    void OverridePoolSizeOf(string _name, int _size)
+    {
+        for (int i = 0; i < itemsToPool.Count; i++)
+        {
+            if (itemsToPool[i].name == _name)
+                itemsToPool[i].size = _size;
+        }
     }
 }

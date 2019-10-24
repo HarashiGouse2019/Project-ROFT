@@ -88,6 +88,7 @@ public class Key_Layout : MonoBehaviour
         {
             key = (KeyCode)defaultLayout[(int)keyLayout][keyNum];
             bindedKeys.Add(key);
+            
         }
     }
 

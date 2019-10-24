@@ -292,8 +292,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 3.0999756, y: 14.949967}
-  m_SizeDelta: {x: 52.3, y: 40}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0.000015258789, y: 40}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &176610670
 MonoBehaviour:
@@ -515,7 +515,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 248344318}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -524,7 +524,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 268.19922, y: -204.29999}
+  m_AnchoredPosition: {x: 0.2992096, y: 0}
   m_SizeDelta: {x: 26, y: 24}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &248344320
@@ -922,7 +922,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 'PERFECT:'
+  m_text: 'PERFECT: 0 (0%)'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -991,10 +991,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 376261122}
-    characterCount: 8
+    characterCount: 15
     spriteCount: 0
-    spaceCount: 0
-    wordCount: 1
+    spaceCount: 2
+    wordCount: 3
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -1310,7 +1310,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 'GOOD:'
+  m_text: 'GOOD: 0 (0%)'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1379,10 +1379,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 518893875}
-    characterCount: 5
+    characterCount: 12
     spriteCount: 0
-    spaceCount: 0
-    wordCount: 1
+    spaceCount: 2
+    wordCount: 3
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -1447,8 +1447,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -94.79999, y: 21.00003}
-  m_SizeDelta: {x: -380.5, y: 32}
+  m_AnchoredPosition: {x: -79, y: 6.05}
+  m_SizeDelta: {x: -471.80005, y: 32}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &522251519
 MonoBehaviour:
@@ -1554,6 +1554,7 @@ GameObject:
   - component: {fileID: 531331938}
   - component: {fileID: 531331937}
   - component: {fileID: 531331939}
+  - component: {fileID: 531331940}
   m_Layer: 0
   m_Name: MusicManager
   m_TagString: Untagged
@@ -1654,6 +1655,18 @@ MonoBehaviour:
     pitch: 1
     enableLoop: 0
     source: {fileID: 0}
+  - name: Nekomata Master - Scars of FAUNA
+    clip: {fileID: 8300000, guid: b3bf560caac312440a874415d391bec3, type: 3}
+    volume: 1
+    pitch: 1
+    enableLoop: 0
+    source: {fileID: 0}
+  - name: Project Grimoire - Excalibur _Revived Resolution
+    clip: {fileID: 8300000, guid: 3749f238002a65d41a7986f15b1e000b, type: 3}
+    volume: 1
+    pitch: 1
+    enableLoop: 0
+    source: {fileID: 0}
   timeSamples: 0
   positionSeconds:
   - 0.123
@@ -1683,13 +1696,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: Xi - Blue Zenith
+  m_name: Project Grimoire - Excalibur _Revived Resolution
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0
   keyLayoutEnum: 0
   keys: []
   keyLayoutClass: {fileID: 615216638}
+--- !u!114 &531331940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 531331936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff01922f4a160714bb2c1771418bc7ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &554642906
 GameObject:
   m_ObjectHideFlags: 0
@@ -1762,8 +1787,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -448.19998, y: 22.77504}
-  m_SizeDelta: {x: -737.6, y: 24.4}
+  m_AnchoredPosition: {x: -443.00003, y: 6.05}
+  m_SizeDelta: {x: -828.9, y: 24.4}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &560161883
 MonoBehaviour:
@@ -1851,7 +1876,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0.57970047}
+  m_margin: {x: 0, y: 0, z: -38.03919, w: 0.57970047}
   m_textInfo:
     textComponent: {fileID: 560161883}
     characterCount: 4
@@ -1916,6 +1941,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   editMode: 0
+  TM_SONGNAME: {fileID: 0}
+  TM_TOTALNOTES: {fileID: 0}
+  TM_TOTALKEYS: {fileID: 0}
   TM_SCORE: {fileID: 223859750}
   TM_COMBO: {fileID: 2015984638}
   TM_MAXCOMBO: {fileID: 921205752}
@@ -1929,7 +1957,6 @@ MonoBehaviour:
   combo: 0
   maxCombo: 0
   accuracyStats: 0000000000000000000000000000000000000000
-  approachCircleTotal: []
 --- !u!4 &563326976
 Transform:
   m_ObjectHideFlags: 0
@@ -2044,7 +2071,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 'OK:'
+  m_text: 'OK: 0 (0%)'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2113,10 +2140,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 575307744}
-    characterCount: 3
+    characterCount: 10
     spriteCount: 0
-    spaceCount: 0
-    wordCount: 1
+    spaceCount: 2
+    wordCount: 3
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -2332,7 +2359,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   recordKeyInput: 0
-  keyLayout: 2
+  keyLayout: 1
   setXOffset:
   - -9
   - -8
@@ -2361,16 +2388,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   approachSpeed: 8.5
-  alignment: 6000
-  accuracy:
+  alignment: 4000
+  accuracy: 7
+  accuracyVal:
   - 4000
-  - 7000
+  - 6000
   - 10000
-  - 13000
+  - 12000
   mapReader: {fileID: 531331939}
   notePrefab: {fileID: 7740991288490540822, guid: e2796b60eea1436459b59d2b488f1bf2,
     type: 3}
-  keyPosition: 0
 --- !u!1 &669722502
 GameObject:
   m_ObjectHideFlags: 0
@@ -2404,7 +2431,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 10.002991, y: 0}
   m_SizeDelta: {x: 20.005, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2483,8 +2510,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 3.5999756, y: 140.99992}
-  m_SizeDelta: {x: -577.2, y: 200}
+  m_AnchoredPosition: {x: 2.044403, y: 126.04996}
+  m_SizeDelta: {x: -668.50006, y: 200}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &684715235
 MonoBehaviour:
@@ -2649,8 +2676,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 370.3, y: 54.999954}
-  m_SizeDelta: {x: -682.1, y: 15.2}
+  m_AnchoredPosition: {x: 368.7444, y: 40.04998}
+  m_SizeDelta: {x: -773.4, y: 15.2}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &732242167
 MonoBehaviour:
@@ -2805,11 +2832,11 @@ RectTransform:
   m_Father: {fileID: 1637431632}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -49.900024, y: 190.99992}
-  m_SizeDelta: {x: -827.8, y: 100}
-  m_Pivot: {x: 0.5, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 238, y: -0.000005722046}
+  m_SizeDelta: {x: 80.4, y: 24}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &762321608
 GameObject:
   m_ObjectHideFlags: 0
@@ -3268,7 +3295,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 972078926}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -3277,7 +3304,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 295.0996, y: -204.29999}
+  m_AnchoredPosition: {x: 27.199661, y: 0}
   m_SizeDelta: {x: 26, y: 24}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &972078928
@@ -3479,8 +3506,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -404.39993, y: 27.899963}
-  m_SizeDelta: {x: -749.5, y: 18.2}
+  m_AnchoredPosition: {x: -382.00003, y: 10.9}
+  m_SizeDelta: {x: -840.80005, y: 18.2}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1106647098
 MonoBehaviour:
@@ -3659,7 +3686,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 'GREAT:'
+  m_text: 'GREAT: 0 (0%)'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3728,10 +3755,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1158653957}
-    characterCount: 6
+    characterCount: 13
     spriteCount: 0
-    spaceCount: 0
-    wordCount: 1
+    spaceCount: 2
+    wordCount: 3
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -3859,7 +3886,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1212851141}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -3868,7 +3895,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 240.69922, y: -204.29999}
+  m_AnchoredPosition: {x: -27.20073, y: 0}
   m_SizeDelta: {x: 26, y: 24}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1212851143
@@ -4520,7 +4547,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: MISS
+  m_text: 'MISS: 0 (0%)'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4589,10 +4616,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 3.1297023}
   m_textInfo:
     textComponent: {fileID: 1399528821}
-    characterCount: 4
+    characterCount: 12
     spriteCount: 0
-    spaceCount: 0
-    wordCount: 1
+    spaceCount: 2
+    wordCount: 3
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -5148,7 +5175,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1637431632
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5173,8 +5200,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -7, y: -178.20001}
-  m_SizeDelta: {x: 900.8, y: 45.2}
+  m_AnchoredPosition: {x: 2, y: 0}
+  m_SizeDelta: {x: 91.3, y: 40}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!1 &1693409343
 GameObject:
@@ -5245,7 +5272,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -5413,8 +5440,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 370.3, y: 23}
-  m_SizeDelta: {x: -815, y: 30}
+  m_AnchoredPosition: {x: 370.6, y: 8.05}
+  m_SizeDelta: {x: -791.73, y: 30}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1799976643
 MonoBehaviour:
@@ -5719,8 +5746,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -806, y: -252}
+  m_AnchoredPosition: {x: -0.7470703, y: 0}
+  m_SizeDelta: {x: -804.51, y: -252}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2015984636
 GameObject:
@@ -5756,7 +5783,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -391, y: -127}
+  m_AnchoredPosition: {x: -392, y: -128.9}
   m_SizeDelta: {x: 52.8, y: 50}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &2015984638
@@ -5912,10 +5939,10 @@ RectTransform:
   m_Father: {fileID: 2080661927}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 6, y: 0}
-  m_SizeDelta: {x: -850, y: 38}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0.055480957, y: -0.0012207031}
+  m_SizeDelta: {x: 0, y: -0.25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2039481995
 MonoBehaviour:
@@ -5929,7 +5956,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ec2119ba0127ce439f515369208fd1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  music: {fileID: 8300000, guid: ecdedf33e1dc90847ab48e5475dc8fe4, type: 3}
+  music: {fileID: 8300000, guid: 3749f238002a65d41a7986f15b1e000b, type: 3}
   record: 0
   tickSignature: 4
   playButton: {fileID: 1212851143}
