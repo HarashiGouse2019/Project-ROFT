@@ -6,7 +6,6 @@ public class DetectMouse : MonoBehaviour
 {
     void OnMouseOver()
     {
-        Debug.Log("This is detecting the Timeline Control");
         EditorTimelineControl.Instance.EnableScroll();
     }
 }

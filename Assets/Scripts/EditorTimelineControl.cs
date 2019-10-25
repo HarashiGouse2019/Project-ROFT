@@ -139,7 +139,6 @@ public class EditorTimelineControl : MonoBehaviour
 
         if (Input.GetAxis("Mouse ScrollWheel") != 0)
         {
-            Debug.Log("Doing a thing!!!");
             for (int lineIndex = 1; lineIndex < lines.Count; lineIndex++)
             {
                 GameObject lineToShift = lines[lineIndex];

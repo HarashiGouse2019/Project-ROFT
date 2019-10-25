@@ -1743,7 +1743,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: Nekomata Master - Scars of FAUNA
+  m_name: Project Grimoire - Excalibur _Revived Resolution
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0
@@ -2435,9 +2435,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ff386a084f7f1247ad3193fa2642ad0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  approachSpeed: 8.75
+  approachSpeed: 8.5
   alignment: 4000
-  accuracy: 7
+  accuracy: 8.5
   accuracyVal:
   - 4000
   - 6000
