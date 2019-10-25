@@ -37,7 +37,7 @@ public class NoteEffect : MonoBehaviour
     private const int minOffset = 10000;
     private const int standardAccuracy = 5;
 
-    private float[] accuracyDefault = new float[4]
+   readonly private float[] accuracyDefault = new float[4]
    {
         4000,
         6000,
