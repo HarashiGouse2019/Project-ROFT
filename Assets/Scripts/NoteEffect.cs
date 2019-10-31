@@ -49,7 +49,7 @@ public class NoteEffect : MonoBehaviour
 
     #region Protected Members
     protected float percentage; //Lerping for effects
-    protected int keyPosition = 0; //With the collected data, what part of it are we in?
+    public int keyPosition = 0; //With the collected data, what part of it are we in?
     protected float noteOffset; //When our note should start appearing
     protected int noteSample; //The note where you actually hit with timing
     #endregion

@@ -48,10 +48,10 @@ public class CloseInEffect : NoteEffect
 
     private void FixedUpdate()
     {
-        if (dispose && ClosestObjectClass.Instance.closestObject[keyNumPosition] != null)
+        if (dispose && ClosestObjectClass.closestObject[keyNumPosition] != null)
         {
-            ClosestObjectClass.Instance.closestObject[keyNumPosition].SetActive(false);
-            ClosestObjectClass.Instance.closestObject[keyNumPosition] = null;
+            ClosestObjectClass.closestObject[keyNumPosition].SetActive(false);
+            ClosestObjectClass.closestObject[keyNumPosition] = null;
         } 
     }
     void CloseIn()
@@ -66,23 +66,31 @@ public class CloseInEffect : NoteEffect
         {
             dispose = true;
 
-            if (ClosestObjectClass.Instance.closestObject[keyNumPosition] == null)
-                ClosestObjectClass.Instance.closestObject[keyNumPosition] = gameObject;
+            if (ClosestObjectClass.closestObject[keyNumPosition] == null)
+                ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
 
             BreakComboChain();
+
+            GameManager.consecutiveMisses++;
         }
 
         if (accuracyString != "" && Input.GetKeyDown(Key_Layout.Instance.bindedKeys[keyNumPosition]))
         {
-            AudioManager.audio.Play("Normal", 100);
-
             dispose = true;
 
-            if (ClosestObjectClass.Instance.closestObject[keyNumPosition] == null)
+            if (ClosestObjectClass.closestObject[keyNumPosition] == null)
             {
-                ClosestObjectClass.Instance.closestObject[keyNumPosition] = gameObject;
+                ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
                 IncrementComboChain();
                 SendAccuracyScore();
+                BuildStress(index);
+
+                GameObject key = Key_Layout.keyObjects[keyNumPosition];
+                key.GetComponentInChildren<PulseEffect>().DoPulseReaction();
+
+                AudioManager.Instance.Play("Normal", 100, true);
+
+                GameManager.consecutiveMisses = 0;
             }
         }
     }
@@ -121,7 +129,7 @@ public class CloseInEffect : NoteEffect
         if (!sign.activeInHierarchy)
         {
             sign.SetActive(true);
-            sign.transform.position = ClosestObjectClass.Instance.closestObject[keyNumPosition].transform.position;
+            sign.transform.position = ClosestObjectClass.closestObject[keyNumPosition].transform.position;
             sign.GetComponent<AccuracySign>().ShowSign(accuracyString);
         }
     }
@@ -134,6 +142,7 @@ public class CloseInEffect : NoteEffect
     public void BreakComboChain()
     {
         GameManager.Instance.accuracyStats[4] += 1;
+        BuildStress(4);
         GameManager.Instance.combo = m_break;
 
         GameObject sign = GetComponentInParent<ObjectPooler>().GetMember("Signs");
@@ -145,6 +154,11 @@ public class CloseInEffect : NoteEffect
             sign.GetComponent<AccuracySign>().ShowSign("miss");
 
         }
+    }
+
+    public void BuildStress(int _index)
+    {
+        GameManager.sentStress = GameManager.stressAmount[_index] + (GameManager.Instance.stressBuild / 100) ;
     }
 
     private void OnDisable()

@@ -1,12 +1,46 @@
 ﻿using System.Globalization;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+
+    public static string[] accuracyString =
+   {
+        "Perfect",
+        "Great",
+        "Good",
+        "Ok",
+        "Miss"
+    };
+
+    public static int[] accuracyScore =
+    {
+        300,
+        100,
+        50,
+        10,
+        0
+    };
+
+    public static float[] stressAmount =
+    {
+       2f,
+        1f,
+        0f,
+        -1f,
+        -2f
+    };
+
+    public static int sentScore;
+
+    public static float sentStress;
+
+    public static int consecutiveMisses;
 
     [Header("Edit Mode")]
     public bool editMode;
@@ -25,31 +59,21 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI TM_OK;
     public TextMeshProUGUI TM_MISS;
 
-    public static string[] accuracyString =
-    {
-        "Perfect",
-        "Great",
-        "Good",
-        "Ok",
-        "Miss"
-    };
+    [Header("UI IMAGES")]
+    public Image IMG_STRESS;
+    public Image IMG_STRESSBACKGROUND;
 
-    public static int[] accuracyScore =
-    {
-        300,
-        100,
-        50,
-        10,
-        0
-    };
-
-    public static int sentScore;
-
-    [Header("In-Game Statistics")]
+    [Header("In-Game Statistics and Values")]
     public int totalScore;
     public int combo;
     public int maxCombo;
+    [Range(1f, 10f)] public float stressBuild = 5f;
     public int[] accuracyStats = new int[5];
+    private readonly int reset = 0;
+    
+
+    
+
     private void Awake()
     {
         if (Instance == null)
@@ -61,18 +85,24 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
     }
 
+    private void Start()
+    {
+        IMG_STRESS.fillAmount = 0f;
+    }
+
     // Update is called once per frame
     void Update()
     {
         RunScoreSystem();
         RunUI();
+        RunInGameControls();
     }
 
     void RunScoreSystem()
     {
         UpdateMaxCombo();
         totalScore += sentScore * combo;
-        sentScore = 0;
+        sentScore = reset;
     }
 
     void UpdateMaxCombo()
@@ -88,11 +118,56 @@ public class GameManager : MonoBehaviour
         TM_DIFFICULTY.text = "DIFFICULTY: " + MapReader.Instance.difficultyRating.ToString("F2", CultureInfo.InvariantCulture);
 
         //This will be temporary
-        TM_PERFECT.text = "PERFECT:   " + accuracyStats[0].ToString() + " (" + ((accuracyStats[0] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
-        TM_GREAT.text = "GREAT:       " + accuracyStats[1].ToString() + " (" + ((accuracyStats[1] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
-        TM_GOOD.text = "GOOD:         " + accuracyStats[2].ToString() + " (" + ((accuracyStats[2] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
-        TM_OK.text  = "OK:            " + accuracyStats[3].ToString() + " (" + ((accuracyStats[3] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
-        TM_MISS.text = "MISSES:       " + accuracyStats[4].ToString() + " (" + ((accuracyStats[4] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
-        TM_MAXCOMBO.text = "MAX COMBO:     " + maxCombo.ToString() + " (" + ((maxCombo / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture)  + "%)";
+        TM_PERFECT.text = "PERFECT:   " + 
+            accuracyStats[0].ToString() + 
+            " (" + ((accuracyStats[0] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+
+        TM_GREAT.text = "GREAT:       " + 
+            accuracyStats[1].ToString() + 
+            " (" + ((accuracyStats[1] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+
+        TM_GOOD.text = "GOOD:         " + 
+            accuracyStats[2].ToString() + 
+            " (" + ((accuracyStats[2] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+
+        TM_OK.text  = "OK:            " + 
+            accuracyStats[3].ToString() + 
+            " (" + ((accuracyStats[3] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+
+        TM_MISS.text = "MISSES:       " + 
+            accuracyStats[4].ToString() + 
+            " (" + ((accuracyStats[4] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+
+        TM_MAXCOMBO.text = "MAX COMBO:     " 
+            + maxCombo.ToString() + 
+            " (" + ((maxCombo / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture)  + "%)";
+
+        if (EditorToolClass.musicSource.isPlaying) ManageStressMeter();
+    }
+
+    void ManageStressMeter()
+    {
+        float stressBuildInPercent = stressBuild / 100;
+        IMG_STRESS.fillAmount += ((stressBuildInPercent * (consecutiveMisses + 1)) - sentStress) / 100;
+        sentStress = reset;
+    }
+
+    void RunInGameControls()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+            RestartSong();
+    }
+
+    void RestartSong()
+    {
+        NoteEffect.Instance.keyPosition = reset;
+
+        for (int stat = 0; stat < accuracyStats.Length; stat++)
+            accuracyStats[stat] = reset;
+
+        combo = reset;
+        maxCombo = reset;
+        totalScore = reset;
+        EditorToolClass.musicSource.timeSamples = reset;
     }
 }

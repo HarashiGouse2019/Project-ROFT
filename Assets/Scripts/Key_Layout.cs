@@ -88,7 +88,7 @@ public class Key_Layout : MonoBehaviour
         {
             key = (KeyCode)defaultLayout[(int)keyLayout][keyNum];
             bindedKeys.Add(key);
-            
+
         }
     }
 
@@ -149,7 +149,7 @@ public class Key_Layout : MonoBehaviour
                 keyObjects.Add(newKey);
             }
         }
-        
+
         //After setting up the keys,  bring them to center 
         //And then autobind keys
         for (int keyNum = 0; keyNum < keyObjects.Count; keyNum++)

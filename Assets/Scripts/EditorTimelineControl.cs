@@ -51,6 +51,63 @@ public class EditorTimelineControl : MonoBehaviour
         DrawTimelineControl();
     }
 
+   
+
+    public void EnableScroll()
+    {
+        scroll = Input.GetAxis("Mouse ScrollWheel") * 2f;
+
+        if (Input.GetAxis("Mouse ScrollWheel") != 0)
+        {
+            for (int lineIndex = 1; lineIndex < lines.Count; lineIndex++)
+            {
+                GameObject lineToShift = lines[lineIndex];
+                lineToShift.transform.position = new Vector3(lineToShift.transform.position.x + scroll, lineToShift.transform.position.y);
+            }
+        }
+    }
+
+    public void Zoom(string _dir)
+    {
+        int sign = 0;
+        for (int lineIndex = 1; lineIndex < lines.Count; lineIndex++)
+        {
+            GameObject lineToManipulate = lines[lineIndex];
+            
+
+            switch (_dir.ToLower())
+            {
+                case "in":
+                    sign = 1;
+                    break;
+                case "out":
+                    sign = -1;
+                    break;
+                default:
+                    //Do nothing
+                    break;
+            }
+
+            zoom = lineToManipulate.transform.position.x + (sign * (lineIndex * 0.01f));
+            lineToManipulate.transform.position = new Vector3(zoom, lineToManipulate.transform.position.y);
+        }
+    }
+
+    public static void BakeLineRenderAsMesh(GameObject _obj)
+    {
+        var lineRenderer = _obj.GetComponent<LineRenderer>();
+        var meshFilter = _obj.AddComponent<MeshFilter>();
+        _obj.AddComponent<RenderCheckOffScreen>();
+        Mesh mesh = new Mesh();
+        lineRenderer.BakeMesh(mesh);
+        meshFilter.sharedMesh = mesh;
+
+        var meshRenderer = _obj.AddComponent<MeshRenderer>();
+        meshRenderer.sharedMaterial = lineRenderer.material;
+
+        GameObject.Destroy(lineRenderer);
+    }
+
     void DrawTimelineControl()
     {
         if (!timelineControlDrawn)
@@ -58,8 +115,8 @@ public class EditorTimelineControl : MonoBehaviour
             float pixelsPerInch = ResY + (float)pixelSpread;
             float rulerWidth = 1000f;
 
-            Vector3 startPoint = new Vector3(origin.position.x - (ResX / 2), origin.position.y - 0.85f, 1f);
-            Vector3 endPoint = new Vector3(ResX, origin.position.y - 0.85f, 1f);
+            Vector3 startPoint = new Vector3(origin.position.x - (ResX / 2), origin.position.y - 1.03f, 1f);
+            Vector3 endPoint = new Vector3(ResX, origin.position.y - 1.03f, 1f);
 
             //Base of Time Control
             DrawLine(startPoint, endPoint, 0);
@@ -131,58 +188,5 @@ public class EditorTimelineControl : MonoBehaviour
         lineRenderer.SetPosition(1, point2);
 
         lines.Add(myLine);
-    }
-
-    public void EnableScroll()
-    {
-        scroll = Input.GetAxis("Mouse ScrollWheel") * 2f;
-
-        if (Input.GetAxis("Mouse ScrollWheel") != 0)
-        {
-            for (int lineIndex = 1; lineIndex < lines.Count; lineIndex++)
-            {
-                GameObject lineToShift = lines[lineIndex];
-                lineToShift.transform.position = new Vector3(lineToShift.transform.position.x + scroll, lineToShift.transform.position.y);
-            }
-        }
-    }
-
-    public void Zoom(string _dir)
-    {
-        int sign = 0;
-        for (int lineIndex = 1; lineIndex < lines.Count; lineIndex++)
-        {
-            GameObject lineToManipulate = lines[lineIndex];
-            
-
-            switch (_dir.ToLower())
-            {
-                case "in":
-                    sign = 1;
-                    break;
-                case "out":
-                    sign = -1;
-                    break;
-                default:
-                    //Do nothing
-                    break;
-            }
-
-            lineToManipulate.transform.position = new Vector3(lineToManipulate.transform.position.x + (sign * (lineIndex * 0.01f)), lineToManipulate.transform.position.y);
-        }
-    }
-
-    public static void BakeLineRenderAsMesh(GameObject _obj)
-    {
-        var lineRenderer = _obj.GetComponent<LineRenderer>();
-        var meshFilter = _obj.AddComponent<MeshFilter>();
-        Mesh mesh = new Mesh();
-        lineRenderer.BakeMesh(mesh);
-        meshFilter.sharedMesh = mesh;
-
-        var meshRenderer = _obj.AddComponent<MeshRenderer>();
-        meshRenderer.sharedMaterial = lineRenderer.material;
-
-        GameObject.Destroy(lineRenderer);
     }
 }

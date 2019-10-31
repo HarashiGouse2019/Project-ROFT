@@ -35,7 +35,15 @@ public class MusicManager : MonoBehaviour
 
     public void Awake()
     {
-        manager = this;
+        if (manager == null)
+        {
+            manager = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void Play(string _name, float _volume = 100)

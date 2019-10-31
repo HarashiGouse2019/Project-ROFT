@@ -208,7 +208,10 @@ public class EditorToolClass : MonoBehaviour
         if (Input.GetKeyDown(tapKey))
         {
             if (!musicIsPlaying)
+            {
                 PlayMusic();
+                NoteEffect.Instance.keyPosition = 0;
+            }
             else
             {
                 //Add taps and check if max amount
@@ -250,8 +253,8 @@ public class EditorToolClass : MonoBehaviour
             if (taps > tapLimit - 1)
             {
                 totalTicksSinceStart++;
-                if (ticks == 1) AudioManager.audio.Play("FirstTick");
-                else AudioManager.audio.Play("Tick");
+                if (ticks == 1) AudioManager.Instance.Play("FirstTick");
+                else AudioManager.Instance.Play("Tick");
                 DetectInactivity();
             }
             else

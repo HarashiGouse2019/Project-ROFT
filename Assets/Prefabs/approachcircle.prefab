@@ -102,6 +102,7 @@ MonoBehaviour:
   - 12000
   mapReader: {fileID: 0}
   notePrefab: {fileID: 0}
+  keyPosition: 0
   initiatedNoteSample: 0
   initiatedNoteOffset: 0
   offsetStart: 0

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class AudioManager : MonoBehaviour
 {
-    public new static AudioManager audio;
+    public static AudioManager Instance;
 
     [System.Serializable]
     public class Audio
@@ -30,9 +30,9 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
-        if (audio == null)
+        if (Instance == null)
         {
-            audio = this;
+            Instance = this;
             DontDestroyOnLoad(gameObject);
         } else
         {
@@ -61,7 +61,7 @@ public class AudioManager : MonoBehaviour
     /// Support values between 0 and 100.
     ///
 
-    public void Play(string _name, float _volume = 100, bool _new = false)
+    public void Play(string _name, float _volume = 100, bool _oneShot = false)
     {
         Audio a = Array.Find(getAudio, sound => sound.name == _name);
         if (a == null)
@@ -70,13 +70,10 @@ public class AudioManager : MonoBehaviour
             return;
         } else
         {
-            switch (_new)
+            switch (_oneShot)
             {
                 case true:
-                    AudioSource newSource = gameObject.AddComponent<AudioSource>();
-                    newSource.clip = a.clip;
-                    newSource.pitch = a.pitch;
-                    newSource.PlayOneShot(newSource.clip, _volume / 100);
+                    a.source.PlayOneShot(a.clip, _volume / 100);
                     break;
                 default:
                     a.source.Play();
