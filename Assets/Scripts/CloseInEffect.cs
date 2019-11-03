@@ -22,6 +22,9 @@ public class CloseInEffect : NoteEffect
     //So they don't have to look screwed up
     Color originalAppearance;
 
+    //Time
+    float time = 0;
+
     private void Awake()
     {
         mapReader = MapReader.Instance;
@@ -60,39 +63,83 @@ public class CloseInEffect : NoteEffect
 
         
         transform.localScale = new Vector3(1 / GetPercentage(), 1 / GetPercentage(), 1f);
-
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.2f);
-        if (EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
+        #region Auto Play
+        if (CheckSoloPlay())
         {
-            dispose = true;
-
-            if (ClosestObjectClass.closestObject[keyNumPosition] == null)
-                ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
-
-            BreakComboChain();
-
-            GameManager.consecutiveMisses++;
-        }
-
-        if (accuracyString != "" && Input.GetKeyDown(Key_Layout.Instance.bindedKeys[keyNumPosition]))
-        {
-            dispose = true;
-
-            if (ClosestObjectClass.closestObject[keyNumPosition] == null)
+            if (EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
             {
-                ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
-                IncrementComboChain();
-                SendAccuracyScore();
-                BuildStress(index);
+                dispose = true;
 
-                GameObject key = Key_Layout.keyObjects[keyNumPosition];
-                key.GetComponentInChildren<PulseEffect>().DoPulseReaction();
+                if (ClosestObjectClass.closestObject[keyNumPosition] == null)
+                    ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
 
-                AudioManager.Instance.Play("Normal", 100, true);
+                BreakComboChain();
 
-                GameManager.consecutiveMisses = 0;
+                GameManager.consecutiveMisses++;
+            }
+
+
+            if (accuracyString == "Perfect")
+            {
+                dispose = true;
+
+                if (ClosestObjectClass.closestObject[keyNumPosition] == null)
+                {
+                   
+
+                    ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
+                    IncrementComboChain();
+                    SendAccuracyScore();
+                    BuildStress(index);
+
+                    GameObject key = Key_Layout.keyObjects[keyNumPosition];
+                    key.GetComponentInChildren<PulseEffect>().DoPulseReaction();
+
+                    AudioManager.Instance.Play("Normal", 100, true);
+
+                    GameManager.consecutiveMisses = 0;
+
+                 
+                }
+            }
+        } 
+        #endregion
+        else
+        {
+            if (EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
+            {
+                dispose = true;
+
+                if (ClosestObjectClass.closestObject[keyNumPosition] == null)
+                    ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
+
+                BreakComboChain();
+
+                GameManager.consecutiveMisses++;
+            }
+
+            if (accuracyString != "" && Input.GetKeyDown(Key_Layout.Instance.bindedKeys[keyNumPosition]))
+            {
+                dispose = true;
+
+                if (ClosestObjectClass.closestObject[keyNumPosition] == null)
+                {
+                    ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
+                    IncrementComboChain();
+                    SendAccuracyScore();
+                    BuildStress(index);
+
+                    GameObject key = Key_Layout.keyObjects[keyNumPosition];
+                    key.GetComponentInChildren<PulseEffect>().DoPulseReaction();
+
+                    AudioManager.Instance.Play("Normal", 100, true);
+
+                    GameManager.consecutiveMisses = 0;
+                }
             }
         }
+        
     }
 
     protected override float GetPercentage()
@@ -137,6 +184,7 @@ public class CloseInEffect : NoteEffect
     public void IncrementComboChain()
     {
         GameManager.Instance.combo++;
+        
     }
 
     public void BreakComboChain()
@@ -172,5 +220,10 @@ public class CloseInEffect : NoteEffect
         accuracyString = "";
         keyNum = 0; //We know what note we're on!!
         dispose = false;
+    }
+
+    bool CheckSoloPlay()
+    {
+        return GameManager.Instance.isAutoPlaying;
     }
 }

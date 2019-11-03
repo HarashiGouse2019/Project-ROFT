@@ -70,9 +70,9 @@ public class GameManager : MonoBehaviour
     [Range(1f, 10f)] public float stressBuild = 5f;
     public int[] accuracyStats = new int[5];
     private readonly int reset = 0;
-    
 
-    
+
+    public bool isAutoPlaying;
 
     private void Awake()
     {
@@ -120,27 +120,27 @@ public class GameManager : MonoBehaviour
         //This will be temporary
         TM_PERFECT.text = "PERFECT:   " + 
             accuracyStats[0].ToString() + 
-            " (" + ((accuracyStats[0] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[0] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_GREAT.text = "GREAT:       " + 
             accuracyStats[1].ToString() + 
-            " (" + ((accuracyStats[1] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[1] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_GOOD.text = "GOOD:         " + 
             accuracyStats[2].ToString() + 
-            " (" + ((accuracyStats[2] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[2] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_OK.text  = "OK:            " + 
             accuracyStats[3].ToString() + 
-            " (" + ((accuracyStats[3] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[3] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_MISS.text = "MISSES:       " + 
             accuracyStats[4].ToString() + 
-            " (" + ((accuracyStats[4] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[4] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_MAXCOMBO.text = "MAX COMBO:     " 
             + maxCombo.ToString() + 
-            " (" + ((maxCombo / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture)  + "%)";
+            " (" + Mathf.Floor((maxCombo / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture)  + "%)";
 
         if (EditorToolClass.musicSource.isPlaying) ManageStressMeter();
     }

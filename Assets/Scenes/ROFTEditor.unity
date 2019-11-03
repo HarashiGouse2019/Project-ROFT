@@ -1906,7 +1906,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: Shoujo Shuumatsu Ryoko - More One Night (Assertive Hardcore Bootleg)
+  m_name: Nekomata Master - Scars of FAUNA
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0
@@ -2169,8 +2169,9 @@ MonoBehaviour:
   totalScore: 0
   combo: 0
   maxCombo: 0
-  stressBuild: 10
+  stressBuild: 5
   accuracyStats: 0000000000000000000000000000000000000000
+  isAutoPlaying: 0
 --- !u!4 &563326976
 Transform:
   m_ObjectHideFlags: 0
@@ -2542,7 +2543,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   recordKeyInput: 0
-  keyLayout: 2
+  keyLayout: 1
   setXOffset:
   - -9
   - -8
@@ -2571,8 +2572,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   approachSpeed: 9
-  alignment: 6000
-  accuracy: 5
+  alignment: 3500
+  accuracy: 10
   accuracyVal:
   - 4000
   - 6000
@@ -3438,7 +3439,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &815650341
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3505,7 +3506,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.27450982}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -6674,7 +6675,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ec2119ba0127ce439f515369208fd1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  music: {fileID: 8300000, guid: 7b450e58cc981aa4a8d00ef6306784e0, type: 3}
+  music: {fileID: 8300000, guid: 498e7b70fd7590348909153a370a1245, type: 3}
   record: 0
   tickSignature: 4
   playButton: {fileID: 1212851143}

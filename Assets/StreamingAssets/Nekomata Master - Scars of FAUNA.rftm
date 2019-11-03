@@ -1,3 +1,24 @@
+[General]
+Author: User1111
+AudioFilename: Nekomata Master - Scars of FAUNA.mp3
+
+[Metadata]
+Title:
+Title Unicode:
+Artist:
+Artist Unicode:
+Creator:
+ROFTID:
+GROUPID:
+
+[Difficulty]
+StressBuild: 10
+ObjectCount:
+KeyCount: 8
+AccuracyHarshness: 10
+ApproachSpeed: 9
+
+[Objects]
 0,240374,0
 3,241315,0
 4,253075,0
