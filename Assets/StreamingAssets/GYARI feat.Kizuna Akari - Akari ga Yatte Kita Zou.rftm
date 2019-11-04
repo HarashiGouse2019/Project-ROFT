@@ -3,19 +3,19 @@ Author: User1111
 AudioFilename: GYARI feat.Kizuna Akari - Akari ga Yatte Kita Zou.mp3
 
 [Metadata]
-Title:
-Title Unicode:
-Artist:
-Artist Unicode:
-Creator:
-ROFTID:
-GROUPID:
+Title: Akari ga Yatte Kita Zou
+Title Unicode: Akari ga Yatte Kita Zou
+Artist:GYARI feat.Kizuna Akari
+Artist Unicode: GYARI feat.Kizuna Akari
+Creator: User1111
+ROFTID: 28981
+GROUPID: 28174932
 
 [Difficulty]
-StressBuild: 10
-ObjectCount:
-KeyCount: 8
-AccuracyHarshness: 10
+StressBuild: 5
+ObjectCount: 1912
+KeyCount: 12
+AccuracyHarshness: 7.25
 ApproachSpeed: 9
 
 [Objects]

@@ -1906,7 +1906,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: Nekomata Master - Scars of FAUNA
+  m_name: GYARI feat.Kizuna Akari - Akari ga Yatte Kita Zou
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0
@@ -2171,7 +2171,7 @@ MonoBehaviour:
   maxCombo: 0
   stressBuild: 5
   accuracyStats: 0000000000000000000000000000000000000000
-  isAutoPlaying: 0
+  isAutoPlaying: 1
 --- !u!4 &563326976
 Transform:
   m_ObjectHideFlags: 0
