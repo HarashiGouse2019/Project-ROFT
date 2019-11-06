@@ -29,9 +29,22 @@ public class MapReader : MonoBehaviour
     private void Start()
     {
         ReadRFTMKeys(m_name);
-        int thisPosition = InRFTMJumpTo("General");
-        Debug.Log((string)ReadPropertyFrom(thisPosition, "AudioFilename"));
+
+        //Get position in the file that has the tag "General"
+        int metaDataTag = InRFTMJumpTo("General");
+
+        //Now that we have our tag as an int, we look for a property in that take and return a value.
+        string property = ReadPropertyFrom(metaDataTag, "AudioFilename");
+
+        //Now we debug.log and see what we got
+        Debug.Log(property);
+
         KeyLayoutAwake();
+
+        //Get other values such as Approach Speed, Stress Build, and Accuracy Harshness
+        NoteEffect.Instance.approachSpeed = float.Parse(ReadPropertyFrom(InRFTMJumpTo("Difficulty"), "ApproachSpeed"));
+        GameManager.Instance.stressBuild = float.Parse(ReadPropertyFrom(InRFTMJumpTo("Difficulty"), "StressBuild"));
+        NoteEffect.Instance.accuracy = float.Parse(ReadPropertyFrom(InRFTMJumpTo("Difficulty"), "AccuracyHarshness"));
     }
 
     private void Update()
@@ -93,12 +106,12 @@ public class MapReader : MonoBehaviour
             }
         }
         #endregion
+
+        
     }
 
     float CalculateDifficultyRating()
     {
-        int targetTag = InRFTMJumpTo("Difficulty");
-
         int totalNotes = keys.Count;
         float songLengthInSec = EditorToolClass.musicSource.clip.length;
         float notesPerSec = (totalNotes / songLengthInSec);
@@ -113,9 +126,13 @@ public class MapReader : MonoBehaviour
 
     void KeyLayoutAwake()
     {
+        int difficultyTag = InRFTMJumpTo("Difficulty");
+        int keyCount = Convert.ToInt32(ReadPropertyFrom(difficultyTag, "KeyCount"));
+
         if (!keyLayoutClass.gameObject.activeInHierarchy)
             keyLayoutClass.gameObject.SetActive(true);
-        switch (totalKeys)
+
+        switch (keyCount)
         {
             case 4:
                 keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_1x4;

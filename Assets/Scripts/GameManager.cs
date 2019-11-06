@@ -42,8 +42,24 @@ public class GameManager : MonoBehaviour
 
     public static int consecutiveMisses;
 
+    /*There's 3 modes:
+     * STANDARD will be Keyboard and Mouse incorporated
+     * KEY_ONLY will be what I've been having for ages
+     * And TBR refers to "Type-By-Region"
+     */
+    public enum GameMode
+    {
+        STANDARD,
+        KEY_ONLY,
+        TBR_HOMEROW,
+        TBR_ALL
+    };
+
     [Header("Edit Mode")]
     public bool editMode;
+
+    [Header("Game Modes")]
+    public GameMode gameMode;
 
     [Header("UI TEXT MESH PRO")]
     public TextMeshProUGUI TM_SONGNAME;
@@ -69,20 +85,22 @@ public class GameManager : MonoBehaviour
     public int maxCombo;
     [Range(1f, 10f)] public float stressBuild = 5f;
     public int[] accuracyStats = new int[5];
+    public bool isAutoPlaying;
+
     private readonly int reset = 0;
 
 
-    public bool isAutoPlaying;
-
     private void Awake()
     {
+        #region Singleton
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(Instance);
         }
         else
-            Destroy(gameObject);
+            Destroy(gameObject); 
+        #endregion
     }
 
     private void Start()
@@ -93,9 +111,11 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        #region Running Game Maintanence
         RunScoreSystem();
         RunUI();
-        RunInGameControls();
+        RunInGameControls(); 
+        #endregion
     }
 
     void RunScoreSystem()
@@ -148,7 +168,7 @@ public class GameManager : MonoBehaviour
     void ManageStressMeter()
     {
         float stressBuildInPercent = stressBuild / 100;
-        IMG_STRESS.fillAmount += ((stressBuildInPercent * (consecutiveMisses + 1)) - sentStress) / 100;
+        IMG_STRESS.fillAmount += ((stressBuildInPercent * (consecutiveMisses + (stressBuild / 10))) - sentStress) / 100;
         sentStress = reset;
     }
 
@@ -168,6 +188,7 @@ public class GameManager : MonoBehaviour
         combo = reset;
         maxCombo = reset;
         totalScore = reset;
+        IMG_STRESS.fillAmount = reset;
         EditorToolClass.musicSource.timeSamples = reset;
     }
 }

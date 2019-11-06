@@ -165,7 +165,7 @@ MonoBehaviour:
     enableLoop: 0
     source: {fileID: 0}
   - name: Normal
-    clip: {fileID: 8300000, guid: ef1f3c3d58916ed4ab833cb15e685e22, type: 3}
+    clip: {fileID: 8300000, guid: 5454681da399a83499de7b2b59ca58da, type: 3}
     volume: 1
     pitch: 1
     enableLoop: 0
@@ -1877,6 +1877,12 @@ MonoBehaviour:
     pitch: 1
     enableLoop: 0
     source: {fileID: 0}
+  - name: KASAI HARDCORES - Cycle Hit
+    clip: {fileID: 8300000, guid: 4d38aadcef726fd4581d632acad6b91d, type: 3}
+    volume: 1
+    pitch: 1
+    enableLoop: 0
+    source: {fileID: 0}
   timeSamples: 0
   positionSeconds:
   - 0.123
@@ -2152,6 +2158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   editMode: 0
+  gameMode: 0
   TM_SONGNAME: {fileID: 0}
   TM_TOTALNOTES: {fileID: 0}
   TM_TOTALKEYS: {fileID: 0}
@@ -2169,9 +2176,9 @@ MonoBehaviour:
   totalScore: 0
   combo: 0
   maxCombo: 0
-  stressBuild: 5
+  stressBuild: 5.7
   accuracyStats: 0000000000000000000000000000000000000000
-  isAutoPlaying: 1
+  isAutoPlaying: 0
 --- !u!4 &563326976
 Transform:
   m_ObjectHideFlags: 0
@@ -2543,7 +2550,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   recordKeyInput: 0
-  keyLayout: 1
+  keyLayout: 0
   setXOffset:
   - -9
   - -8
@@ -2572,8 +2579,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   approachSpeed: 9
-  alignment: 3500
-  accuracy: 10
+  alignment: 6000
+  accuracy: 5.8
   accuracyVal:
   - 4000
   - 6000
@@ -3541,6 +3548,7 @@ GameObject:
   - component: {fileID: 852503703}
   - component: {fileID: 852503702}
   - component: {fileID: 852503704}
+  - component: {fileID: 852503705}
   m_Layer: 0
   m_Name: KEY_LAYOUT_PLAY_GRID
   m_TagString: Untagged
@@ -3587,6 +3595,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: def19e90d9bfbfa408af7502917cc01a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &852503705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 852503701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e91778996f720594591680aadc5c9b7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  regionCells: []
+  mousePosition: {x: 0, y: 0, z: 0}
+  mousePositionRegionWise: {x: 0, y: 0, z: 0}
+  cellNum: 0
 --- !u!1 &921205750
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,24 @@
+[General]
+Author: Tokusunei
+AudioFilename: Camellia - werewolf howls.mp3
+
+[Metadata]
+Title: 
+TitleUnicode: 
+Artist: 
+ArtistUnicode: 
+Creator: 
+ROFTID: 
+GROUPID: 
+
+[Difficulty]
+StressBuild: 5
+ObjectCount: 
+KeyCount: 12
+AccuracyHarshness: 7.5
+ApproachSpeed: 9
+
+[Objects]
 3,134063,0
 0,139708,0
 2,144647,0
