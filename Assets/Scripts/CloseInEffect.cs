@@ -21,10 +21,6 @@ public class CloseInEffect : NoteEffect
 
     //So they don't have to look screwed up
     Color originalAppearance;
-
-    //Time
-    float time = 0;
-
     private void Awake()
     {
         mapReader = MapReader.Instance;

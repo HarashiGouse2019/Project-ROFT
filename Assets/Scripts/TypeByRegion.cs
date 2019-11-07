@@ -82,46 +82,23 @@ public class TypeByRegion : MonoBehaviour
 
     public int RegionalPositionToCellNumber(Vector2 _position)
     {
-        //For now... we'll prototype it...
-        switch (_position.x)
+        /* This will iterate though the x and y coordinates.
+         * If the parameter x and y coordinates matches
+         * the function will return
+         * xSide + (ySide * cellDivisor)
+         * to give us a value between 0 and 8
+         * 
+         * Doing it this way instead of a switch statement looks so much nicer.
+         */
+        for (int xSide = 0; xSide < cellDivisor; xSide++)
         {
-            case 0:
-                switch (_position.y)
-                {
-                    case 0:
-                        return 0;
-                    case 1:
-                        return 3;
-                    case 2:
-                        return 6;
-                }
-                break;
-            case 1:
-                switch (_position.y)
-                {
-                    case 0:
-                        return 1;
-                    case 1:
-                        return 4;
-                    case 2:
-                        return 7;
-                }
-                break;
-            case 2:
-                switch (_position.y)
-                {
-                    case 0:
-                        return 2;
-                    case 1:
-                        return 5;
-                    case 2:
-                        return 8;
-                }
-                break;
-            default:
-                break;
+            for (int ySide = 0; ySide < cellDivisor; ySide++)
+            {
+                if (_position.x == xSide && _position.y == ySide)
+                    return (xSide + (ySide * cellDivisor));
+
+            }
         }
-        //Stupid... I know...
         return -1;
     }
 
