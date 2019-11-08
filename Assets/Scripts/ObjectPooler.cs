@@ -7,6 +7,8 @@ public class ObjectPooler : MonoBehaviour
 
     public static ObjectPooler Instance;
 
+    public bool spawnInParent = false;
+
     public bool overridePoolSize;
 
     public bool readFromMusicManager;
@@ -37,7 +39,7 @@ public class ObjectPooler : MonoBehaviour
             OverridePoolSizeOf("Song Panel", MusicManager.manager.getMusic.Length);
         }
 
-        InitObjectPooler();
+        InitObjectPooler(spawnInParent);
     }
 
     private void Update()
@@ -63,14 +65,18 @@ public class ObjectPooler : MonoBehaviour
         }
     }
 
-    void InitObjectPooler()
+    void InitObjectPooler(bool _spawnInParent = false)
     {
         pooledObjects = new List<GameObject>();
         foreach (ObjectPoolItem item in itemsToPool)
         {
             for (int i = 0; i < item.size; i++)
             {
-                GameObject newMember = Instantiate(item.prefab, gameObject.transform);
+                GameObject newMember;
+                if (_spawnInParent)
+                    newMember = Instantiate(item.prefab, gameObject.transform);
+                else
+                    newMember = Instantiate(item.prefab);
                 newMember.SetActive(false);
                 item.prefab.name = item.name;
                 pooledObjects.Add(newMember);

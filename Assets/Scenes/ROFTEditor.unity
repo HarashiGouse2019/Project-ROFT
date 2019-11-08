@@ -166,7 +166,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Normal
     clip: {fileID: 8300000, guid: 5454681da399a83499de7b2b59ca58da, type: 3}
-    volume: 1
+    volume: 0
     pitch: 1
     enableLoop: 0
     source: {fileID: 0}
@@ -1912,7 +1912,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: KASAI HARDCORES - Cycle Hit
+  m_name: Nekomata Master - Scars of FAUNA
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0
@@ -2158,7 +2158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   editMode: 0
-  gameMode: 0
+  gameMode: 3
   TM_SONGNAME: {fileID: 0}
   TM_TOTALNOTES: {fileID: 0}
   TM_TOTALKEYS: {fileID: 0}
@@ -2178,7 +2178,7 @@ MonoBehaviour:
   maxCombo: 0
   stressBuild: 5.7
   accuracyStats: 0000000000000000000000000000000000000000
-  isAutoPlaying: 0
+  isAutoPlaying: 1
 --- !u!4 &563326976
 Transform:
   m_ObjectHideFlags: 0
@@ -2567,10 +2567,12 @@ MonoBehaviour:
   - 1.5
   autoBindKeys: 1
   dataText: {fileID: 1325556963}
+  tempShowKeyObjs: []
   key: {fileID: 5638931420957669192, guid: 377a8d4d67f416f43a4f76325d952053, type: 3}
   pooler: {fileID: 615216640}
   spawnPositionX: 0
   spawnPositionY: 0
+  m_camera: {fileID: 1803067840}
 --- !u!114 &615216639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2584,8 +2586,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   approachSpeed: 9
-  alignment: 2000
-  keyAppearOffset: 1000
+  alignment: 0
+  keyAppearOffset: 10
   accuracy: 5.8
   accuracyVal:
   - 4000
@@ -2594,7 +2596,9 @@ MonoBehaviour:
   - 12000
   mapReader: {fileID: 531331939}
   notePrefab: {fileID: 0}
+  percentage: 0
   keyPosition: 0
+  keyObjPosition: 0
 --- !u!114 &615216640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2602,11 +2606,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 615216635}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec02f5fa216bdd94d8e023ff1c27ab9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnInParent: 0
   overridePoolSize: 0
   readFromMusicManager: 0
   itemsToPool:

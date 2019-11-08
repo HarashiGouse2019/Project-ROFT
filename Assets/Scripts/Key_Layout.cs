@@ -49,6 +49,7 @@ public class Key_Layout : MonoBehaviour
     //After iterating through strings, we'll return a Input corresponding avaliable keys.
     readonly public List<KeyCode> bindedKeys = new List<KeyCode>();
     public static List<GameObject> keyObjects = new List<GameObject>();
+    public List<GameObject> tempShowKeyObjs = new List<GameObject>();
 
     [Header("Creating Layout")]
     public GameObject key;
@@ -88,12 +89,28 @@ public class Key_Layout : MonoBehaviour
     private float newYPosition = 0f;
     private uint numCols = 0;
     private uint numRows = 0;
+    public Camera m_camera;
     #endregion
 
     // Start is called before the first frame update
     void Awake()
     {
         Instance = this;
+    }
+
+    private void Start()
+    {
+        if (
+            GameManager.Instance.gameMode == GameManager.GameMode.TBR_ALL ||
+            GameManager.Instance.gameMode == GameManager.GameMode.TBR_HOMEROW)
+            ChangeLayoutMethod(1);
+        else
+            ChangeLayoutMethod(0);
+    }
+
+    private void Update()
+    {
+        tempShowKeyObjs = keyObjects;
     }
 
     void InitiateAutoKeyBind()

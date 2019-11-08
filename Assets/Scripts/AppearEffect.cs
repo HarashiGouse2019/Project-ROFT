@@ -5,6 +5,7 @@ public class AppearEffect : NoteEffect
     public float initiatedNoteSample;
     public float initiatedNoteOffset;
     public float offsetStart;
+    public const float completeOpacity = 3000f;
 
     public KeyCode assignedKeyBind;
 
@@ -34,13 +35,13 @@ public class AppearEffect : NoteEffect
 
     void AppearOn()
     {
-        transform.localScale = new Vector3(1f, 1f, 1f);
-        sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage());
+        transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+        sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.1f);
     }
 
     protected override float GetPercentage()
     {
-        percentage = (EditorToolClass.musicSource.timeSamples - offsetStart) / (initiatedNoteSample - offsetStart);
+        percentage = ((EditorToolClass.musicSource.timeSamples - completeOpacity) - offsetStart) / (initiatedNoteSample - offsetStart);
         return percentage;
     }
 
@@ -51,5 +52,6 @@ public class AppearEffect : NoteEffect
         assignedKeyBind = KeyCode.None;
         initiatedNoteSample = 0;
         initiatedNoteOffset = 0;
+        transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
     }
 }

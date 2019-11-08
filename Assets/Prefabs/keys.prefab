@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1375996601736905838}
   - component: {fileID: -2557685672091724069}
   m_Layer: 0
-  m_Name: key
+  m_Name: keys
   m_TagString: key
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -112,6 +112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec02f5fa216bdd94d8e023ff1c27ab9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnInParent: 1
   overridePoolSize: 0
   readFromMusicManager: 0
   itemsToPool:
@@ -134,7 +135,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5638931420957669192}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 92cfdd97c04f23d43b3d1f6ba30ea5ca, type: 3}
   m_Name: 
@@ -150,7 +151,9 @@ MonoBehaviour:
   - 0
   mapReader: {fileID: 0}
   notePrefab: {fileID: 0}
+  percentage: 0
   keyPosition: 0
+  keyObjPosition: 0
   initiatedNoteSample: 0
   initiatedNoteOffset: 0
   offsetStart: 0
