@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 5638931420957669198}
   - component: {fileID: 7777517204758728278}
   - component: {fileID: 283974779816051480}
+  - component: {fileID: 1375996601736905838}
+  - component: {fileID: -2557685672091724069}
   m_Layer: 0
   m_Name: key
   m_TagString: key
@@ -125,6 +127,48 @@ MonoBehaviour:
     expandPool: 1
   pooledObjects: []
   poolIndex: 0
+--- !u!114 &1375996601736905838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5638931420957669192}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92cfdd97c04f23d43b3d1f6ba30ea5ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  approachSpeed: 0
+  alignment: 0
+  keyAppearOffset: 1000
+  accuracy: 5
+  accuracyVal:
+  - 0
+  - 0
+  - 0
+  - 0
+  mapReader: {fileID: 0}
+  notePrefab: {fileID: 0}
+  keyPosition: 0
+  initiatedNoteSample: 0
+  initiatedNoteOffset: 0
+  offsetStart: 0
+  assignedKeyBind: 0
+  sprite: {fileID: 0}
+--- !u!114 &-2557685672091724069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5638931420957669192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: daf013dc1ab444b4b9fd037b2fa12813, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  origin: {fileID: 0}
 --- !u!1001 &8064844916749384747
 PrefabInstance:
   m_ObjectHideFlags: 0

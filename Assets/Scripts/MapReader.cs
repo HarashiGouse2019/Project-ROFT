@@ -38,8 +38,9 @@ public class MapReader : MonoBehaviour
 
         //Now we debug.log and see what we got
         Debug.Log(property);
-
-        KeyLayoutAwake();
+        
+        
+        KeyLayoutAwake((int)keyLayoutClass.layoutMethod);
 
         //Get other values such as Approach Speed, Stress Build, and Accuracy Harshness
         NoteEffect.Instance.approachSpeed = float.Parse(ReadPropertyFrom(InRFTMJumpTo("Difficulty"), "ApproachSpeed"));
@@ -124,13 +125,17 @@ public class MapReader : MonoBehaviour
         return calculatedRating;
     }
 
-    void KeyLayoutAwake()
+    void KeyLayoutAwake(int _appearEffectOn)
     {
         int difficultyTag = InRFTMJumpTo("Difficulty");
         int keyCount = Convert.ToInt32(ReadPropertyFrom(difficultyTag, "KeyCount"));
 
         if (!keyLayoutClass.gameObject.activeInHierarchy)
+        {
             keyLayoutClass.gameObject.SetActive(true);
+            if (_appearEffectOn == 1)
+                keyLayoutClass.GetComponent<AppearEffect>().enabled = keyLayoutClass.gameObject.activeInHierarchy;
+        }
 
         switch (keyCount)
         {
@@ -150,7 +155,11 @@ public class MapReader : MonoBehaviour
                 keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_3Row;
                 break;
         }
-        keyLayoutClass.SetUpLayout();
+
+        if
+           (GameManager.Instance.gameMode == GameManager.GameMode.KEY_ONLY ||
+            GameManager.Instance.gameMode == GameManager.GameMode.STANDARD)
+            Key_Layout.Instance.SetUpLayout();
     }
 
     int InRFTMJumpTo(string _tag, string _fileName = "", string _fileDirectory = "")

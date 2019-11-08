@@ -11,6 +11,13 @@ public class NoteEffect : MonoBehaviour
     [Header("Alignment")]
     public float alignment; //To shift notes whenever
 
+    //When TypeByRegion is on,
+    //The keys will need to be off by the
+    //actual approach circle.
+    [Header("KeyAppearOffset"), Range(1.0f, 10.0f)]
+    public float keyAppearOffset = 1000f;
+
+
     /*
      * Perfect - 0
      * Great - 1
@@ -37,13 +44,13 @@ public class NoteEffect : MonoBehaviour
     private const int minOffset = 10000;
     private const int standardAccuracy = 5;
 
-   readonly private float[] accuracyDefault = new float[4]
-   {
+    readonly private float[] accuracyDefault = new float[4]
+    {
         4000,
         6000,
         10000,
         12000
-   }; //Default Accurary; 2-4-2 Format
+    }; //Default Accurary; 2-4-2 Format
 
     #endregion
 
@@ -52,6 +59,7 @@ public class NoteEffect : MonoBehaviour
     public int keyPosition = 0; //With the collected data, what part of it are we in?
     protected float noteOffset; //When our note should start appearing
     protected int noteSample; //The note where you actually hit with timing
+    protected KeyCode randomKey;
     #endregion
 
     private void Awake()
@@ -66,8 +74,18 @@ public class NoteEffect : MonoBehaviour
         UpdateNoteOffset();
         UpdateAccuracyHarshness();
 
-        if (!EditorToolClass.Instance.record && CheckMusicSample())
+        if (!EditorToolClass.Instance.record && ObjectSpawnTime("approachcircle"))
             Approach();
+        //else if (!EditorToolClass.Instance.record && ObjectSpawnTime("key"))
+        //{
+        //    randomKey = Key_Layout.Instance.RandomizeAndProcess();
+        //    Vector2 spawnTarget = new Vector2(
+        //        Key_Layout.Instance.spawnPositionX, 
+        //        Key_Layout.Instance.spawnPositionY
+        //        );
+
+        //    Appear(spawnTarget);
+        //}
     }
 
     void Approach()
@@ -87,9 +105,9 @@ public class NoteEffect : MonoBehaviour
                 approachCircle.SetActive(true);
                 approachCircle.transform.position = Key_Layout.keyObjects[mapReader.keys[keyPosition].keyNum].transform.position;
                 approachCircle.transform.localScale = Key_Layout.keyObjects[mapReader.keys[keyPosition].keyNum].transform.localScale;
-                
+
             }
-            
+
             effect.initiatedNoteSample = noteSample;
             effect.initiatedNoteOffset = noteOffset;
             effect.offsetStart = noteSample - noteOffset;
@@ -103,16 +121,58 @@ public class NoteEffect : MonoBehaviour
         }
     }
 
-    bool CheckMusicSample()
+    //This is for the key's to appear on screen
+    //It'll take the randomized number from using
+    //KeyLayout's function RandomizeAndSend()
+    void Appear(Vector2 _targetPosition)
     {
-        if (keyPosition < mapReader.keys.Count)
-        {
-            noteSample = mapReader.keys[keyPosition].keySample - (int)alignment;
-            float offsetStart = noteSample - noteOffset;
+        AppearEffect effect;
+        GameObject keyMember = Key_Layout.Instance.pooler.GetMember("keys");
 
-            //This is strictly for checking when notes should appear
-            if (EditorToolClass.musicSource.timeSamples > offsetStart)
-                return true;
+        effect = keyMember.GetComponent<AppearEffect>();
+
+        if (!keyMember.activeInHierarchy)
+        {
+            keyMember.SetActive(true);
+            keyMember.transform.position = _targetPosition;
+            keyMember.transform.rotation = Quaternion.identity;
+        }
+
+        effect.initiatedNoteSample = noteSample;
+        effect.initiatedNoteOffset = noteOffset - keyAppearOffset;
+        effect.assignedKeyBind = randomKey;
+    }
+
+    //There's two objects;
+    //Approach Circle, and Key
+    bool ObjectSpawnTime(string _objectName)
+    {
+        _objectName = _objectName.ToLower();
+
+        switch (_objectName)
+        {
+            case "approachcircle":
+                if (keyPosition < mapReader.keys.Count)
+                {
+                    noteSample = mapReader.keys[keyPosition].keySample - (int)alignment;
+                    float offsetStart = noteSample - noteOffset;
+
+                    //This is strictly for checking when notes should appear
+                    if (EditorToolClass.musicSource.timeSamples > offsetStart)
+                        return true;
+                }
+                return false;
+            case "key":
+                if (keyPosition < mapReader.keys.Count)
+                {
+                    noteSample = mapReader.keys[keyPosition].keySample - (int)alignment;
+                    float offsetStart = noteSample - noteOffset - keyAppearOffset;
+
+                    //This is strictly for checking when notes should appear
+                    if (EditorToolClass.musicSource.timeSamples > offsetStart)
+                        return true;
+                }
+                return false;
         }
         return false;
     }

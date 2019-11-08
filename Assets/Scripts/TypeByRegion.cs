@@ -6,44 +6,79 @@ using Random = UnityEngine.Random;
 
 public class TypeByRegion : MonoBehaviour
 {
-    /*We'll need the width and height of 
-     * our screen, since this will be important for
-     * setting up our regions
-     */
-    readonly float screenWidth = Screen.width;
-    readonly float screenHeight = Screen.height;
+    public static TypeByRegion Instance;
 
+    /*We'll need the width and height of 
+* our screen, since this will be important for
+* setting up our regions
+*/
+    public readonly static float screenWidth = Screen.width;
+    public readonly static float screenHeight = Screen.height;
+
+    #region Public Members
     //To get our cell size for each region
     //There will be 9
     public List<Vector2> regionCells = new List<Vector2>();
 
-    //A const for generating our 9, which will be 3
-    const int cellDivisor = 3;
+    //Padding
+    public float left = 1;
+    public float right = 1;
+    public float top = 1;
+    public float bottom = 1;
 
     //MousePosition
     public Vector3 mousePosition;
     public Vector3 mousePositionRegionWise;
 
+    public int cellNum = 0; 
+    #endregion
+
+    #region Private Members
+
+    //A const for generating our 9, which will be 3
+    const int cellDivisor = 3;
+
     //Region Position
     float regionGridX = 0;
     float regionGridY = 0;
 
-    public int cellNum = 0;
+    //KeyClusters
+    readonly string[] keyClusters =
+    {
+        "zxc",
+        "vbnm",
+        ",./",
+        "asd",
+        "fghj",
+        "kl;",
+        "qwe",
+        "rtyu",
+        "iop"
+    };
+    #endregion
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
         CreateRegionalGrid();
     }
 
     private void Update()
     {
-        mousePosition = Input.mousePosition;
+        if (this.enabled)
+        {
+            mousePosition = Input.mousePosition;
 
-        mousePositionRegionWise.x = CheckRegionalPositionFrom(Input.mousePosition).x;
-        mousePositionRegionWise.y = CheckRegionalPositionFrom(Input.mousePosition).y;
+            mousePositionRegionWise.x = CheckRegionalPositionFrom(Input.mousePosition).x;
+            mousePositionRegionWise.y = CheckRegionalPositionFrom(Input.mousePosition).y;
 
-        cellNum = RegionalPositionToCellNumber(CheckRegionalPositionFrom(Input.mousePosition));
+            cellNum = RegionalPositionToCellNumber(CheckRegionalPositionFrom(Input.mousePosition));
+        }
     }
 
     //A function that creates our grid
@@ -96,7 +131,6 @@ public class TypeByRegion : MonoBehaviour
             {
                 if (_position.x == xSide && _position.y == ySide)
                     return (xSide + (ySide * cellDivisor));
-
             }
         }
         return -1;
@@ -120,5 +154,10 @@ public class TypeByRegion : MonoBehaviour
 
         Vector3 v_positionRegionWise = new Vector3(regionGridX, regionGridY);
         return v_positionRegionWise;
+    }
+
+    public string GetKeyClusterFromCellNum(int _cellNum)
+    {
+        return keyClusters[_cellNum];
     }
 }

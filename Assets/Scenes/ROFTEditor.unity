@@ -2178,7 +2178,7 @@ MonoBehaviour:
   maxCombo: 0
   stressBuild: 5.7
   accuracyStats: 0000000000000000000000000000000000000000
-  isAutoPlaying: 1
+  isAutoPlaying: 0
 --- !u!4 &563326976
 Transform:
   m_ObjectHideFlags: 0
@@ -2500,6 +2500,7 @@ GameObject:
   - component: {fileID: 615216638}
   - component: {fileID: 615216637}
   - component: {fileID: 615216639}
+  - component: {fileID: 615216640}
   m_Layer: 0
   m_Name: KEY_LAYOUT
   m_TagString: Untagged
@@ -2551,6 +2552,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recordKeyInput: 0
   keyLayout: 0
+  layoutMethod: 0
   setXOffset:
   - -9
   - -8
@@ -2566,6 +2568,9 @@ MonoBehaviour:
   autoBindKeys: 1
   dataText: {fileID: 1325556963}
   key: {fileID: 5638931420957669192, guid: 377a8d4d67f416f43a4f76325d952053, type: 3}
+  pooler: {fileID: 615216640}
+  spawnPositionX: 0
+  spawnPositionY: 0
 --- !u!114 &615216639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2580,6 +2585,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   approachSpeed: 9
   alignment: 2000
+  keyAppearOffset: 1000
   accuracy: 5.8
   accuracyVal:
   - 4000
@@ -2589,6 +2595,28 @@ MonoBehaviour:
   mapReader: {fileID: 531331939}
   notePrefab: {fileID: 0}
   keyPosition: 0
+--- !u!114 &615216640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615216635}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec02f5fa216bdd94d8e023ff1c27ab9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overridePoolSize: 0
+  readFromMusicManager: 0
+  itemsToPool:
+  - name: keys
+    size: 30
+    prefab: {fileID: 5638931420957669192, guid: 377a8d4d67f416f43a4f76325d952053,
+      type: 3}
+    expandPool: 1
+  pooledObjects: []
+  poolIndex: 0
 --- !u!1 &669722502
 GameObject:
   m_ObjectHideFlags: 0
@@ -3608,6 +3636,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   regionCells: []
+  left: 0
+  right: 0
+  top: 0
+  bottom: 0
   mousePosition: {x: 0, y: 0, z: 0}
   mousePositionRegionWise: {x: 0, y: 0, z: 0}
   cellNum: 0

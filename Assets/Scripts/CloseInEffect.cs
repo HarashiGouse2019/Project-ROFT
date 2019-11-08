@@ -41,8 +41,6 @@ public class CloseInEffect : NoteEffect
     {
         if (!EditorToolClass.Instance.record)
             CloseIn();
-
-      
     }
 
     private void FixedUpdate()

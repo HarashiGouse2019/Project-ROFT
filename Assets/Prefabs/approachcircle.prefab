@@ -94,6 +94,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   approachSpeed: 0
   alignment: 0
+  keyAppearOffset: 1000
   accuracy: 0
   accuracyVal:
   - 4000

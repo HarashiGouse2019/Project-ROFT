@@ -98,7 +98,6 @@ public class ObjectPooler : MonoBehaviour
             {
                 if (item.expandPool)
                 {
-                    Debug.Log("Ran out of members in pool. Creating more members!!!");
                     GameObject newMember = Instantiate(item.prefab);
                     newMember.SetActive(false);
                     pooledObjects.Add(newMember);

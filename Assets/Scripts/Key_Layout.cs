@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 using TMPro;
 
 //This is going to be an abstract class. This will be the base class of all other layouts in the game
@@ -23,7 +24,19 @@ public class Key_Layout : MonoBehaviour
         Layout_3Row
     }
 
+    //This enum will change depending on the game mode in 
+    //the game manager
+    //Automatically, the KeyLayoutType mode will be either
+    //Layout_HomeRow or Layout_3Row
+    public enum LayoutMethod
+    {
+        Abstract,
+        Region_Scatter
+    }
+
     public KeyLayoutType keyLayout;
+
+    public LayoutMethod layoutMethod;
 
     public float[] setXOffset;
     public float[] setYOffset;
@@ -39,6 +52,10 @@ public class Key_Layout : MonoBehaviour
 
     [Header("Creating Layout")]
     public GameObject key;
+    public ObjectPooler pooler;
+
+    public float spawnPositionX = 0;
+    public float spawnPositionY = 0;
 
     #endregion
 
@@ -81,16 +98,32 @@ public class Key_Layout : MonoBehaviour
 
     void InitiateAutoKeyBind()
     {
-        KeyCode key;
-
         //Find all objects in parent
         for (int keyNum = 0; keyNum < defaultLayout[(int)keyLayout].Length; keyNum++)
-        {
-            key = (KeyCode)defaultLayout[(int)keyLayout][keyNum];
-            bindedKeys.Add(key);
-
-        }
+            InvokeKeyBind(defaultLayout[(int)keyLayout][keyNum]);
     }
+
+    //This will simply take any character, and keybind it.
+    public KeyCode InvokeKeyBind(char m_char)
+    {
+
+        KeyCode key;
+        key = (KeyCode)m_char;
+        bindedKeys.Add(key);
+        return key;
+    }
+
+    //This takes any ASCII integer that exists on the keyboard
+    //if the player so desires to manually keybind
+    public KeyCode InvokeKeyBind(int m_int)
+    {
+        KeyCode key;
+        key = (KeyCode)m_int;
+        bindedKeys.Add(key);
+        return key;
+
+    }
+
 
     public void SetUpLayout()
     {
@@ -137,7 +170,17 @@ public class Key_Layout : MonoBehaviour
         {
             for (int col = 0; col < numCols; col++)
             {
-                newKey = Instantiate(key, transform.position, Quaternion.identity);
+                newKey = pooler.GetMember("keys");
+
+                if (!newKey.activeInHierarchy)
+                {
+                    newKey.SetActive(true);
+
+                    newKey.transform.position = transform.position;
+                    newKey.transform.rotation = Quaternion.identity;
+
+                    newKey.GetComponent<SpawnedFrom>().origin = gameObject;
+                }
 
                 newXPosition = (newKey.transform.localPosition.x + (numCols + (keySpread[(int)keyLayout] * col)));
                 newYPosition = (newKey.transform.localPosition.y - (numRows + (keySpread[(int)keyLayout] * row)));
@@ -147,6 +190,7 @@ public class Key_Layout : MonoBehaviour
                 newKey.transform.localScale = new Vector3(defaultKeyScale[(int)keyLayout], defaultKeyScale[(int)keyLayout]);
 
                 keyObjects.Add(newKey);
+
             }
         }
 
@@ -169,6 +213,53 @@ public class Key_Layout : MonoBehaviour
         }
         InitiateAutoKeyBind();
     }
+
+    //This will be called based on frames. This will use the
+    //TypeByRegion class to do it's magic.
+    //There's 2 Stages or Processes
+    public KeyCode RandomizeAndProcess()
+    {
+        #region Cell Number Process
+        TypeByRegion recipient = TypeByRegion.Instance;
+
+        float randX = Random.Range(recipient.left, TypeByRegion.screenWidth - recipient.right);
+        float randY = Random.Range(recipient.bottom, TypeByRegion.screenHeight - recipient.top);
+
+        //Give newXPosition and newYPosition for the key
+        spawnPositionX = randX;
+        spawnPositionY = randY;
+
+        //Make a Vector2 with our random coordinates
+        Vector2 positionInScreen = new Vector2(randX, randY);
+
+        //We get our Regional Position
+        Vector2 regionalPosition = recipient.CheckRegionalPositionFrom(positionInScreen);
+
+        //Now we get the Cell Number
+        int cellNum = recipient.RegionalPositionToCellNumber(regionalPosition);
+
+        //With our cellNum, we can now tell our recipient to give use the keyClusters that
+        //We need
+        string usedKeyCluster = recipient.GetKeyClusterFromCellNum(cellNum);
+        #endregion
+
+        #region Key Binding Process
+        //Now we randomize a number between
+        //0 and the length of the key cluster to get
+        //the desired key to bind
+        int randNum = Random.Range(0, usedKeyCluster.Length);
+        char randChar = usedKeyCluster[randNum];
+
+        //And now, parse to KeyCode
+        return InvokeKeyBind(randChar);
+        #endregion
+    }
+
+    //This function will directly change the layout mode.
+    //0 is Abstract, 1 is Scatter
+    int ChangeLayoutMethod(int _mode)
+    {
+        layoutMethod = (LayoutMethod)_mode;
+        return _mode;
+    }
 }
-
-
