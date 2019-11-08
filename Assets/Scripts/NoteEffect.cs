@@ -15,7 +15,7 @@ public class NoteEffect : MonoBehaviour
     //The keys will need to be off by the
     //actual approach circle.
     [Header("KeyAppearOffset"), Range(1.0f, 10.0f)]
-    public float keyAppearOffset = 1000f;
+    public float keyAppearOffset = 1f;
 
 
     /*

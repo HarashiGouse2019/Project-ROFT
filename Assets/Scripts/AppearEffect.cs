@@ -36,12 +36,12 @@ public class AppearEffect : NoteEffect
     void AppearOn()
     {
         transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-        sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.1f);
+        sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.25f);
     }
 
     protected override float GetPercentage()
     {
-        percentage = ((EditorToolClass.musicSource.timeSamples - completeOpacity) - offsetStart) / (initiatedNoteSample - offsetStart);
+        percentage = ((EditorToolClass.musicSource.timeSamples - completeOpacity) - offsetStart) / (initiatedNoteSample - offsetStart - completeOpacity);
         return percentage;
     }
 

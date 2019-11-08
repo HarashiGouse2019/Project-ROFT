@@ -239,8 +239,8 @@ public class Key_Layout : MonoBehaviour
         #region Cell Number Process
         TypeByRegion recipient = TypeByRegion.Instance;
 
-        float randX = Random.Range(recipient.left, TypeByRegion.screenWidth - recipient.right);
-        float randY = Random.Range(recipient.bottom, TypeByRegion.screenHeight - recipient.top);
+        float randX = Random.Range(TypeByRegion.left, TypeByRegion.screenWidth - TypeByRegion.right);
+        float randY = Random.Range(TypeByRegion.bottom, TypeByRegion.screenHeight - TypeByRegion.top);
 
         //Give newXPosition and newYPosition for the key
         spawnPositionX = randX;

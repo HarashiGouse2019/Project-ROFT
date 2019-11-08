@@ -12,8 +12,8 @@ public class TypeByRegion : MonoBehaviour
 * our screen, since this will be important for
 * setting up our regions
 */
-    public readonly static float screenWidth = Screen.width;
-    public readonly static float screenHeight = Screen.height;
+    public static float screenWidth;
+    public static float screenHeight;
 
     #region Public Members
     //To get our cell size for each region
@@ -21,10 +21,10 @@ public class TypeByRegion : MonoBehaviour
     public List<Vector2> regionCells = new List<Vector2>();
 
     //Padding
-    public float left = 0f;
-    public float right = 0f;
-    public float top = 0f;
-    public float bottom = 0f;
+    public static float left = 100f;
+    public static float right = 100f;
+    public static float top = 100f;
+    public static float bottom = 100f;
 
     //MousePosition
     public Vector3 mousePosition;
@@ -65,13 +65,17 @@ public class TypeByRegion : MonoBehaviour
     // Start is called before the first frame update
     void OnEnable()
     {
+        CheckScreenSize();
         CreateRegionalGrid();
     }
 
     private void Update()
     {
+        CheckScreenSize();
         if (this.enabled)
         {
+            
+
             mousePosition = Input.mousePosition;
 
             mousePositionRegionWise.x = CheckRegionalPositionFrom(Input.mousePosition).x;
@@ -159,5 +163,11 @@ public class TypeByRegion : MonoBehaviour
     public string GetKeyClusterFromCellNum(int _cellNum)
     {
         return keyClusters[_cellNum];
+    }
+
+    public void CheckScreenSize()
+    {
+        screenWidth = Screen.width;
+        screenHeight = Screen.height;
     }
 }
