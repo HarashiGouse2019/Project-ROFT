@@ -60,6 +60,7 @@ public class NoteEffect : MonoBehaviour
     public int keyObjPosition = 0;
     protected float noteOffset; //When our note should start appearing
     protected int noteSample; //The note where you actually hit with timing
+    protected int noteSampleForKey; //The time the key is at full capacity (for TBR Modes)
     protected KeyCode randomKey;
     #endregion
 
@@ -78,8 +79,8 @@ public class NoteEffect : MonoBehaviour
         if (!EditorToolClass.Instance.record && ObjectSpawnTime("approachcircle"))
             Approach();
 
-        if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter 
-            && !EditorToolClass.Instance.record 
+        if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter
+            && !EditorToolClass.Instance.record
             && ObjectSpawnTime("key"))
         {
             randomKey = Key_Layout.Instance.RandomizeAndProcess();
@@ -104,7 +105,7 @@ public class NoteEffect : MonoBehaviour
             if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract)
                 keyPooler = Key_Layout.keyObjects[mapReader.keys[keyPosition].keyNum].GetComponent<ObjectPooler>();
             else
-                keyPooler = Key_Layout.keyObjects[keyPosition].GetComponent<ObjectPooler>();
+                keyPooler = Key_Layout.keyObjects[keyObjPosition].GetComponent<ObjectPooler>();
 
             GameObject approachCircle = keyPooler.GetMember("Approach Circle");
 
@@ -122,6 +123,7 @@ public class NoteEffect : MonoBehaviour
                 {
                     approachCircle.transform.position = Key_Layout.keyObjects[keyPosition].transform.position;
                     approachCircle.transform.localScale = Key_Layout.keyObjects[keyPosition].transform.localScale;
+                    Key_Layout.keyObjects[keyPosition].GetComponent<AppearEffect>().approachCircleUnit = approachCircle;
                 }
             }
 
@@ -142,26 +144,29 @@ public class NoteEffect : MonoBehaviour
     void Appear(Vector2 _targetPosition)
     {
         AppearEffect effect;
-        GameObject keyMember = Key_Layout.Instance.pooler.GetMember("keys");
-        Key_Layout.keyObjects.Add(keyMember);
-        Debug.Log("It's doing a thing!!!!");
-        effect = keyMember.GetComponent<AppearEffect>();
-
-        if (keyObjPosition < mapReader.keys.Count)
+        if (keyPosition < mapReader.keys.Count)
         {
+            GameObject keyMember = Key_Layout.Instance.pooler.GetMember("keys");
+            
+            Debug.Log("It's doing a thing!!!!");
+            effect = keyMember.GetComponent<AppearEffect>();
+            effect.enabled = true;
+            Key_Layout.keyObjects.Add(keyMember);
             Vector3 screenPosition = (Vector3)_targetPosition + new Vector3(0f, 0f, Camera.main.nearClipPlane);
             if (!keyMember.activeInHierarchy)
             {
                 keyMember.SetActive(true);
+                
                 keyMember.transform.localPosition = Key_Layout.Instance.m_camera.ScreenToWorldPoint(screenPosition);
                 keyMember.transform.rotation = Quaternion.identity;
+
+
+                effect.initiatedNoteSample = noteSampleForKey;
+                effect.offsetStart = noteSampleForKey - noteOffset;
+                effect.keyNum = keyPosition;
+                effect.assignedKeyBind = randomKey;
+
             }
-
-            effect.initiatedNoteSample = noteSample;
-            effect.offsetStart = noteSample - noteOffset;
-            effect.assignedKeyBind = randomKey;
-
-            keyObjPosition = keyPosition - 1;
         }
     }
 
@@ -187,8 +192,8 @@ public class NoteEffect : MonoBehaviour
             case "key":
                 if (keyPosition < mapReader.keys.Count)
                 {
-                    noteSample = mapReader.keys[keyPosition].keySample - (int)alignment;
-                    float offsetStart = noteSample - noteOffset - (keyAppearOffset * 1000);
+                    noteSampleForKey = mapReader.keys[keyPosition].keySample - (int)alignment - (int)(keyAppearOffset * 1000);
+                    float offsetStart = noteSampleForKey - noteOffset;
 
                     //This is strictly for checking when notes should appear
                     if (EditorToolClass.musicSource.timeSamples > offsetStart)

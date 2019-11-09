@@ -2,36 +2,38 @@
 
 public class AppearEffect : CloseInEffect
 {
-    //public float initiatedNoteSample;
-    //public float initiatedNoteOffset;
-    //public float offsetStart;
-
     public KeyCode assignedKeyBind;
 
     //public SpriteRenderer sprite;
     public SpriteRenderer[] overlaySprites;
     public SpriteRenderer childSprite;
 
+    public GameObject approachCircleUnit;
+
     Color originalAppearance;
     Color originalOverlayAppearance;
 
+    bool fullOpacity = false;
+
     void Awake()
     {
-        
+        Instance = this;
+
+        //Get sprite renderers
+        sprite = GetComponent<SpriteRenderer>();
+        overlaySprites = GetComponentsInChildren<SpriteRenderer>();
+
+        foreach (SpriteRenderer overlaySprite in overlaySprites)
+        {
+            if (overlaySprite != sprite)
+                childSprite = overlaySprite;
+        }
+
 
         if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
         {
-            Instance = this;
 
-            //Get sprite renderers
-            sprite = GetComponent<SpriteRenderer>();
-            overlaySprites = GetComponentsInChildren<SpriteRenderer>();
 
-            foreach (SpriteRenderer overlaySprite in overlaySprites)
-            {
-                if (overlaySprite != sprite)
-                    childSprite = overlaySprite;
-            }
 
 
             //We want these completely transparent from start
@@ -46,9 +48,9 @@ public class AppearEffect : CloseInEffect
 
     private void OnEnable()
     {
-        initiatedNoteSample = noteSample;
+        initiatedNoteSample = noteSampleForKey;
         initiatedNoteOffset = noteOffset;
-        
+
     }
 
     // Update is called once per frame
@@ -58,23 +60,29 @@ public class AppearEffect : CloseInEffect
             AppearOn();
     }
 
+    private void FixedUpdate()
+    {
+        if (dispose)
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
     void AppearOn()
     {
-        float appearanceRate = GetPercentage();
+        float appearanceRate = GetPercentage() - 0.6f;
 
         transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, appearanceRate);
         childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, appearanceRate);
 
-        if (accuracyString != "" && Input.GetKeyDown(assignedKeyBind))
-        {
+        if (approachCircleUnit.GetComponent<CloseInEffect>().accuracyString != "")
             dispose = true;
-        }
     }
 
     protected override float GetPercentage()
     {
-        percentage = ((EditorToolClass.musicSource.timeSamples) - offsetStart - 3000) / (initiatedNoteSample - offsetStart);
+        percentage = ((EditorToolClass.musicSource.timeSamples) - offsetStart) / (initiatedNoteSample - offsetStart);
         return percentage;
     }
 

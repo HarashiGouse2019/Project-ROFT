@@ -226,12 +226,12 @@ public class CloseInEffect : NoteEffect
 
     void CheckForDoubles()
     {
-        float firstSample = ClosestObjectClass.closestObject[keyNumPosition].GetComponent<CloseInEffect>().noteSample;
-        float secondSample = ClosestObjectClass.closestObject[keyNumPosition + 1].GetComponent<CloseInEffect>().noteSample;
-        if ((secondSample - firstSample) < 15000)
-        {
-            ClosestObjectClass.closestObject[keyNumPosition + 1].SetActive(false);
-            ClosestObjectClass.closestObject[keyNumPosition + 1] = null;
-        }
+        //float firstSample = ClosestObjectClass.closestObject[keyNumPosition].GetComponent<CloseInEffect>().noteSample;
+        //float secondSample = ClosestObjectClass.closestObject[keyNumPosition + 1].GetComponent<CloseInEffect>().noteSample;
+        //if ((secondSample - firstSample) < 15000)
+        //{
+        //    ClosestObjectClass.closestObject[keyNumPosition + 1].SetActive(false);
+        //    ClosestObjectClass.closestObject[keyNumPosition + 1] = null;
+        //}
     }
 }
