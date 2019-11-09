@@ -236,40 +236,44 @@ public class Key_Layout : MonoBehaviour
     //There's 2 Stages or Processes
     public KeyCode RandomizeAndProcess()
     {
-        #region Cell Number Process
-        TypeByRegion recipient = TypeByRegion.Instance;
+        if (layoutMethod == LayoutMethod.Region_Scatter)
+        {
+            #region Cell Number Process
+            TypeByRegion recipient = TypeByRegion.Instance;
 
-        float randX = Random.Range(TypeByRegion.left, TypeByRegion.screenWidth - TypeByRegion.right);
-        float randY = Random.Range(TypeByRegion.bottom, TypeByRegion.screenHeight - TypeByRegion.top);
+            float randX = Random.Range(TypeByRegion.left, TypeByRegion.screenWidth - TypeByRegion.right);
+            float randY = Random.Range(TypeByRegion.bottom, TypeByRegion.screenHeight - TypeByRegion.top);
 
-        //Give newXPosition and newYPosition for the key
-        spawnPositionX = randX;
-        spawnPositionY = randY;
+            //Give newXPosition and newYPosition for the key
+            spawnPositionX = randX;
+            spawnPositionY = randY;
 
-        //Make a Vector2 with our random coordinates
-        Vector2 positionInScreen = new Vector2(randX, randY);
+            //Make a Vector2 with our random coordinates
+            Vector2 positionInScreen = new Vector2(randX, randY);
 
-        //We get our Regional Position
-        Vector2 regionalPosition = recipient.CheckRegionalPositionFrom(positionInScreen);
+            //We get our Regional Position
+            Vector2 regionalPosition = recipient.CheckRegionalPositionFrom(positionInScreen);
 
-        //Now we get the Cell Number
-        int cellNum = recipient.RegionalPositionToCellNumber(regionalPosition);
+            //Now we get the Cell Number
+            int cellNum = recipient.RegionalPositionToCellNumber(regionalPosition);
 
-        //With our cellNum, we can now tell our recipient to give use the keyClusters that
-        //We need
-        string usedKeyCluster = recipient.GetKeyClusterFromCellNum(cellNum);
-        #endregion
+            //With our cellNum, we can now tell our recipient to give use the keyClusters that
+            //We need
+            string usedKeyCluster = recipient.GetKeyClusterFromCellNum(cellNum);
+            #endregion
 
-        #region Key Binding Process
-        //Now we randomize a number between
-        //0 and the length of the key cluster to get
-        //the desired key to bind
-        int randNum = Random.Range(0, usedKeyCluster.Length);
-        char randChar = usedKeyCluster[randNum];
+            #region Key Binding Process
+            //Now we randomize a number between
+            //0 and the length of the key cluster to get
+            //the desired key to bind
+            int randNum = Random.Range(0, usedKeyCluster.Length);
+            char randChar = usedKeyCluster[randNum];
 
-        //And now, parse to KeyCode
-        return InvokeKeyBind(randChar);
-        #endregion
+            //And now, parse to KeyCode
+            return InvokeKeyBind(randChar);
+            #endregion 
+        }
+        return KeyCode.None;
     }
 
     //This function will directly change the layout mode.

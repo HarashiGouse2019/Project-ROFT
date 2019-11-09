@@ -166,7 +166,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Normal
     clip: {fileID: 8300000, guid: 5454681da399a83499de7b2b59ca58da, type: 3}
-    volume: 0
+    volume: 1
     pitch: 1
     enableLoop: 0
     source: {fileID: 0}
@@ -2158,7 +2158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   editMode: 0
-  gameMode: 3
+  gameMode: 1
   TM_SONGNAME: {fileID: 0}
   TM_TOTALNOTES: {fileID: 0}
   TM_TOTALKEYS: {fileID: 0}
@@ -2178,7 +2178,7 @@ MonoBehaviour:
   maxCombo: 0
   stressBuild: 5.7
   accuracyStats: 0000000000000000000000000000000000000000
-  isAutoPlaying: 1
+  isAutoPlaying: 0
 --- !u!4 &563326976
 Transform:
   m_ObjectHideFlags: 0
@@ -2587,7 +2587,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   approachSpeed: 9
   alignment: 0
-  keyAppearOffset: 10
+  keyAppearOffset: 1
   accuracy: 5.8
   accuracyVal:
   - 4000
@@ -3641,10 +3641,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   regionCells: []
-  left: 0
-  right: 0
-  top: 0
-  bottom: 0
   mousePosition: {x: 0, y: 0, z: 0}
   mousePositionRegionWise: {x: 0, y: 0, z: 0}
   cellNum: 0

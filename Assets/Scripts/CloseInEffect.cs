@@ -34,6 +34,9 @@ public class CloseInEffect : NoteEffect
         initiatedNoteSample = noteSample;
         initiatedNoteOffset = noteOffset;
         keyNumPosition = keyPosition;
+        
+        if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
+            CheckForDoubles();
     }
 
     // Update is called once per frame
@@ -219,5 +222,16 @@ public class CloseInEffect : NoteEffect
     bool CheckSoloPlay()
     {
         return GameManager.Instance.isAutoPlaying;
+    }
+
+    void CheckForDoubles()
+    {
+        float firstSample = ClosestObjectClass.closestObject[keyNumPosition].GetComponent<CloseInEffect>().noteSample;
+        float secondSample = ClosestObjectClass.closestObject[keyNumPosition + 1].GetComponent<CloseInEffect>().noteSample;
+        if ((secondSample - firstSample) < 15000)
+        {
+            ClosestObjectClass.closestObject[keyNumPosition + 1].SetActive(false);
+            ClosestObjectClass.closestObject[keyNumPosition + 1] = null;
+        }
     }
 }

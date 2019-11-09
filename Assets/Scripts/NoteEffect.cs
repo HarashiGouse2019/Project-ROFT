@@ -78,7 +78,9 @@ public class NoteEffect : MonoBehaviour
         if (!EditorToolClass.Instance.record && ObjectSpawnTime("approachcircle"))
             Approach();
 
-        if (!EditorToolClass.Instance.record && ObjectSpawnTime("key"))
+        if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter 
+            && !EditorToolClass.Instance.record 
+            && ObjectSpawnTime("key"))
         {
             randomKey = Key_Layout.Instance.RandomizeAndProcess();
             Vector2 spawnTarget = new Vector2(
@@ -97,6 +99,8 @@ public class NoteEffect : MonoBehaviour
         if (keyPosition < mapReader.keys.Count)
         {
             ObjectPooler keyPooler;
+            Debug.Log(keyPosition + ": " + Key_Layout.keyObjects.Count);
+
             if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract)
                 keyPooler = Key_Layout.keyObjects[mapReader.keys[keyPosition].keyNum].GetComponent<ObjectPooler>();
             else
@@ -143,7 +147,7 @@ public class NoteEffect : MonoBehaviour
         Debug.Log("It's doing a thing!!!!");
         effect = keyMember.GetComponent<AppearEffect>();
 
-        if (keyPosition < mapReader.keys.Count)
+        if (keyObjPosition < mapReader.keys.Count)
         {
             Vector3 screenPosition = (Vector3)_targetPosition + new Vector3(0f, 0f, Camera.main.nearClipPlane);
             if (!keyMember.activeInHierarchy)
@@ -152,10 +156,12 @@ public class NoteEffect : MonoBehaviour
                 keyMember.transform.localPosition = Key_Layout.Instance.m_camera.ScreenToWorldPoint(screenPosition);
                 keyMember.transform.rotation = Quaternion.identity;
             }
-            
-            effect.initiatedNoteSample = noteSample - (keyAppearOffset * 1000);
-            effect.offsetStart = noteOffset - (keyAppearOffset * 1000);
+
+            effect.initiatedNoteSample = noteSample;
+            effect.offsetStart = noteSample - noteOffset;
             effect.assignedKeyBind = randomKey;
+
+            keyObjPosition = keyPosition - 1;
         }
     }
 

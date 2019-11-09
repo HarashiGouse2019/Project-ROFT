@@ -135,7 +135,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5638931420957669192}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 92cfdd97c04f23d43b3d1f6ba30ea5ca, type: 3}
   m_Name: 
@@ -157,8 +157,15 @@ MonoBehaviour:
   initiatedNoteSample: 0
   initiatedNoteOffset: 0
   offsetStart: 0
-  assignedKeyBind: 0
+  keyNumPosition: 0
+  keyNum: 0
   sprite: {fileID: 0}
+  index: 0
+  accuracyString: 
+  dispose: 0
+  assignedKeyBind: 0
+  overlaySprites: []
+  childSprite: {fileID: 0}
 --- !u!114 &-2557685672091724069
 MonoBehaviour:
   m_ObjectHideFlags: 0

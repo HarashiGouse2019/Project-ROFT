@@ -23,8 +23,8 @@ public class TypeByRegion : MonoBehaviour
     //Padding
     public static float left = 100f;
     public static float right = 100f;
-    public static float top = 100f;
-    public static float bottom = 100f;
+    public static float top = 75f;
+    public static float bottom = 75f;
 
     //MousePosition
     public Vector3 mousePosition;
