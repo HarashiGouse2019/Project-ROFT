@@ -93,6 +93,7 @@ public class ObjectPooler : MonoBehaviour
 
             if (!pooledObjects[i].activeInHierarchy && (name + "(Clone)") == pooledObjects[i].name)
             {
+                poolIndex = i;
                 return pooledObjects[i];
             }
         }
@@ -107,6 +108,7 @@ public class ObjectPooler : MonoBehaviour
                     GameObject newMember = Instantiate(item.prefab);
                     newMember.SetActive(false);
                     pooledObjects.Add(newMember);
+                    poolIndex = pooledObjects.Count - 1;
                     return newMember;
                 }
             }

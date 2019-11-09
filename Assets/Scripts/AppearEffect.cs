@@ -8,8 +8,6 @@ public class AppearEffect : CloseInEffect
     public SpriteRenderer[] overlaySprites;
     public SpriteRenderer childSprite;
 
-    public GameObject approachCircleUnit;
-
     Color originalAppearance;
     Color originalOverlayAppearance;
 
@@ -76,8 +74,6 @@ public class AppearEffect : CloseInEffect
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, appearanceRate);
         childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, appearanceRate);
 
-        if (approachCircleUnit.GetComponent<CloseInEffect>().accuracyString != "")
-            dispose = true;
     }
 
     protected override float GetPercentage()

@@ -34,7 +34,7 @@ public class CloseInEffect : NoteEffect
         initiatedNoteSample = noteSample;
         initiatedNoteOffset = noteOffset;
         keyNumPosition = keyPosition;
-        
+
         if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
             CheckForDoubles();
     }
@@ -52,13 +52,13 @@ public class CloseInEffect : NoteEffect
         {
             ClosestObjectClass.closestObject[keyNumPosition].SetActive(false);
             ClosestObjectClass.closestObject[keyNumPosition] = null;
-        } 
+        }
     }
     void CloseIn()
     {
         InHitRange();
 
-        
+
         transform.localScale = new Vector3(1 / GetPercentage(), 1 / GetPercentage(), 1f);
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.2f);
         #region Auto Play
@@ -83,24 +83,27 @@ public class CloseInEffect : NoteEffect
 
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                 {
-                   
+
 
                     ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
                     IncrementComboChain();
                     SendAccuracyScore();
                     BuildStress(index);
 
-                    GameObject key = Key_Layout.keyObjects[keyNumPosition];
+                    GameObject key;
+
+                    key = Key_Layout.keyObjects[keyNumPosition];
                     key.GetComponentInChildren<PulseEffect>().DoPulseReaction();
+
 
                     AudioManager.Instance.Play("Normal", 100, true);
 
                     GameManager.consecutiveMisses = 0;
 
-                 
+
                 }
             }
-        } 
+        }
         #endregion
         else
         {
@@ -136,7 +139,7 @@ public class CloseInEffect : NoteEffect
                 }
             }
         }
-        
+
     }
 
     protected override float GetPercentage()
@@ -155,9 +158,9 @@ public class CloseInEffect : NoteEffect
             if (beforePerfect && afterPerfect)
             {
                 accuracyString = GameManager.accuracyString[range];
-                
+
                 index = range;
-                
+
                 return accuracyString;
             }
         }
@@ -181,7 +184,7 @@ public class CloseInEffect : NoteEffect
     public void IncrementComboChain()
     {
         GameManager.Instance.combo++;
-        
+
     }
 
     public void BreakComboChain()
@@ -203,7 +206,7 @@ public class CloseInEffect : NoteEffect
 
     public void BuildStress(int _index)
     {
-        GameManager.sentStress = GameManager.stressAmount[_index] + (GameManager.Instance.stressBuild / 100) ;
+        GameManager.sentStress = GameManager.stressAmount[_index] + (GameManager.Instance.stressBuild / 100);
     }
 
     private void OnDisable()

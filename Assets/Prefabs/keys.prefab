@@ -166,7 +166,6 @@ MonoBehaviour:
   assignedKeyBind: 0
   overlaySprites: []
   childSprite: {fileID: 0}
-  approachCircleUnit: {fileID: 0}
 --- !u!114 &-2557685672091724069
 MonoBehaviour:
   m_ObjectHideFlags: 0

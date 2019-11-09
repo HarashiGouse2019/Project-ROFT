@@ -21,8 +21,8 @@ public class TypeByRegion : MonoBehaviour
     public List<Vector2> regionCells = new List<Vector2>();
 
     //Padding
-    public static float left = 100f;
-    public static float right = 100f;
+    public static float left = 75f;
+    public static float right = 75f;
     public static float top = 75f;
     public static float bottom = 75f;
 
@@ -65,16 +65,16 @@ public class TypeByRegion : MonoBehaviour
     // Start is called before the first frame update
     void OnEnable()
     {
-        CheckScreenSize();
+        UpdateScreenSize();
         CreateRegionalGrid();
     }
 
     private void Update()
     {
-        CheckScreenSize();
+        UpdateScreenSize();
+
         if (this.enabled)
         {
-            
 
             mousePosition = Input.mousePosition;
 
@@ -165,7 +165,7 @@ public class TypeByRegion : MonoBehaviour
         return keyClusters[_cellNum];
     }
 
-    public void CheckScreenSize()
+    public void UpdateScreenSize()
     {
         screenWidth = Screen.width;
         screenHeight = Screen.height;

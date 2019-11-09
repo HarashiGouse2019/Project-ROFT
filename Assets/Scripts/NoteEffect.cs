@@ -100,12 +100,15 @@ public class NoteEffect : MonoBehaviour
         if (keyPosition < mapReader.keys.Count)
         {
             ObjectPooler keyPooler;
+            ObjectPooler keyLayoutPooler = Key_Layout.Instance.GetComponent<ObjectPooler>();
             Debug.Log(keyPosition + ": " + Key_Layout.keyObjects.Count);
 
             if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract)
                 keyPooler = Key_Layout.keyObjects[mapReader.keys[keyPosition].keyNum].GetComponent<ObjectPooler>();
             else
-                keyPooler = Key_Layout.keyObjects[keyObjPosition].GetComponent<ObjectPooler>();
+            {
+                keyPooler = keyLayoutPooler.pooledObjects[keyLayoutPooler.poolIndex].GetComponent<ObjectPooler>();
+            }
 
             GameObject approachCircle = keyPooler.GetMember("Approach Circle");
 
@@ -121,9 +124,9 @@ public class NoteEffect : MonoBehaviour
                 }
                 else
                 {
-                    approachCircle.transform.position = Key_Layout.keyObjects[keyPosition].transform.position;
-                    approachCircle.transform.localScale = Key_Layout.keyObjects[keyPosition].transform.localScale;
-                    Key_Layout.keyObjects[keyPosition].GetComponent<AppearEffect>().approachCircleUnit = approachCircle;
+                    approachCircle.transform.position = keyLayoutPooler.pooledObjects[keyLayoutPooler.poolIndex].transform.position;
+                    approachCircle.transform.localScale = keyLayoutPooler.pooledObjects[keyLayoutPooler.poolIndex].transform.localScale;
+                    
                 }
             }
 
@@ -147,11 +150,10 @@ public class NoteEffect : MonoBehaviour
         if (keyPosition < mapReader.keys.Count)
         {
             GameObject keyMember = Key_Layout.Instance.pooler.GetMember("keys");
-            
+            Key_Layout.keyObjects.Add(keyMember);
             Debug.Log("It's doing a thing!!!!");
             effect = keyMember.GetComponent<AppearEffect>();
             effect.enabled = true;
-            Key_Layout.keyObjects.Add(keyMember);
             Vector3 screenPosition = (Vector3)_targetPosition + new Vector3(0f, 0f, Camera.main.nearClipPlane);
             if (!keyMember.activeInHierarchy)
             {
@@ -165,7 +167,6 @@ public class NoteEffect : MonoBehaviour
                 effect.offsetStart = noteSampleForKey - noteOffset;
                 effect.keyNum = keyPosition;
                 effect.assignedKeyBind = randomKey;
-
             }
         }
     }
