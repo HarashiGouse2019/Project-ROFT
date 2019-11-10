@@ -8,6 +8,8 @@ public class AppearEffect : CloseInEffect
     public SpriteRenderer[] overlaySprites;
     public SpriteRenderer childSprite;
 
+    public GameObject assignedCircle;
+
     Color originalAppearance;
     Color originalOverlayAppearance;
 
@@ -30,10 +32,6 @@ public class AppearEffect : CloseInEffect
 
         if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
         {
-
-
-
-
             //We want these completely transparent from start
             childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, 0f);
             sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0f);
@@ -48,7 +46,7 @@ public class AppearEffect : CloseInEffect
     {
         initiatedNoteSample = noteSampleForKey;
         initiatedNoteOffset = noteOffset;
-
+        transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
     }
 
     // Update is called once per frame
@@ -70,10 +68,13 @@ public class AppearEffect : CloseInEffect
     {
         float appearanceRate = GetPercentage() - 0.6f;
 
-        transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, appearanceRate);
         childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, appearanceRate);
 
+        if (assignedCircle.GetComponent<CloseInEffect>().accuracyString == "perfect")
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     protected override float GetPercentage()

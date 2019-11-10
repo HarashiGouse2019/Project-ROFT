@@ -126,7 +126,9 @@ public class NoteEffect : MonoBehaviour
                 {
                     approachCircle.transform.position = keyLayoutPooler.pooledObjects[keyLayoutPooler.poolIndex].transform.position;
                     approachCircle.transform.localScale = keyLayoutPooler.pooledObjects[keyLayoutPooler.poolIndex].transform.localScale;
-                    
+
+                    AppearEffect targetEffect = keyLayoutPooler.pooledObjects[keyLayoutPooler.poolIndex].GetComponent<AppearEffect>();
+                    targetEffect.assignedCircle = approachCircle;
                 }
             }
 

@@ -90,11 +90,13 @@ public class CloseInEffect : NoteEffect
                     SendAccuracyScore();
                     BuildStress(index);
 
-                    GameObject key;
+                    if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract)
+                    {
+                        GameObject key;
 
-                    key = Key_Layout.keyObjects[keyNumPosition];
-                    key.GetComponentInChildren<PulseEffect>().DoPulseReaction();
-
+                        key = Key_Layout.keyObjects[keyNumPosition];
+                        key.GetComponentInChildren<PulseEffect>().DoPulseReaction();
+                    }
 
                     AudioManager.Instance.Play("Normal", 100, true);
 
