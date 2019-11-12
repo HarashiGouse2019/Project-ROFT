@@ -72,6 +72,8 @@ public class EditorToolClass : MonoBehaviour
     public float bpm;
     public bool tapCalulationDone = false;
 
+    public NoteEffect noteEffector;
+
     readonly private KeyCode tapKey = KeyCode.T;
     readonly private int tapLimit = 16;
     readonly private int doneTapLimit = 8;
@@ -445,8 +447,8 @@ public class EditorToolClass : MonoBehaviour
                 #endregion
                 string p_KeyCount = "KeyCount: " + keyInfo + newLine;
                 
-                string p_AccuracyHarshness = "AccuracyHarshness: " + NoteEffect.Instance.accuracy.ToString() + newLine;
-                string p_ApproachSpeed = "ApproachSpeed: " + NoteEffect.Instance.approachSpeed.ToString() + newLine;
+                string p_AccuracyHarshness = "AccuracyHarshness: " + noteEffector.accuracy.ToString() + newLine;
+                string p_ApproachSpeed = "ApproachSpeed: " + noteEffector.approachSpeed.ToString() + newLine;
                 #endregion
 
                 #region Objects

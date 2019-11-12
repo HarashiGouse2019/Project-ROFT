@@ -149,7 +149,7 @@ public class MapReader : MonoBehaviour
         }
 
         if
-           (GameManager.Instance.gameMode == GameManager.GameMode.KEY_ONLY ||
+           (GameManager.Instance.gameMode == GameManager.GameMode.TECHMEISTER ||
             GameManager.Instance.gameMode == GameManager.GameMode.STANDARD)
             Key_Layout.Instance.SetUpLayout();
     }

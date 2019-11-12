@@ -35,7 +35,7 @@ public class CloseInEffect : NoteEffect
         initiatedNoteOffset = noteOffset;
         keyNumPosition = keyPosition;
 
-        if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
+        if (Key_Layout.Instance != null && Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
             CheckForDoubles();
     }
 

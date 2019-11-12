@@ -30,6 +30,7 @@ public class ObjectPooler : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        InitObjectPooler(spawnInParent);
     }
 
     private void Start()
@@ -39,7 +40,7 @@ public class ObjectPooler : MonoBehaviour
             OverridePoolSizeOf("Song Panel", MusicManager.manager.getMusic.Length);
         }
 
-        InitObjectPooler(spawnInParent);
+        
     }
 
     private void Update()

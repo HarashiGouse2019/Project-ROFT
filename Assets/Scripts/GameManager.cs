@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
     public enum GameMode
     {
         STANDARD,
-        KEY_ONLY,
+        TECHMEISTER,
         TBR_HOMEROW,
         TBR_ALL
     };
@@ -133,7 +133,7 @@ public class GameManager : MonoBehaviour
 
     void RunUI()
     {
-        TM_SCORE.text = totalScore.ToString("D8");
+        TM_SCORE.text = totalScore.ToString("D10");
         TM_COMBO.text = "x" + combo.ToString();
         TM_DIFFICULTY.text = "DIFFICULTY: " + MapReader.Instance.difficultyRating.ToString("F2", CultureInfo.InvariantCulture);
 

@@ -12,7 +12,6 @@ public class AppearEffect : CloseInEffect
 
     const int completeOpacity = 100;
 
-    new Color originalAppearance;
     Color originalOverlayAppearance;
 
     void Awake()
@@ -30,7 +29,7 @@ public class AppearEffect : CloseInEffect
         }
 
 
-        if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
+        if (Key_Layout.Instance != null && Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
         {
             //We want these completely transparent from start
             childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, 0f);
