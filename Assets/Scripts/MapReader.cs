@@ -30,22 +30,14 @@ public class MapReader : MonoBehaviour
     {
         ReadRFTMKeys(m_name);
 
-        //Get position in the file that has the tag "General"
-        int metaDataTag = InRFTMJumpTo("General");
-
-        //Now that we have our tag as an int, we look for a property in that take and return a value.
-        string property = ReadPropertyFrom(metaDataTag, "AudioFilename");
-
-        //Now we debug.log and see what we got
-        Debug.Log(property);
-        
-        
         KeyLayoutAwake((int)keyLayoutClass.layoutMethod);
 
+        int difficultyTag = InRFTMJumpTo("Difficulty");
         //Get other values such as Approach Speed, Stress Build, and Accuracy Harshness
-        NoteEffect.Instance.approachSpeed = float.Parse(ReadPropertyFrom(InRFTMJumpTo("Difficulty"), "ApproachSpeed"));
-        GameManager.Instance.stressBuild = float.Parse(ReadPropertyFrom(InRFTMJumpTo("Difficulty"), "StressBuild"));
-        NoteEffect.Instance.accuracy = float.Parse(ReadPropertyFrom(InRFTMJumpTo("Difficulty"), "AccuracyHarshness"));
+        NoteEffect.Instance.approachSpeed = float.Parse(ReadPropertyFrom(difficultyTag, "ApproachSpeed"));
+        GameManager.Instance.stressBuild = float.Parse(ReadPropertyFrom(difficultyTag, "StressBuild"));
+        NoteEffect.Instance.accuracy = float.Parse(ReadPropertyFrom(difficultyTag, "AccuracyHarshness"));
+
     }
 
     private void Update()
@@ -129,7 +121,7 @@ public class MapReader : MonoBehaviour
     {
         int difficultyTag = InRFTMJumpTo("Difficulty");
         int keyCount = Convert.ToInt32(ReadPropertyFrom(difficultyTag, "KeyCount"));
-
+        totalKeys = keyCount;
         if (!keyLayoutClass.gameObject.activeInHierarchy)
         {
             keyLayoutClass.gameObject.SetActive(true);
@@ -162,7 +154,7 @@ public class MapReader : MonoBehaviour
             Key_Layout.Instance.SetUpLayout();
     }
 
-    int InRFTMJumpTo(string _tag, string _fileName = "", string _fileDirectory = "")
+    public int InRFTMJumpTo(string _tag, string _fileName = "", string _fileDirectory = "")
     {
         //Setting default for directory
         if (_fileDirectory == "")
@@ -214,7 +206,7 @@ public class MapReader : MonoBehaviour
         return -1;
     }
 
-    string ReadPropertyFrom(int _startPosition, string _property)
+    public string ReadPropertyFrom(int _startPosition, string _property)
     {
         string line;
         string rftmFilePath = Application.streamingAssetsPath + @"/" + m_name + ".rftm";

@@ -106,6 +106,8 @@ MonoBehaviour:
   percentage: 0
   keyPosition: 0
   keyObjPosition: 0
+  noteSample: 0
+  noteSampleForKey: 0
   initiatedNoteSample: 0
   initiatedNoteOffset: 0
   offsetStart: 0

@@ -10,10 +10,10 @@ public class AppearEffect : CloseInEffect
 
     public GameObject assignedCircle;
 
-    Color originalAppearance;
-    Color originalOverlayAppearance;
+    const int completeOpacity = 100;
 
-    bool fullOpacity = false;
+    new Color originalAppearance;
+    Color originalOverlayAppearance;
 
     void Awake()
     {
@@ -44,9 +44,27 @@ public class AppearEffect : CloseInEffect
 
     private void OnEnable()
     {
-        initiatedNoteSample = noteSampleForKey;
-        initiatedNoteOffset = noteOffset;
+
         transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+
+
+        foreach (SpriteRenderer overlaySprite in overlaySprites)
+        {
+            if (overlaySprite != sprite)
+                childSprite = overlaySprite;
+        }
+
+
+        if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
+        {
+            //We want these completely transparent from start
+            childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, 0f);
+            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0f);
+
+            //Assign this to orignal variable
+            originalAppearance = sprite.color;
+            originalOverlayAppearance = childSprite.color;
+        }
     }
 
     // Update is called once per frame
@@ -56,24 +74,19 @@ public class AppearEffect : CloseInEffect
             AppearOn();
     }
 
-    private void FixedUpdate()
-    {
-        if (dispose)
-        {
-            gameObject.SetActive(false);
-        }
-    }
-
     void AppearOn()
     {
-        float appearanceRate = GetPercentage() - 0.6f;
+        float appearanceRate = GetPercentage();
 
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, appearanceRate);
         childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, appearanceRate);
 
-        if (assignedCircle.GetComponent<CloseInEffect>().accuracyString == "perfect")
+        if (!assignedCircle.activeInHierarchy)
         {
+            Debug.Log("Did you get to this point???");
             gameObject.SetActive(false);
+            
+
         }
     }
 
@@ -92,5 +105,7 @@ public class AppearEffect : CloseInEffect
         initiatedNoteSample = 0;
         initiatedNoteOffset = 0;
         transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+        if (assignedCircle != null)
+            assignedCircle = null;
     }
 }

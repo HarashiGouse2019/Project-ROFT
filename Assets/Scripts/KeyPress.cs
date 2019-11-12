@@ -52,16 +52,18 @@ public class KeyPress : MonoBehaviour
 
     public bool ActivateKey(int _keyNum, bool _on)
     {
-        SpriteRenderer keySpriteRenderer = Key_Layout.keyObjects[_keyNum].GetComponent<SpriteRenderer>();
-
-        if (_on)
+        if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract)
         {
-            keySpriteRenderer.sprite = keyActive;
-            debugText.text = "Key " + key_Layout.bindedKeys[_keyNum] + " pressed." + " Key Num: " + _keyNum;
-        }
-        else
-            keySpriteRenderer.sprite = keyInActive;
+            SpriteRenderer keySpriteRenderer = Key_Layout.keyObjects[_keyNum].GetComponent<SpriteRenderer>();
 
+            if (_on)
+            {
+                keySpriteRenderer.sprite = keyActive;
+                debugText.text = "Key " + key_Layout.bindedKeys[_keyNum] + " pressed." + " Key Num: " + _keyNum;
+            }
+            else
+                keySpriteRenderer.sprite = keyInActive;
+        }
         return _on;
     }
 }

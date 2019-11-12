@@ -154,6 +154,8 @@ MonoBehaviour:
   percentage: 0
   keyPosition: 0
   keyObjPosition: 0
+  noteSample: 0
+  noteSampleForKey: 0
   initiatedNoteSample: 0
   initiatedNoteOffset: 0
   offsetStart: 0
@@ -166,6 +168,7 @@ MonoBehaviour:
   assignedKeyBind: 0
   overlaySprites: []
   childSprite: {fileID: 0}
+  assignedCircle: {fileID: 0}
 --- !u!114 &-2557685672091724069
 MonoBehaviour:
   m_ObjectHideFlags: 0

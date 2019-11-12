@@ -16,7 +16,7 @@ StressBuild: 5
 ObjectCount: 
 KeyCount: 8
 AccuracyHarshness: 7.25
-ApproachSpeed: 9
+ApproachSpeed: 9.5
 
 [Objects]
 0,151703,0

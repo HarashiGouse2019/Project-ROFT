@@ -9,9 +9,9 @@ public class ObjectPooler : MonoBehaviour
 
     public bool spawnInParent = false;
 
-    public bool overridePoolSize;
+    public bool overridePoolSize = false;
 
-    public bool readFromMusicManager;
+    public bool readFromMusicManager = false;
 
     [System.Serializable]
     public class ObjectPoolItem
@@ -77,6 +77,7 @@ public class ObjectPooler : MonoBehaviour
                     newMember = Instantiate(item.prefab, gameObject.transform);
                 else
                     newMember = Instantiate(item.prefab);
+
                 newMember.SetActive(false);
                 item.prefab.name = item.name;
                 pooledObjects.Add(newMember);

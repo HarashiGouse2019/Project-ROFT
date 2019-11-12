@@ -106,6 +106,7 @@ public class Key_Layout : MonoBehaviour
             ChangeLayoutMethod(1);
         else
             ChangeLayoutMethod(0);
+
     }
 
     private void Update()

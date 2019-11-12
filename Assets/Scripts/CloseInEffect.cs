@@ -20,7 +20,7 @@ public class CloseInEffect : NoteEffect
     public bool dispose;
 
     //So they don't have to look screwed up
-    Color originalAppearance;
+    protected Color originalAppearance;
     private void Awake()
     {
         mapReader = MapReader.Instance;
