@@ -178,8 +178,8 @@ public class NoteEffect : MonoBehaviour
 
             }
 
-            effect.initiatedNoteSample = noteSample;
-            effect.offsetStart = noteSample - noteOffset;
+            effect.initiatedNoteSample = noteSampleForKey;
+            effect.offsetStart = noteSampleForKey - noteOffset;
             effect.keyNum = Key_Layout.Instance.pooler.poolIndex;
             effect.assignedKeyBind = randomKey;
         }
