@@ -21,10 +21,10 @@ public class TypeByRegion : MonoBehaviour
     public List<Vector2> regionCells = new List<Vector2>();
 
     //Padding
-    public static float left = 75f;
-    public static float right = 75f;
-    public static float top = 75f;
-    public static float bottom = 75f;
+    public static float left = 150f;
+    public static float right = 150f;
+    public static float top = 100f;
+    public static float bottom = 100f;
 
     //MousePosition
     public Vector3 mousePosition;

@@ -1,3 +1,24 @@
+[General]
+Author: User1111
+AudioFilename: Project Grimoire - Excalibur _Revived Resolution.mp3
+
+[Metadata]
+Title: Excalibur _Revived Resolution
+Title Unicode: Excalibur _Revived Resolution
+Artist: Project Grimoire 
+Artist Unicode: Project Grimoire 
+Creator: User1111
+ROFTID: 28981
+GROUPID: 28174932
+
+[Difficulty]
+StressBuild: 5
+ObjectCount: 
+KeyCount: 8
+AccuracyHarshness: 7.25
+ApproachSpeed: 9.5
+
+[Objects]
 3,362207,0
 0,371615,0
 3,428063,0

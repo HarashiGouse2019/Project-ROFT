@@ -32,11 +32,14 @@ public class MapReader : MonoBehaviour
 
         KeyLayoutAwake((int)keyLayoutClass.layoutMethod);
 
-        int difficultyTag = InRFTMJumpTo("Difficulty");
         //Get other values such as Approach Speed, Stress Build, and Accuracy Harshness
-        NoteEffect.Instance.approachSpeed = float.Parse(ReadPropertyFrom(difficultyTag, "ApproachSpeed"));
-        GameManager.Instance.stressBuild = float.Parse(ReadPropertyFrom(difficultyTag, "StressBuild"));
-        NoteEffect.Instance.accuracy = float.Parse(ReadPropertyFrom(difficultyTag, "AccuracyHarshness"));
+        if (!EditorToolClass.Instance.record)
+        {
+            int difficultyTag = InRFTMJumpTo("Difficulty");
+            NoteEffect.Instance.approachSpeed = float.Parse(ReadPropertyFrom(difficultyTag, "ApproachSpeed"));
+            GameManager.Instance.stressBuild = float.Parse(ReadPropertyFrom(difficultyTag, "StressBuild"));
+            NoteEffect.Instance.accuracy = float.Parse(ReadPropertyFrom(difficultyTag, "AccuracyHarshness"));
+        }
 
     }
 

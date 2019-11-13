@@ -173,9 +173,6 @@ public class NoteEffect : MonoBehaviour
                 effect.enabled = true;
                 keyMember.transform.localPosition = Key_Layout.Instance.m_camera.ScreenToWorldPoint(screenPosition);
                 keyMember.transform.rotation = Quaternion.identity;
-
-
-
             }
 
             effect.initiatedNoteSample = noteSampleForKey;

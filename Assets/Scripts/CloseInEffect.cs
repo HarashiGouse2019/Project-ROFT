@@ -35,8 +35,8 @@ public class CloseInEffect : NoteEffect
         initiatedNoteOffset = noteOffset;
         keyNumPosition = keyPosition;
 
-        if (Key_Layout.Instance != null && Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
-            CheckForDoubles();
+        //if (Key_Layout.Instance != null && Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
+        //    CheckForDoubles();
     }
 
     // Update is called once per frame
@@ -229,14 +229,14 @@ public class CloseInEffect : NoteEffect
         return GameManager.Instance.isAutoPlaying;
     }
 
-    void CheckForDoubles()
-    {
-        //float firstSample = ClosestObjectClass.closestObject[keyNumPosition].GetComponent<CloseInEffect>().noteSample;
-        //float secondSample = ClosestObjectClass.closestObject[keyNumPosition + 1].GetComponent<CloseInEffect>().noteSample;
-        //if ((secondSample - firstSample) < 15000)
-        //{
-        //    ClosestObjectClass.closestObject[keyNumPosition + 1].SetActive(false);
-        //    ClosestObjectClass.closestObject[keyNumPosition + 1] = null;
-        //}
-    }
+    //void CheckForDoubles()
+    //{
+    //    float firstSample = initiatedNoteOffset;
+    //    float secondSample = ClosestObjectClass.closestObject[Key_Layout.Instance.pooler.poolIndex].GetComponent<CloseInEffect>().noteSample;
+    //    if ((secondSample - firstSample) < 1000)
+    //    {
+    //        ClosestObjectClass.closestObject[keyNumPosition + 1].SetActive(false);
+    //        ClosestObjectClass.closestObject[keyNumPosition + 1] = null;
+    //    }
+    //}
 }

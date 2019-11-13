@@ -10,11 +10,12 @@ public class AppearEffect : CloseInEffect
 
     public GameObject assignedCircle;
 
-    const int completeOpacity = 100;
+    const int completeOpacity = 20000;
 
     new Color originalAppearance;
     Color originalOverlayAppearance;
 
+    float time;
     void Awake()
     {
         Instance = this;
@@ -58,7 +59,7 @@ public class AppearEffect : CloseInEffect
         if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
         {
 
-            Debug.Log("This is it!!!!");
+
             //We want these completely transparent from start
             childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, 0f);
             sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0f);
@@ -85,16 +86,15 @@ public class AppearEffect : CloseInEffect
 
         if (!assignedCircle.activeInHierarchy)
         {
-            Debug.Log("Did you get to this point???");
-            gameObject.SetActive(false);
-            
-
+            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0);
+            childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, 0);
+            DelayDestroy(0.5f);
         }
     }
 
     protected override float GetPercentage()
     {
-        percentage = ((EditorToolClass.musicSource.timeSamples) - offsetStart - 3000) / (initiatedNoteSample - offsetStart);
+        percentage = ((EditorToolClass.musicSource.timeSamples) - offsetStart) / (initiatedNoteSample - offsetStart);
         return percentage;
     }
 
@@ -109,5 +109,16 @@ public class AppearEffect : CloseInEffect
         transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
         if (assignedCircle != null)
             assignedCircle = null;
+    }
+
+    void DelayDestroy(float _duration)
+    {
+
+        time += Time.deltaTime;
+        if (time > _duration)
+        {
+            time = 0;
+            gameObject.SetActive(false);
+        }
     }
 }
