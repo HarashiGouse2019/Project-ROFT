@@ -21,6 +21,14 @@ public class MapReader : MonoBehaviour
 
     public Key_Layout keyLayoutClass = Key_Layout.Instance;
 
+    //All Object Readers
+    [Header("Object Readers")]
+    public TapObjectReader tapObjectReader;
+    public HoldObjectReader holdObjectReader;
+    public SlideObjectReader slideObjectReader;
+    public TrailObjectReader trailObjectReader;
+    public ClickObjectReader clickObjectReader;
+
     private void Awake()
     {
         Instance = this;
@@ -93,6 +101,36 @@ public class MapReader : MonoBehaviour
 
                         //Lastly, add our new key to the list
                         keys.Add(newKey);
+
+                        //We'll be integrating our new Object Readers around this area.
+                        //We'll distribute the basic values to each one.
+                        #region Distribution to Readers
+                        switch (newKey.type)
+                        {
+                            case Key.KeyType.Tap:
+                                DistributeTypeTo(tapObjectReader, newKey);
+                                break;
+
+                            case Key.KeyType.Hold:
+                                DistributeTypeTo(holdObjectReader, newKey);
+                                break;
+
+                            case Key.KeyType.Slide:
+                                DistributeTypeTo(slideObjectReader, newKey);
+                                break;
+
+                            case Key.KeyType.Trail:
+                                DistributeTypeTo(trailObjectReader, newKey);
+                                break;
+
+                            case Key.KeyType.Click:
+                                DistributeTypeTo(clickObjectReader, newKey);
+                                break;
+
+                            default:
+                                break;
+                        }
+                        #endregion
 
                         //Update total Notes
                         totalNotes = keys.Count;
@@ -254,5 +292,10 @@ public class MapReader : MonoBehaviour
             }
         }
         return null;
+    }
+
+    void DistributeTypeTo(ObjectTypes _objectReader, Key _key)
+    {
+        _objectReader.objects.Add(_key);
     }
 }

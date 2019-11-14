@@ -403,6 +403,28 @@ public class EditorToolClass : MonoBehaviour
                 string t_general = "[General]\n";
                 string p_Author = "Author: " + System.Environment.UserName + newLine;
                 string p_AudioFileName = "AudioFilename: " + newLine;
+                string p_Gamemode = "";
+                switch (GameManager.Instance.gameMode)
+                {
+                    case GameManager.GameMode.STANDARD:
+                        p_Gamemode = "GameMode: " + "Standard" + newLine;
+                        break;
+
+                    case GameManager.GameMode.TECHMEISTER:
+                        p_Gamemode = "GameMode: " + "Techmeister" + newLine;
+                        break;
+
+                    case GameManager.GameMode.TBR_HOMEROW:
+                        p_Gamemode = "GameMode: " + "Type-By-Region(Homerow)" + newLine;
+                        break;
+
+                    case GameManager.GameMode.TBR_ALL:
+                        p_Gamemode = "GameMode: " + "Type-By-Region(Allrows)" + newLine;
+                        break;
+
+                    default:
+                        break;
+                }
                 #endregion
 
 
@@ -460,7 +482,8 @@ public class EditorToolClass : MonoBehaviour
                 {
                    t_general +  
                    p_Author + 
-                   p_AudioFileName,
+                   p_AudioFileName +
+                   p_Gamemode,
 
                    t_metadata + 
                    p_Title +

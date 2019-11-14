@@ -12,7 +12,6 @@ public class AppearEffect : CloseInEffect
 
     const int completeOpacity = 20000;
 
-    new Color originalAppearance;
     Color originalOverlayAppearance;
 
     float time;
@@ -88,6 +87,7 @@ public class AppearEffect : CloseInEffect
         {
             sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0);
             childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, 0);
+            assignedKeyBind = KeyCode.None;
             DelayDestroy(0.5f);
         }
     }

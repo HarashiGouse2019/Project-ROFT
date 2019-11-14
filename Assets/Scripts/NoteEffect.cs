@@ -152,6 +152,8 @@ public class NoteEffect : MonoBehaviour
             effect.keyNum = keyPosition;
             effect.keyNumPosition = mapReader.keys[effect.keyNum].keyNum;
 
+
+
             keyPosition++;
         }
     }

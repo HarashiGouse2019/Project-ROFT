@@ -1,3 +1,23 @@
+[General]
+Author: Tokusunei
+AudioFilename: 
+
+[Metadata]
+Title: 
+TitleUnicode: 
+Artist: 
+ArtistUnicode: 
+Creator: 
+ROFTID: R-190515996
+GROUPID: G-1905152653
+
+[Difficulty]
+StressBuild: 10
+ObjectCount: 2779
+KeyCount: 12
+AccuracyHarshness: 7.5
+ApproachSpeed: 9.30
+[Objects]
 7,200390,0
 0,209563,0
 2,218030,0

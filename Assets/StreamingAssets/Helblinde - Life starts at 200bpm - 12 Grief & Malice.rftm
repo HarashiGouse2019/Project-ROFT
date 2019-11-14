@@ -1,3 +1,24 @@
+[General]
+Author: User1111
+AudioFilename: Plexi - The Sweet New Groove.mp3
+
+[Metadata]
+Title: The Sweet New Groove
+Title Unicode: The Sweet New Groove
+Artist: Plexi
+Artist Unicode: Plexi
+Creator: User1111
+ROFTID: 28314
+GROUPID: 28176143
+
+[Difficulty]
+StressBuild: 5
+ObjectCount: 0
+KeyCount: 8
+AccuracyHarshness: 7.25
+ApproachSpeed: 9
+
+[Objects]
 3,325516,0
 1,339628,0
 2,352799,0

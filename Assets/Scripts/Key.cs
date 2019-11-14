@@ -6,7 +6,10 @@ public class Key
     public enum KeyType
     {
         Tap,
-        Hold
+        Hold,
+        Slide,
+        Trail,
+        Click
     }
 
     public int keyNum;

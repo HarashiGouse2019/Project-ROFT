@@ -25,6 +25,9 @@ public class CloseInEffect : NoteEffect
     {
         mapReader = MapReader.Instance;
         sprite = GetComponent<SpriteRenderer>();
+
+        
+
         originalAppearance = sprite.color;
     }
 
@@ -35,6 +38,7 @@ public class CloseInEffect : NoteEffect
         initiatedNoteOffset = noteOffset;
         keyNumPosition = keyPosition;
 
+        
         //if (Key_Layout.Instance != null && Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
         //    CheckForDoubles();
     }
@@ -58,6 +62,11 @@ public class CloseInEffect : NoteEffect
     {
         InHitRange();
 
+        if (mapReader.keys[keyNum].type == Key.KeyType.Tap)
+            sprite.color = originalAppearance;
+
+        else if (mapReader.keys[keyNum].type == Key.KeyType.Click)
+            sprite.color = Color.red;
 
         transform.localScale = new Vector3(1 / GetPercentage(), 1 / GetPercentage(), 1f);
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.2f);
@@ -121,7 +130,14 @@ public class CloseInEffect : NoteEffect
                 GameManager.consecutiveMisses++;
             }
 
-            if (accuracyString != "" && Input.GetKeyDown(Key_Layout.Instance.bindedKeys[keyNumPosition]))
+            bool tapType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
+                mapReader.keys[keyNum].type == Key.KeyType.Tap &&
+                Input.GetKeyDown(Key_Layout.Instance.bindedKeys[keyNumPosition]));
+
+            bool TBRType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter &&
+                Input.GetKeyDown(Key_Layout.Instance.pooler.pooledObjects[keyNumPosition].GetComponent<AppearEffect>().assignedKeyBind));
+
+            if (accuracyString != "" && (tapType || TBRType))
             {
                 dispose = true;
 

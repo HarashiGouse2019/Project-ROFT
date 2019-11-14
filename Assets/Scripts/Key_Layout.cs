@@ -47,7 +47,7 @@ public class Key_Layout : MonoBehaviour
     public TextMeshProUGUI dataText;
 
     //After iterating through strings, we'll return a Input corresponding avaliable keys.
-    readonly public List<KeyCode> bindedKeys = new List<KeyCode>();
+    public List<KeyCode> bindedKeys = new List<KeyCode>();
     public static List<GameObject> keyObjects = new List<GameObject>();
     public List<GameObject> tempShowKeyObjs = new List<GameObject>();
 
@@ -122,22 +122,28 @@ public class Key_Layout : MonoBehaviour
     }
 
     //This will simply take any character, and keybind it.
-    public KeyCode InvokeKeyBind(char m_char)
+    public KeyCode InvokeKeyBind(char m_char, bool _addToList = true)
     {
 
         KeyCode key;
         key = (KeyCode)m_char;
-        bindedKeys.Add(key);
+
+        if (_addToList)
+            bindedKeys.Add(key);
+
         return key;
     }
 
     //This takes any ASCII integer that exists on the keyboard
     //if the player so desires to manually keybind
-    public KeyCode InvokeKeyBind(int m_int)
+    public KeyCode InvokeKeyBind(int m_int, bool _addToList = true)
     {
         KeyCode key;
         key = (KeyCode)m_int;
-        bindedKeys.Add(key);
+
+        if (_addToList)
+            bindedKeys.Add(key);
+
         return key;
 
     }
@@ -271,7 +277,7 @@ public class Key_Layout : MonoBehaviour
             char randChar = usedKeyCluster[randNum];
 
             //And now, parse to KeyCode
-            return InvokeKeyBind(randChar);
+            return InvokeKeyBind(randChar, false);
             #endregion 
         }
         return KeyCode.None;
