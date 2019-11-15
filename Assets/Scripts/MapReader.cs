@@ -151,9 +151,17 @@ public class MapReader : MonoBehaviour
         float notesPerSec = (totalNotes / songLengthInSec);
         float totalKeys = keyLayoutClass.bindedKeys.Count;
         float approachSpeedInPercent = (float)NoteEffect.Instance.approachSpeed / 100;
+        float gameModeBoost = 0;
         const int maxKeys = 30;
 
-        float calculatedRating = notesPerSec + (totalKeys / maxKeys) + approachSpeedInPercent + (EditorToolClass.musicSource.pitch / 2);
+        if (keyLayoutClass.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
+            gameModeBoost = 2.0f;
+
+        float calculatedRating = notesPerSec + 
+            (totalKeys / maxKeys) + 
+            approachSpeedInPercent + 
+            (EditorToolClass.musicSource.pitch / 2) + 
+            gameModeBoost;
 
         return calculatedRating;
     }

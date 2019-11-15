@@ -26,8 +26,6 @@ public class CloseInEffect : NoteEffect
         mapReader = MapReader.Instance;
         sprite = GetComponent<SpriteRenderer>();
 
-        
-
         originalAppearance = sprite.color;
     }
 
@@ -135,7 +133,7 @@ public class CloseInEffect : NoteEffect
                 Input.GetKeyDown(Key_Layout.Instance.bindedKeys[keyNumPosition]));
 
             bool TBRType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter &&
-                Input.GetKeyDown(Key_Layout.Instance.pooler.pooledObjects[keyNumPosition].GetComponent<AppearEffect>().assignedKeyBind));
+                Input.GetKeyDown(GetComponentInParent<AppearEffect>().assignedKeyBind));
 
             if (accuracyString != "" && (tapType || TBRType))
             {
@@ -148,8 +146,12 @@ public class CloseInEffect : NoteEffect
                     SendAccuracyScore();
                     BuildStress(index);
 
-                    GameObject key = Key_Layout.keyObjects[keyNumPosition];
-                    key.GetComponentInChildren<PulseEffect>().DoPulseReaction();
+                    GameObject key;
+
+                    if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract) {
+                        key = Key_Layout.keyObjects[keyNumPosition];
+                        key.GetComponentInChildren<PulseEffect>().DoPulseReaction();
+                    }
 
                     AudioManager.Instance.Play("Normal", 100, true);
 
