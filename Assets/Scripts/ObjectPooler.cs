@@ -79,6 +79,9 @@ public class ObjectPooler : MonoBehaviour
                 else
                     newMember = Instantiate(item.prefab);
 
+                if(newMember.GetComponent<KeyId>() != null)
+                    newMember.GetComponent<KeyId>().keyID = i;
+
                 newMember.SetActive(false);
                 item.prefab.name = item.name;
                 pooledObjects.Add(newMember);

@@ -78,7 +78,7 @@ public class AppearEffect : CloseInEffect
 
     void AppearOn()
     {
-        float appearanceRate = GetPercentage();
+        float appearanceRate = GetPercentage() + 0.02f;
 
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, appearanceRate);
         childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, appearanceRate);

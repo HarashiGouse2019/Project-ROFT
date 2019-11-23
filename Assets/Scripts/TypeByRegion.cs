@@ -30,7 +30,7 @@ public class TypeByRegion : MonoBehaviour
     public Vector3 mousePosition;
     public Vector3 mousePositionRegionWise;
 
-    public int cellNum = 0; 
+    public int cellNum = 0;
     #endregion
 
     #region Private Members
@@ -42,7 +42,7 @@ public class TypeByRegion : MonoBehaviour
     float regionGridX = 0;
     float regionGridY = 0;
 
-    //KeyClusters
+    //KeyClusters: TBR_ALL
     readonly string[] keyClusters =
     {
         "zxc",
@@ -55,6 +55,7 @@ public class TypeByRegion : MonoBehaviour
         "rtyu",
         "iop"
     };
+
     #endregion
 
     private void Awake()
@@ -119,6 +120,27 @@ public class TypeByRegion : MonoBehaviour
         return screenHeight / cellDivisor;
     }
 
+    private bool CompareNumericalDifference(string _sign, int _leftNumeric, int _rightNumberic)
+    {
+        switch (_sign)
+        {
+            case ">":
+                return (_leftNumeric > _rightNumberic);
+
+            case "<":
+                return (_leftNumeric < _rightNumberic);
+
+            default:
+                Debug.LogError("This is an invalid symbol for comparing.");
+                return false;
+        }
+    }
+
+    private bool BetweenValues(int _value1, int _value2, int _setValue)
+    {
+        return (_setValue > _value1 && _setValue < _value2);
+    }
+
     public int RegionalPositionToCellNumber(Vector2 _position)
     {
         /* This will iterate though the x and y coordinates.
@@ -133,8 +155,31 @@ public class TypeByRegion : MonoBehaviour
         {
             for (int ySide = 0; ySide < cellDivisor; ySide++)
             {
-                if (_position.x == xSide && _position.y == ySide)
+                //If all keys are being used, we need values 0 through 8
+                #region If TBR_ALL
+                if (GameManager.Instance.gameMode == GameManager.GameMode.TBR_ALL && (_position.x == xSide && _position.y == ySide))
                     return (xSide + (ySide * cellDivisor));
+                #endregion
+
+                //However if we are only using homerows, we take our normal equation and add or 
+                //subtract cellDivisor (3) to get all home row keys (3 - 5)
+                #region If TBR_HomeRow
+                else if (GameManager.Instance.gameMode == GameManager.GameMode.TBR_HOMEROW &&
+            (_position.x == xSide && _position.y == ySide))
+                {
+                    int cellEquation = xSide + (ySide * cellDivisor);
+
+                    //Made functions to not make long if statments
+                    bool lessThan = CompareNumericalDifference("<", cellDivisor, cellEquation);
+                    bool moreThan = CompareNumericalDifference(">", cellDivisor, cellEquation);
+
+                    if (!BetweenValues(3, 5, cellEquation))
+                    {
+                        if (lessThan) return (cellEquation - cellDivisor);
+                        else if (moreThan) return (cellEquation + cellDivisor);
+                    }
+                } 
+                #endregion
             }
         }
         return -1;
@@ -167,7 +212,7 @@ public class TypeByRegion : MonoBehaviour
 
     public void UpdateScreenSize()
     {
-        screenWidth = Screen.width;
-        screenHeight = Screen.height;
+        screenWidth = Screen.width - right;
+        screenHeight = Screen.height - top;
     }
 }

@@ -69,6 +69,14 @@ public class Key_Layout : MonoBehaviour
         "asdfghjkl;",
         "qwertyuiopasdfghjkl;zxcvbnm,./"
     };
+    readonly private string[] defaultLayoutTechmeister = new string[5]
+    {
+        "asdf",
+        "qwerasdf",
+        "qwerasdfzxcv",
+        "asdfghjkl;",
+        "qwertyuiopasdfghjkl;zxcvbnm,./"
+    };
     readonly private float[] defaultKeyScale = new float[5]
     {
         2.25f,
@@ -116,9 +124,19 @@ public class Key_Layout : MonoBehaviour
 
     void InitiateAutoKeyBind()
     {
-        //Find all objects in parent
-        for (int keyNum = 0; keyNum < defaultLayout[(int)keyLayout].Length; keyNum++)
-            InvokeKeyBind(defaultLayout[(int)keyLayout][keyNum]);
+        //Find all objects in parent.
+        switch (GameManager.Instance.gameMode)
+        {
+            case GameManager.GameMode.STANDARD:
+                for (int keyNum = 0; keyNum < defaultLayout[(int)keyLayout].Length; keyNum++)
+                    InvokeKeyBind(defaultLayout[(int)keyLayout][keyNum]);
+                break;
+
+            case GameManager.GameMode.TECHMEISTER:
+                for (int keyNum = 0; keyNum < defaultLayoutTechmeister[(int)keyLayout].Length; keyNum++)
+                    InvokeKeyBind(defaultLayout[(int)keyLayout][keyNum]);
+                break;
+        }
     }
 
     //This will simply take any character, and keybind it.
@@ -263,6 +281,7 @@ public class Key_Layout : MonoBehaviour
 
             //Now we get the Cell Number
             int cellNum = recipient.RegionalPositionToCellNumber(regionalPosition);
+            Debug.Log(cellNum);
 
             //With our cellNum, we can now tell our recipient to give use the keyClusters that
             //We need

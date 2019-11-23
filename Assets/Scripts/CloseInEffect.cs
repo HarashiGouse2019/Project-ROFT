@@ -36,7 +36,7 @@ public class CloseInEffect : NoteEffect
         initiatedNoteOffset = noteOffset;
         keyNumPosition = keyPosition;
 
-        
+
         //if (Key_Layout.Instance != null && Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
         //    CheckForDoubles();
     }
@@ -52,8 +52,21 @@ public class CloseInEffect : NoteEffect
     {
         if (dispose && ClosestObjectClass.closestObject[keyNumPosition] != null)
         {
-            ClosestObjectClass.closestObject[keyNumPosition].SetActive(false);
-            ClosestObjectClass.closestObject[keyNumPosition] = null;
+            if (ClickEvent.targetKey != null)
+            {
+                int specificKey = ClickEvent.targetKey.GetComponentInParent<KeyId>().keyID;
+
+                ClosestObjectClass.closestObject[specificKey].SetActive(false);
+                ClosestObjectClass.closestObject[specificKey] = null;
+
+                ClosestObjectClass.targetKey = null;
+            }
+            else
+            {
+                Debug.Log("If you are getting this... We have a problem...");
+                ClosestObjectClass.closestObject[keyNumPosition].SetActive(false);
+                ClosestObjectClass.closestObject[keyNumPosition] = null;
+            }
         }
     }
     void CloseIn()
@@ -68,6 +81,13 @@ public class CloseInEffect : NoteEffect
 
         transform.localScale = new Vector3(1 / GetPercentage(), 1 / GetPercentage(), 1f);
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.2f);
+
+        //For Techmeister, check targetKey frequently
+        if (GameManager.Instance.gameMode == GameManager.GameMode.TECHMEISTER && ClosestObjectClass.targetKey == null)
+        {
+            ClickEvent.targetKey = Key_Layout.keyObjects[GetComponentInParent<KeyId>().keyID];
+        }
+
         #region Auto Play
         if (CheckSoloPlay())
         {
@@ -132,10 +152,14 @@ public class CloseInEffect : NoteEffect
                 mapReader.keys[keyNum].type == Key.KeyType.Tap &&
                 Input.GetKeyDown(Key_Layout.Instance.bindedKeys[keyNumPosition]));
 
+            bool clickType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
+                mapReader.keys[keyNum].type == Key.KeyType.Click &&
+                ClickEvent.ClickReceived());
+
             bool TBRType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter &&
                 Input.GetKeyDown(GetComponentInParent<AppearEffect>().assignedKeyBind));
 
-            if (accuracyString != "" && (tapType || TBRType))
+            if (accuracyString != "" && (tapType || clickType || TBRType))
             {
                 dispose = true;
 
@@ -148,7 +172,8 @@ public class CloseInEffect : NoteEffect
 
                     GameObject key;
 
-                    if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract) {
+                    if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract)
+                    {
                         key = Key_Layout.keyObjects[keyNumPosition];
                         key.GetComponentInChildren<PulseEffect>().DoPulseReaction();
                     }

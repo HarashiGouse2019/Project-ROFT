@@ -12,11 +12,11 @@ ROFTID: 28314
 GROUPID: 28176143
 
 [Difficulty]
-StressBuild: 5
+StressBuild: 7
 ObjectCount: 0
 KeyCount: 8
-AccuracyHarshness: 7.25
-ApproachSpeed: 9
+AccuracyHarshness: 8
+ApproachSpeed: 9.25
 
 [Objects]
 3,325516,0

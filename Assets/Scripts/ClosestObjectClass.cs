@@ -2,17 +2,12 @@
 
 public class ClosestObjectClass : MonoBehaviour
 {
-    public static ClosestObjectClass Instance;
     public static GameObject[] closestObject = new GameObject[30];
-    public GameObject[] closeObjTemp;
-    // Start is called before the first frame update
-    void Start()
-    {
-        Instance = this;
-    }
+    public static GameObject targetKey;
+    public GameObject currentTargetKey;
 
     private void Update()
     {
-        closeObjTemp = closestObject;
+        currentTargetKey = targetKey;
     }
 }
