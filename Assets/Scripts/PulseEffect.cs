@@ -5,14 +5,11 @@ using UnityEngine;
 
 public class PulseEffect : MonoBehaviour
 {
-    Transform m_transform;
+    public Transform m_transform;
     Vector3 scale;
     Vector3 normalScale;
     bool waiting = false;
     float time;
-
-    const float size = 1.30f;
-    readonly Vector3 pulseSize = new Vector3(size, size, size);
 
     // Start is called before the first frame update
     void Start()
@@ -29,9 +26,10 @@ public class PulseEffect : MonoBehaviour
     }
 
     //When I hit a note, this function will be called
-    public void DoPulseReaction()
+    public void DoPulseReaction(float _size = 0.2f)
     {
-        scale = pulseSize;
+        Vector3 pulseSize = new Vector3(_size, _size, _size);
+        scale += pulseSize;
         m_transform.localScale = scale;
         waiting = true;
     }

@@ -52,21 +52,10 @@ public class CloseInEffect : NoteEffect
     {
         if (dispose && ClosestObjectClass.closestObject[keyNumPosition] != null)
         {
-            if (ClickEvent.targetKey != null)
-            {
-                int specificKey = ClickEvent.targetKey.GetComponentInParent<KeyId>().keyID;
-
-                ClosestObjectClass.closestObject[specificKey].SetActive(false);
-                ClosestObjectClass.closestObject[specificKey] = null;
-
-                ClosestObjectClass.targetKey = null;
-            }
-            else
-            {
-                Debug.Log("If you are getting this... We have a problem...");
-                ClosestObjectClass.closestObject[keyNumPosition].SetActive(false);
-                ClosestObjectClass.closestObject[keyNumPosition] = null;
-            }
+            
+            ClosestObjectClass.closestObject[keyNumPosition].SetActive(false);
+            ClosestObjectClass.closestObject[keyNumPosition] = null;
+            
         }
     }
     void CloseIn()
@@ -93,43 +82,43 @@ public class CloseInEffect : NoteEffect
         {
             if (EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
             {
-                dispose = true;
-
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                     ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
 
                 BreakComboChain();
 
                 GameManager.consecutiveMisses++;
+
+                dispose = true;
             }
 
 
             if (accuracyString == "Perfect")
             {
-                dispose = true;
-
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                 {
-
-
                     ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
-                    IncrementComboChain();
-                    SendAccuracyScore();
-                    BuildStress(index);
 
                     if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract)
                     {
                         GameObject key;
 
                         key = Key_Layout.keyObjects[keyNumPosition];
-                        key.GetComponentInChildren<PulseEffect>().DoPulseReaction();
+                        key.GetComponent<PulseEffect>().DoPulseReaction(0.1f);
+                        key.GetComponentInChildren<PulseEffect>().DoPulseReaction(0.1f);
+                        GameManager.Instance.TM_COMBO.GetComponent<PulseEffect>().DoPulseReaction(0.05f);
+                        
                     }
-
                     AudioManager.Instance.Play("Normal", 100, true);
+
+
+                    IncrementComboChain();
+                    SendAccuracyScore();
+                    BuildStress(index);
 
                     GameManager.consecutiveMisses = 0;
 
-
+                    dispose = true;
                 }
             }
         }
@@ -138,14 +127,14 @@ public class CloseInEffect : NoteEffect
         {
             if (EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
             {
-                dispose = true;
-
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                     ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
 
                 BreakComboChain();
 
                 GameManager.consecutiveMisses++;
+
+                dispose = true;
             }
 
             bool tapType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
@@ -161,26 +150,30 @@ public class CloseInEffect : NoteEffect
 
             if (accuracyString != "" && (tapType || clickType || TBRType))
             {
-                dispose = true;
-
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                 {
                     ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
-                    IncrementComboChain();
-                    SendAccuracyScore();
-                    BuildStress(index);
+                    
 
                     GameObject key;
 
                     if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract)
                     {
                         key = Key_Layout.keyObjects[keyNumPosition];
-                        key.GetComponentInChildren<PulseEffect>().DoPulseReaction();
+                        key.GetComponent<PulseEffect>().DoPulseReaction(0.15f);
+                        key.GetComponentInChildren<PulseEffect>().DoPulseReaction(0.15f);
+                        GameManager.Instance.TM_COMBO.GetComponent<PulseEffect>().DoPulseReaction(0.05f);
                     }
 
                     AudioManager.Instance.Play("Normal", 100, true);
 
+                    IncrementComboChain();
+                    SendAccuracyScore();
+                    BuildStress(index);
+
                     GameManager.consecutiveMisses = 0;
+
+                    dispose = true;
                 }
             }
         }
@@ -214,15 +207,16 @@ public class CloseInEffect : NoteEffect
 
     public void SendAccuracyScore()
     {
-        GameManager.Instance.accuracyStats[index] += 1;
-        GameManager.sentScore = GameManager.accuracyScore[index];
         GameObject sign = GetComponentInParent<ObjectPooler>().GetMember("Signs");
-
         if (!sign.activeInHierarchy)
         {
             sign.SetActive(true);
             sign.transform.position = ClosestObjectClass.closestObject[keyNumPosition].transform.position;
             sign.GetComponent<AccuracySign>().ShowSign(accuracyString);
+
+            GameManager.sentScore = GameManager.accuracyScore[index];
+            GameManager.Instance.accuracyStats[index] += 1;
+            GameManager.Instance.UpdateScore();
         }
     }
 

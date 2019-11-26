@@ -80,7 +80,7 @@ public class Key_Layout : MonoBehaviour
     readonly private float[] defaultKeyScale = new float[5]
     {
         2.25f,
-        1.5f,
+        1.75f,
         1.4f,
         1.4f,
         1f
@@ -134,7 +134,7 @@ public class Key_Layout : MonoBehaviour
 
             case GameManager.GameMode.TECHMEISTER:
                 for (int keyNum = 0; keyNum < defaultLayoutTechmeister[(int)keyLayout].Length; keyNum++)
-                    InvokeKeyBind(defaultLayout[(int)keyLayout][keyNum]);
+                    InvokeKeyBind(defaultLayoutTechmeister[(int)keyLayout][keyNum]);
                 break;
         }
     }

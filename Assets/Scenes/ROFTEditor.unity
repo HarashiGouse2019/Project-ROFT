@@ -539,7 +539,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   editMode: 0
-  gameMode: 0
+  gameMode: 1
   TM_SONGNAME: {fileID: 0}
   TM_TOTALNOTES: {fileID: 0}
   TM_TOTALKEYS: {fileID: 0}
@@ -555,11 +555,12 @@ MonoBehaviour:
   IMG_STRESS: {fileID: 7113210978755082222}
   IMG_STRESSBACKGROUND: {fileID: 0}
   totalScore: 0
+  previousScore: 0
   combo: 0
   maxCombo: 0
   stressBuild: 10
   accuracyStats: 0000000000000000000000000000000000000000
-  isAutoPlaying: 1
+  isAutoPlaying: 0
 --- !u!4 &563326976
 Transform:
   m_ObjectHideFlags: 0
@@ -946,7 +947,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: KASAI HARDCORES - Cycle Hit
+  m_name: Plexi - The Sweet New Groove
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0
@@ -3376,7 +3377,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ec2119ba0127ce439f515369208fd1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  music: {fileID: 8300000, guid: af9b332501cdd1a4b8a8263efb96e459, type: 3}
+  music: {fileID: 8300000, guid: 256be60ab5aae6a4bbf9e4c35739f39b, type: 3}
   record: 0
   tickSignature: 4
   playButton: {fileID: 7113210978690110238}
@@ -3450,6 +3451,7 @@ GameObject:
   - component: {fileID: 7113210978960427812}
   - component: {fileID: 7113210978960427814}
   - component: {fileID: 7113210978960427815}
+  - component: {fileID: 7113210978960427816}
   m_Layer: 5
   m_Name: COMBO
   m_TagString: Untagged
@@ -3577,6 +3579,19 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7113210978960427816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7113210978960427813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78234e4a5db00e94cac9b9d8f62e1540, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_transform: {fileID: 7113210978960427812}
 --- !u!224 &7113210979032125593
 RectTransform:
   m_ObjectHideFlags: 0

@@ -81,6 +81,7 @@ public class GameManager : MonoBehaviour
 
     [Header("In-Game Statistics and Values")]
     public int totalScore;
+    public int previousScore; //This will be used for a increasing effect
     public int combo;
     public int maxCombo;
     [Range(1f, 10f)] public float stressBuild = 5f;
@@ -120,9 +121,11 @@ public class GameManager : MonoBehaviour
 
     void RunScoreSystem()
     {
-        UpdateMaxCombo();
-        totalScore += sentScore * combo;
-        sentScore = reset;
+        //Raising effect
+        if (previousScore < totalScore)
+            previousScore += 50 * combo;
+        else
+            previousScore = totalScore;
     }
 
     void UpdateMaxCombo()
@@ -133,7 +136,7 @@ public class GameManager : MonoBehaviour
 
     void RunUI()
     {
-        TM_SCORE.text = totalScore.ToString("D10");
+        TM_SCORE.text = previousScore.ToString("D10");
         TM_COMBO.text = "x" + combo.ToString();
         TM_DIFFICULTY.text = "DIFFICULTY: " + MapReader.Instance.difficultyRating.ToString("F2", CultureInfo.InvariantCulture);
 
@@ -188,7 +191,14 @@ public class GameManager : MonoBehaviour
         combo = reset;
         maxCombo = reset;
         totalScore = reset;
+        sentScore = reset;
         IMG_STRESS.fillAmount = reset;
         EditorToolClass.musicSource.timeSamples = reset;
+    }
+
+    public void UpdateScore()
+    {
+        UpdateMaxCombo();
+        totalScore += sentScore * combo;
     }
 }
