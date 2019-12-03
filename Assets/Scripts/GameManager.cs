@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    public static bool inSong = true;
+
     public static string[] accuracyString =
    {
         "Perfect",
@@ -30,10 +32,10 @@ public class GameManager : MonoBehaviour
     public static float[] stressAmount =
     {
        2f,
-        1f,
         0f,
         -1f,
-        -2f
+        -2f,
+        -5f
     };
 
     public static int sentScore;
@@ -66,7 +68,9 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI TM_TOTALNOTES;
     public TextMeshProUGUI TM_TOTALKEYS;
     public TextMeshProUGUI TM_SCORE;
+    public TextMeshProUGUI TM_MAXSCORE;
     public TextMeshProUGUI TM_COMBO;
+    public TextMeshProUGUI TM_COMBO_UNDERLAY;
     public TextMeshProUGUI TM_MAXCOMBO;
     public TextMeshProUGUI TM_DIFFICULTY;
     public TextMeshProUGUI TM_PERFECT;
@@ -74,21 +78,27 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI TM_GOOD;
     public TextMeshProUGUI TM_OK;
     public TextMeshProUGUI TM_MISS;
+    public TextMeshProUGUI TM_ACCURACYPERCENTILE;
 
     [Header("UI IMAGES")]
     public Image IMG_STRESS;
     public Image IMG_STRESSBACKGROUND;
+    public Image IMG_SCREEN_OVERLAY;
+    public Image IMG_PROGRESSION_FILL;
 
     [Header("In-Game Statistics and Values")]
-    public int totalScore;
-    public int previousScore; //This will be used for a increasing effect
+    public long totalScore;
+    public long previousScore; //This will be used for a increasing effect
     public int combo;
     public int maxCombo;
+    public float overallAccuracy; //The average accuracy during the song
+    public int accuracyPercentile; //The data in which gets accuracy in percent;
     [Range(1f, 10f)] public float stressBuild = 5f;
     public int[] accuracyStats = new int[5];
     public bool isAutoPlaying;
 
     private readonly int reset = 0;
+    int initialGain = 1;
 
 
     private void Awake()
@@ -106,16 +116,20 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        IMG_STRESS.fillAmount = 0f;
+        if (IMG_STRESS != null) IMG_STRESS.fillAmount = 0f;
+        Application.targetFrameRate = 60;
     }
 
     // Update is called once per frame
     void Update()
     {
         #region Running Game Maintanence
-        RunScoreSystem();
-        RunUI();
-        RunInGameControls(); 
+        if (inSong)
+        {
+            RunScoreSystem();
+            RunUI();
+            RunInGameControls();
+        }
         #endregion
     }
 
@@ -123,9 +137,15 @@ public class GameManager : MonoBehaviour
     {
         //Raising effect
         if (previousScore < totalScore)
-            previousScore += 50 * combo;
+        {
+            previousScore += combo * initialGain/2;
+            initialGain+=combo;
+        }
         else
+        {
             previousScore = totalScore;
+            initialGain = reset + 1;
+        }
     }
 
     void UpdateMaxCombo()
@@ -138,7 +158,9 @@ public class GameManager : MonoBehaviour
     {
         TM_SCORE.text = previousScore.ToString("D10");
         TM_COMBO.text = "x" + combo.ToString();
+        TM_COMBO_UNDERLAY.text = "x" + combo.ToString();
         TM_DIFFICULTY.text = "DIFFICULTY: " + MapReader.Instance.difficultyRating.ToString("F2", CultureInfo.InvariantCulture);
+        TM_MAXSCORE.text = "MAX SCORE:     " + MapReader.Instance.maxScore.ToString();
 
         //This will be temporary
         TM_PERFECT.text = "PERFECT:   " + 
@@ -164,6 +186,9 @@ public class GameManager : MonoBehaviour
         TM_MAXCOMBO.text = "MAX COMBO:     " 
             + maxCombo.ToString() + 
             " (" + Mathf.Floor((maxCombo / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture)  + "%)";
+
+        TM_ACCURACYPERCENTILE.text = "ACCURACY:     "
+           + Mathf.Floor(overallAccuracy).ToString("F0", CultureInfo.InvariantCulture) + "%";
 
         if (EditorToolClass.musicSource.isPlaying) ManageStressMeter();
     }
@@ -193,6 +218,10 @@ public class GameManager : MonoBehaviour
         totalScore = reset;
         sentScore = reset;
         IMG_STRESS.fillAmount = reset;
+        sentStress = reset;
+        consecutiveMisses = reset;
+        accuracyPercentile = reset;
+        overallAccuracy = reset;
         EditorToolClass.musicSource.timeSamples = reset;
     }
 
@@ -200,5 +229,16 @@ public class GameManager : MonoBehaviour
     {
         UpdateMaxCombo();
         totalScore += sentScore * combo;
+    }
+
+    public int GetSumOfStats()
+    {
+        //Do a calculation on accuracy stats
+        int sumOfStats = 0;
+        foreach (int value in GameManager.Instance.accuracyStats)
+        {
+            sumOfStats += value;
+        }
+        return sumOfStats;
     }
 }

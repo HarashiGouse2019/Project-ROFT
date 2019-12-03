@@ -15,6 +15,8 @@ public class MapReader : MonoBehaviour
 
     public float totalKeys;
 
+    public long maxScore;
+
     public int keyLayoutEnum;
 
     public List<Key> keys = new List<Key>();
@@ -38,22 +40,25 @@ public class MapReader : MonoBehaviour
     {
         ReadRFTMKeys(m_name);
 
-        KeyLayoutAwake((int)keyLayoutClass.layoutMethod);
+        if (keyLayoutClass != null)
+            KeyLayoutAwake((int)keyLayoutClass.layoutMethod);
 
         //Get other values such as Approach Speed, Stress Build, and Accuracy Harshness
-        if (!EditorToolClass.Instance.record)
+        if (EditorToolClass.Instance != null && !EditorToolClass.Instance.record)
         {
             int difficultyTag = InRFTMJumpTo("Difficulty");
             NoteEffect.Instance.approachSpeed = float.Parse(ReadPropertyFrom(difficultyTag, "ApproachSpeed"));
             GameManager.Instance.stressBuild = float.Parse(ReadPropertyFrom(difficultyTag, "StressBuild"));
             NoteEffect.Instance.accuracy = float.Parse(ReadPropertyFrom(difficultyTag, "AccuracyHarshness"));
+            maxScore = CalculateMaxScore();
         }
 
     }
 
     private void Update()
     {
-        difficultyRating = CalculateDifficultyRating();
+        if (GameManager.inSong == true)
+            difficultyRating = CalculateDifficultyRating();
     }
 
     void ReadRFTMKeys(string _name)
@@ -141,7 +146,7 @@ public class MapReader : MonoBehaviour
         }
         #endregion
 
-        
+
     }
 
     float CalculateDifficultyRating()
@@ -157,13 +162,23 @@ public class MapReader : MonoBehaviour
         if (keyLayoutClass.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
             gameModeBoost = 2.0f;
 
-        float calculatedRating = notesPerSec + 
-            (totalKeys / maxKeys) + 
-            approachSpeedInPercent + 
-            (EditorToolClass.musicSource.pitch / 2) + 
+        float calculatedRating = notesPerSec +
+            (totalKeys / maxKeys) +
+            approachSpeedInPercent +
+            (EditorToolClass.musicSource.pitch / 2) +
             gameModeBoost;
 
         return calculatedRating;
+    }
+
+    long CalculateMaxScore()
+    {
+        long ini_Score = 0;
+        for (long ini_Combo = 1; ini_Combo < totalNotes + 1; ini_Combo++)
+        {
+            ini_Score += 300 * ini_Combo;
+        }
+        return ini_Score;
     }
 
     void KeyLayoutAwake(int _appearEffectOn)
@@ -304,6 +319,7 @@ public class MapReader : MonoBehaviour
 
     void DistributeTypeTo(ObjectTypes _objectReader, Key _key)
     {
-        _objectReader.objects.Add(_key);
+        if (_objectReader != null)
+            _objectReader.objects.Add(_key);
     }
 }

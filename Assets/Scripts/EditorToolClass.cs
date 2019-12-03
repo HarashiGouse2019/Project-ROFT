@@ -76,7 +76,9 @@ public class EditorToolClass : MonoBehaviour
 
     readonly private KeyCode tapKey = KeyCode.T;
     readonly private int tapLimit = 16;
-    readonly private int doneTapLimit = 8;
+    readonly private int doneTapLimit = 3;
+
+    float time = 0f;
     #endregion
 
     private void Awake()
@@ -98,6 +100,8 @@ public class EditorToolClass : MonoBehaviour
             musicIsPlaying = musicSource.isPlaying;
 
         if (!tapCalulationDone) TapForBPM();
+
+        DetectInactivity();
     }
 
     void FixedUpdate()
@@ -158,7 +162,6 @@ public class EditorToolClass : MonoBehaviour
 
     public void UpdateSampleFromCaretPosition()
     {
-        Debug.Log("HEWWO!!!!");
         ToggleCaretDrag(true);
 
         //We're doing the opposite of the UpdateCaret
@@ -208,6 +211,7 @@ public class EditorToolClass : MonoBehaviour
     {
         if (Input.GetKeyDown(tapKey))
         {
+            inactiveTaps = 0;
             if (!musicIsPlaying)
             {
                 PlayMusic();
@@ -229,34 +233,22 @@ public class EditorToolClass : MonoBehaviour
                     Debug.Log("BPM: " + bpm);
                 }
 
-                inactiveTaps = 0;
+                
             }
         }
-
         if (inactiveTaps > doneTapLimit - 1) tapCalulationDone = true;
-    }
-
-    public void MarkTempo()
-    {
-
-    }
-
-    public void MarkPosition()
-    {
-
     }
 
     void Tick()
     {
         if ((musicSource.time - (determinedPulse * totalTicksSinceStart)) > determinedPulse)
         {
-
             if (taps > tapLimit - 1)
             {
                 totalTicksSinceStart++;
                 if (ticks == 1) AudioManager.Instance.Play("FirstTick");
                 else AudioManager.Instance.Play("Tick");
-                DetectInactivity();
+                
             }
             else
             {
@@ -313,7 +305,15 @@ public class EditorToolClass : MonoBehaviour
     }
     void DetectInactivity()
     {
-        inactiveTaps++;
+        if (!Input.GetKeyDown(tapKey) && taps > 0)
+        {
+            time += Time.deltaTime;
+            if (time > 1)
+            {
+                inactiveTaps++;
+                time = 0;
+            }
+        }
     }
 
     void InitialRecord()
@@ -523,5 +523,10 @@ public class EditorToolClass : MonoBehaviour
 
         rftmWriter.WriteLine(_data);
         rftmWriter.Close();
+    }
+
+    public float GetMusicLengthInSamples()
+    {
+        return musicLengthInSamples;
     }
 }

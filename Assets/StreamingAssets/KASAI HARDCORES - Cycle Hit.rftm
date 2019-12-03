@@ -15,8 +15,8 @@ GROUPID: G-1905152653
 StressBuild: 10
 ObjectCount: 2779
 KeyCount: 12
-AccuracyHarshness: 7.5
-ApproachSpeed: 10
+AccuracyHarshness: 8.25
+ApproachSpeed: 9.35
 
 [Objects]
 3,64915,0

@@ -6,6 +6,8 @@ using UnityEngine;
 public class PulseEffect : MonoBehaviour
 {
     public Transform m_transform;
+    public float waitDuration = 0.05f;
+    public float shrinkRate = 0.05f;
     Vector3 scale;
     Vector3 normalScale;
     bool waiting = false;
@@ -22,7 +24,7 @@ public class PulseEffect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (waiting) Wait(0.05f);
+        if (waiting) Wait(waitDuration, shrinkRate);
     }
 
     //When I hit a note, this function will be called
@@ -34,11 +36,11 @@ public class PulseEffect : MonoBehaviour
         waiting = true;
     }
 
-    public void Wait(float _duration)
+    public void Wait(float _duration, float _shrinkRate)
     {
         
         time += Time.deltaTime;
-        scale = new Vector3(scale.x - 0.05f, scale.y - 0.05f, 1f);
+        scale = new Vector3(scale.x - _shrinkRate, scale.y - _shrinkRate, 1f);
         m_transform.localScale = scale;
         if (time >= _duration)
         {

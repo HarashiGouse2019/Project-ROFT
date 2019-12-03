@@ -19,6 +19,8 @@ public class CloseInEffect : NoteEffect
 
     public bool dispose;
 
+    const int possibleAccuracy = 4;
+
     //So they don't have to look screwed up
     protected Color originalAppearance;
     private void Awake()
@@ -99,16 +101,7 @@ public class CloseInEffect : NoteEffect
                 {
                     ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
 
-                    if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract)
-                    {
-                        GameObject key;
-
-                        key = Key_Layout.keyObjects[keyNumPosition];
-                        key.GetComponent<PulseEffect>().DoPulseReaction(0.1f);
-                        key.GetComponentInChildren<PulseEffect>().DoPulseReaction(0.1f);
-                        GameManager.Instance.TM_COMBO.GetComponent<PulseEffect>().DoPulseReaction(0.05f);
-                        
-                    }
+                    Pulse();
                     AudioManager.Instance.Play("Normal", 100, true);
 
 
@@ -153,17 +146,8 @@ public class CloseInEffect : NoteEffect
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                 {
                     ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
-                    
 
-                    GameObject key;
-
-                    if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract)
-                    {
-                        key = Key_Layout.keyObjects[keyNumPosition];
-                        key.GetComponent<PulseEffect>().DoPulseReaction(0.15f);
-                        key.GetComponentInChildren<PulseEffect>().DoPulseReaction(0.15f);
-                        GameManager.Instance.TM_COMBO.GetComponent<PulseEffect>().DoPulseReaction(0.05f);
-                    }
+                    Pulse();
 
                     AudioManager.Instance.Play("Normal", 100, true);
 
@@ -207,6 +191,7 @@ public class CloseInEffect : NoteEffect
 
     public void SendAccuracyScore()
     {
+        
         GameObject sign = GetComponentInParent<ObjectPooler>().GetMember("Signs");
         if (!sign.activeInHierarchy)
         {
@@ -215,7 +200,10 @@ public class CloseInEffect : NoteEffect
             sign.GetComponent<AccuracySign>().ShowSign(accuracyString);
 
             GameManager.sentScore = GameManager.accuracyScore[index];
+
             GameManager.Instance.accuracyStats[index] += 1;
+            GameManager.Instance.accuracyPercentile += (((possibleAccuracy - index) / possibleAccuracy) * 100);
+            GameManager.Instance.overallAccuracy = GameManager.Instance.accuracyPercentile / GameManager.Instance.GetSumOfStats();
             GameManager.Instance.UpdateScore();
         }
     }
@@ -229,7 +217,8 @@ public class CloseInEffect : NoteEffect
     public void BreakComboChain()
     {
         GameManager.Instance.accuracyStats[4] += 1;
-        BuildStress(4);
+        GameManager.Instance.accuracyPercentile += (((possibleAccuracy - index) / possibleAccuracy) * 100);
+        GameManager.Instance.overallAccuracy = GameManager.Instance.accuracyPercentile / GameManager.Instance.GetSumOfStats();
         GameManager.Instance.combo = m_break;
 
         GameObject sign = GetComponentInParent<ObjectPooler>().GetMember("Signs");
@@ -241,6 +230,8 @@ public class CloseInEffect : NoteEffect
             sign.GetComponent<AccuracySign>().ShowSign("miss");
 
         }
+
+        BuildStress(4);
     }
 
     public void BuildStress(int _index)
@@ -264,6 +255,21 @@ public class CloseInEffect : NoteEffect
     bool CheckSoloPlay()
     {
         return GameManager.Instance.isAutoPlaying;
+    }
+
+    void Pulse()
+    {
+        GameObject key;
+
+        if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract)
+        {
+            key = Key_Layout.keyObjects[keyNumPosition];
+            key.GetComponent<PulseEffect>().DoPulseReaction(0.15f);
+            key.GetComponentInChildren<PulseEffect>().DoPulseReaction(0.15f);
+            GameManager.Instance.TM_COMBO.GetComponent<PulseEffect>().DoPulseReaction(0.05f);
+            GameManager.Instance.TM_COMBO_UNDERLAY.GetComponent<PulseEffect>().DoPulseReaction();
+            GameManager.Instance.IMG_SCREEN_OVERLAY.GetComponent<OverlayPulseEffect>().DoPulseReaction();
+        }
     }
 
     //void CheckForDoubles()

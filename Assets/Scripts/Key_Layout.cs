@@ -274,7 +274,7 @@ public class Key_Layout : MonoBehaviour
             spawnPositionY = randY;
 
             //Make a Vector2 with our random coordinates
-            Vector2 positionInScreen = new Vector2(randX, randY);
+            Vector2 positionInScreen = new Vector2(randX + keySpread[0], randY + keySpread[0]);
 
             //We get our Regional Position
             Vector2 regionalPosition = recipient.CheckRegionalPositionFrom(positionInScreen);
