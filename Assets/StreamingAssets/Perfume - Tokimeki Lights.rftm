@@ -1,51 +1,51 @@
 [General]
 Author: Tokusunei
-AudioFilename: 
+AudioFilename:
 GameMode: Techmeister
 
 [Metadata]
-Title: 
-TitleUnicode: 
-Artist: 
-ArtistUnicode: 
-Creator: 
+Title:
+TitleUnicode:
+Artist:
+ArtistUnicode:
+Creator:
 ROFTID: R-191231369
 GROUPID: G-1912311992
 
 [Difficulty]
 StressBuild: 5.7
-ObjectCount: 
+ObjectCount:
 KeyCount: 4
 AccuracyHarshness: 5
-ApproachSpeed: 7
+ApproachSpeed: 6
 
 [Objects]
 3,75499,0
-3,96667,0
+0,96667,0
 3,115718,0
-3,135475,0
+0,135475,0
 3,155231,0
-3,174988,0
+0,174988,0
 3,194039,0
-3,213091,0
+0,213091,0
 3,232847,0
-3,252604,0
+0,252604,0
 3,273067,0
-3,292118,0
+0,292118,0
 3,311169,0
-3,330926,0
+0,330926,0
 3,351388,0
-3,371851,0
+0,371851,0
 3,390902,0
-3,409247,0
+0,409247,0
 3,428299,0
-3,448055,0
+0,448055,0
 3,467812,0
-3,488275,0
+0,488275,0
 3,508031,0
-3,527788,0
+0,527788,0
 3,547545,0
-3,567302,0
+0,567302,0
 3,587059,0
 3,607521,0
 3,626572,0

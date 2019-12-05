@@ -55,8 +55,12 @@ public class Key_Layout : MonoBehaviour
     public GameObject key;
     public ObjectPooler pooler;
 
+    //spawnPosX and Y are used for Regional Scatter
     public float spawnPositionX = 0;
     public float spawnPositionY = 0;
+
+    //This is for Regional Scatter spawning to help prevent overlapping
+    public static float padding = 3.5f;
 
     #endregion
 
@@ -93,6 +97,7 @@ public class Key_Layout : MonoBehaviour
         1.5f
     };
 
+    //newX and newY are for Abstract Layout
     private float newXPosition = 0f;
     private float newYPosition = 0f;
     private uint numCols = 0;
@@ -281,7 +286,6 @@ public class Key_Layout : MonoBehaviour
 
             //Now we get the Cell Number
             int cellNum = recipient.RegionalPositionToCellNumber(regionalPosition);
-            Debug.Log(cellNum);
 
             //With our cellNum, we can now tell our recipient to give use the keyClusters that
             //We need

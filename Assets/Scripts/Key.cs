@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 [Serializable]
 public class Key
@@ -12,8 +13,15 @@ public class Key
         Click
     }
 
+    //Central Values
+    [Header("Central Values")]
     public int keyNum;
     public int keySample;
     public KeyType type;
+
+    //Miscellaneous Values
+    [Header("Miscellaneous Values")]
+    public int miscellaneousValue1;
+    public int miscellaneousValue2;
 }
 

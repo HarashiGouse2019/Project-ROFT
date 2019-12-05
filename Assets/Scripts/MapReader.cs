@@ -89,13 +89,26 @@ public class MapReader : MonoBehaviour
 
                     if (filePosition > targetPosition)
                     {
+                        //We'll count the frequency of commas to determine
+                        //that they are more values in the object
+                        int countCommas = 0;
+                        foreach (char c in line)
+                            if (c == ',')
+                                countCommas++;
+
                         //We create a new key, and assign our data value to our key
-                        Key newKey = new Key
-                        {
-                            keyNum = Convert.ToInt32(line.Split(separator)[0]),
-                            keySample = Convert.ToInt32(line.Split(separator)[1]),
-                            type = (Key.KeyType)Convert.ToInt32(line.Split(separator)[2])
-                        };
+                        Key newKey = new Key();
+
+                        newKey.keyNum = Convert.ToInt32(line.Split(separator)[0]);
+                        newKey.keySample = Convert.ToInt32(line.Split(separator)[1]);
+                        newKey.type = (Key.KeyType)Convert.ToInt32(line.Split(separator)[2]);
+
+                        //Check for any miscellaneous values
+                        if (countCommas > 2)
+                            newKey.miscellaneousValue1 = Convert.ToInt32(line.Split(separator)[3]);
+
+                        else if (countCommas > 3)
+                            newKey.miscellaneousValue2 = Convert.ToInt32(line.Split(separator)[4]);
 
                         //Update maxKeys
                         if (newKey.keyNum > maxKey)

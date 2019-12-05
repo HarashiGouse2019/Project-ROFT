@@ -2,12 +2,16 @@
 
 public class CloseInEffect : NoteEffect
 {
+
+
     public float initiatedNoteSample;
     public float initiatedNoteOffset;
     public float offsetStart;
 
     public int keyNumPosition; //So we know which key the notes are closing into
     public int keyNum; //We know what note we're on!!
+
+    public GameObject attachedArrow;
 
     public SpriteRenderer sprite;
 
@@ -20,6 +24,10 @@ public class CloseInEffect : NoteEffect
     public bool dispose;
 
     const int possibleAccuracy = 4;
+
+    bool detect = false;
+
+    public bool dontEffectMe = false;
 
     //So they don't have to look screwed up
     protected Color originalAppearance;
@@ -54,10 +62,14 @@ public class CloseInEffect : NoteEffect
     {
         if (dispose && ClosestObjectClass.closestObject[keyNumPosition] != null)
         {
-            
+            if (attachedArrow != null)
+            {
+                attachedArrow.SetActive(false);
+                attachedArrow = null;
+            }
             ClosestObjectClass.closestObject[keyNumPosition].SetActive(false);
             ClosestObjectClass.closestObject[keyNumPosition] = null;
-            
+
         }
     }
     void CloseIn()
@@ -73,12 +85,6 @@ public class CloseInEffect : NoteEffect
         transform.localScale = new Vector3(1 / GetPercentage(), 1 / GetPercentage(), 1f);
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.2f);
 
-        //For Techmeister, check targetKey frequently
-        if (GameManager.Instance.gameMode == GameManager.GameMode.TECHMEISTER && ClosestObjectClass.targetKey == null)
-        {
-            ClickEvent.targetKey = Key_Layout.keyObjects[GetComponentInParent<KeyId>().keyID];
-        }
-
         #region Auto Play
         if (CheckSoloPlay())
         {
@@ -93,7 +99,6 @@ public class CloseInEffect : NoteEffect
 
                 dispose = true;
             }
-
 
             if (accuracyString == "Perfect")
             {
@@ -130,6 +135,8 @@ public class CloseInEffect : NoteEffect
                 dispose = true;
             }
 
+
+
             bool tapType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
                 mapReader.keys[keyNum].type == Key.KeyType.Tap &&
                 Input.GetKeyDown(Key_Layout.Instance.bindedKeys[keyNumPosition]));
@@ -138,11 +145,19 @@ public class CloseInEffect : NoteEffect
                 mapReader.keys[keyNum].type == Key.KeyType.Click &&
                 ClickEvent.ClickReceived());
 
+            bool SlideType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
+                mapReader.keys[keyNum].type == Key.KeyType.Slide &&
+                attachedArrow != null &&
+                attachedArrow.GetComponent<ArrowDirectionSet>().Detect() &&
+                Input.GetKey(Key_Layout.Instance.bindedKeys[keyNumPosition]));
+
+
             bool TBRType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter &&
                 Input.GetKeyDown(GetComponentInParent<AppearEffect>().assignedKeyBind));
 
-            if (accuracyString != "" && (tapType || clickType || TBRType))
+            if (accuracyString != "" && (tapType || clickType || TBRType || SlideType))
             {
+
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                 {
                     ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
@@ -161,7 +176,6 @@ public class CloseInEffect : NoteEffect
                 }
             }
         }
-
     }
 
     protected override float GetPercentage()
@@ -191,7 +205,7 @@ public class CloseInEffect : NoteEffect
 
     public void SendAccuracyScore()
     {
-        
+
         GameObject sign = GetComponentInParent<ObjectPooler>().GetMember("Signs");
         if (!sign.activeInHierarchy)
         {
@@ -202,7 +216,9 @@ public class CloseInEffect : NoteEffect
             GameManager.sentScore = GameManager.accuracyScore[index];
 
             GameManager.Instance.accuracyStats[index] += 1;
-            GameManager.Instance.accuracyPercentile += (((possibleAccuracy - index) / possibleAccuracy) * 100);
+            float inverse = ((possibleAccuracy - (index)));
+            float percent = inverse / possibleAccuracy;
+            GameManager.Instance.accuracyPercentile += (percent * 100);
             GameManager.Instance.overallAccuracy = GameManager.Instance.accuracyPercentile / GameManager.Instance.GetSumOfStats();
             GameManager.Instance.UpdateScore();
         }

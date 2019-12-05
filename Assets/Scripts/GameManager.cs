@@ -91,8 +91,8 @@ public class GameManager : MonoBehaviour
     public long previousScore; //This will be used for a increasing effect
     public int combo;
     public int maxCombo;
-    public float overallAccuracy; //The average accuracy during the song
-    public int accuracyPercentile; //The data in which gets accuracy in percent;
+    public float overallAccuracy = 100.00f; //The average accuracy during the song
+    public float accuracyPercentile; //The data in which gets accuracy in percent;
     [Range(1f, 10f)] public float stressBuild = 5f;
     public int[] accuracyStats = new int[5];
     public bool isAutoPlaying;
@@ -188,7 +188,7 @@ public class GameManager : MonoBehaviour
             " (" + Mathf.Floor((maxCombo / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture)  + "%)";
 
         TM_ACCURACYPERCENTILE.text = "ACCURACY:     "
-           + Mathf.Floor(overallAccuracy).ToString("F0", CultureInfo.InvariantCulture) + "%";
+           + Mathf.Floor(overallAccuracy).ToString("F2", CultureInfo.InvariantCulture) + "%";
 
         if (EditorToolClass.musicSource.isPlaying) ManageStressMeter();
     }
@@ -208,7 +208,7 @@ public class GameManager : MonoBehaviour
 
     void RestartSong()
     {
-        NoteEffect.Instance.keyPosition = reset;
+        NoteEffect.keyPosition = reset;
 
         for (int stat = 0; stat < accuracyStats.Length; stat++)
             accuracyStats[stat] = reset;

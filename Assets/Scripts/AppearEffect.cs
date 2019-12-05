@@ -81,7 +81,8 @@ public class AppearEffect : CloseInEffect
         float appearanceRate = GetPercentage() + 0.02f;
 
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, appearanceRate);
-        childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, appearanceRate);
+        if (childSprite != null)
+            childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, appearanceRate);
 
         if (!assignedCircle.activeInHierarchy)
         {
@@ -101,7 +102,10 @@ public class AppearEffect : CloseInEffect
     private void OnDisable()
     {
         sprite.color = originalAppearance;
-        childSprite.color = originalOverlayAppearance;
+
+        if(childSprite!=null)
+            
+            childSprite.color = originalOverlayAppearance;
         percentage = 0;
         assignedKeyBind = KeyCode.None;
         initiatedNoteSample = 0;

@@ -215,7 +215,7 @@ public class EditorToolClass : MonoBehaviour
             if (!musicIsPlaying)
             {
                 PlayMusic();
-                NoteEffect.Instance.keyPosition = 0;
+                NoteEffect.keyPosition = 0;
             }
             else
             {
