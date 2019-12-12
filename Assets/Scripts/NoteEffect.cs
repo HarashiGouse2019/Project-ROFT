@@ -68,6 +68,7 @@ public class NoteEffect : MonoBehaviour
     protected KeyCode randomKey;
     protected GameObject lastKeySpawned;
     protected List<GameObject> spawnedKeysHistory = new List<GameObject>();
+    protected GameObject targetKey;
     #endregion
 
     private void Awake()

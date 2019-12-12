@@ -25,8 +25,6 @@ public class CloseInEffect : NoteEffect
 
     const int possibleAccuracy = 4;
 
-    bool detect = false;
-
     public bool dontEffectMe = false;
 
     //So they don't have to look screwed up
@@ -45,10 +43,6 @@ public class CloseInEffect : NoteEffect
         initiatedNoteSample = noteSample;
         initiatedNoteOffset = noteOffset;
         keyNumPosition = keyPosition;
-
-
-        //if (Key_Layout.Instance != null && Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
-        //    CheckForDoubles();
     }
 
     // Update is called once per frame
@@ -67,8 +61,18 @@ public class CloseInEffect : NoteEffect
                 attachedArrow.SetActive(false);
                 attachedArrow = null;
             }
+
+            if (targetKey != null)
+            {
+
+                targetKey.SetActive(false);
+                targetKey = null;
+                ClosestObjectClass.closestObject[keyNumPosition] = null;
+                return;
+            }
             ClosestObjectClass.closestObject[keyNumPosition].SetActive(false);
             ClosestObjectClass.closestObject[keyNumPosition] = null;
+
 
         }
     }
@@ -148,23 +152,30 @@ public class CloseInEffect : NoteEffect
             bool SlideType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
                 mapReader.keys[keyNum].type == Key.KeyType.Slide &&
                 attachedArrow != null &&
-                attachedArrow.GetComponent<ArrowDirectionSet>().Detect() &&
-                Input.GetKey(Key_Layout.Instance.bindedKeys[keyNumPosition]));
-
+                GameManager.multiInputValue == 2);
 
             bool TBRType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter &&
                 Input.GetKeyDown(GetComponentInParent<AppearEffect>().assignedKeyBind));
 
             if (accuracyString != "" && (tapType || clickType || TBRType || SlideType))
             {
-
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                 {
-                    ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
+                    
+                    GameManager.Instance.ResetMultiInputDelay();
+                    GameManager.multiInputValue = 0;
+
+                    if (gameObject.tag == "approachCircle") ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
+
+                    if (GetPercentage() > 0.99f) targetKey = gameObject;
 
                     Pulse();
 
-                    AudioManager.Instance.Play("Normal", 100, true);
+                    //Check type and add sound
+                    if (tapType)
+                        AudioManager.Instance.Play("Normal", 100, true);
+                    if (SlideType)
+                        AudioManager.Instance.Play("Ding", 100, true);
 
                     IncrementComboChain();
                     SendAccuracyScore();

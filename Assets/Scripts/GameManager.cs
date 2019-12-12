@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.IO;
+using System.Globalization;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -98,8 +99,15 @@ public class GameManager : MonoBehaviour
     public bool isAutoPlaying;
 
     private readonly int reset = 0;
+
     int initialGain = 1;
 
+    //Check for multiple input
+    public static int multiInputValue;
+
+    //Time value
+    float inputDelayTime = 0;
+    float multiInputDuration = 0.1f;
 
     private void Awake()
     {
@@ -110,7 +118,7 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(Instance);
         }
         else
-            Destroy(gameObject); 
+            Destroy(gameObject);
         #endregion
     }
 
@@ -129,6 +137,7 @@ public class GameManager : MonoBehaviour
             RunScoreSystem();
             RunUI();
             RunInGameControls();
+            CheckSignsOfInput();
         }
         #endregion
     }
@@ -204,6 +213,9 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab))
             RestartSong();
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Pause();
     }
 
     void RestartSong()
@@ -225,6 +237,11 @@ public class GameManager : MonoBehaviour
         EditorToolClass.musicSource.timeSamples = reset;
     }
 
+    void Pause()
+    {
+
+    }
+
     public void UpdateScore()
     {
         UpdateMaxCombo();
@@ -240,5 +257,34 @@ public class GameManager : MonoBehaviour
             sumOfStats += value;
         }
         return sumOfStats;
+    }
+
+    int CheckSignsOfInput()
+    {
+        if (gameMode == GameMode.TECHMEISTER)
+        {
+            multiInputValue = MouseEvent.Instance.GetMouseInputValue() + KeyPress.Instance.GetKeyPressInputValue();
+
+            //Check for second input
+            if (multiInputValue > 0)
+                StartMultiInputDelay();
+               
+            return multiInputValue;
+        }
+        return -1;
+    }
+
+    void StartMultiInputDelay()
+    {
+        inputDelayTime += Time.deltaTime;
+        if (inputDelayTime > multiInputDuration)    
+            ResetMultiInputDelay();
+    }
+
+    public void ResetMultiInputDelay()
+    {
+        KeyPress.Instance.keyPressInput = reset;
+        MouseEvent.Instance.mouseMovementInput = reset;
+        inputDelayTime = reset;
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -15,7 +16,7 @@ public class ArrowDirectionSet : MonoBehaviour
     }
 
     public Direction enum_Direction;
-    public float coolDownRate = 0.25f;
+    public float coolDownRate = 0.5f;
     public int setHorizontal;
     public int setVertical;
 
@@ -25,8 +26,8 @@ public class ArrowDirectionSet : MonoBehaviour
 
     public GameObject attachedCircle;
 
+    //Mouse Event to read input
     public MouseEvent m_Event;
-
 
     private void Awake()
     {
