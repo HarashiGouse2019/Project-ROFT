@@ -72,7 +72,7 @@ public class AppearEffect : CloseInEffect
     // Update is called once per frame
     void Update()
     {
-        if (!EditorToolClass.Instance.record)
+        if (!RoftPlayer.Instance.record)
             AppearOn();
     }
 
@@ -95,7 +95,7 @@ public class AppearEffect : CloseInEffect
 
     protected override float GetPercentage()
     {
-        percentage = ((EditorToolClass.musicSource.timeSamples) - offsetStart) / (initiatedNoteSample - offsetStart);
+        percentage = ((RoftPlayer.musicSource.timeSamples) - offsetStart) / (initiatedNoteSample - offsetStart);
         return percentage;
     }
 

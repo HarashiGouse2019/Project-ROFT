@@ -45,14 +45,14 @@ public class KeyPress : MonoBehaviour
             if (Input.GetKey(key_Layout.bindedKeys[keyNum]))
             {
                 #region Write to RFTM File
-                if (EditorToolClass.Instance.record && Input.GetKeyDown(key_Layout.bindedKeys[keyNum]))
+                if (RoftPlayer.Instance.record && Input.GetKeyDown(key_Layout.bindedKeys[keyNum]))
                 {
                     string data =
                         keyNum.ToString() + ","
-                         + EditorToolClass.musicSource.timeSamples.ToString() + ","
+                         + RoftPlayer.musicSource.timeSamples.ToString() + ","
                         + 0.ToString();
 
-                    EditorToolClass.Instance.WriteToRFTM(EditorToolClass.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
+                    RoftPlayer.Instance.WriteToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
                 }
                 #endregion
 

@@ -80,6 +80,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI TM_OK;
     public TextMeshProUGUI TM_MISS;
     public TextMeshProUGUI TM_ACCURACYPERCENTILE;
+    public TextMeshProUGUI DEBUG_FILEDIR;
 
     [Header("UI IMAGES")]
     public Image IMG_STRESS;
@@ -109,8 +110,11 @@ public class GameManager : MonoBehaviour
     float inputDelayTime = 0;
     float multiInputDuration = 0.1f;
 
+    public Roft_Scouter scouter;
+
     private void Awake()
     {
+        
         #region Singleton
         if (Instance == null)
         {
@@ -126,6 +130,7 @@ public class GameManager : MonoBehaviour
     {
         if (IMG_STRESS != null) IMG_STRESS.fillAmount = 0f;
         Application.targetFrameRate = 60;
+        scouter = new Roft_Scouter();
     }
 
     // Update is called once per frame
@@ -199,7 +204,7 @@ public class GameManager : MonoBehaviour
         TM_ACCURACYPERCENTILE.text = "ACCURACY:     "
            + Mathf.Floor(overallAccuracy).ToString("F2", CultureInfo.InvariantCulture) + "%";
 
-        if (EditorToolClass.musicSource.isPlaying) ManageStressMeter();
+        if (RoftPlayer.musicSource.isPlaying) ManageStressMeter();
     }
 
     void ManageStressMeter()
@@ -234,7 +239,7 @@ public class GameManager : MonoBehaviour
         consecutiveMisses = reset;
         accuracyPercentile = reset;
         overallAccuracy = reset;
-        EditorToolClass.musicSource.timeSamples = reset;
+        RoftPlayer.musicSource.timeSamples = reset;
     }
 
     void Pause()

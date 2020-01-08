@@ -7,9 +7,9 @@ using UnityEngine.Audio;
 using TMPro;
 using Random = UnityEngine.Random;
 
-public class EditorToolClass : MonoBehaviour
+public class RoftPlayer : MonoBehaviour
 {
-    public static EditorToolClass Instance;
+    public static RoftPlayer Instance;
 
     #region Public Members
     //The EditorTool is going to be used to make creating music so much easier.

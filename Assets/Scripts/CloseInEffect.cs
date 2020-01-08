@@ -48,7 +48,7 @@ public class CloseInEffect : NoteEffect
     // Update is called once per frame
     void Update()
     {
-        if (!EditorToolClass.Instance.record)
+        if (!RoftPlayer.Instance.record)
             CloseIn();
     }
 
@@ -92,7 +92,7 @@ public class CloseInEffect : NoteEffect
         #region Auto Play
         if (CheckSoloPlay())
         {
-            if (EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
+            if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
             {
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                     ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
@@ -127,7 +127,7 @@ public class CloseInEffect : NoteEffect
         #endregion
         else
         {
-            if (EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
+            if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
             {
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                     ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
@@ -191,7 +191,7 @@ public class CloseInEffect : NoteEffect
 
     protected override float GetPercentage()
     {
-        percentage = (EditorToolClass.musicSource.timeSamples - offsetStart) / (initiatedNoteSample - offsetStart);
+        percentage = (RoftPlayer.musicSource.timeSamples - offsetStart) / (initiatedNoteSample - offsetStart);
         return percentage;
     }
 
@@ -199,8 +199,8 @@ public class CloseInEffect : NoteEffect
     {
         for (int range = 0; range < accuracyVal.Length; range++)
         {
-            bool beforePerfect = EditorToolClass.musicSource.timeSamples >= (initiatedNoteSample) - accuracyVal[range];
-            bool afterPerfect = EditorToolClass.musicSource.timeSamples <= (initiatedNoteSample) + accuracyVal[range];
+            bool beforePerfect = RoftPlayer.musicSource.timeSamples >= (initiatedNoteSample) - accuracyVal[range];
+            bool afterPerfect = RoftPlayer.musicSource.timeSamples <= (initiatedNoteSample) + accuracyVal[range];
 
             if (beforePerfect && afterPerfect)
             {

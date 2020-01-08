@@ -26,6 +26,8 @@ public class MusicManager : MonoBehaviour
 
     public Slider musicVolumeAdjust, soundVolumeAdjust; //Reference to our volume sliders
 
+    public string nowPlaying;
+
     public Music[] getMusic;
 
     // Start is called before the first frame update
@@ -46,7 +48,7 @@ public class MusicManager : MonoBehaviour
         }
     }
 
-    public void Play(string _name, float _volume = 100)
+    public void PlayMusic(string _name, float _volume = 100)
     {
         Music a = Array.Find(getMusic, sound => sound.name == _name);
         if (a == null)
@@ -58,9 +60,10 @@ public class MusicManager : MonoBehaviour
         {
             a.source.Play();
             a.source.volume = _volume / 100;
+            nowPlaying = a.source.name;
         }
     }
-    public void Stop(string _name)
+    public void StopMusic(string _name)
     {
         Music a = Array.Find(getMusic, sound => sound.name == _name);
         if (a == null)

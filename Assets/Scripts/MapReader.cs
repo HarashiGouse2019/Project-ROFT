@@ -44,13 +44,17 @@ public class MapReader : MonoBehaviour
             KeyLayoutAwake((int)keyLayoutClass.layoutMethod);
 
         //Get other values such as Approach Speed, Stress Build, and Accuracy Harshness
-        if (EditorToolClass.Instance != null && !EditorToolClass.Instance.record)
+        if (RoftPlayer.Instance != null && !RoftPlayer.Instance.record)
         {
             int difficultyTag = InRFTMJumpTo("Difficulty");
             NoteEffect.Instance.approachSpeed = float.Parse(ReadPropertyFrom(difficultyTag, "ApproachSpeed"));
             GameManager.Instance.stressBuild = float.Parse(ReadPropertyFrom(difficultyTag, "StressBuild"));
             NoteEffect.Instance.accuracy = float.Parse(ReadPropertyFrom(difficultyTag, "AccuracyHarshness"));
             maxScore = CalculateMaxScore();
+        }
+        else
+        {
+            Debug.Log("For some reason, this is not being read....");
         }
 
     }
@@ -165,7 +169,7 @@ public class MapReader : MonoBehaviour
     float CalculateDifficultyRating()
     {
         int totalNotes = keys.Count;
-        float songLengthInSec = EditorToolClass.musicSource.clip.length;
+        float songLengthInSec = RoftPlayer.musicSource.clip.length;
         float notesPerSec = (totalNotes / songLengthInSec);
         float totalKeys = keyLayoutClass.bindedKeys.Count;
         float approachSpeedInPercent = (float)NoteEffect.Instance.approachSpeed / 100;
@@ -178,7 +182,7 @@ public class MapReader : MonoBehaviour
         float calculatedRating = notesPerSec +
             (totalKeys / maxKeys) +
             approachSpeedInPercent +
-            (EditorToolClass.musicSource.pitch / 2) +
+            (RoftPlayer.musicSource.pitch / 2) +
             gameModeBoost;
 
         return calculatedRating;

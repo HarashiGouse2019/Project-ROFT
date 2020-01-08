@@ -90,14 +90,14 @@ public class NoteEffect : MonoBehaviour
         switch (Key_Layout.Instance.layoutMethod)
         {
             case Key_Layout.LayoutMethod.Abstract:
-                if (!EditorToolClass.Instance.record && ApproachCircleSpawnTime())
+                if (!RoftPlayer.Instance.record && ApproachCircleSpawnTime())
                     Approach();
                 break;
 
             case Key_Layout.LayoutMethod.Region_Scatter:
 
                 if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter
-                    && !EditorToolClass.Instance.record
+                    && !RoftPlayer.Instance.record
                     && KeySpawnTime())
                 {
                     randomKey = Key_Layout.Instance.RandomizeAndProcess();
@@ -262,7 +262,7 @@ public class NoteEffect : MonoBehaviour
             float offsetStart = noteSample - noteOffset;
 
             //This is strictly for checking when notes should appear
-            if (EditorToolClass.musicSource.timeSamples > offsetStart)
+            if (RoftPlayer.musicSource.timeSamples > offsetStart)
                 return true;
         }
         return false;
@@ -276,7 +276,7 @@ public class NoteEffect : MonoBehaviour
             float offsetStart = noteSampleForKey - noteOffset;
 
             //This is strictly for checking when notes should appear
-            if (EditorToolClass.musicSource.timeSamples > offsetStart)
+            if (RoftPlayer.musicSource.timeSamples > offsetStart)
                 return true;
         }
         return false;
