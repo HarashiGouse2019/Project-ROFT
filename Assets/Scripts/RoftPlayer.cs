@@ -72,7 +72,7 @@ public class RoftPlayer : MonoBehaviour
     public float bpm;
     public bool tapCalulationDone = false;
 
-    public NoteEffect noteEffector;
+    public NoteEffector noteEffector;
 
     readonly private KeyCode tapKey = KeyCode.T;
     readonly private int tapLimit = 16;
@@ -124,6 +124,7 @@ public class RoftPlayer : MonoBehaviour
     {
         Debug.Log("Play");
         musicSource.Play();
+        MusicManager.manager.nowPlaying = musicSource.clip.name;
     }
 
     //Pause the song
@@ -215,7 +216,7 @@ public class RoftPlayer : MonoBehaviour
             if (!musicIsPlaying)
             {
                 PlayMusic();
-                NoteEffect.keyPosition = 0;
+                NoteEffector.keyPosition = 0;
             }
             else
             {

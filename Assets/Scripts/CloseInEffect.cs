@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
-public class CloseInEffect : NoteEffect
+public class CloseInEffect : NoteEffector
 {
 
 
@@ -50,10 +51,13 @@ public class CloseInEffect : NoteEffect
     {
         if (!RoftPlayer.Instance.record)
             CloseIn();
+
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
+        //Because Fixed Update goes faster than Update at a fixed rate, we're able to 
+        //prevent getting multiple notes on 1 single tap.
         if (dispose && ClosestObjectClass.closestObject[keyNumPosition] != null)
         {
             if (attachedArrow != null)
@@ -62,20 +66,11 @@ public class CloseInEffect : NoteEffect
                 attachedArrow = null;
             }
 
-            if (targetKey != null)
-            {
-
-                targetKey.SetActive(false);
-                targetKey = null;
-                ClosestObjectClass.closestObject[keyNumPosition] = null;
-                return;
-            }
             ClosestObjectClass.closestObject[keyNumPosition].SetActive(false);
             ClosestObjectClass.closestObject[keyNumPosition] = null;
-
-
         }
     }
+
     void CloseIn()
     {
         InHitRange();
@@ -165,7 +160,7 @@ public class CloseInEffect : NoteEffect
                     GameManager.Instance.ResetMultiInputDelay();
                     GameManager.multiInputValue = 0;
 
-                    if (gameObject.tag == "approachCircle") ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
+                    if (gameObject.CompareTag("approachCircle")) ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
 
                     if (GetPercentage() > 0.99f) targetKey = gameObject;
 

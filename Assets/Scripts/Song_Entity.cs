@@ -1,6 +1,7 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Song_Entity : MonoBehaviour
 {
@@ -64,15 +65,46 @@ public class Song_Entity : MonoBehaviour
      */
     #endregion
 
+    public enum FC_STATUS
+    {
+        FC,
+        APFC
+    }
+
+    //Song entity properties
+    private string ent_SongName;
+    private string ent_Artist;
+    private RawImage ent_CoverArt;
+    private uint ent_BPM;
+    private float ent_InitialDifficulty;
+    private long ent_TopScore;
+    private long ent_TopCombo;
+    private char ent_Grade;
+    private bool ent_MarkAsFavorite;
+    private FC_STATUS ent_FCStatus;
+
+    public static Tuple<string, string, Image, uint, float, long, long, Tuple<char, bool, FC_STATUS>> ent_Song_Info { get; set; }
+
+    //I wanna test somethign real quick
+    List<long> numbers = new List<long>();
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        for (int i = 0; i < 10; i++)
+            AddNumber(UnityEngine.Random.Range(1, 100000000));
+
+        Orderize();
     }
 
-    // Update is called once per frame
-    void Update()
+    void AddNumber(int value)
     {
-        
+        numbers.Add(value);
+    }
+
+    void Orderize()
+    {
+        numbers.Sort();
+        numbers.Reverse();
     }
 }

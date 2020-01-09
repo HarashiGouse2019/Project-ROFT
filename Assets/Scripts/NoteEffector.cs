@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NoteEffect : MonoBehaviour
+public class NoteEffector : MonoBehaviour
 {
-    public static NoteEffect Instance;
+    public static NoteEffector Instance;
 
     #region Public Members
     [Header("Approach Speed"), Range(1.0f, 10.0f)]

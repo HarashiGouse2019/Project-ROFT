@@ -48,35 +48,6 @@ public class MusicManager : MonoBehaviour
         }
     }
 
-    public void PlayMusic(string _name, float _volume = 100)
-    {
-        Music a = Array.Find(getMusic, sound => sound.name == _name);
-        if (a == null)
-        {
-            Debug.LogWarning("Sound name " + _name + " was not found.");
-            return;
-        }
-        else
-        {
-            a.source.Play();
-            a.source.volume = _volume / 100;
-            nowPlaying = a.source.name;
-        }
-    }
-    public void StopMusic(string _name)
-    {
-        Music a = Array.Find(getMusic, sound => sound.name == _name);
-        if (a == null)
-        {
-            Debug.LogWarning("Sound name " + _name + " was not found.");
-            return;
-        }
-        else
-        {
-            a.source.Stop();
-        }
-    }
-
     public AudioClip GetMusic(string _name)
     {
         Music a = Array.Find(getMusic, sound => sound.name == _name);

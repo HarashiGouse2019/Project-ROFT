@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Globalization;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -110,11 +111,12 @@ public class GameManager : MonoBehaviour
     float inputDelayTime = 0;
     float multiInputDuration = 0.1f;
 
-    public Roft_Scouter scouter;
+    public RoftScouter scouter;
+
+    KeyCode[] inGameControlKeys = { KeyCode.Backspace, KeyCode.Escape};
 
     private void Awake()
     {
-        
         #region Singleton
         if (Instance == null)
         {
@@ -130,13 +132,18 @@ public class GameManager : MonoBehaviour
     {
         if (IMG_STRESS != null) IMG_STRESS.fillAmount = 0f;
         Application.targetFrameRate = 60;
-        scouter = new Roft_Scouter();
+
+        scouter = new RoftScouter();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        #region Running Game Maintanence
+        StartCoroutine(RUN_GAME_MANAGEMENT());
+    }
+
+    //GAME_MANAGEMENT Update
+    IEnumerator RUN_GAME_MANAGEMENT()
+    {
         if (inSong)
         {
             RunScoreSystem();
@@ -144,7 +151,8 @@ public class GameManager : MonoBehaviour
             RunInGameControls();
             CheckSignsOfInput();
         }
-        #endregion
+
+        yield return null;
     }
 
     void RunScoreSystem()
@@ -152,8 +160,8 @@ public class GameManager : MonoBehaviour
         //Raising effect
         if (previousScore < totalScore)
         {
-            previousScore += combo * initialGain/2;
-            initialGain+=combo;
+            previousScore += combo * initialGain / 2;
+            initialGain += combo;
         }
         else
         {
@@ -177,29 +185,29 @@ public class GameManager : MonoBehaviour
         TM_MAXSCORE.text = "MAX SCORE:     " + MapReader.Instance.maxScore.ToString();
 
         //This will be temporary
-        TM_PERFECT.text = "PERFECT:   " + 
-            accuracyStats[0].ToString() + 
+        TM_PERFECT.text = "PERFECT:   " +
+            accuracyStats[0].ToString() +
             " (" + Mathf.Floor((accuracyStats[0] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
-        TM_GREAT.text = "GREAT:       " + 
-            accuracyStats[1].ToString() + 
+        TM_GREAT.text = "GREAT:       " +
+            accuracyStats[1].ToString() +
             " (" + Mathf.Floor((accuracyStats[1] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
-        TM_GOOD.text = "GOOD:         " + 
-            accuracyStats[2].ToString() + 
+        TM_GOOD.text = "GOOD:         " +
+            accuracyStats[2].ToString() +
             " (" + Mathf.Floor((accuracyStats[2] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
-        TM_OK.text  = "OK:            " + 
-            accuracyStats[3].ToString() + 
+        TM_OK.text = "OK:            " +
+            accuracyStats[3].ToString() +
             " (" + Mathf.Floor((accuracyStats[3] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
-        TM_MISS.text = "MISSES:       " + 
-            accuracyStats[4].ToString() + 
+        TM_MISS.text = "MISSES:       " +
+            accuracyStats[4].ToString() +
             " (" + Mathf.Floor((accuracyStats[4] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
-        TM_MAXCOMBO.text = "MAX COMBO:     " 
-            + maxCombo.ToString() + 
-            " (" + Mathf.Floor((maxCombo / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture)  + "%)";
+        TM_MAXCOMBO.text = "MAX COMBO:     "
+            + maxCombo.ToString() +
+            " (" + Mathf.Floor((maxCombo / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_ACCURACYPERCENTILE.text = "ACCURACY:     "
            + Mathf.Floor(overallAccuracy).ToString("F2", CultureInfo.InvariantCulture) + "%";
@@ -216,16 +224,16 @@ public class GameManager : MonoBehaviour
 
     void RunInGameControls()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(inGameControlKeys[0]))
             RestartSong();
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(inGameControlKeys[1]))
             Pause();
     }
 
     void RestartSong()
     {
-        NoteEffect.keyPosition = reset;
+        NoteEffector.keyPosition = reset;
 
         for (int stat = 0; stat < accuracyStats.Length; stat++)
             accuracyStats[stat] = reset;
@@ -273,7 +281,7 @@ public class GameManager : MonoBehaviour
             //Check for second input
             if (multiInputValue > 0)
                 StartMultiInputDelay();
-               
+
             return multiInputValue;
         }
         return -1;
@@ -282,7 +290,7 @@ public class GameManager : MonoBehaviour
     void StartMultiInputDelay()
     {
         inputDelayTime += Time.deltaTime;
-        if (inputDelayTime > multiInputDuration)    
+        if (inputDelayTime > multiInputDuration)
             ResetMultiInputDelay();
     }
 

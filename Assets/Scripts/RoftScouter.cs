@@ -4,9 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Roft_Scouter
+public class RoftScouter
 {
-    public static Roft_Scouter Instance;
+    public static RoftScouter Instance;
     #region Roft_Scouter Outline/Plan
     /*Roft_Scouter is responsible for the detection of a new
     * file in the "Songs" direction in Project-Roft.
@@ -23,7 +23,7 @@ public class Roft_Scouter
     public DirectoryInfo directoryInfo;
 
     //Construct ROFT_SCOUTER
-    public Roft_Scouter()
+    public RoftScouter()
     {
         //Get current application directory
         if (Instance != null)
@@ -40,7 +40,15 @@ public class Roft_Scouter
         //we can graph to assign them to our Song_Entity list
         foreach(var discovered in directoryInfo.GetFiles("*.rftm"))
         {
+            //We'll need to some how incorporate our tag finding method from MapReader in order
+            //To find a tag to assign to our song entity.
+            Song_Entity entity = new Song_Entity
+            {
 
+            };
+
+            //Once a new entity's instansiated, we'll push to our discoveredSongFiles
+            discoveredSongFiles.Add(entity);
         }
 
         return discoveredSongFiles;

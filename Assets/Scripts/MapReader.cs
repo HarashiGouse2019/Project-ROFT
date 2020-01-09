@@ -47,9 +47,9 @@ public class MapReader : MonoBehaviour
         if (RoftPlayer.Instance != null && !RoftPlayer.Instance.record)
         {
             int difficultyTag = InRFTMJumpTo("Difficulty");
-            NoteEffect.Instance.approachSpeed = float.Parse(ReadPropertyFrom(difficultyTag, "ApproachSpeed"));
+            NoteEffector.Instance.approachSpeed = float.Parse(ReadPropertyFrom(difficultyTag, "ApproachSpeed"));
             GameManager.Instance.stressBuild = float.Parse(ReadPropertyFrom(difficultyTag, "StressBuild"));
-            NoteEffect.Instance.accuracy = float.Parse(ReadPropertyFrom(difficultyTag, "AccuracyHarshness"));
+            NoteEffector.Instance.accuracy = float.Parse(ReadPropertyFrom(difficultyTag, "AccuracyHarshness"));
             maxScore = CalculateMaxScore();
         }
         else
@@ -172,7 +172,7 @@ public class MapReader : MonoBehaviour
         float songLengthInSec = RoftPlayer.musicSource.clip.length;
         float notesPerSec = (totalNotes / songLengthInSec);
         float totalKeys = keyLayoutClass.bindedKeys.Count;
-        float approachSpeedInPercent = (float)NoteEffect.Instance.approachSpeed / 100;
+        float approachSpeedInPercent = (float)NoteEffector.Instance.approachSpeed / 100;
         float gameModeBoost = 0;
         const int maxKeys = 30;
 
