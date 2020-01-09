@@ -32,6 +32,24 @@ public class GameManager : MonoBehaviour
         0
     };
 
+    public static char[] accuracyGrade =
+    {
+        'S',
+        'A',
+        'B',
+        'C',
+        'D'
+    };
+
+    public static float[] gradePrecentageRequirement =
+    {
+        0.95f,
+        0.90f,
+        0.80f,
+        0.70f,
+        0
+    };
+
     public static float[] stressAmount =
     {
        2f,
@@ -85,6 +103,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI TM_OK;
     public TextMeshProUGUI TM_MISS;
     public TextMeshProUGUI TM_ACCURACYPERCENTILE;
+    public TextMeshProUGUI TM_ACCURACYGRADE;
     public TextMeshProUGUI DEBUG_FILEDIR;
 
     [Header("UI IMAGES")]
@@ -266,11 +285,11 @@ public class GameManager : MonoBehaviour
             {
                 case false:
                     if (RoftPlayer.musicSource.isPlaying)
-                        Pause(); 
+                        Pause();
                     return;
 
-                case true: 
-                    UnPause(); 
+                case true:
+                    UnPause();
                     return;
             }
         }
@@ -316,8 +335,40 @@ public class GameManager : MonoBehaviour
     public void UpdateScore()
     {
         UpdateMaxCombo();
+        UpdateGrade();
         initialGain++;
         totalScore += sentScore * combo;
+    }
+
+    //Be sure that when our score updates we call this function
+    //Sense I'm using a for loop, I only want to call it went needed
+    //And that's when the player actually hits a note, and gets a score based
+    //on accuracy.
+    public void UpdateGrade()
+    {
+        /*Grade Calculations...
+         * Grade S) Higher than or equal to 95%
+         * Grade A) Higher than or equal to 90%
+         * Grade B) Higher than or equal to 80%
+         * Grade C) Higher than or equal to 70%
+         * Grade D) Anything lower than 70%
+         * 
+         * This are accounted for Perfect Percentage
+         * 
+         * We want to find a way to use the accuracyGrade array
+         * in terms of percentile (which seems intimidating).
+         */
+
+        for (int gradeIndex = 0; gradeIndex < gradePrecentageRequirement.Length; gradeIndex++)
+        {
+            //Check if overall Accuracy is above percentage values
+            //We'll simple return out of for loop if statement is true
+            if (overallAccuracy >= gradePrecentageRequirement[gradeIndex] * 100f)
+            {
+                TM_ACCURACYGRADE.text = "(" + accuracyGrade[gradeIndex].ToString() + ")";
+                return;
+            }
+        }
     }
 
     public int GetSumOfStats()
@@ -355,8 +406,8 @@ public class GameManager : MonoBehaviour
 
     public void ResetMultiInputDelay()
     {
-        keypress_env.keyPressInput = reset;
-        mouse_env.mouseMovementInput = reset;
+        KeyPress.Instance.keyPressInput = reset;
+        MouseEvent.Instance.mouseMovementInput = reset;
         inputDelayTime = reset;
     }
 }

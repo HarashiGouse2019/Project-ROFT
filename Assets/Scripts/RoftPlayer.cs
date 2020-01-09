@@ -122,7 +122,6 @@ public class RoftPlayer : MonoBehaviour
     //Play the song
     public void PlayMusic()
     {
-        Debug.Log("Play");
         musicSource.Play();
         MusicManager.manager.nowPlaying = musicSource.clip.name;
     }
@@ -130,7 +129,6 @@ public class RoftPlayer : MonoBehaviour
     //Pause the song
     public void PauseMusic()
     {
-        Debug.Log("Pause");
         musicSource.Pause();
         if (!musicIsPlaying) musicSource.Play();
     }
@@ -138,7 +136,6 @@ public class RoftPlayer : MonoBehaviour
     //Stop the Music
     public void StopMusic()
     {
-        Debug.Log("Stop");
         musicSource.Stop();
     }
 
