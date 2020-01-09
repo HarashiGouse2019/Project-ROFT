@@ -145,8 +145,9 @@ public class GameManager : MonoBehaviour
     MouseEvent mouse_env;
     KeyPress keypress_env;
 
-    //Coroutine(s)
-    IEnumerator crt_GameManagement;
+    //This will be used for the GameManager to assure that
+    //when we restart, all approach circles are inactive
+    List<GameObject> activeApproachObjects = new List<GameObject>();
 
     private void Awake()
     {
@@ -178,9 +179,6 @@ public class GameManager : MonoBehaviour
         mapReader = MapReader.Instance;
         mouse_env = MouseEvent.Instance;
         keypress_env = KeyPress.Instance;
-
-        //Assign coroutines
-        crt_GameManagement = RUN_GAME_MANAGEMENT();
     }
 
     private void Update()
@@ -197,6 +195,7 @@ public class GameManager : MonoBehaviour
             RunUI();
             RunInGameControls();
             CheckSignsOfInput();
+            CheckStressMaxed();
         }
 
         yield return null;
@@ -302,6 +301,7 @@ public class GameManager : MonoBehaviour
         for (int stat = 0; stat < accuracyStats.Length; stat++)
             accuracyStats[stat] = reset;
 
+        //Reset all values
         combo = reset;
         maxCombo = reset;
         totalScore = reset;
@@ -312,6 +312,16 @@ public class GameManager : MonoBehaviour
         accuracyPercentile = reset;
         overallAccuracy = reset;
         RoftPlayer.musicSource.timeSamples = reset;
+
+        //Now we make sure all approach circles are inactive
+        CollectApproachCircles();
+        foreach(var activeCirlces in activeApproachObjects)
+        {
+            activeCirlces.SetActive(false);
+        }
+
+        //Now we clear our list.
+        activeApproachObjects.Clear();
     }
 
     public void Pause()
@@ -402,6 +412,21 @@ public class GameManager : MonoBehaviour
         inputDelayTime += Time.deltaTime;
         if (inputDelayTime > multiInputDuration)
             ResetMultiInputDelay();
+    }
+
+    void CheckStressMaxed()
+    {
+        if (IMG_STRESS.fillAmount >= 0.99f)
+            RestartSong();
+    }
+
+    void CollectApproachCircles()
+    {
+       GameObject[] discoveredObjs = GameObject.FindGameObjectsWithTag("approachCircle");
+        foreach(var obj in discoveredObjs)
+        {
+            activeApproachObjects.Add(obj);
+        }
     }
 
     public void ResetMultiInputDelay()

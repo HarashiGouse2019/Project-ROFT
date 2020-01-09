@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class MusicManager : MonoBehaviour
 {
+    /*Music Manager will essentially collect all music files
+     * from all SongEntities detected by RoftScouter,
+     * and it will preview it for the player.
+     */
+
     public static MusicManager manager;
 
     [System.Serializable]

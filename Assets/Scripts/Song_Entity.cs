@@ -76,14 +76,15 @@ public class Song_Entity : MonoBehaviour
     private string ent_Artist;
     private RawImage ent_CoverArt;
     private uint ent_BPM;
-    private float ent_InitialDifficulty;
+    private float ent_InitialDifficulty; //Initial Difficulty is the Overall Difficulty of a song with its difficulties
     private long ent_TopScore;
     private long ent_TopCombo;
     private char ent_Grade;
     private bool ent_MarkAsFavorite;
+    private float[] ent_GradeRequirements; //Some songs can be different to default gradeRequirements
     private FC_STATUS ent_FCStatus;
 
-    public static Tuple<string, string, Image, uint, float, long, long, Tuple<char, bool, FC_STATUS>> ent_Song_Info { get; set; }
+    public static Tuple<string, string, Image, uint, float, long, long, Tuple<char, bool, FC_STATUS>> ent_Song_Parameters { get; set; }
 
     //I wanna test somethign real quick
     List<long> numbers = new List<long>();
