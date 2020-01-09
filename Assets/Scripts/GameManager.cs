@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
@@ -58,6 +59,9 @@ public class GameManager : MonoBehaviour
         TBR_HOMEROW,
         TBR_ALL
     };
+    [Header("Game Pause Overlay")]
+    public bool isGamePaused = false;
+    public GameObject PAUSE_OVERLAY;
 
     [Header("Edit Mode")]
     public bool editMode;
@@ -113,7 +117,7 @@ public class GameManager : MonoBehaviour
 
     public RoftScouter scouter;
 
-    KeyCode[] inGameControlKeys = { KeyCode.Backspace, KeyCode.Escape};
+    KeyCode[] inGameControlKeys = { KeyCode.Backspace, KeyCode.Escape };
 
     private void Awake()
     {
@@ -185,6 +189,7 @@ public class GameManager : MonoBehaviour
         TM_MAXSCORE.text = "MAX SCORE:     " + MapReader.Instance.maxScore.ToString();
 
         //This will be temporary
+        #region DEBUG_STATS_UI
         TM_PERFECT.text = "PERFECT:   " +
             accuracyStats[0].ToString() +
             " (" + Mathf.Floor((accuracyStats[0] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
@@ -211,6 +216,10 @@ public class GameManager : MonoBehaviour
 
         TM_ACCURACYPERCENTILE.text = "ACCURACY:     "
            + Mathf.Floor(overallAccuracy).ToString("F2", CultureInfo.InvariantCulture) + "%";
+        #endregion
+
+        //Be able to enable and disable Pause_Overlay
+        PAUSE_OVERLAY.SetActive(isGamePaused);
 
         if (RoftPlayer.musicSource.isPlaying) ManageStressMeter();
     }
@@ -228,7 +237,13 @@ public class GameManager : MonoBehaviour
             RestartSong();
 
         if (Input.GetKeyDown(inGameControlKeys[1]))
-            Pause();
+        {
+            switch (isGamePaused)
+            {
+                case false: Pause(); Time.timeScale = 0; return;
+                case true: UnPause(); Time.timeScale = 1; return;
+            }
+        }
     }
 
     void RestartSong()
@@ -252,7 +267,18 @@ public class GameManager : MonoBehaviour
 
     void Pause()
     {
+        //When we pause, we have to stop music, and turn isPaused to true
+        RoftPlayer.Instance.PauseMusic();
+        isGamePaused = true;
+        return;
+    }
 
+    void UnPause()
+    {
+        //Now we have to resume music, and turn isPaused to true
+        RoftPlayer.Instance.PlayMusic();
+        isGamePaused = false;
+        return;
     }
 
     public void UpdateScore()
