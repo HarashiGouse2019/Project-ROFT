@@ -12,6 +12,15 @@ public class KeyPress : MonoBehaviour
 
     public TextMeshProUGUI debugText;
 
+    //Input Value for KeyPress
+    public int keyPressInput = 0;
+    const int activeInput = 1;
+    const int inactiveInput = 0;
+
+    float time;
+    float keyResponsiveDuration = 0.25f;
+    const int reset = 0;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -28,26 +37,35 @@ public class KeyPress : MonoBehaviour
 
     void RunInteractivity()
     {
+
+
         for (int keyNum = 0; keyNum < key_Layout.bindedKeys.Count; keyNum++)
         {
+
             if (Input.GetKey(key_Layout.bindedKeys[keyNum]))
             {
                 #region Write to RFTM File
-                if (EditorToolClass.Instance.record && Input.GetKeyDown(key_Layout.bindedKeys[keyNum]))
+                if (RoftPlayer.Instance.record && Input.GetKeyDown(key_Layout.bindedKeys[keyNum]))
                 {
                     string data =
                         keyNum.ToString() + ","
-                         + EditorToolClass.musicSource.timeSamples.ToString() + ","
+                         + RoftPlayer.musicSource.timeSamples.ToString() + ","
                         + 0.ToString();
 
-                    EditorToolClass.Instance.WriteToRFTM(EditorToolClass.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
+                    RoftPlayer.Instance.WriteToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
                 }
                 #endregion
+
                 ActivateKey(keyNum, true);
+
+                if (Input.GetKeyDown(key_Layout.bindedKeys[keyNum]))
+                    keyPressInput = activeInput;
             }
             else
                 ActivateKey(keyNum, false);
         }
+
+
     }
 
     public bool ActivateKey(int _keyNum, bool _on)
@@ -63,5 +81,25 @@ public class KeyPress : MonoBehaviour
             keySpriteRenderer.sprite = keyInActive;
 
         return _on;
+    }
+
+    public int GetKeyPressInputValue()
+    {
+        return keyPressInput;
+    }
+
+    void StartKeyResponsiveDelay()
+    {
+        time += Time.deltaTime;
+        if (time >= keyResponsiveDuration)
+        {
+            keyPressInput = inactiveInput;
+            time = reset;
+        }
+    }
+
+    public void ResetResponsiveDelay()
+    {
+        time = reset;
     }
 }

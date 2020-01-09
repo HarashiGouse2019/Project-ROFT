@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7544047459120237185}
   m_Layer: 0
   m_Name: approachcircle
-  m_TagString: Untagged
+  m_TagString: approachCircle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -103,17 +103,14 @@ MonoBehaviour:
   - 12000
   mapReader: {fileID: 0}
   notePrefab: {fileID: 0}
-  percentage: 0
-  keyPosition: 0
-  keyObjPosition: 0
-  noteSample: 0
-  noteSampleForKey: 0
   initiatedNoteSample: 0
   initiatedNoteOffset: 0
   offsetStart: 0
   keyNumPosition: 0
   keyNum: 0
+  attachedArrow: {fileID: 0}
   sprite: {fileID: 0}
   index: 0
   accuracyString: 
   dispose: 0
+  dontEffectMe: 0

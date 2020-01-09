@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System.IO;
+using System.Globalization;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -79,6 +81,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI TM_OK;
     public TextMeshProUGUI TM_MISS;
     public TextMeshProUGUI TM_ACCURACYPERCENTILE;
+    public TextMeshProUGUI DEBUG_FILEDIR;
 
     [Header("UI IMAGES")]
     public Image IMG_STRESS;
@@ -91,15 +94,26 @@ public class GameManager : MonoBehaviour
     public long previousScore; //This will be used for a increasing effect
     public int combo;
     public int maxCombo;
-    public float overallAccuracy; //The average accuracy during the song
-    public int accuracyPercentile; //The data in which gets accuracy in percent;
+    public float overallAccuracy = 100.00f; //The average accuracy during the song
+    public float accuracyPercentile; //The data in which gets accuracy in percent;
     [Range(1f, 10f)] public float stressBuild = 5f;
     public int[] accuracyStats = new int[5];
     public bool isAutoPlaying;
 
     private readonly int reset = 0;
+
     int initialGain = 1;
 
+    //Check for multiple input
+    public static int multiInputValue;
+
+    //Time value
+    float inputDelayTime = 0;
+    float multiInputDuration = 0.1f;
+
+    public RoftScouter scouter;
+
+    KeyCode[] inGameControlKeys = { KeyCode.Backspace, KeyCode.Escape};
 
     private void Awake()
     {
@@ -110,7 +124,7 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(Instance);
         }
         else
-            Destroy(gameObject); 
+            Destroy(gameObject);
         #endregion
     }
 
@@ -118,19 +132,27 @@ public class GameManager : MonoBehaviour
     {
         if (IMG_STRESS != null) IMG_STRESS.fillAmount = 0f;
         Application.targetFrameRate = 60;
+
+        scouter = new RoftScouter();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        #region Running Game Maintanence
+        StartCoroutine(RUN_GAME_MANAGEMENT());
+    }
+
+    //GAME_MANAGEMENT Update
+    IEnumerator RUN_GAME_MANAGEMENT()
+    {
         if (inSong)
         {
             RunScoreSystem();
             RunUI();
             RunInGameControls();
+            CheckSignsOfInput();
         }
-        #endregion
+
+        yield return null;
     }
 
     void RunScoreSystem()
@@ -138,8 +160,8 @@ public class GameManager : MonoBehaviour
         //Raising effect
         if (previousScore < totalScore)
         {
-            previousScore += combo * initialGain/2;
-            initialGain+=combo;
+            previousScore += combo * initialGain / 2;
+            initialGain += combo;
         }
         else
         {
@@ -163,34 +185,34 @@ public class GameManager : MonoBehaviour
         TM_MAXSCORE.text = "MAX SCORE:     " + MapReader.Instance.maxScore.ToString();
 
         //This will be temporary
-        TM_PERFECT.text = "PERFECT:   " + 
-            accuracyStats[0].ToString() + 
+        TM_PERFECT.text = "PERFECT:   " +
+            accuracyStats[0].ToString() +
             " (" + Mathf.Floor((accuracyStats[0] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
-        TM_GREAT.text = "GREAT:       " + 
-            accuracyStats[1].ToString() + 
+        TM_GREAT.text = "GREAT:       " +
+            accuracyStats[1].ToString() +
             " (" + Mathf.Floor((accuracyStats[1] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
-        TM_GOOD.text = "GOOD:         " + 
-            accuracyStats[2].ToString() + 
+        TM_GOOD.text = "GOOD:         " +
+            accuracyStats[2].ToString() +
             " (" + Mathf.Floor((accuracyStats[2] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
-        TM_OK.text  = "OK:            " + 
-            accuracyStats[3].ToString() + 
+        TM_OK.text = "OK:            " +
+            accuracyStats[3].ToString() +
             " (" + Mathf.Floor((accuracyStats[3] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
-        TM_MISS.text = "MISSES:       " + 
-            accuracyStats[4].ToString() + 
+        TM_MISS.text = "MISSES:       " +
+            accuracyStats[4].ToString() +
             " (" + Mathf.Floor((accuracyStats[4] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
-        TM_MAXCOMBO.text = "MAX COMBO:     " 
-            + maxCombo.ToString() + 
-            " (" + Mathf.Floor((maxCombo / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture)  + "%)";
+        TM_MAXCOMBO.text = "MAX COMBO:     "
+            + maxCombo.ToString() +
+            " (" + Mathf.Floor((maxCombo / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_ACCURACYPERCENTILE.text = "ACCURACY:     "
-           + Mathf.Floor(overallAccuracy).ToString("F0", CultureInfo.InvariantCulture) + "%";
+           + Mathf.Floor(overallAccuracy).ToString("F2", CultureInfo.InvariantCulture) + "%";
 
-        if (EditorToolClass.musicSource.isPlaying) ManageStressMeter();
+        if (RoftPlayer.musicSource.isPlaying) ManageStressMeter();
     }
 
     void ManageStressMeter()
@@ -202,13 +224,16 @@ public class GameManager : MonoBehaviour
 
     void RunInGameControls()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(inGameControlKeys[0]))
             RestartSong();
+
+        if (Input.GetKeyDown(inGameControlKeys[1]))
+            Pause();
     }
 
     void RestartSong()
     {
-        NoteEffect.Instance.keyPosition = reset;
+        NoteEffector.keyPosition = reset;
 
         for (int stat = 0; stat < accuracyStats.Length; stat++)
             accuracyStats[stat] = reset;
@@ -222,7 +247,12 @@ public class GameManager : MonoBehaviour
         consecutiveMisses = reset;
         accuracyPercentile = reset;
         overallAccuracy = reset;
-        EditorToolClass.musicSource.timeSamples = reset;
+        RoftPlayer.musicSource.timeSamples = reset;
+    }
+
+    void Pause()
+    {
+
     }
 
     public void UpdateScore()
@@ -240,5 +270,34 @@ public class GameManager : MonoBehaviour
             sumOfStats += value;
         }
         return sumOfStats;
+    }
+
+    int CheckSignsOfInput()
+    {
+        if (gameMode == GameMode.TECHMEISTER)
+        {
+            multiInputValue = MouseEvent.Instance.GetMouseInputValue() + KeyPress.Instance.GetKeyPressInputValue();
+
+            //Check for second input
+            if (multiInputValue > 0)
+                StartMultiInputDelay();
+
+            return multiInputValue;
+        }
+        return -1;
+    }
+
+    void StartMultiInputDelay()
+    {
+        inputDelayTime += Time.deltaTime;
+        if (inputDelayTime > multiInputDuration)
+            ResetMultiInputDelay();
+    }
+
+    public void ResetMultiInputDelay()
+    {
+        KeyPress.Instance.keyPressInput = reset;
+        MouseEvent.Instance.mouseMovementInput = reset;
+        inputDelayTime = reset;
     }
 }

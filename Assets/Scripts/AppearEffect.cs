@@ -72,7 +72,7 @@ public class AppearEffect : CloseInEffect
     // Update is called once per frame
     void Update()
     {
-        if (!EditorToolClass.Instance.record)
+        if (!RoftPlayer.Instance.record)
             AppearOn();
     }
 
@@ -81,7 +81,8 @@ public class AppearEffect : CloseInEffect
         float appearanceRate = GetPercentage() + 0.02f;
 
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, appearanceRate);
-        childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, appearanceRate);
+        if (childSprite != null)
+            childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, appearanceRate);
 
         if (!assignedCircle.activeInHierarchy)
         {
@@ -94,14 +95,17 @@ public class AppearEffect : CloseInEffect
 
     protected override float GetPercentage()
     {
-        percentage = ((EditorToolClass.musicSource.timeSamples) - offsetStart) / (initiatedNoteSample - offsetStart);
+        percentage = ((RoftPlayer.musicSource.timeSamples) - offsetStart) / (initiatedNoteSample - offsetStart);
         return percentage;
     }
 
     private void OnDisable()
     {
         sprite.color = originalAppearance;
-        childSprite.color = originalOverlayAppearance;
+
+        if(childSprite!=null)
+            
+            childSprite.color = originalOverlayAppearance;
         percentage = 0;
         assignedKeyBind = KeyCode.None;
         initiatedNoteSample = 0;

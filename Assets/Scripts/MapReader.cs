@@ -44,13 +44,17 @@ public class MapReader : MonoBehaviour
             KeyLayoutAwake((int)keyLayoutClass.layoutMethod);
 
         //Get other values such as Approach Speed, Stress Build, and Accuracy Harshness
-        if (EditorToolClass.Instance != null && !EditorToolClass.Instance.record)
+        if (RoftPlayer.Instance != null && !RoftPlayer.Instance.record)
         {
             int difficultyTag = InRFTMJumpTo("Difficulty");
-            NoteEffect.Instance.approachSpeed = float.Parse(ReadPropertyFrom(difficultyTag, "ApproachSpeed"));
+            NoteEffector.Instance.approachSpeed = float.Parse(ReadPropertyFrom(difficultyTag, "ApproachSpeed"));
             GameManager.Instance.stressBuild = float.Parse(ReadPropertyFrom(difficultyTag, "StressBuild"));
-            NoteEffect.Instance.accuracy = float.Parse(ReadPropertyFrom(difficultyTag, "AccuracyHarshness"));
+            NoteEffector.Instance.accuracy = float.Parse(ReadPropertyFrom(difficultyTag, "AccuracyHarshness"));
             maxScore = CalculateMaxScore();
+        }
+        else
+        {
+            Debug.Log("For some reason, this is not being read....");
         }
 
     }
@@ -89,13 +93,26 @@ public class MapReader : MonoBehaviour
 
                     if (filePosition > targetPosition)
                     {
+                        //We'll count the frequency of commas to determine
+                        //that they are more values in the object
+                        int countCommas = 0;
+                        foreach (char c in line)
+                            if (c == ',')
+                                countCommas++;
+
                         //We create a new key, and assign our data value to our key
-                        Key newKey = new Key
-                        {
-                            keyNum = Convert.ToInt32(line.Split(separator)[0]),
-                            keySample = Convert.ToInt32(line.Split(separator)[1]),
-                            type = (Key.KeyType)Convert.ToInt32(line.Split(separator)[2])
-                        };
+                        Key newKey = new Key();
+
+                        newKey.keyNum = Convert.ToInt32(line.Split(separator)[0]);
+                        newKey.keySample = Convert.ToInt32(line.Split(separator)[1]);
+                        newKey.type = (Key.KeyType)Convert.ToInt32(line.Split(separator)[2]);
+
+                        //Check for any miscellaneous values
+                        if (countCommas > 2)
+                            newKey.miscellaneousValue1 = Convert.ToInt32(line.Split(separator)[3]);
+
+                        else if (countCommas > 3)
+                            newKey.miscellaneousValue2 = Convert.ToInt32(line.Split(separator)[4]);
 
                         //Update maxKeys
                         if (newKey.keyNum > maxKey)
@@ -152,10 +169,10 @@ public class MapReader : MonoBehaviour
     float CalculateDifficultyRating()
     {
         int totalNotes = keys.Count;
-        float songLengthInSec = EditorToolClass.musicSource.clip.length;
+        float songLengthInSec = RoftPlayer.musicSource.clip.length;
         float notesPerSec = (totalNotes / songLengthInSec);
         float totalKeys = keyLayoutClass.bindedKeys.Count;
-        float approachSpeedInPercent = (float)NoteEffect.Instance.approachSpeed / 100;
+        float approachSpeedInPercent = (float)NoteEffector.Instance.approachSpeed / 100;
         float gameModeBoost = 0;
         const int maxKeys = 30;
 
@@ -165,7 +182,7 @@ public class MapReader : MonoBehaviour
         float calculatedRating = notesPerSec +
             (totalKeys / maxKeys) +
             approachSpeedInPercent +
-            (EditorToolClass.musicSource.pitch / 2) +
+            (RoftPlayer.musicSource.pitch / 2) +
             gameModeBoost;
 
         return calculatedRating;

@@ -1,13 +1,18 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
-public class CloseInEffect : NoteEffect
+public class CloseInEffect : NoteEffector
 {
+
+
     public float initiatedNoteSample;
     public float initiatedNoteOffset;
     public float offsetStart;
 
     public int keyNumPosition; //So we know which key the notes are closing into
     public int keyNum; //We know what note we're on!!
+
+    public GameObject attachedArrow;
 
     public SpriteRenderer sprite;
 
@@ -20,6 +25,8 @@ public class CloseInEffect : NoteEffect
     public bool dispose;
 
     const int possibleAccuracy = 4;
+
+    public bool dontEffectMe = false;
 
     //So they don't have to look screwed up
     protected Color originalAppearance;
@@ -37,29 +44,33 @@ public class CloseInEffect : NoteEffect
         initiatedNoteSample = noteSample;
         initiatedNoteOffset = noteOffset;
         keyNumPosition = keyPosition;
-
-
-        //if (Key_Layout.Instance != null && Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
-        //    CheckForDoubles();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!EditorToolClass.Instance.record)
+        if (!RoftPlayer.Instance.record)
             CloseIn();
+
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
+        //Because Fixed Update goes faster than Update at a fixed rate, we're able to 
+        //prevent getting multiple notes on 1 single tap.
         if (dispose && ClosestObjectClass.closestObject[keyNumPosition] != null)
         {
-            
+            if (attachedArrow != null)
+            {
+                attachedArrow.SetActive(false);
+                attachedArrow = null;
+            }
+
             ClosestObjectClass.closestObject[keyNumPosition].SetActive(false);
             ClosestObjectClass.closestObject[keyNumPosition] = null;
-            
         }
     }
+
     void CloseIn()
     {
         InHitRange();
@@ -73,16 +84,10 @@ public class CloseInEffect : NoteEffect
         transform.localScale = new Vector3(1 / GetPercentage(), 1 / GetPercentage(), 1f);
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.2f);
 
-        //For Techmeister, check targetKey frequently
-        if (GameManager.Instance.gameMode == GameManager.GameMode.TECHMEISTER && ClosestObjectClass.targetKey == null)
-        {
-            ClickEvent.targetKey = Key_Layout.keyObjects[GetComponentInParent<KeyId>().keyID];
-        }
-
         #region Auto Play
         if (CheckSoloPlay())
         {
-            if (EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
+            if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
             {
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                     ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
@@ -93,7 +98,6 @@ public class CloseInEffect : NoteEffect
 
                 dispose = true;
             }
-
 
             if (accuracyString == "Perfect")
             {
@@ -118,7 +122,7 @@ public class CloseInEffect : NoteEffect
         #endregion
         else
         {
-            if (EditorToolClass.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
+            if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
             {
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                     ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
@@ -130,6 +134,8 @@ public class CloseInEffect : NoteEffect
                 dispose = true;
             }
 
+
+
             bool tapType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
                 mapReader.keys[keyNum].type == Key.KeyType.Tap &&
                 Input.GetKeyDown(Key_Layout.Instance.bindedKeys[keyNumPosition]));
@@ -138,18 +144,33 @@ public class CloseInEffect : NoteEffect
                 mapReader.keys[keyNum].type == Key.KeyType.Click &&
                 ClickEvent.ClickReceived());
 
+            bool SlideType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
+                mapReader.keys[keyNum].type == Key.KeyType.Slide &&
+                attachedArrow != null &&
+                GameManager.multiInputValue == 2);
+
             bool TBRType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter &&
                 Input.GetKeyDown(GetComponentInParent<AppearEffect>().assignedKeyBind));
 
-            if (accuracyString != "" && (tapType || clickType || TBRType))
+            if (accuracyString != "" && (tapType || clickType || TBRType || SlideType))
             {
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                 {
-                    ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
+                    
+                    GameManager.Instance.ResetMultiInputDelay();
+                    GameManager.multiInputValue = 0;
+
+                    if (gameObject.CompareTag("approachCircle")) ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
+
+                    if (GetPercentage() > 0.99f) targetKey = gameObject;
 
                     Pulse();
 
-                    AudioManager.Instance.Play("Normal", 100, true);
+                    //Check type and add sound
+                    if (tapType)
+                        AudioManager.Instance.Play("Normal", 100, true);
+                    if (SlideType)
+                        AudioManager.Instance.Play("Ding", 100, true);
 
                     IncrementComboChain();
                     SendAccuracyScore();
@@ -161,12 +182,11 @@ public class CloseInEffect : NoteEffect
                 }
             }
         }
-
     }
 
     protected override float GetPercentage()
     {
-        percentage = (EditorToolClass.musicSource.timeSamples - offsetStart) / (initiatedNoteSample - offsetStart);
+        percentage = (RoftPlayer.musicSource.timeSamples - offsetStart) / (initiatedNoteSample - offsetStart);
         return percentage;
     }
 
@@ -174,8 +194,8 @@ public class CloseInEffect : NoteEffect
     {
         for (int range = 0; range < accuracyVal.Length; range++)
         {
-            bool beforePerfect = EditorToolClass.musicSource.timeSamples >= (initiatedNoteSample) - accuracyVal[range];
-            bool afterPerfect = EditorToolClass.musicSource.timeSamples <= (initiatedNoteSample) + accuracyVal[range];
+            bool beforePerfect = RoftPlayer.musicSource.timeSamples >= (initiatedNoteSample) - accuracyVal[range];
+            bool afterPerfect = RoftPlayer.musicSource.timeSamples <= (initiatedNoteSample) + accuracyVal[range];
 
             if (beforePerfect && afterPerfect)
             {
@@ -191,7 +211,7 @@ public class CloseInEffect : NoteEffect
 
     public void SendAccuracyScore()
     {
-        
+
         GameObject sign = GetComponentInParent<ObjectPooler>().GetMember("Signs");
         if (!sign.activeInHierarchy)
         {
@@ -202,7 +222,9 @@ public class CloseInEffect : NoteEffect
             GameManager.sentScore = GameManager.accuracyScore[index];
 
             GameManager.Instance.accuracyStats[index] += 1;
-            GameManager.Instance.accuracyPercentile += (((possibleAccuracy - index) / possibleAccuracy) * 100);
+            float inverse = ((possibleAccuracy - (index)));
+            float percent = inverse / possibleAccuracy;
+            GameManager.Instance.accuracyPercentile += (percent * 100);
             GameManager.Instance.overallAccuracy = GameManager.Instance.accuracyPercentile / GameManager.Instance.GetSumOfStats();
             GameManager.Instance.UpdateScore();
         }

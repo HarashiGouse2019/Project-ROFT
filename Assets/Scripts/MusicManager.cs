@@ -26,6 +26,8 @@ public class MusicManager : MonoBehaviour
 
     public Slider musicVolumeAdjust, soundVolumeAdjust; //Reference to our volume sliders
 
+    public string nowPlaying;
+
     public Music[] getMusic;
 
     // Start is called before the first frame update
@@ -43,34 +45,6 @@ public class MusicManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
-        }
-    }
-
-    public void Play(string _name, float _volume = 100)
-    {
-        Music a = Array.Find(getMusic, sound => sound.name == _name);
-        if (a == null)
-        {
-            Debug.LogWarning("Sound name " + _name + " was not found.");
-            return;
-        }
-        else
-        {
-            a.source.Play();
-            a.source.volume = _volume / 100;
-        }
-    }
-    public void Stop(string _name)
-    {
-        Music a = Array.Find(getMusic, sound => sound.name == _name);
-        if (a == null)
-        {
-            Debug.LogWarning("Sound name " + _name + " was not found.");
-            return;
-        }
-        else
-        {
-            a.source.Stop();
         }
     }
 

@@ -11,7 +11,7 @@ public class SongProgression : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!EditorToolClass.Instance.record)
+        if (!RoftPlayer.Instance.record)
             ShowProgression();
     }
 
@@ -23,7 +23,7 @@ public class SongProgression : MonoBehaviour
         firstNoteInSamples = MapReader.Instance.keys[0].keySample;
 
         //Now we calculate the percentage with the music sample and the firstNoteInSamples
-        float firstNotePercentile = EditorToolClass.musicSource.timeSamples / firstNoteInSamples;
+        float firstNotePercentile = RoftPlayer.musicSource.timeSamples / firstNoteInSamples;
 
         //Now we want to get the percentage between
         //Our current sample, and the last key sample in our song!!!
@@ -33,8 +33,8 @@ public class SongProgression : MonoBehaviour
 
         //We get out percentage
         float lastNotePercentile = 
-            (EditorToolClass.musicSource.timeSamples - firstNoteInSamples) /
-            (lastNoteInSamples - firstNoteInSamples);
+            (RoftPlayer.musicSource.timeSamples - firstNoteInSamples) /
+            (lastNoteInSamples);
 
         if (!isPassedFirstNote)
         {

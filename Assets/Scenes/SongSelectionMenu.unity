@@ -221,7 +221,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &334704445
 RectTransform:
   m_ObjectHideFlags: 0
@@ -378,7 +378,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &409946011
 RectTransform:
   m_ObjectHideFlags: 0
@@ -535,7 +535,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &604171424
 RectTransform:
   m_ObjectHideFlags: 0
@@ -734,13 +734,17 @@ MonoBehaviour:
   TM_GOOD: {fileID: 0}
   TM_OK: {fileID: 0}
   TM_MISS: {fileID: 0}
+  TM_ACCURACYPERCENTILE: {fileID: 0}
   IMG_STRESS: {fileID: 0}
   IMG_STRESSBACKGROUND: {fileID: 0}
   IMG_SCREEN_OVERLAY: {fileID: 0}
+  IMG_PROGRESSION_FILL: {fileID: 0}
   totalScore: 0
   previousScore: 0
   combo: 0
   maxCombo: 0
+  overallAccuracy: 100
+  accuracyPercentile: 0
   stressBuild: 5
   accuracyStats: 0000000000000000000000000000000000000000
   isAutoPlaying: 0
@@ -849,7 +853,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &971341526
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1479,7 +1483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec02f5fa216bdd94d8e023ff1c27ab9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnInParent: 0
+  spawnInParent: 1
   overridePoolSize: 1
   readFromMusicManager: 1
   itemsToPool:

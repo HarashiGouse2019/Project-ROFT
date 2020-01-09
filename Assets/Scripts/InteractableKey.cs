@@ -17,21 +17,21 @@ public class InteractableKey : MonoBehaviour
     {
         sprite.color = Color.green;
         //Collect Data
-        string data = keyNum + ", " + EditorToolClass.musicSource.timeSamples + ", " + 0.ToString();
+        string data = keyNum + ", " + RoftPlayer.musicSource.timeSamples + ", " + 0.ToString();
         Key_Layout.Instance.dataText.text = data;
     }
 
     private void OnMouseDown()
     {
         #region Write to RFTM File
-        if (EditorToolClass.Instance.record)
+        if (RoftPlayer.Instance.record)
         {
             string data =
                 keyNum.ToString() + ","
-                 + EditorToolClass.musicSource.timeSamples.ToString() + ","
+                 + RoftPlayer.musicSource.timeSamples.ToString() + ","
                 + 0.ToString();
 
-            EditorToolClass.Instance.WriteToRFTM(EditorToolClass.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
+            RoftPlayer.Instance.WriteToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
         }
         #endregion
     }
