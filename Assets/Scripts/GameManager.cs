@@ -111,13 +111,23 @@ public class GameManager : MonoBehaviour
     //Check for multiple input
     public static int multiInputValue;
 
+    //RoftScouter will be our "Go collect some songs that I may or may not have
+    //put in this directory.
+    public RoftScouter scouter;
+
     //Time value
     float inputDelayTime = 0;
     float multiInputDuration = 0.1f;
-
-    public RoftScouter scouter;
-
     KeyCode[] inGameControlKeys = { KeyCode.Backspace, KeyCode.Escape };
+
+    //Make to much easier to access other classes
+    RoftPlayer roftPlayer;
+    MapReader mapReader;
+    MouseEvent mouse_env;
+    KeyPress keypress_env;
+
+    //Coroutine(s)
+    IEnumerator crt_GameManagement;
 
     private void Awake()
     {
@@ -137,7 +147,21 @@ public class GameManager : MonoBehaviour
         if (IMG_STRESS != null) IMG_STRESS.fillAmount = 0f;
         Application.targetFrameRate = 60;
 
+        //Instanciate new scouter
         scouter = new RoftScouter();
+
+        //Reference our roftPlayer
+        /*I may be right or wrong, but this may be a flyweight pattern...
+         * I think...
+         * No... This is not... but it'll make things easy
+         */
+        roftPlayer = RoftPlayer.Instance;
+        mapReader = MapReader.Instance;
+        mouse_env = MouseEvent.Instance;
+        keypress_env = KeyPress.Instance;
+
+        //Assign coroutines
+        crt_GameManagement = RUN_GAME_MANAGEMENT();
     }
 
     private void Update()
@@ -162,9 +186,9 @@ public class GameManager : MonoBehaviour
     void RunScoreSystem()
     {
         //Raising effect
-        if (previousScore < totalScore)
+        if (previousScore < totalScore && !isGamePaused)
         {
-            previousScore += combo * initialGain / 2;
+            previousScore += combo ^ initialGain;
             initialGain += combo;
         }
         else
@@ -185,8 +209,8 @@ public class GameManager : MonoBehaviour
         TM_SCORE.text = previousScore.ToString("D10");
         TM_COMBO.text = "x" + combo.ToString();
         TM_COMBO_UNDERLAY.text = "x" + combo.ToString();
-        TM_DIFFICULTY.text = "DIFFICULTY: " + MapReader.Instance.difficultyRating.ToString("F2", CultureInfo.InvariantCulture);
-        TM_MAXSCORE.text = "MAX SCORE:     " + MapReader.Instance.maxScore.ToString();
+        TM_DIFFICULTY.text = "DIFFICULTY: " + mapReader.difficultyRating.ToString("F2", CultureInfo.InvariantCulture);
+        TM_MAXSCORE.text = "MAX SCORE:     " + mapReader.maxScore.ToString();
 
         //This will be temporary
         #region DEBUG_STATS_UI
@@ -240,13 +264,19 @@ public class GameManager : MonoBehaviour
         {
             switch (isGamePaused)
             {
-                case false: Pause(); Time.timeScale = 0; return;
-                case true: UnPause(); Time.timeScale = 1; return;
+                case false:
+                    if (RoftPlayer.musicSource.isPlaying)
+                        Pause(); 
+                    return;
+
+                case true: 
+                    UnPause(); 
+                    return;
             }
         }
     }
 
-    void RestartSong()
+    public void RestartSong()
     {
         NoteEffector.keyPosition = reset;
 
@@ -265,25 +295,28 @@ public class GameManager : MonoBehaviour
         RoftPlayer.musicSource.timeSamples = reset;
     }
 
-    void Pause()
+    public void Pause()
     {
         //When we pause, we have to stop music, and turn isPaused to true
-        RoftPlayer.Instance.PauseMusic();
+        roftPlayer.PauseMusic();
         isGamePaused = true;
+        Time.timeScale = 0;
         return;
     }
 
-    void UnPause()
+    public void UnPause()
     {
         //Now we have to resume music, and turn isPaused to true
-        RoftPlayer.Instance.PlayMusic();
+        roftPlayer.PlayMusic();
         isGamePaused = false;
+        Time.timeScale = 1;
         return;
     }
 
     public void UpdateScore()
     {
         UpdateMaxCombo();
+        initialGain++;
         totalScore += sentScore * combo;
     }
 
@@ -291,7 +324,7 @@ public class GameManager : MonoBehaviour
     {
         //Do a calculation on accuracy stats
         int sumOfStats = 0;
-        foreach (int value in GameManager.Instance.accuracyStats)
+        foreach (int value in accuracyStats)
         {
             sumOfStats += value;
         }
@@ -302,7 +335,7 @@ public class GameManager : MonoBehaviour
     {
         if (gameMode == GameMode.TECHMEISTER)
         {
-            multiInputValue = MouseEvent.Instance.GetMouseInputValue() + KeyPress.Instance.GetKeyPressInputValue();
+            multiInputValue = mouse_env.GetMouseInputValue() + keypress_env.GetKeyPressInputValue();
 
             //Check for second input
             if (multiInputValue > 0)
@@ -322,8 +355,8 @@ public class GameManager : MonoBehaviour
 
     public void ResetMultiInputDelay()
     {
-        KeyPress.Instance.keyPressInput = reset;
-        MouseEvent.Instance.mouseMovementInput = reset;
+        keypress_env.keyPressInput = reset;
+        mouse_env.mouseMovementInput = reset;
         inputDelayTime = reset;
     }
 }

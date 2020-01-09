@@ -20,7 +20,7 @@ public class OverlayPulseEffect : MonoBehaviour
 
     private void Update()
     {
-        if (waiting) Wait();
+        if (waiting && !GameManager.Instance.isGamePaused) Wait();
     }
 
     public void DoPulseReaction()
