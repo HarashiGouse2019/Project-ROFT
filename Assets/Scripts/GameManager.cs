@@ -149,6 +149,9 @@ public class GameManager : MonoBehaviour
     //when we restart, all approach circles are inactive
     List<GameObject> activeApproachObjects = new List<GameObject>();
 
+    //Countdown for player to prepare
+    public bool isCountingDown = false;
+
     private void Awake()
     {
         #region Singleton
@@ -261,7 +264,8 @@ public class GameManager : MonoBehaviour
         #endregion
 
         //Be able to enable and disable Pause_Overlay
-        PAUSE_OVERLAY.SetActive(isGamePaused);
+        if (isCountingDown == false)
+            PAUSE_OVERLAY.SetActive(isGamePaused);
 
         if (RoftPlayer.musicSource.isPlaying) ManageStressMeter();
     }
@@ -315,7 +319,7 @@ public class GameManager : MonoBehaviour
 
         //Now we make sure all approach circles are inactive
         CollectApproachCircles();
-        foreach(var activeCirlces in activeApproachObjects)
+        foreach (var activeCirlces in activeApproachObjects)
         {
             activeCirlces.SetActive(false);
         }
@@ -327,18 +331,19 @@ public class GameManager : MonoBehaviour
     public void Pause()
     {
         //When we pause, we have to stop music, and turn isPaused to true
-        roftPlayer.PauseMusic();
-        isGamePaused = true;
-        Time.timeScale = 0;
+        if (RoftPlayer.musicSource.isPlaying)
+        {
+            roftPlayer.PauseMusic();
+            isGamePaused = true;
+            Time.timeScale = 0;
+        }
         return;
     }
 
     public void UnPause()
     {
-        //Now we have to resume music, and turn isPaused to true
-        roftPlayer.PlayMusic();
-        isGamePaused = false;
-        Time.timeScale = 1;
+        //Now we give the player some time to prepare
+        StartCoroutine(CountDown());
         return;
     }
 
@@ -422,8 +427,8 @@ public class GameManager : MonoBehaviour
 
     void CollectApproachCircles()
     {
-       GameObject[] discoveredObjs = GameObject.FindGameObjectsWithTag("approachCircle");
-        foreach(var obj in discoveredObjs)
+        GameObject[] discoveredObjs = GameObject.FindGameObjectsWithTag("approachCircle");
+        foreach (var obj in discoveredObjs)
         {
             activeApproachObjects.Add(obj);
         }
@@ -434,5 +439,34 @@ public class GameManager : MonoBehaviour
         KeyPress.Instance.keyPressInput = reset;
         MouseEvent.Instance.mouseMovementInput = reset;
         inputDelayTime = reset;
+    }
+
+    public IEnumerator CountDown()
+    {
+        isGamePaused = false;
+        isCountingDown = true;
+        PAUSE_OVERLAY.SetActive(isGamePaused);
+        for (int num = 3; num > reset; num--)
+        {
+            AudioManager.Instance.Play("Tick", _oneShot: true);
+            yield return new WaitForSecondsRealtime(1f);
+        }
+        //Now we play music again, and stat
+        roftPlayer.PlayMusic();
+
+        //Update isGamePaused
+        isGamePaused = !RoftPlayer.musicSource.isPlaying;
+
+        //Set time scale back to 1, so everything should show motion over time
+        Time.timeScale = 1;
+
+        isCountingDown = false;
+
+        yield return null;
+    }
+
+    public bool IsInteractable()
+    {
+        return (isGamePaused == false && isCountingDown == false);
     }
 }

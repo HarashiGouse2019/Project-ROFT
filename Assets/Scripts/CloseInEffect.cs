@@ -49,7 +49,7 @@ public class CloseInEffect : NoteEffector
     // Update is called once per frame
     void Update()
     {
-        if (!RoftPlayer.Instance.record)
+        if (!RoftPlayer.Instance.record && GameManager.Instance.IsInteractable())
             CloseIn();
 
     }
@@ -58,7 +58,7 @@ public class CloseInEffect : NoteEffector
     {
         //Because Fixed Update goes faster than Update at a fixed rate, we're able to 
         //prevent getting multiple notes on 1 single tap.
-        if (dispose && ClosestObjectClass.closestObject[keyNumPosition] != null)
+        if (dispose && ClosestObjectClass.closestObject[keyNumPosition] != null & GameManager.Instance.IsInteractable())
         {
             if (attachedArrow != null)
             {
@@ -70,6 +70,7 @@ public class CloseInEffect : NoteEffector
             ClosestObjectClass.closestObject[keyNumPosition] = null;
         }
     }
+
 
     void CloseIn()
     {
