@@ -226,7 +226,7 @@ public class CloseInEffect : NoteEffector
             float inverse = ((possibleAccuracy - (index)));
             float percent = inverse / possibleAccuracy;
             GameManager.Instance.accuracyPercentile += (percent * 100);
-            GameManager.Instance.overallAccuracy = GameManager.Instance.accuracyPercentile / GameManager.Instance.GetSumOfStats();
+            GameManager.Instance.overallAccuracy = (GameManager.Instance.accuracyPercentile / GameManager.Instance.GetSumOfStats());
             GameManager.Instance.UpdateScore();
         }
     }

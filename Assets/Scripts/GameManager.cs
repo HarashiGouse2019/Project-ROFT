@@ -52,11 +52,11 @@ public class GameManager : MonoBehaviour
 
     public static float[] stressAmount =
     {
-       2f,
+       0.2f,
         0f,
-        -1f,
-        -2f,
-        -5f
+        -0.1f,
+        -0.2f,
+        -0.3f
     };
 
     public static int sentScore;
@@ -119,6 +119,7 @@ public class GameManager : MonoBehaviour
     public int maxCombo;
     public float overallAccuracy = 100.00f; //The average accuracy during the song
     public float accuracyPercentile; //The data in which gets accuracy in percent;
+    public float overallGrade = 0f;
     [Range(1f, 10f)] public float stressBuild = 5f;
     public int[] accuracyStats = new int[5];
     public bool isAutoPlaying;
@@ -151,6 +152,10 @@ public class GameManager : MonoBehaviour
 
     //Countdown for player to prepare
     public bool isCountingDown = false;
+
+    //Push in stress
+    float stressAmp = 0f;
+    float gain = 1f;
 
     private void Awake()
     {
@@ -186,7 +191,8 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        StartCoroutine(RUN_GAME_MANAGEMENT());
+       if (RoftPlayer.Instance.record == false)
+            StartCoroutine(RUN_GAME_MANAGEMENT());
     }
 
     //GAME_MANAGEMENT Update
@@ -260,21 +266,37 @@ public class GameManager : MonoBehaviour
             " (" + Mathf.Floor((maxCombo / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_ACCURACYPERCENTILE.text = "ACCURACY:     "
-           + Mathf.Floor(overallAccuracy).ToString("F2", CultureInfo.InvariantCulture) + "%";
+           + overallAccuracy.ToString("F2", CultureInfo.InvariantCulture) + "%";
         #endregion
 
         //Be able to enable and disable Pause_Overlay
         if (isCountingDown == false)
             PAUSE_OVERLAY.SetActive(isGamePaused);
 
-        if (RoftPlayer.musicSource.isPlaying) ManageStressMeter();
+        if (RoftPlayer.musicSource.isPlaying && SongProgression.isPassedFirstNote) ManageStressMeter();
     }
 
     void ManageStressMeter()
     {
-        float stressBuildInPercent = stressBuild / 100;
-        IMG_STRESS.fillAmount += ((stressBuildInPercent * (consecutiveMisses + (stressBuild / 10))) - sentStress) / 100;
-        sentStress = reset;
+        const uint millsInSec = 1000;
+        float subtleProgression = (stressBuild / millsInSec);
+        
+        IMG_STRESS.fillAmount += (subtleProgression / (consecutiveMisses + stressBuild)) - sentStress;
+
+        //Okay, so I have to think about this....
+        //I think I have an idea for the Stress Build...
+        /*I have two options for how this system should work
+         * 
+         * 1) Stress Build will be the multiplier for the sentStress, meaning I'll use
+         *    sentStress * stressBuild
+         *    
+         *    They will definitely be added to the consecutiveMisses, because I want to get progressively worse
+         *    as the player misses more.
+         *    
+         *    As for the subtle increase, stress progressiveness will be the stress build divided by
+         *    the amount of milliseconds in a second (which is 1000)
+         */
+        sentStress = 0;
     }
 
     void RunInGameControls()

@@ -6,7 +6,7 @@ public class SongProgression : MonoBehaviour
     float firstNoteInSamples, lastNoteInSamples;
 
     //Check if the first note's been delivered
-    bool isPassedFirstNote;
+    public static bool isPassedFirstNote;
 
     // Update is called once per frame
     void Update()
