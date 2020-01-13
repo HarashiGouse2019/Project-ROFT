@@ -451,6 +451,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: KeyOverlay
       objectReference: {fileID: 0}
+    - target: {fileID: 5661888556525302133, guid: dc71359671f99f0438f5b24182e3994c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5443026936034782058, guid: dc71359671f99f0438f5b24182e3994c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -514,17 +519,22 @@ PrefabInstance:
     - target: {fileID: 2879025948228699850, guid: dc71359671f99f0438f5b24182e3994c,
         type: 3}
       propertyPath: m_Color.r
-      value: 0
+      value: 0.3726415
       objectReference: {fileID: 0}
     - target: {fileID: 2879025948228699850, guid: dc71359671f99f0438f5b24182e3994c,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.91764706
+      value: 0.98745525
       objectReference: {fileID: 0}
     - target: {fileID: 2879025948228699850, guid: dc71359671f99f0438f5b24182e3994c,
         type: 3}
       propertyPath: m_Color.b
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2879025948228699850, guid: dc71359671f99f0438f5b24182e3994c,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc71359671f99f0438f5b24182e3994c, type: 3}

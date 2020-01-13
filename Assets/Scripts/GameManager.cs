@@ -163,6 +163,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            CreateRecords();
             DontDestroyOnLoad(Instance);
         }
         else
@@ -490,5 +491,16 @@ public class GameManager : MonoBehaviour
     public bool IsInteractable()
     {
         return (isGamePaused == false && isCountingDown == false);
+    }
+
+    void CreateRecords()
+    {
+        //This is when records.rft is nowhere to be seen
+        string roftRecordPath = Application.persistentDataPath + @"/records.rft";
+        if (!File.Exists(roftRecordPath))
+        {
+            FileStream roftRecordFiles = File.Create(roftRecordPath);
+            Debug.Log(roftRecordPath + " created.");
+        }
     }
 }

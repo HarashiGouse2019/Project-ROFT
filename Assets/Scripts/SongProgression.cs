@@ -45,5 +45,9 @@ public class SongProgression : MonoBehaviour
         }
         else
             GameManager.Instance.IMG_PROGRESSION_FILL.fillAmount = lastNotePercentile;
+
+        //Now, if the fillAmount is full (or once we hit the last note), have RoftPlayer fade out
+        if (RoftPlayer.musicSource.timeSamples > lastNoteInSamples)
+            RoftPlayer.Instance.DoFadeOutFinish();
     }
 }
