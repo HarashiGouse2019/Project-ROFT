@@ -424,7 +424,7 @@ public class GameManager : MonoBehaviour
     {
         if (gameMode == GameMode.TECHMEISTER)
         {
-            multiInputValue = mouse_env.GetMouseInputValue() + keypress_env.GetKeyPressInputValue();
+            multiInputValue = MouseEvent.Instance.GetMouseInputValue() + KeyPress.Instance.GetKeyPressInputValue();
 
             //Check for second input
             if (multiInputValue > 0)

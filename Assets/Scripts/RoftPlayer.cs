@@ -73,7 +73,6 @@ public class RoftPlayer : MonoBehaviour
 
     public NoteEffector noteEffector;
 
- 
     #endregion
 
     private void Awake()
@@ -102,18 +101,6 @@ public class RoftPlayer : MonoBehaviour
             PauseMusic();
             musicSource.timeSamples = (int)musicLengthInSamples;
         }
-    }
-
-    public void DoFadeOutFinish()
-    {
-        //We'll be grabbing the canvas, reference the Canvas group
-        //slowly decreasing to 0
-        CanvasGroup gameCanvas = GetComponentInParent<CanvasGroup>();
-
-        const int invisible = 0;
-
-        for(float val = 1; val > invisible; val-=0.001f)
-            gameCanvas.alpha = val;
     }
 
     void LoadMusic()

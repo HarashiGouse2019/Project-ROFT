@@ -8,10 +8,13 @@ public class SongProgression : MonoBehaviour
     //Check if the first note's been delivered
     public static bool isPassedFirstNote;
 
+    //See if the last note was it
+    public static bool isFinished;
+
     // Update is called once per frame
     void Update()
     {
-        if (!RoftPlayer.Instance.record)
+        if (!RoftPlayer.Instance.record && isFinished == false)
             ShowProgression();
     }
 
@@ -48,6 +51,6 @@ public class SongProgression : MonoBehaviour
 
         //Now, if the fillAmount is full (or once we hit the last note), have RoftPlayer fade out
         if (RoftPlayer.musicSource.timeSamples > lastNoteInSamples)
-            RoftPlayer.Instance.DoFadeOutFinish();
+            isFinished = true;
     }
 }

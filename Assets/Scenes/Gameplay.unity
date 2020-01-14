@@ -1310,7 +1310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   approachSpeed: 9.350000381469727
-  alignment: 6000
+  alignment: 2000
   keyAppearOffset: 1
   accuracy: 8.75
   accuracyVal:

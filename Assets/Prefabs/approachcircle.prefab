@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 1389777866178587437}
   - component: {fileID: 1844285015936044249}
   - component: {fileID: 7544047459120237185}
+  - component: {fileID: 8432298229018716898}
+  - component: {fileID: 1799893738899272384}
   m_Layer: 0
   m_Name: approachcircle
   m_TagString: approachCircle
@@ -114,3 +116,30 @@ MonoBehaviour:
   accuracyString: 
   dispose: 0
   dontEffectMe: 0
+--- !u!222 &8432298229018716898
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7740991288490540822}
+  m_CullTransparentMesh: 0
+--- !u!114 &1799893738899272384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7740991288490540822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e946c00e119cb3d49938512e8999c544, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 0}
+  circleTypeSprites:
+  - {fileID: 21300000, guid: b913a1e39cc07f74da9d901d5b636685, type: 3}
+  - {fileID: 21300000, guid: a661d3ec30d47724a89808f364b55656, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

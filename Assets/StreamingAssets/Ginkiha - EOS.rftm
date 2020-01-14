@@ -1,3 +1,24 @@
+[General]
+Author: User1111
+AudioFilename: Ginkiha - EOS.mp3
+
+[Metadata]
+Title: EOS
+Title Unicode: EOS
+Artist: Ginkiha
+Artist Unicode: Ginkiha
+Creator: User1111
+ROFTID: 28981
+GROUPID: 28174932
+
+[Difficulty]
+StressBuild: 10
+ObjectCount: 
+KeyCount: 12
+AccuracyHarshness: 7.25
+ApproachSpeed: 9
+
+[Objects]
 2,82790,0
 1,92198,0
 3,95020,0
