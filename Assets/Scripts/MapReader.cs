@@ -210,6 +210,8 @@ public class MapReader : MonoBehaviour
                 keyLayoutClass.GetComponent<AppearEffect>().enabled = keyLayoutClass.gameObject.activeInHierarchy;
         }
 
+        #region Reading KeyCount
+
         switch (keyCount)
         {
             case 4:
@@ -224,10 +226,14 @@ public class MapReader : MonoBehaviour
             case 12:
                 keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_3x4;
                 break;
+            case 16:
+                keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_4x4;
+                break;
             case 30:
                 keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_3Row;
                 break;
-        }
+        } 
+        #endregion
 
         if
            (GameManager.Instance.gameMode == GameManager.GameMode.TECHMEISTER ||

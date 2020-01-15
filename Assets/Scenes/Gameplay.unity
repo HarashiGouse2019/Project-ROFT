@@ -1274,19 +1274,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   recordKeyInput: 0
-  keyLayout: 2
+  keyLayout: 3
   layoutMethod: 0
   setXOffset:
   - -11
   - -9.25
   - -8.5
-  - -19
+  - -8.5
   - -17
   setYOffset:
   - -2
   - 2
-  - 4
-  - -4
+  - 4.2
+  - 6
   - 1.5
   autoBindKeys: 1
   dataText: {fileID: 7113210978643432506}
@@ -1310,7 +1310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   approachSpeed: 9.350000381469727
-  alignment: 2000
+  alignment: 6000
   keyAppearOffset: 1
   accuracy: 8.75
   accuracyVal:
@@ -6095,7 +6095,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ec2119ba0127ce439f515369208fd1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  music: {fileID: 8300000, guid: 3749f238002a65d41a7986f15b1e000b, type: 3}
+  music: {fileID: 8300000, guid: 5cd7bbda60f36174aa511506a5889d08, type: 3}
   record: 0
   tickSignature: 4
   playButton: {fileID: 7113210978690110238}
@@ -6136,7 +6136,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -21.980713, y: -34.999878}
+  m_AnchoredPosition: {x: -21.98059, y: -34.999878}
   m_SizeDelta: {x: -43.965, y: -0.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &7113210978960427812
@@ -8050,7 +8050,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7113210979678610685}
   m_LocalRotation: {x: -0, y: -0, z: 1.1102209e-16, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.000000012383}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7113210978810824030}
@@ -8058,8 +8058,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.6102668, y: -8.909668}
-  m_SizeDelta: {x: 614, y: 96}
+  m_AnchoredPosition: {x: -0.06919678, y: 4.8807373}
+  m_SizeDelta: {x: 696.7, y: 130.88}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &7113210979678610685
 GameObject:
@@ -8135,8 +8135,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 100
-  m_fontSizeBase: 100
+  m_fontSize: 86
+  m_fontSizeBase: 86
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -8152,7 +8152,7 @@ MonoBehaviour:
   m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 0
+  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
