@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
+[RequireComponent(typeof(SceneNavi))]
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -143,8 +144,6 @@ public class GameManager : MonoBehaviour
     //Make to much easier to access other classes
     RoftPlayer roftPlayer;
     MapReader mapReader;
-    MouseEvent mouse_env;
-    KeyPress keypress_env;
 
     //This will be used for the GameManager to assure that
     //when we restart, all approach circles are inactive
@@ -186,8 +185,6 @@ public class GameManager : MonoBehaviour
          */
         roftPlayer = RoftPlayer.Instance;
         mapReader = MapReader.Instance;
-        mouse_env = MouseEvent.Instance;
-        keypress_env = KeyPress.Instance;
     }
 
     private void Update()

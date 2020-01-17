@@ -76,8 +76,8 @@ public class ArrowDirectionSet : MonoBehaviour
     public bool Detect()
     {
         if (!coolDown &&
-    (m_Event.horIndex == setHorizontal && (enum_Direction == Direction.LEFT || enum_Direction == Direction.RIGHT) ||
-    (m_Event.verIndex == setVertical && (enum_Direction == Direction.UP || enum_Direction == Direction.DOWN))))
+    (m_Event.horIndex == setHorizontal && (enum_Direction == Direction.LEFT || enum_Direction == Direction.RIGHT)) ||
+    (m_Event.verIndex == setVertical && (enum_Direction == Direction.UP || enum_Direction == Direction.DOWN)))
         {
             m_Event.Refresh();
             m_Event.horIndex = 2;

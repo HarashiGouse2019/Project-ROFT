@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class CloseInEffect : NoteEffector
 {
-
-
     public float initiatedNoteSample;
     public float initiatedNoteOffset;
     public float offsetStart;
@@ -70,8 +68,7 @@ public class CloseInEffect : NoteEffector
             ClosestObjectClass.closestObject[keyNumPosition] = null;
         }
     }
-
-
+    
     void CloseIn()
     {
         InHitRange();
@@ -168,7 +165,11 @@ public class CloseInEffect : NoteEffector
                     if (tapType)
                         AudioManager.Instance.Play("Normal", 100, true);
                     if (BurstType)
-                        AudioManager.Instance.Play("Ding", 100, true);
+                    {
+                        if (attachedArrow.GetComponent<ArrowDirectionSet>().Detect())
+                            AudioManager.Instance.Play("Ding", 100, true);
+                        else return;
+                    }
 
                     IncrementComboChain();
                     SendAccuracyScore();
