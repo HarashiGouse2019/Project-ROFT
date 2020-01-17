@@ -77,7 +77,17 @@ public class RoftPlayer : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        #region Singleton
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(Instance);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        #endregion
         LoadMusic();
     }
 
@@ -113,7 +123,7 @@ public class RoftPlayer : MonoBehaviour
         if (record)
             musicSource.clip = music;
         else
-            musicSource.clip = MusicManager.manager.GetMusic(MapReader.Instance.m_name);
+            musicSource.clip = MusicManager.Instance.GetMusic(MapReader.Instance.m_name);
 
         musicLengthInSamples = musicSource.clip.length * musicSource.clip.frequency;
         musicSource.outputAudioMixerGroup = pitchMixer;
@@ -123,7 +133,7 @@ public class RoftPlayer : MonoBehaviour
     public void PlayMusic()
     {
         musicSource.Play();
-        MusicManager.manager.nowPlaying = musicSource.clip.name;
+        MusicManager.Instance.nowPlaying = musicSource.clip.name;
     }
 
     //Pause the song

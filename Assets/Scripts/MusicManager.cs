@@ -7,9 +7,14 @@ public class MusicManager : MonoBehaviour
     /*Music Manager will essentially collect all music files
      * from all SongEntities detected by RoftScouter,
      * and it will preview it for the player.
+     * 
+     * Music Manager will later be changed to
+     * SongEntityManager, because instead of just Music clips,
+     * it'll be a class that holds not only the song (in which it'll go through and play),
+     * but give us all kinds of different information.
      */
 
-    public static MusicManager manager;
+    public static MusicManager Instance;
 
     [System.Serializable]
     public class Music
@@ -42,9 +47,9 @@ public class MusicManager : MonoBehaviour
 
     public void Awake()
     {
-        if (manager == null)
+        if (Instance == null)
         {
-            manager = this;
+            Instance = this;
             DontDestroyOnLoad(this);
         }
         else

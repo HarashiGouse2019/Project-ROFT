@@ -33,7 +33,17 @@ public class MapReader : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        #region Singleton
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(Instance);
+        }
+        else
+        {
+            Destroy(gameObject);
+        } 
+        #endregion
     }
 
     private void Start()

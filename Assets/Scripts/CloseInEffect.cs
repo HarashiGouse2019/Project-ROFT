@@ -83,7 +83,7 @@ public class CloseInEffect : NoteEffector
             sprite.color = Color.red;
 
         transform.localScale = new Vector3(1 / GetPercentage(), 1 / GetPercentage(), 1f);
-        sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.2f);
+        sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.15f);
 
         #region Auto Play
         if (CheckSoloPlay())
@@ -145,15 +145,12 @@ public class CloseInEffect : NoteEffector
                 mapReader.keys[keyNum].type == Key.KeyType.Click &&
                 ClickEvent.ClickReceived());
 
-            bool SlideType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
+            bool BurstType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
                 mapReader.keys[keyNum].type == Key.KeyType.Slide &&
                 attachedArrow != null &&
                 GameManager.multiInputValue == 2);
 
-            bool TBRType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter &&
-                Input.GetKeyDown(GetComponentInParent<AppearEffect>().assignedKeyBind));
-
-            if (accuracyString != "" && (tapType || clickType || TBRType || SlideType))
+            if (accuracyString != "" && (tapType || clickType || BurstType))
             {
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                 {
@@ -170,7 +167,7 @@ public class CloseInEffect : NoteEffector
                     //Check type and add sound
                     if (tapType)
                         AudioManager.Instance.Play("Normal", 100, true);
-                    if (SlideType)
+                    if (BurstType)
                         AudioManager.Instance.Play("Ding", 100, true);
 
                     IncrementComboChain();
@@ -294,15 +291,4 @@ public class CloseInEffect : NoteEffector
             GameManager.Instance.IMG_SCREEN_OVERLAY.GetComponent<OverlayPulseEffect>().DoPulseReaction();
         }
     }
-
-    //void CheckForDoubles()
-    //{
-    //    float firstSample = initiatedNoteOffset;
-    //    float secondSample = ClosestObjectClass.closestObject[Key_Layout.Instance.pooler.poolIndex].GetComponent<CloseInEffect>().noteSample;
-    //    if ((secondSample - firstSample) < 1000)
-    //    {
-    //        ClosestObjectClass.closestObject[keyNumPosition + 1].SetActive(false);
-    //        ClosestObjectClass.closestObject[keyNumPosition + 1] = null;
-    //    }
-    //}
 }

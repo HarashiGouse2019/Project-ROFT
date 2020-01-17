@@ -233,7 +233,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_transform: {fileID: 5259896013176399451}
-  waitDuration: 0.1
+  waitDuration: 0.3
   shrinkRate: 0.025
 --- !u!1 &5761434689677218207
 GameObject:
