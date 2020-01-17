@@ -13,6 +13,8 @@ public class PulseEffect : MonoBehaviour
     bool waiting = false;
     float time;
 
+    GameManager gameManager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +26,8 @@ public class PulseEffect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (waiting) Wait(waitDuration, shrinkRate);
+        if (!GameManager.Instance.isGamePaused)
+            if (waiting) Wait(waitDuration, shrinkRate);
     }
 
     //When I hit a note, this function will be called

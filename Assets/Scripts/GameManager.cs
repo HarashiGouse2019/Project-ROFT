@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
@@ -31,13 +32,31 @@ public class GameManager : MonoBehaviour
         0
     };
 
+    public static char[] accuracyGrade =
+    {
+        'S',
+        'A',
+        'B',
+        'C',
+        'D'
+    };
+
+    public static float[] gradePrecentageRequirement =
+    {
+        0.95f,
+        0.90f,
+        0.80f,
+        0.70f,
+        0
+    };
+
     public static float[] stressAmount =
     {
-       2f,
+       0.2f,
         0f,
-        -1f,
-        -2f,
-        -5f
+        -0.1f,
+        -0.2f,
+        -0.3f
     };
 
     public static int sentScore;
@@ -58,6 +77,9 @@ public class GameManager : MonoBehaviour
         TBR_HOMEROW,
         TBR_ALL
     };
+    [Header("Game Pause Overlay")]
+    public bool isGamePaused = false;
+    public GameObject PAUSE_OVERLAY;
 
     [Header("Edit Mode")]
     public bool editMode;
@@ -81,6 +103,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI TM_OK;
     public TextMeshProUGUI TM_MISS;
     public TextMeshProUGUI TM_ACCURACYPERCENTILE;
+    public TextMeshProUGUI TM_ACCURACYGRADE;
     public TextMeshProUGUI DEBUG_FILEDIR;
 
     [Header("UI IMAGES")]
@@ -96,6 +119,7 @@ public class GameManager : MonoBehaviour
     public int maxCombo;
     public float overallAccuracy = 100.00f; //The average accuracy during the song
     public float accuracyPercentile; //The data in which gets accuracy in percent;
+    public float overallGrade = 0f;
     [Range(1f, 10f)] public float stressBuild = 5f;
     public int[] accuracyStats = new int[5];
     public bool isAutoPlaying;
@@ -107,13 +131,31 @@ public class GameManager : MonoBehaviour
     //Check for multiple input
     public static int multiInputValue;
 
+    //RoftScouter will be our "Go collect some songs that I may or may not have
+    //put in this directory.
+    public RoftScouter scouter;
+
     //Time value
     float inputDelayTime = 0;
     float multiInputDuration = 0.1f;
+    KeyCode[] inGameControlKeys = { KeyCode.Backspace, KeyCode.Escape };
 
-    public RoftScouter scouter;
+    //Make to much easier to access other classes
+    RoftPlayer roftPlayer;
+    MapReader mapReader;
+    MouseEvent mouse_env;
+    KeyPress keypress_env;
 
-    KeyCode[] inGameControlKeys = { KeyCode.Backspace, KeyCode.Escape};
+    //This will be used for the GameManager to assure that
+    //when we restart, all approach circles are inactive
+    List<GameObject> activeApproachObjects = new List<GameObject>();
+
+    //Countdown for player to prepare
+    public bool isCountingDown = false;
+
+    //Push in stress
+    float stressAmp = 0f;
+    float gain = 1f;
 
     private void Awake()
     {
@@ -121,6 +163,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            CreateRecords();
             DontDestroyOnLoad(Instance);
         }
         else
@@ -133,12 +176,24 @@ public class GameManager : MonoBehaviour
         if (IMG_STRESS != null) IMG_STRESS.fillAmount = 0f;
         Application.targetFrameRate = 60;
 
+        //Instanciate new scouter
         scouter = new RoftScouter();
+
+        //Reference our roftPlayer
+        /*I may be right or wrong, but this may be a flyweight pattern...
+         * I think...
+         * No... This is not... but it'll make things easy
+         */
+        roftPlayer = RoftPlayer.Instance;
+        mapReader = MapReader.Instance;
+        mouse_env = MouseEvent.Instance;
+        keypress_env = KeyPress.Instance;
     }
 
     private void Update()
     {
-        StartCoroutine(RUN_GAME_MANAGEMENT());
+       if (RoftPlayer.Instance.record == false)
+            StartCoroutine(RUN_GAME_MANAGEMENT());
     }
 
     //GAME_MANAGEMENT Update
@@ -150,6 +205,7 @@ public class GameManager : MonoBehaviour
             RunUI();
             RunInGameControls();
             CheckSignsOfInput();
+            CheckStressMaxed();
         }
 
         yield return null;
@@ -158,9 +214,9 @@ public class GameManager : MonoBehaviour
     void RunScoreSystem()
     {
         //Raising effect
-        if (previousScore < totalScore)
+        if (previousScore < totalScore && !isGamePaused)
         {
-            previousScore += combo * initialGain / 2;
+            previousScore += combo ^ initialGain;
             initialGain += combo;
         }
         else
@@ -181,10 +237,11 @@ public class GameManager : MonoBehaviour
         TM_SCORE.text = previousScore.ToString("D10");
         TM_COMBO.text = "x" + combo.ToString();
         TM_COMBO_UNDERLAY.text = "x" + combo.ToString();
-        TM_DIFFICULTY.text = "DIFFICULTY: " + MapReader.Instance.difficultyRating.ToString("F2", CultureInfo.InvariantCulture);
-        TM_MAXSCORE.text = "MAX SCORE:     " + MapReader.Instance.maxScore.ToString();
+        TM_DIFFICULTY.text = "DIFFICULTY: " + mapReader.difficultyRating.ToString("F2", CultureInfo.InvariantCulture);
+        TM_MAXSCORE.text = "MAX SCORE:     " + mapReader.maxScore.ToString();
 
         //This will be temporary
+        #region DEBUG_STATS_UI
         TM_PERFECT.text = "PERFECT:   " +
             accuracyStats[0].ToString() +
             " (" + Mathf.Floor((accuracyStats[0] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
@@ -210,16 +267,37 @@ public class GameManager : MonoBehaviour
             " (" + Mathf.Floor((maxCombo / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_ACCURACYPERCENTILE.text = "ACCURACY:     "
-           + Mathf.Floor(overallAccuracy).ToString("F2", CultureInfo.InvariantCulture) + "%";
+           + overallAccuracy.ToString("F2", CultureInfo.InvariantCulture) + "%";
+        #endregion
 
-        if (RoftPlayer.musicSource.isPlaying) ManageStressMeter();
+        //Be able to enable and disable Pause_Overlay
+        if (isCountingDown == false)
+            PAUSE_OVERLAY.SetActive(isGamePaused);
+
+        if (RoftPlayer.musicSource.isPlaying && SongProgression.isPassedFirstNote) ManageStressMeter();
     }
 
     void ManageStressMeter()
     {
-        float stressBuildInPercent = stressBuild / 100;
-        IMG_STRESS.fillAmount += ((stressBuildInPercent * (consecutiveMisses + (stressBuild / 10))) - sentStress) / 100;
-        sentStress = reset;
+        const uint millsInSec = 1000;
+        float subtleProgression = (stressBuild / millsInSec);
+        
+        IMG_STRESS.fillAmount += (subtleProgression / (consecutiveMisses + stressBuild)) - sentStress;
+
+        //Okay, so I have to think about this....
+        //I think I have an idea for the Stress Build...
+        /*I have two options for how this system should work
+         * 
+         * 1) Stress Build will be the multiplier for the sentStress, meaning I'll use
+         *    sentStress * stressBuild
+         *    
+         *    They will definitely be added to the consecutiveMisses, because I want to get progressively worse
+         *    as the player misses more.
+         *    
+         *    As for the subtle increase, stress progressiveness will be the stress build divided by
+         *    the amount of milliseconds in a second (which is 1000)
+         */
+        sentStress = 0;
     }
 
     void RunInGameControls()
@@ -228,16 +306,29 @@ public class GameManager : MonoBehaviour
             RestartSong();
 
         if (Input.GetKeyDown(inGameControlKeys[1]))
-            Pause();
+        {
+            switch (isGamePaused)
+            {
+                case false:
+                    if (RoftPlayer.musicSource.isPlaying)
+                        Pause();
+                    return;
+
+                case true:
+                    UnPause();
+                    return;
+            }
+        }
     }
 
-    void RestartSong()
+    public void RestartSong()
     {
         NoteEffector.keyPosition = reset;
 
         for (int stat = 0; stat < accuracyStats.Length; stat++)
             accuracyStats[stat] = reset;
 
+        //Reset all values
         combo = reset;
         maxCombo = reset;
         totalScore = reset;
@@ -248,24 +339,81 @@ public class GameManager : MonoBehaviour
         accuracyPercentile = reset;
         overallAccuracy = reset;
         RoftPlayer.musicSource.timeSamples = reset;
+
+        //Now we make sure all approach circles are inactive
+        CollectApproachCircles();
+        foreach (var activeCirlces in activeApproachObjects)
+        {
+            activeCirlces.SetActive(false);
+        }
+
+        //Now we clear our list.
+        activeApproachObjects.Clear();
     }
 
-    void Pause()
+    public void Pause()
     {
+        //When we pause, we have to stop music, and turn isPaused to true
+        if (RoftPlayer.musicSource.isPlaying)
+        {
+            roftPlayer.PauseMusic();
+            isGamePaused = true;
+            Time.timeScale = 0;
+        }
+        return;
+    }
 
+    public void UnPause()
+    {
+        //Now we give the player some time to prepare
+        StartCoroutine(CountDown());
+        return;
     }
 
     public void UpdateScore()
     {
         UpdateMaxCombo();
+        UpdateGrade();
+        initialGain++;
         totalScore += sentScore * combo;
+    }
+
+    //Be sure that when our score updates we call this function
+    //Sense I'm using a for loop, I only want to call it went needed
+    //And that's when the player actually hits a note, and gets a score based
+    //on accuracy.
+    public void UpdateGrade()
+    {
+        /*Grade Calculations...
+         * Grade S) Higher than or equal to 95%
+         * Grade A) Higher than or equal to 90%
+         * Grade B) Higher than or equal to 80%
+         * Grade C) Higher than or equal to 70%
+         * Grade D) Anything lower than 70%
+         * 
+         * This are accounted for Perfect Percentage
+         * 
+         * We want to find a way to use the accuracyGrade array
+         * in terms of percentile (which seems intimidating).
+         */
+
+        for (int gradeIndex = 0; gradeIndex < gradePrecentageRequirement.Length; gradeIndex++)
+        {
+            //Check if overall Accuracy is above percentage values
+            //We'll simple return out of for loop if statement is true
+            if (overallAccuracy >= gradePrecentageRequirement[gradeIndex] * 100f)
+            {
+                TM_ACCURACYGRADE.text = "(" + accuracyGrade[gradeIndex].ToString() + ")";
+                return;
+            }
+        }
     }
 
     public int GetSumOfStats()
     {
         //Do a calculation on accuracy stats
         int sumOfStats = 0;
-        foreach (int value in GameManager.Instance.accuracyStats)
+        foreach (int value in accuracyStats)
         {
             sumOfStats += value;
         }
@@ -294,10 +442,65 @@ public class GameManager : MonoBehaviour
             ResetMultiInputDelay();
     }
 
+    void CheckStressMaxed()
+    {
+        if (IMG_STRESS.fillAmount >= 0.99f)
+            RestartSong();
+    }
+
+    void CollectApproachCircles()
+    {
+        GameObject[] discoveredObjs = GameObject.FindGameObjectsWithTag("approachCircle");
+        foreach (var obj in discoveredObjs)
+        {
+            activeApproachObjects.Add(obj);
+        }
+    }
+
     public void ResetMultiInputDelay()
     {
         KeyPress.Instance.keyPressInput = reset;
         MouseEvent.Instance.mouseMovementInput = reset;
         inputDelayTime = reset;
+    }
+
+    public IEnumerator CountDown()
+    {
+        isGamePaused = false;
+        isCountingDown = true;
+        PAUSE_OVERLAY.SetActive(isGamePaused);
+        for (int num = 3; num > reset; num--)
+        {
+            AudioManager.Instance.Play("Tick", _oneShot: true);
+            yield return new WaitForSecondsRealtime(1f);
+        }
+        //Now we play music again, and stat
+        roftPlayer.PlayMusic();
+
+        //Update isGamePaused
+        isGamePaused = !RoftPlayer.musicSource.isPlaying;
+
+        //Set time scale back to 1, so everything should show motion over time
+        Time.timeScale = 1;
+
+        isCountingDown = false;
+
+        yield return null;
+    }
+
+    public bool IsInteractable()
+    {
+        return (isGamePaused == false && isCountingDown == false);
+    }
+
+    void CreateRecords()
+    {
+        //This is when records.rft is nowhere to be seen
+        string roftRecordPath = Application.persistentDataPath + @"/records.rft";
+        if (!File.Exists(roftRecordPath))
+        {
+            FileStream roftRecordFiles = File.Create(roftRecordPath);
+            Debug.Log(roftRecordPath + " created.");
+        }
     }
 }

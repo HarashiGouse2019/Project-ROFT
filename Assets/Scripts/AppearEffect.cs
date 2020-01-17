@@ -10,8 +10,6 @@ public class AppearEffect : CloseInEffect
 
     public GameObject assignedCircle;
 
-    const int completeOpacity = 20000;
-
     Color originalOverlayAppearance;
 
     float time;

@@ -82,7 +82,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: -20
   m_Sprite: {fileID: 21300000, guid: 656df203f5800dc4d9ba0e6808dacc64, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -233,7 +233,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_transform: {fileID: 5259896013176399451}
-  waitDuration: 0.1
+  waitDuration: 0.3
   shrinkRate: 0.025
 --- !u!1 &5761434689677218207
 GameObject:
@@ -505,26 +505,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2879025948228699850, guid: dc71359671f99f0438f5b24182e3994c,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2879025948228699850, guid: dc71359671f99f0438f5b24182e3994c,
-        type: 3}
-      propertyPath: m_Color.r
-      value: 0.5707547
-      objectReference: {fileID: 0}
-    - target: {fileID: 2879025948228699850, guid: dc71359671f99f0438f5b24182e3994c,
-        type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2879025948228699850, guid: dc71359671f99f0438f5b24182e3994c,
-        type: 3}
-      propertyPath: m_Color.b
-      value: 0.76930434
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc71359671f99f0438f5b24182e3994c, type: 3}

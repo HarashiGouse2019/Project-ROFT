@@ -20,6 +20,7 @@ public class Key_Layout : MonoBehaviour
         Layout_1x4,
         Layout_2x4,
         Layout_3x4,
+        Layout_4x4,
         Layout_HomeRow,
         Layout_3Row
     }
@@ -70,7 +71,7 @@ public class Key_Layout : MonoBehaviour
         "asl;",
         "qwopasl;",
         "qwopasl;zx./",
-        "asdfghjkl;",
+        "1290qwopasl;zx./",
         "qwertyuiopasdfghjkl;zxcvbnm,./"
     };
     readonly private string[] defaultLayoutTechmeister = new string[5]
@@ -89,11 +90,20 @@ public class Key_Layout : MonoBehaviour
         1.4f,
         1f
     };
-    readonly private float[] keySpread = new float[5] {
+    readonly private float[] keyHorizontalSpread = new float[5] {
         3.5f,
         2.5f,
         2f,
+        2.25f,
+        1.5f
+    };
+
+    readonly private float[] keyVerticalSpread = new float[5]
+    {
+        3.5f,
+        2.5f,
         2f,
+        1.75f,
         1.5f
     };
 
@@ -203,6 +213,9 @@ public class Key_Layout : MonoBehaviour
             case KeyLayoutType.Layout_3x4:
                 numRows = 3; numCols = 4;
                 break;
+            case KeyLayoutType.Layout_4x4:
+                numRows = 4; numCols = 4;
+                break;
             case KeyLayoutType.Layout_HomeRow:
                 numRows = 1; numCols = 10;
                 break;
@@ -229,8 +242,8 @@ public class Key_Layout : MonoBehaviour
                     newKey.GetComponent<SpawnedFrom>().origin = gameObject;
                 }
 
-                newXPosition = (newKey.transform.localPosition.x + (numCols + (keySpread[(int)keyLayout] * col)));
-                newYPosition = (newKey.transform.localPosition.y - (numRows + (keySpread[(int)keyLayout] * row)));
+                newXPosition = (newKey.transform.localPosition.x + (numCols + (keyHorizontalSpread[(int)keyLayout] * col)));
+                newYPosition = (newKey.transform.localPosition.y - (numRows + (keyVerticalSpread[(int)keyLayout] * row)));
 
                 keyPosition = new Vector2(newXPosition, newYPosition);
                 newKey.transform.localPosition = keyPosition;
@@ -279,7 +292,7 @@ public class Key_Layout : MonoBehaviour
             spawnPositionY = randY;
 
             //Make a Vector2 with our random coordinates
-            Vector2 positionInScreen = new Vector2(randX + keySpread[0], randY + keySpread[0]);
+            Vector2 positionInScreen = new Vector2(randX + keyHorizontalSpread[0], randY + keyHorizontalSpread[0]);
 
             //We get our Regional Position
             Vector2 regionalPosition = recipient.CheckRegionalPositionFrom(positionInScreen);

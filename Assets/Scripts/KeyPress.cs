@@ -37,35 +37,34 @@ public class KeyPress : MonoBehaviour
 
     void RunInteractivity()
     {
-
-
-        for (int keyNum = 0; keyNum < key_Layout.bindedKeys.Count; keyNum++)
+        if (GameManager.Instance.IsInteractable())
         {
-
-            if (Input.GetKey(key_Layout.bindedKeys[keyNum]))
+            for (int keyNum = 0; keyNum < key_Layout.bindedKeys.Count; keyNum++)
             {
-                #region Write to RFTM File
-                if (RoftPlayer.Instance.record && Input.GetKeyDown(key_Layout.bindedKeys[keyNum]))
+                if (Input.GetKey(key_Layout.bindedKeys[keyNum]))
                 {
-                    string data =
-                        keyNum.ToString() + ","
-                         + RoftPlayer.musicSource.timeSamples.ToString() + ","
-                        + 0.ToString();
+                    #region Write to RFTM File
+                    if (RoftPlayer.Instance.record && Input.GetKeyDown(key_Layout.bindedKeys[keyNum]))
+                    {
+                        string data =
+                            keyNum.ToString() + ","
+                             + RoftPlayer.musicSource.timeSamples.ToString() + ","
+                            + 0.ToString();
 
-                    RoftPlayer.Instance.WriteToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
+                        RoftPlayer.Instance.WriteToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
+                    }
+                    #endregion
+
+                    ActivateKey(keyNum, true);
+
+                    if (Input.GetKeyDown(key_Layout.bindedKeys[keyNum]))
+                        keyPressInput = activeInput;
                 }
-                #endregion
-
-                ActivateKey(keyNum, true);
-
-                if (Input.GetKeyDown(key_Layout.bindedKeys[keyNum]))
-                    keyPressInput = activeInput;
+                else
+                    ActivateKey(keyNum, false);
             }
-            else
-                ActivateKey(keyNum, false);
+
         }
-
-
     }
 
     public bool ActivateKey(int _keyNum, bool _on)

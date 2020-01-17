@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Globalization;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using TMPro;
 using Random = UnityEngine.Random;
 
@@ -53,10 +54,8 @@ public class RoftPlayer : MonoBehaviour
 
     #region Private Members
     private bool musicIsPlaying = false;
-    private float timeInSamples;
     private float musicLengthInSamples;
-    private float sampleDivisor = 1;
-    private float seconds, minutes;
+
 
     //Recording and getting the bpm and then to get the pulse
     public int taps;
@@ -74,191 +73,46 @@ public class RoftPlayer : MonoBehaviour
 
     public NoteEffector noteEffector;
 
-    readonly private KeyCode tapKey = KeyCode.T;
-    readonly private int tapLimit = 16;
-    readonly private int doneTapLimit = 3;
-
-    float time = 0f;
     #endregion
 
     private void Awake()
     {
-        Instance = this;
+        #region Singleton
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(Instance);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        #endregion
         LoadMusic();
     }
 
     private void Start()
     {
         if (record == true) InitialRecord();
+        else StartCoroutine(Wait(3, () => PlayMusic()));
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.T))
+            PlayMusic();
 
         if (musicSource != null)
             musicIsPlaying = musicSource.isPlaying;
-
-        if (!tapCalulationDone) TapForBPM();
-
-        DetectInactivity();
     }
 
     void FixedUpdate()
     {
-        if (!caretIsBeingDragged) UpdateCaret();
-
         if (songTrackPosition.value > 1)
         {
             PauseMusic();
             musicSource.timeSamples = (int)musicLengthInSamples;
-        }
-
-        Tick();
-        UpdatePulseOnBPMChange();
-        TimeStamp();
-    }
-
-    //Play the song
-    public void PlayMusic()
-    {
-        Debug.Log("Play");
-        musicSource.Play();
-        MusicManager.manager.nowPlaying = musicSource.clip.name;
-    }
-
-    //Pause the song
-    public void PauseMusic()
-    {
-        Debug.Log("Pause");
-        musicSource.Pause();
-        if (!musicIsPlaying) musicSource.Play();
-    }
-
-    //Stop the Music
-    public void StopMusic()
-    {
-        Debug.Log("Stop");
-        musicSource.Stop();
-    }
-
-    public void UpdateCaret()
-    {
-
-        //So, here's how this is going to work...
-        //The Track Position is between values 0 and 1
-        //We have to find a way to convers a percentage of something to samples...
-        musicSource.pitch = sampleDivisor;
-
-        musicSource.outputAudioMixerGroup.audioMixer.SetFloat("pitchBend", 1 / musicSource.pitch);
-
-        timeInSamples = musicSource.timeSamples;
-
-        songTrackPosition.value = timeInSamples / musicLengthInSamples;
-
-        songPercentage.text = (songTrackPosition.value * 100).ToString("F1", CultureInfo.InvariantCulture) + "%";
-
-        samplesText.text = minutes.ToString() + ":" + Mathf.FloorToInt(seconds).ToString("D2");
-    }
-
-    public void UpdateSampleFromCaretPosition()
-    {
-        ToggleCaretDrag(true);
-
-        //We're doing the opposite of the UpdateCaret
-        musicSource.timeSamples = (int)(songTrackPosition.value * musicLengthInSamples);
-
-        timeInSamples = musicSource.timeSamples;
-
-        songPercentage.text = (songTrackPosition.value * 100).ToString("F1", CultureInfo.InvariantCulture) + "%";
-
-        samplesText.text = minutes.ToString() + ":" + Mathf.FloorToInt(seconds).ToString();
-    }
-
-    public void UpdatePlayBackSpeed()
-    {
-        for (int option = 0; option < playbackRate.options.Count; option++)
-        {
-            if (option == playbackRate.value)
-            {
-                switch (option)
-                {
-                    case 0:
-                        sampleDivisor = 1;
-                        musicSource.outputAudioMixerGroup.audioMixer.SetFloat("fftSize", 927f);
-                        break;
-                    case 1:
-                        sampleDivisor = 0.75f;
-                        musicSource.outputAudioMixerGroup.audioMixer.SetFloat("fftSize", 1060f);
-                        break;
-                    case 2:
-                        sampleDivisor = 0.5f;
-                        musicSource.outputAudioMixerGroup.audioMixer.SetFloat("fftSize", 3608f);
-                        break;
-                    case 3:
-                        sampleDivisor = 0.25f;
-                        break;
-                }
-            }
-        }
-    }
-
-    public void ToggleCaretDrag(bool _on)
-    {
-        caretIsBeingDragged = _on;
-    }
-
-    public void TapForBPM()
-    {
-        if (Input.GetKeyDown(tapKey))
-        {
-            inactiveTaps = 0;
-            if (!musicIsPlaying)
-            {
-                PlayMusic();
-                NoteEffector.keyPosition = 0;
-            }
-            else
-            {
-                //Add taps and check if max amount
-                taps++;
-
-                if (firstTickSample == 0) firstTickSample = musicSource.time;
-
-                newPulse = (musicSource.time - firstTickSample) / taps;
-                oldPulse = newPulse;
-
-                if (taps > tapLimit - 1)
-                {
-                    UpdateBPM();
-                    Debug.Log("BPM: " + bpm);
-                }
-
-                
-            }
-        }
-        if (inactiveTaps > doneTapLimit - 1) tapCalulationDone = true;
-    }
-
-    void Tick()
-    {
-        if ((musicSource.time - (determinedPulse * totalTicksSinceStart)) > determinedPulse)
-        {
-            if (taps > tapLimit - 1)
-            {
-                totalTicksSinceStart++;
-                if (ticks == 1) AudioManager.Instance.Play("FirstTick");
-                else AudioManager.Instance.Play("Tick");
-                
-            }
-            else
-            {
-                totalTicksSinceStart = taps;
-                if (ticks < (int)tickSignature)
-                    ticks++;
-                else
-                    ticks = 1;
-            }
         }
     }
 
@@ -269,52 +123,30 @@ public class RoftPlayer : MonoBehaviour
         if (record)
             musicSource.clip = music;
         else
-            musicSource.clip = MusicManager.manager.GetMusic(MapReader.Instance.m_name);
+            musicSource.clip = MusicManager.Instance.GetMusic(MapReader.Instance.m_name);
 
         musicLengthInSamples = musicSource.clip.length * musicSource.clip.frequency;
         musicSource.outputAudioMixerGroup = pitchMixer;
-
-        //Check if we are recordimg
-
     }
 
-    void TimeStamp()
+    //Play the song
+    public void PlayMusic()
     {
-        if (seconds > 59.99f)
-        {
-            seconds = 0;
-            minutes++;
-        }
-        else if (seconds < 0)
-        {
-            seconds = 59;
-            minutes--;
-        }
-
-        seconds = musicSource.time - (60 * minutes);
+        musicSource.Play();
+        MusicManager.Instance.nowPlaying = musicSource.clip.name;
     }
 
-
-    void UpdatePulseOnBPMChange()
+    //Pause the song
+    public void PauseMusic()
     {
-        determinedPulse = 60 / bpm;
+        musicSource.Pause();
+        if (!musicIsPlaying) musicSource.Play();
     }
 
-    void UpdateBPM()
+    //Stop the Music
+    public void StopMusic()
     {
-        bpm = 60 / newPulse;
-    }
-    void DetectInactivity()
-    {
-        if (!Input.GetKeyDown(tapKey) && taps > 0)
-        {
-            time += Time.deltaTime;
-            if (time > 1)
-            {
-                inactiveTaps++;
-                time = 0;
-            }
-        }
+        musicSource.Stop();
     }
 
     void InitialRecord()
@@ -428,7 +260,6 @@ public class RoftPlayer : MonoBehaviour
                 }
                 #endregion
 
-
                 #region Metadata
                 string t_metadata = "[Metadata]\n";
                 string p_Title = "Title: " + newLine;
@@ -529,5 +360,11 @@ public class RoftPlayer : MonoBehaviour
     public float GetMusicLengthInSamples()
     {
         return musicLengthInSamples;
+    }
+
+    IEnumerator Wait(int duration, Action function = null)
+    {
+        yield return new WaitForSeconds(duration);
+        if (function != null) function.Invoke();
     }
 }

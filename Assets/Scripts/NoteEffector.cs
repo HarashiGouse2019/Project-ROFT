@@ -309,4 +309,7 @@ public class NoteEffector : MonoBehaviour
     {
         return 0;
     }
+
+    public virtual void CMD_RUN(uint processIndex) { }
+    public virtual void CMD_STOP(uint processIndex) { }
 }
