@@ -1182,7 +1182,7 @@ MonoBehaviour:
   overallGrade: 0
   stressBuild: 10
   accuracyStats: 0000000000000000000000000000000000000000
-  isAutoPlaying: 0
+  isAutoPlaying: 1
   isCountingDown: 0
 --- !u!4 &563326976
 Transform:
@@ -1318,7 +1318,7 @@ MonoBehaviour:
   - -8.5
   - -17
   setYOffset:
-  - -2
+  - 0
   - 2
   - 4.2
   - 6
@@ -2523,7 +2523,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: noraneko
+  m_name: PSYQUI - Vital Error
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0
@@ -3423,7 +3423,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 563326975}
         m_MethodName: UnPause
         m_Mode: 1
         m_Arguments:
@@ -4060,8 +4060,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: UnPause
+      - m_Target: {fileID: 563326975}
+        m_MethodName: RestartSong
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4071,8 +4071,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_MethodName: RestartSong
+      - m_Target: {fileID: 563326975}
+        m_MethodName: UnPause
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
