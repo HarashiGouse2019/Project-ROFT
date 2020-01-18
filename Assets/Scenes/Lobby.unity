@@ -290,6 +290,7 @@ GameObject:
   - component: {fileID: 718581274}
   - component: {fileID: 718581273}
   - component: {fileID: 718581272}
+  - component: {fileID: 718581275}
   m_Layer: 0
   m_Name: CAN_LOBBY
   m_TagString: Untagged
@@ -383,6 +384,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &718581275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 718581270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8811a9376cf983b4b985529bece70e93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &747294860
 GameObject:
   m_ObjectHideFlags: 0
@@ -1286,6 +1299,7 @@ GameObject:
   - component: {fileID: 1852950563}
   - component: {fileID: 1852950562}
   - component: {fileID: 1852950564}
+  - component: {fileID: 1852950565}
   m_Layer: 0
   m_Name: IMG_BUT_SONG
   m_TagString: Untagged
@@ -1392,9 +1406,35 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1852950562}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 718581275}
+        m_MethodName: RunTransition
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 6
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &1852950565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1852950560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 791b57b019f3bee4e8254d4b58d449d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  comments: "<Index Values Of Transitions>\n0        TITLE_TO_LOBBY,\r\n1        LOBBY_TO_SONGROOM,\r\n2
+    \       LOBBY_TO_RECORDS,\r\n3        LOBBY_TO_SETTINGS,\r\n4        LOBBY_TO_HELP,\r\n5
+    \       SONGROOM_TO_LOBBY,\r\n6      SONGROOM_TO_GAMEROOM,\r\n7      GAMEROOM_TO_RESULT"
 --- !u!1 &1906726262
 GameObject:
   m_ObjectHideFlags: 0

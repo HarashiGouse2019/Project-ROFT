@@ -4,9 +4,37 @@ using UnityEngine;
 
 public class PanelEvents : MonoBehaviour
 {
+    public static PanelEvents Instance;
+    private Animator panelAnimator;
+    public Animator PanelAnimator
+    {
+        get
+        {
+            return panelAnimator;
+        }
+    }
+
+    /*You can add to this Transitions
+     * enumerate if you want to do specific transitions
+     * to one scene to another.
+     */
+    
+    public bool isLobbyTarget, 
+        isSongRoomTarget, 
+        isRecordsTarget, 
+        isSettingsTarget, 
+        isHelpTarget, 
+        isGameRoomTarget,
+        isResultsTarget;
+  
+    private void Awake()
+    {
+        Instance = this;
+        panelAnimator = gameObject.GetComponent<Animator>();
+    }
     public void Update()
     {
-        gameObject.GetComponent<Animator>().SetBool("isDoneLoading", RoftSceneNavi.Instance.isDoneLoading);
+        panelAnimator.SetBool("isDoneLoading", RoftSceneNavi.Instance.isDoneLoading);
     }
 
     //Used for animation events
@@ -20,4 +48,6 @@ public class PanelEvents : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
+   
 }

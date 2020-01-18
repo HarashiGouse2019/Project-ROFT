@@ -38,10 +38,17 @@ public class RoftSceneNavi : MonoBehaviour
         #endregion
     }
 
+    private void Start()
+    {
+        GetActiveScene();
+    }
+
     private void Update()
     {
-        if (isDoneLoading)
+        if (isDoneLoading) {
             loadingIcon.gameObject.SetActive(false);
+            GetActiveScene();
+        }
     }
 
     public void SendMeToScene(string _targetScene)
@@ -60,17 +67,28 @@ public class RoftSceneNavi : MonoBehaviour
         }
     }
 
+    public void GetActiveScene()
+    {
+        Scene activeScene = SceneManager.GetActiveScene();
+        foreach (ROFTScenes roftScene in scenes)
+        {
+            if (roftScene.m_name == activeScene.name)
+            {
+                currentScene = roftScene;
+                return;
+            }
+        }
+    }
+
     IEnumerator LoadAsyncronously(int _sceneIndex)
     {
         AsyncOperation operation = SceneManager.LoadSceneAsync(_sceneIndex);
 
         while (!operation.isDone)
         {
-
             yield return null;
         }
 
         isDoneLoading = true;
-        Debug.Log("Done Loading");
     }
 }
