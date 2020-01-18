@@ -1127,7 +1127,6 @@ GameObject:
   - component: {fileID: 563326976}
   - component: {fileID: 563326977}
   - component: {fileID: 563326975}
-  - component: {fileID: 563326979}
   - component: {fileID: 563326978}
   m_Layer: 0
   m_Name: GameManager
@@ -1151,7 +1150,7 @@ MonoBehaviour:
   isGamePaused: 0
   PAUSE_OVERLAY: {fileID: 1452287091}
   editMode: 0
-  gameMode: 1
+  gameMode: 0
   TM_SONGNAME: {fileID: 0}
   TM_TOTALNOTES: {fileID: 0}
   TM_TOTALKEYS: {fileID: 0}
@@ -1182,7 +1181,7 @@ MonoBehaviour:
   overallGrade: 0
   stressBuild: 10
   accuracyStats: 0000000000000000000000000000000000000000
-  isAutoPlaying: 1
+  isAutoPlaying: 0
   isCountingDown: 0
 --- !u!4 &563326976
 Transform:
@@ -1225,26 +1224,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   comments: Scenes have to be in order as shown in the Build Settings
---- !u!114 &563326979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 563326974}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 527a14c3be5432e44b33d9fe0828e5d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentScene:
-    m_name: 
-  scenes:
-  - m_name: TitleScreen
-  - m_name: Lobby
-  - m_name: SongSelectionMenu
-  - m_name: Gameplay
-  - m_name: Results
 --- !u!1 &615216635
 GameObject:
   m_ObjectHideFlags: 0
@@ -2523,7 +2502,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: PSYQUI - Vital Error
+  m_name: PSYQUI - Education
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0
@@ -2814,7 +2793,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 563326979}
+      - m_Target: {fileID: 0}
         m_MethodName: SendMeToScene
         m_Mode: 5
         m_Arguments:

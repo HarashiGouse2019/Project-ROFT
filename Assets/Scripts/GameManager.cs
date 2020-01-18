@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
-[RequireComponent(typeof(SceneNavi))]
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -139,7 +138,14 @@ public class GameManager : MonoBehaviour
     //Time value
     float inputDelayTime = 0;
     float multiInputDuration = 0.1f;
-    KeyCode[] inGameControlKeys = { KeyCode.Backspace, KeyCode.Escape };
+    KeyCode[] inGameControlKeys = { 
+        KeyCode.Backspace, 
+        KeyCode.Escape,
+        KeyCode.Q, 
+        KeyCode.P, 
+        KeyCode.Semicolon, 
+        KeyCode.Comma 
+    };
 
     //Make to much easier to access other classes
     RoftPlayer roftPlayer;
@@ -340,12 +346,12 @@ public class GameManager : MonoBehaviour
         //Now we make sure all approach circles are inactive
         CollectApproachCircles();
         foreach (var activeCirlces in activeApproachObjects)
-        {
             activeCirlces.SetActive(false);
-        }
 
         //Now we clear our list.
         activeApproachObjects.Clear();
+
+        SongProgression.isPassedFirstNote = false;
     }
 
     public void Pause()
