@@ -1014,9 +1014,10 @@ MonoBehaviour:
   currentScene:
     m_name: 
   scenes:
-  - m_name: 
-  - m_name: 
-  - m_name: 
-  - m_name: 
-  - m_name: 
+  - m_name: TitleScreen
+  - m_name: Lobby
+  - m_name: SongSelectionMenu
+  - m_name: Gameplay
+  - m_name: Results
   loadingIcon: {fileID: 421770344}
+  isDoneLoading: 0

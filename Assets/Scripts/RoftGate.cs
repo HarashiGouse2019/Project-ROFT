@@ -18,7 +18,6 @@ public class RoftGate : MonoBehaviour
         {
             tmpAnimator.SetBool("keyPressed", true);
             roftScenePanel.enabled = true;
-            //RoftSceneNavi.Instance.SendMeToScene("Gameplay");
         }
     }
 }

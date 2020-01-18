@@ -19,6 +19,9 @@ public class RoftSceneNavi : MonoBehaviour
     public ROFTScenes currentScene;
     public ROFTScenes[] scenes = new ROFTScenes[5];
     public Image loadingIcon;
+    public bool isDoneLoading;
+
+    IEnumerator startLoading;
 
     private void Awake()
     {
@@ -31,8 +34,14 @@ public class RoftSceneNavi : MonoBehaviour
         else
         {
             Destroy(gameObject);
-        } 
+        }
         #endregion
+    }
+
+    private void Update()
+    {
+        if (isDoneLoading)
+            Debug.Log("Do a thing.");
     }
 
     public void SendMeToScene(string _targetScene)
@@ -44,9 +53,24 @@ public class RoftSceneNavi : MonoBehaviour
         {
             if (_targetScene == roftScene.m_name)
             {
-                SceneManager.LoadScene(Array.IndexOf(scenes, roftScene));
+                startLoading = LoadAsyncronously(Array.IndexOf(scenes, roftScene));
+                StartCoroutine(startLoading);
                 return;
             }
         }
+    }
+
+    IEnumerator LoadAsyncronously(int _sceneIndex)
+    {
+        AsyncOperation operation = SceneManager.LoadSceneAsync(_sceneIndex);
+
+        while (!operation.isDone)
+        {
+
+            yield return null;
+        }
+
+        isDoneLoading = true;
+        Debug.Log("Done Loading");
     }
 }
