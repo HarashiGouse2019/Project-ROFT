@@ -10,10 +10,10 @@ public class PanelEvents : MonoBehaviour
     }
 
     //Used for animation events
-    public void EnableLoadingIcon()
+    public void EnableLoadingIcon(string _destinationAfter)
     {
         RoftSceneNavi.Instance.loadingIcon.gameObject.SetActive(true);
-        RoftSceneNavi.Instance.SendMeToScene("Gameplay");
+        RoftSceneNavi.Instance.SendMeToScene(_destinationAfter);
     }
 
     public void SetSelfOff()

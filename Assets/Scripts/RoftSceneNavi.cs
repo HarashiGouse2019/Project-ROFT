@@ -41,7 +41,7 @@ public class RoftSceneNavi : MonoBehaviour
     private void Update()
     {
         if (isDoneLoading)
-            Debug.Log("Do a thing.");
+            loadingIcon.gameObject.SetActive(false);
     }
 
     public void SendMeToScene(string _targetScene)

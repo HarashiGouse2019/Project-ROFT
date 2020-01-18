@@ -116,7 +116,7 @@ AnimationClip:
   m_Events:
   - time: 2
     functionName: EnableLoadingIcon
-    data: 
+    data: Lobby
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
