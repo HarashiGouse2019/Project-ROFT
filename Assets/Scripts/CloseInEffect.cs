@@ -132,11 +132,13 @@ public class CloseInEffect : NoteEffector
                 dispose = true;
             }
 
+            bool keyInputReceived = Input.GetKeyDown(Key_Layout.Instance.primaryBindedKeys[keyNumPosition]) ||
+                Input.GetKeyDown(Key_Layout.Instance.secondaryBindedKeys[keyNumPosition]);
 
 
             bool tapType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
                 mapReader.keys[keyNum].type == Key.KeyType.Tap &&
-                Input.GetKeyDown(Key_Layout.Instance.bindedKeys[keyNumPosition]));
+                keyInputReceived);
 
             bool clickType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
                 mapReader.keys[keyNum].type == Key.KeyType.Click &&
@@ -145,6 +147,7 @@ public class CloseInEffect : NoteEffector
             bool BurstType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
                 mapReader.keys[keyNum].type == Key.KeyType.Slide &&
                 attachedArrow != null &&
+                keyInputReceived &&
                 GameManager.multiInputValue == 2);
 
             if (accuracyString != "" && (tapType || clickType || BurstType))

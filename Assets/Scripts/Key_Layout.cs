@@ -48,7 +48,9 @@ public class Key_Layout : MonoBehaviour
     public TextMeshProUGUI dataText;
 
     //After iterating through strings, we'll return a Input corresponding avaliable keys.
-    public List<KeyCode> bindedKeys = new List<KeyCode>();
+    public List<KeyCode> primaryBindedKeys = new List<KeyCode>();
+    public List<KeyCode> secondaryBindedKeys = new List<KeyCode>();
+
     public static List<GameObject> keyObjects = new List<GameObject>();
     public List<GameObject> tempShowKeyObjs = new List<GameObject>();
 
@@ -66,22 +68,29 @@ public class Key_Layout : MonoBehaviour
     #endregion
 
     #region Private Members
-    readonly private string[] defaultLayout = new string[5]
-    {
-        "asl;",
-        "qwopasl;",
-        "qwopasl;zx./",
-        "1290qwopasl;zx./",
-        "qwertyuiopasdfghjkl;zxcvbnm,./"
-    };
-    readonly private string[] defaultLayoutTechmeister = new string[5]
+    #region Subject to Removal/Modification
+    //primaryLayout is the key layout where you control
+    //both ends of the in-game layout
+    private readonly string[] primaryLayout = new string[4]
     {
         "asdf",
         "qwerasdf",
         "qwerasdfzxcv",
         "asdfghjkl;",
-        "qwertyuiopasdfghjkl;zxcvbnm,./"
     };
+
+    //secondaryLayout is other key bindings that also affect
+    //one end of the in-game layout
+    private readonly string[] secondaryLayout = new string[4]
+    {
+        "asl;",
+        "qwopasl;",
+        "qwopasl;zx./",
+        "1290qwopasl;zx./"
+    };
+
+    #endregion
+    [SerializeField]
     readonly private float[] defaultKeyScale = new float[5]
     {
         2.25f,
@@ -90,6 +99,7 @@ public class Key_Layout : MonoBehaviour
         1.4f,
         1f
     };
+    [SerializeField]
     readonly private float[] keyHorizontalSpread = new float[5] {
         3.5f,
         2.5f,
@@ -98,6 +108,7 @@ public class Key_Layout : MonoBehaviour
         1.5f
     };
 
+    [SerializeField]
     readonly private float[] keyVerticalSpread = new float[5]
     {
         3.5f,
@@ -139,48 +150,60 @@ public class Key_Layout : MonoBehaviour
 
     void InitiateAutoKeyBind()
     {
-        //Find all objects in parent.
-        switch (GameManager.Instance.gameMode)
-        {
-            case GameManager.GameMode.STANDARD:
-                for (int keyNum = 0; keyNum < defaultLayout[(int)keyLayout].Length; keyNum++)
-                    InvokeKeyBind(defaultLayout[(int)keyLayout][keyNum]);
-                break;
+        //I want to first bind the primary layout
+        for (int keyNum = 0; keyNum < primaryLayout[(int)keyLayout].Length; keyNum++)
+            InvokeKeyBind(primaryLayout[(int)keyLayout][keyNum], _rank: "primary");
 
-            case GameManager.GameMode.TECHMEISTER:
-                for (int keyNum = 0; keyNum < defaultLayoutTechmeister[(int)keyLayout].Length; keyNum++)
-                    InvokeKeyBind(defaultLayoutTechmeister[(int)keyLayout][keyNum]);
-                break;
-        }
+        //Then I bind the secondary layout
+        for (int keyNum = 0; keyNum < secondaryLayout[(int)keyLayout].Length; keyNum++)
+            InvokeKeyBind(secondaryLayout[(int)keyLayout][keyNum], _rank: "secondary");
     }
 
     //This will simply take any character, and keybind it.
-    public KeyCode InvokeKeyBind(char m_char, bool _addToList = true)
+    public KeyCode InvokeKeyBind(char m_char, bool _addToList = true, string _rank = "primary")
     {
 
         KeyCode key;
         key = (KeyCode)m_char;
 
         if (_addToList)
-            bindedKeys.Add(key);
+        {
+            switch (_rank.ToLower())
+            {
+                case "primary":
+                    primaryBindedKeys.Add(key);
+                    break;
+                case "secondary":
+                    secondaryBindedKeys.Add(key);
+                    break;
+            }
+        }
 
         return key;
     }
 
     //This takes any ASCII integer that exists on the keyboard
     //if the player so desires to manually keybind
-    public KeyCode InvokeKeyBind(int m_int, bool _addToList = true)
+    public KeyCode InvokeKeyBind(int m_int, bool _addToList = true, string _rank = "primary")
     {
         KeyCode key;
         key = (KeyCode)m_int;
 
         if (_addToList)
-            bindedKeys.Add(key);
-
+        {
+            switch (_rank.ToLower())
+            {
+                case "primary":
+                    primaryBindedKeys.Add(key);
+                    break;
+                case "secondary":
+                    secondaryBindedKeys.Add(key);
+                    break;
+            }
+        }
         return key;
 
     }
-
 
     public void SetUpLayout()
     {

@@ -39,12 +39,12 @@ public class KeyPress : MonoBehaviour
     {
         if (GameManager.Instance.IsInteractable())
         {
-            for (int keyNum = 0; keyNum < key_Layout.bindedKeys.Count; keyNum++)
+            for (int keyNum = 0; keyNum < key_Layout.primaryBindedKeys.Count; keyNum++)
             {
-                if (Input.GetKey(key_Layout.bindedKeys[keyNum]))
+                if (Input.GetKey(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKey(key_Layout.secondaryBindedKeys[keyNum]))
                 {
                     #region Write to RFTM File
-                    if (RoftPlayer.Instance.record && Input.GetKeyDown(key_Layout.bindedKeys[keyNum]))
+                    if (RoftPlayer.Instance.record && Input.GetKeyDown(key_Layout.primaryBindedKeys[keyNum]))
                     {
                         string data =
                             keyNum.ToString() + ","
@@ -57,7 +57,7 @@ public class KeyPress : MonoBehaviour
 
                     ActivateKey(keyNum, true);
 
-                    if (Input.GetKeyDown(key_Layout.bindedKeys[keyNum]))
+                    if (Input.GetKey(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKey(key_Layout.secondaryBindedKeys[keyNum]))
                         keyPressInput = activeInput;
                 }
                 else
@@ -74,7 +74,7 @@ public class KeyPress : MonoBehaviour
         if (_on)
         {
             keySpriteRenderer.sprite = keyActive;
-            debugText.text = "Key " + key_Layout.bindedKeys[_keyNum] + " pressed." + " Key Num: " + _keyNum;
+            debugText.text = "Key " + key_Layout.primaryBindedKeys[_keyNum] + " pressed." + " Key Num: " + _keyNum;
         }
         else
             keySpriteRenderer.sprite = keyInActive;

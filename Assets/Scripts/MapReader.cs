@@ -181,7 +181,7 @@ public class MapReader : MonoBehaviour
         int totalNotes = keys.Count;
         float songLengthInSec = RoftPlayer.musicSource.clip.length;
         float notesPerSec = (totalNotes / songLengthInSec);
-        float totalKeys = keyLayoutClass.bindedKeys.Count;
+        float totalKeys = keyLayoutClass.primaryBindedKeys.Count;
         float approachSpeedInPercent = (float)NoteEffector.Instance.approachSpeed / 100;
         float gameModeBoost = 0;
         const int maxKeys = 30;

@@ -16,7 +16,7 @@ public class ArrowDirectionSet : MonoBehaviour
     }
 
     public Direction enum_Direction;
-    public float coolDownRate = 0.5f;
+    public float coolDownRate = 0.25f;
     public int setHorizontal;
     public int setVertical;
 

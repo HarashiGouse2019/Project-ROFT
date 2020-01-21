@@ -25,7 +25,7 @@ public class MouseEvent : MonoBehaviour
     public Vector3 m_mousePosition;
 
     //The general direction of mouse cursor
-    public float hdir = 0, vdir = 0;
+    public float hdir = 2, vdir = 2;
 
     //Default Sensitivity
     const float defaultSensitivity = 5f;
@@ -61,8 +61,8 @@ public class MouseEvent : MonoBehaviour
     {
         "<Up>", "<Down>", "<Null>"
     };
-    public int horIndex = 0;
-    public int verIndex = 0;
+    public int horIndex = 2;
+    public int verIndex = 2;
 
     float arrowDelaytime;
     float keyResponsiveDuration = 0.5f;
@@ -82,8 +82,8 @@ public class MouseEvent : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        RunMouseDetection();
         ParseArrowsToMouse();
+        RunRefreshRate();
         CalculateXDifference();
         CalculateYDifference();
     }
@@ -113,36 +113,6 @@ public class MouseEvent : MonoBehaviour
         vdir = reset;
         time = reset;
         UpdateResetPosition();
-        horIndex = 2;
-        verIndex = 2;
-    }
-
-    void RunMouseDetection()
-    {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = false;
-        //Get the difference of position in all directions
-        if (Mathf.Abs(hdir) > GetSensitivity())
-        {
-            mouseMovementInput = 1;
-            switch (Mathf.Sign(hdir))
-            {
-                case 1: horIndex = 1; break;
-                case -1: horIndex = 0; break;
-            }
-        }
-
-        if (Mathf.Abs(vdir) > GetSensitivity())
-        {
-            mouseMovementInput = 1;
-            switch (Mathf.Sign(vdir))
-            {
-                case -1: verIndex = 1; break;
-                case 1: verIndex = 0; break;
-            }
-        }
-
-        RunRefreshRate();
     }
 
     //As an alternative, you could use arrow keys opposed to the mouse
@@ -150,7 +120,7 @@ public class MouseEvent : MonoBehaviour
     {
         foreach (KeyCode key in ArrowDirectionKeys)
         {
-            if (Input.GetKeyDown(key))
+            if (Input.GetKey(key))
             {
                 mouseMovementInput = 1;
                 switch (key)
