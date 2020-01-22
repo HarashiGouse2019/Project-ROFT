@@ -138,13 +138,13 @@ public class GameManager : MonoBehaviour
     //Time value
     float inputDelayTime = 0;
     float multiInputDuration = 0.1f;
-    KeyCode[] inGameControlKeys = {
-        KeyCode.Backspace,
+    KeyCode[] inGameControlKeys = { 
+        KeyCode.Backspace, 
         KeyCode.Escape,
-        KeyCode.Q,
-        KeyCode.P,
-        KeyCode.Semicolon,
-        KeyCode.Comma
+        KeyCode.Q, 
+        KeyCode.P, 
+        KeyCode.Semicolon, 
+        KeyCode.Comma 
     };
 
     //Make to much easier to access other classes
@@ -195,7 +195,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (RoftPlayer.Instance.record == false)
+       if (RoftPlayer.Instance.record == false)
             StartCoroutine(RUN_GAME_MANAGEMENT());
     }
 
@@ -284,7 +284,7 @@ public class GameManager : MonoBehaviour
     {
         const uint millsInSec = 1000;
         float subtleProgression = (stressBuild / millsInSec);
-
+        
         IMG_STRESS.fillAmount += (subtleProgression / (consecutiveMisses + stressBuild)) - sentStress;
 
         //Okay, so I have to think about this....
@@ -425,13 +425,17 @@ public class GameManager : MonoBehaviour
 
     int CheckSignsOfInput()
     {
-        multiInputValue = MouseEvent.Instance.GetMouseInputValue() + KeyPress.Instance.GetKeyPressInputValue();
+        if (gameMode == GameMode.TECHMEISTER)
+        {
+            multiInputValue = MouseEvent.Instance.GetMouseInputValue() + KeyPress.Instance.GetKeyPressInputValue();
 
-        //Check for second input
-        if (multiInputValue > 0)
-            StartMultiInputDelay();
+            //Check for second input
+            if (multiInputValue > 0)
+                StartMultiInputDelay();
 
-        return multiInputValue;
+            return multiInputValue;
+        }
+        return -1;
     }
 
     void StartMultiInputDelay()

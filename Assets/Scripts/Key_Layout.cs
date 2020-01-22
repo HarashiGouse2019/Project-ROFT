@@ -49,6 +49,8 @@ public class Key_Layout : MonoBehaviour
 
     //After iterating through strings, we'll return a Input corresponding avaliable keys.
     public List<KeyCode> primaryBindedKeys = new List<KeyCode>();
+    public List<KeyCode> secondaryBindedKeys = new List<KeyCode>();
+
     public static List<GameObject> keyObjects = new List<GameObject>();
     public List<GameObject> tempShowKeyObjs = new List<GameObject>();
 
@@ -86,14 +88,7 @@ public class Key_Layout : MonoBehaviour
         "qwopasl;zx./",
         "1290qwopasl;zx./"
     };
-    readonly private string[] defaultLayoutTechmeister = new string[5]
-    {
-        "asdf",
-        "qwerasdf",
-        "qwerasdfzxcv",
-        "asdfghjkl;",
-        "qwertyuiopasdfghjkl;zxcvbnm,./"
-    };
+
     #endregion
     [SerializeField]
     readonly private float[] defaultKeyScale = new float[5]
@@ -155,60 +150,60 @@ public class Key_Layout : MonoBehaviour
 
     void InitiateAutoKeyBind()
     {
-        //Find all objects in parent.
-        switch (GameManager.Instance.gameMode)
-        {
-            case GameManager.GameMode.STANDARD:
-                for (int keyNum = 0; keyNum < primaryLayout[(int)keyLayout].Length; keyNum++)
-                    InvokeKeyBind(primaryLayout[(int)keyLayout][keyNum]);
-                break;
+        //I want to first bind the primary layout
+        for (int keyNum = 0; keyNum < primaryLayout[(int)keyLayout].Length; keyNum++)
+            InvokeKeyBind(primaryLayout[(int)keyLayout][keyNum], _rank: "primary");
 
-            case GameManager.GameMode.TECHMEISTER:
-                for (int keyNum = 0; keyNum < defaultLayoutTechmeister[(int)keyLayout].Length; keyNum++)
-                    InvokeKeyBind(defaultLayoutTechmeister[(int)keyLayout][keyNum]);
-                break;
-        }
-
-        /*Okay! New plan!
-         We're going to change up the whole keyboard game a bit, just to lessen the workload... a baby bit
-         But, I want to use the same algorithm to bind keys to the left of the keyboard,
-         but I want to have a secondary side that may make or break the way people play the game
-         
-         Where's what I mean; combine both Techmeister keybinds and Standard keybinds as one whole keybind system.
-         Meaning that "qwerasdfzxcv" will be the first kind set, "qwopasl;zx./" is the second one.
-         Combining them together will then allow you to just use "qweropasdfl;zxcv./" as your main means of playing the game.
-         
-         I want to see how that goes, but we need a second array to incorporate into our InitiateAutoKeyBind function...
-         */
+        //Then I bind the secondary layout
+        for (int keyNum = 0; keyNum < secondaryLayout[(int)keyLayout].Length; keyNum++)
+            InvokeKeyBind(secondaryLayout[(int)keyLayout][keyNum], _rank: "secondary");
     }
 
     //This will simply take any character, and keybind it.
-    public KeyCode InvokeKeyBind(char m_char, bool _addToList = true)
+    public KeyCode InvokeKeyBind(char m_char, bool _addToList = true, string _rank = "primary")
     {
 
         KeyCode key;
         key = (KeyCode)m_char;
 
         if (_addToList)
-            primaryBindedKeys.Add(key);
+        {
+            switch (_rank.ToLower())
+            {
+                case "primary":
+                    primaryBindedKeys.Add(key);
+                    break;
+                case "secondary":
+                    secondaryBindedKeys.Add(key);
+                    break;
+            }
+        }
 
         return key;
     }
 
     //This takes any ASCII integer that exists on the keyboard
     //if the player so desires to manually keybind
-    public KeyCode InvokeKeyBind(int m_int, bool _addToList = true)
+    public KeyCode InvokeKeyBind(int m_int, bool _addToList = true, string _rank = "primary")
     {
         KeyCode key;
         key = (KeyCode)m_int;
 
         if (_addToList)
-            primaryBindedKeys.Add(key);
-
+        {
+            switch (_rank.ToLower())
+            {
+                case "primary":
+                    primaryBindedKeys.Add(key);
+                    break;
+                case "secondary":
+                    secondaryBindedKeys.Add(key);
+                    break;
+            }
+        }
         return key;
 
     }
-
 
     public void SetUpLayout()
     {
@@ -305,6 +300,7 @@ public class Key_Layout : MonoBehaviour
     //This will be called based on frames. This will use the
     //TypeByRegion class to do it's magic.
     //There's 2 Stages or Processes
+    #region Subject for removal
     public KeyCode RandomizeAndProcess()
     {
         if (layoutMethod == LayoutMethod.Region_Scatter)
@@ -345,7 +341,8 @@ public class Key_Layout : MonoBehaviour
             #endregion 
         }
         return KeyCode.None;
-    }
+    } 
+    #endregion
 
     //This function will directly change the layout mode.
     //0 is Abstract, 1 is Scatter

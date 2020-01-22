@@ -26,6 +26,10 @@ public class CloseInEffect : NoteEffector
 
     public bool dontEffectMe = false;
 
+    //keyInputDownReceived will be given a true for one frame
+    //keyInputReceived will be given so long as it's being pressed down for
+    bool keyInputDownReceived, keyInputReceived;
+
     //So they don't have to look screwed up
     protected Color originalAppearance;
     private void Awake()
@@ -42,6 +46,8 @@ public class CloseInEffect : NoteEffector
         initiatedNoteSample = noteSample;
         initiatedNoteOffset = noteOffset;
         keyNumPosition = keyPosition;
+
+        
     }
 
     // Update is called once per frame
@@ -72,6 +78,12 @@ public class CloseInEffect : NoteEffector
     void CloseIn()
     {
         InHitRange();
+
+        keyInputDownReceived = Input.GetKeyDown(Key_Layout.Instance.primaryBindedKeys[keyNumPosition]) ||
+                Input.GetKeyDown(Key_Layout.Instance.secondaryBindedKeys[keyNumPosition]);
+
+        keyInputReceived = Input.GetKey(Key_Layout.Instance.primaryBindedKeys[keyNumPosition]) ||
+                Input.GetKey(Key_Layout.Instance.secondaryBindedKeys[keyNumPosition]);
 
         if (mapReader.keys[keyNum].type == Key.KeyType.Tap)
             sprite.color = originalAppearance;
@@ -132,11 +144,10 @@ public class CloseInEffect : NoteEffector
                 dispose = true;
             }
 
-
-
+            
             bool tapType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
                 mapReader.keys[keyNum].type == Key.KeyType.Tap &&
-                Input.GetKeyDown(Key_Layout.Instance.primaryBindedKeys[keyNumPosition]));
+                keyInputDownReceived);
 
             bool clickType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
                 mapReader.keys[keyNum].type == Key.KeyType.Click &&
@@ -145,7 +156,7 @@ public class CloseInEffect : NoteEffector
             bool BurstType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
                 mapReader.keys[keyNum].type == Key.KeyType.Slide &&
                 attachedArrow != null &&
-                Input.GetKey(Key_Layout.Instance.primaryBindedKeys[keyNumPosition]) &&
+                keyInputReceived &&
                 GameManager.multiInputValue == 2);
 
             if (accuracyString != "" && (tapType || clickType || BurstType))
