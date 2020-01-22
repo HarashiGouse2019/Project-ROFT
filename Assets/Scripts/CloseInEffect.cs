@@ -45,7 +45,7 @@ public class CloseInEffect : NoteEffector
     {
         initiatedNoteSample = noteSample;
         initiatedNoteOffset = noteOffset;
-        keyNumPosition = keyPosition;
+        keyNumPosition = keySequencePosition;
 
         
     }
@@ -119,7 +119,7 @@ public class CloseInEffect : NoteEffector
                     AudioManager.Instance.Play("Normal", 100, true);
 
 
-                    IncrementComboChain();
+                    GameManager.Instance.IncrementCombo();
                     SendAccuracyScore();
                     BuildStress(index);
 
@@ -183,7 +183,7 @@ public class CloseInEffect : NoteEffector
                         else return;
                     }
 
-                    IncrementComboChain();
+                    GameManager.Instance.IncrementCombo();
                     SendAccuracyScore();
                     BuildStress(index);
 
@@ -228,7 +228,7 @@ public class CloseInEffect : NoteEffector
         {
             sign.SetActive(true);
             sign.transform.position = ClosestObjectClass.closestObject[keyNumPosition].transform.position;
-            sign.GetComponent<AccuracySign>().ShowSign(accuracyString);
+            sign.GetComponent<AccuracySign>().ShowSign(index);
 
             GameManager.sentScore = GameManager.accuracyScore[index];
 
@@ -243,16 +243,19 @@ public class CloseInEffect : NoteEffector
 
     public void IncrementComboChain()
     {
-        GameManager.Instance.combo++;
+        GameManager.Instance.IncrementCombo();
 
     }
 
+    //This is unique from actually sending the accuracy score
+    //There's different data to be handled and different actions to perform
+    //which is why this may look like a copy-pasted SendAccuracyScore
     public void BreakComboChain()
     {
         GameManager.Instance.accuracyStats[4] += 1;
         GameManager.Instance.accuracyPercentile += (((possibleAccuracy - index) / possibleAccuracy) * 100);
         GameManager.Instance.overallAccuracy = GameManager.Instance.accuracyPercentile / GameManager.Instance.GetSumOfStats();
-        GameManager.Instance.combo = m_break;
+        GameManager.Instance.SetCombo(m_break);
 
         GameObject sign = GetComponentInParent<ObjectPooler>().GetMember("Signs");
 
@@ -260,7 +263,7 @@ public class CloseInEffect : NoteEffector
         {
             sign.SetActive(true);
             sign.transform.position = gameObject.transform.position;
-            sign.GetComponent<AccuracySign>().ShowSign("miss");
+            sign.GetComponent<AccuracySign>().ShowSign(4);
 
         }
 
@@ -272,6 +275,9 @@ public class CloseInEffect : NoteEffector
         GameManager.sentStress = GameManager.stressAmount[_index] + (GameManager.Instance.stressBuild / 100);
     }
 
+    //We want to reset all values that may
+    //show itself when it reactivates.
+    //We want it to be clean and refresh when we respond
     private void OnDisable()
     {
         sprite.color = originalAppearance;

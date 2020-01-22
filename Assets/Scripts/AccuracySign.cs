@@ -2,7 +2,7 @@
 
 public class AccuracySign : MonoBehaviour
 {
-    public Sprite[] signs = new Sprite[5];
+    [SerializeField] private Sprite[] signs = new Sprite[5];
 
     private SpriteRenderer spriteRender;
 
@@ -27,35 +27,14 @@ public class AccuracySign : MonoBehaviour
         }
     }
 
-    public void ShowSign(string _sign)
+    //The image/sprite used to show accuracy
+    public void ShowSign(int index)
     {
         active = true;
-        switch (_sign.ToLower())
-        {
-            case "perfect":
-                spriteRender.sprite = signs[0];
-                break;
-
-            case "great":
-                spriteRender.sprite = signs[1];
-                break;
-
-            case "good":
-                spriteRender.sprite = signs[2];
-                break;
-
-            case "ok":
-                spriteRender.sprite = signs[3];
-                break;
-
-            case "miss":
-                spriteRender.sprite = signs[4];
-                break;
-        }
-
-
+        spriteRender.sprite = signs[index];
     }
 
+    //Duration as for how long it should show on screen
     void ShowFor(float _duration, float _rate = 0.1f)
     {
         time += _rate;

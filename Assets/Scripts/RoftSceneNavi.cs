@@ -86,6 +86,7 @@ public class RoftSceneNavi : MonoBehaviour
 
         while (!operation.isDone)
         {
+            Debug.Log("Progress: " + Mathf.Clamp01(operation.progress / 0.9f));
             yield return null;
         }
 

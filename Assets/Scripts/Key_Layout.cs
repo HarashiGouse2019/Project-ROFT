@@ -99,6 +99,7 @@ public class Key_Layout : MonoBehaviour
         1.4f,
         1f
     };
+
     [SerializeField]
     readonly private float[] keyHorizontalSpread = new float[5] {
         3.5f,

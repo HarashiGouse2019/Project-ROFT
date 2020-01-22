@@ -1325,7 +1325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   approachSpeed: 9.350000381469727
-  alignment: 6000
+  alignment: 2000
   keyAppearOffset: 1
   accuracy: 8.75
   accuracyVal:
@@ -2503,7 +2503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: Phantom Sage - Holystone
+  m_name: Camellia - werewolf howls
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0

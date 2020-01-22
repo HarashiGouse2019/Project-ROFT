@@ -113,10 +113,10 @@ public class GameManager : MonoBehaviour
     public Image IMG_PROGRESSION_FILL;
 
     [Header("In-Game Statistics and Values")]
-    public long totalScore;
-    public long previousScore; //This will be used for a increasing effect
-    public int combo;
-    public int maxCombo;
+    private long totalScore;
+    private long previousScore; //This will be used for a increasing effect
+    private int combo { set; get; }
+    private int maxCombo;
     public float overallAccuracy = 100.00f; //The average accuracy during the song
     public float accuracyPercentile; //The data in which gets accuracy in percent;
     public float overallGrade = 0f;
@@ -138,13 +138,13 @@ public class GameManager : MonoBehaviour
     //Time value
     float inputDelayTime = 0;
     float multiInputDuration = 0.1f;
-    KeyCode[] inGameControlKeys = { 
-        KeyCode.Backspace, 
+    KeyCode[] inGameControlKeys = {
+        KeyCode.Backspace,
         KeyCode.Escape,
-        KeyCode.Q, 
-        KeyCode.P, 
-        KeyCode.Semicolon, 
-        KeyCode.Comma 
+        KeyCode.Q,
+        KeyCode.P,
+        KeyCode.Semicolon,
+        KeyCode.Comma
     };
 
     //Make to much easier to access other classes
@@ -162,6 +162,10 @@ public class GameManager : MonoBehaviour
     float stressAmp = 0f;
     float gain = 1f;
 
+    //Pulse effects
+    PulseEffect pulseEffect;
+    OverlayPulseEffect overlayPulseEffect; //Refers to side flares on screen
+
     private void Awake()
     {
         #region Singleton
@@ -169,6 +173,7 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             CreateRecords();
+            ReferenceAllEffects();
             DontDestroyOnLoad(Instance);
         }
         else
@@ -195,7 +200,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-       if (RoftPlayer.Instance.record == false)
+        if (RoftPlayer.Instance.record == false)
             StartCoroutine(RUN_GAME_MANAGEMENT());
     }
 
@@ -284,7 +289,7 @@ public class GameManager : MonoBehaviour
     {
         const uint millsInSec = 1000;
         float subtleProgression = (stressBuild / millsInSec);
-        
+
         IMG_STRESS.fillAmount += (subtleProgression / (consecutiveMisses + stressBuild)) - sentStress;
 
         //Okay, so I have to think about this....
@@ -326,7 +331,7 @@ public class GameManager : MonoBehaviour
 
     public void RestartSong()
     {
-        NoteEffector.keyPosition = reset;
+        NoteEffector.keySequencePosition = reset;
 
         for (int stat = 0; stat < accuracyStats.Length; stat++)
             accuracyStats[stat] = reset;
@@ -505,5 +510,21 @@ public class GameManager : MonoBehaviour
             FileStream roftRecordFiles = File.Create(roftRecordPath);
             Debug.Log(roftRecordPath + " created.");
         }
+    }
+
+    void ReferenceAllEffects()
+    {
+        pulseEffect = GetComponent<PulseEffect>();
+        overlayPulseEffect = GetComponent<OverlayPulseEffect>();
+    }
+
+    public void SetCombo(int _value)
+    {
+        combo = _value;
+    }
+
+    public void IncrementCombo()
+    {
+        combo++;
     }
 }
