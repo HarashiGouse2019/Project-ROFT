@@ -21,14 +21,18 @@ public class RoftTransition : MonoBehaviour
          Whatever the destination target is, use "is<Destination>Target
          */
         Transitions transitions = (Transitions)_transitionIndex;
+        Debug.Log(transitions);
         PanelEvents.Instance.gameObject.SetActive(true);
+        RoftSceneNavi.Instance.isDoneLoading = false;
         switch (transitions)
         {
             case Transitions.TITLE_TO_LOBBY:
+                PanelEvents.Instance.isLobbyTarget = true;
                 PanelEvents.Instance.PanelAnimator.SetBool("isLobbyTarget", PanelEvents.Instance.isLobbyTarget);
                 break;
 
             case Transitions.LOBBY_TO_SONGROOM:
+                PanelEvents.Instance.isSongRoomTarget = true;
                 PanelEvents.Instance.PanelAnimator.SetBool("isSongRoomTarget", PanelEvents.Instance.isSongRoomTarget);
                 break;
 

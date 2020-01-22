@@ -979,6 +979,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d96df4ea6fcd2a43a5f2127c0e4125c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isLobbyTarget: 0
+  isSongRoomTarget: 0
+  isRecordsTarget: 0
+  isSettingsTarget: 0
+  isHelpTarget: 0
+  isGameRoomTarget: 0
+  isResultsTarget: 0
 --- !u!1 &756817144
 GameObject:
   m_ObjectHideFlags: 0

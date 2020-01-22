@@ -90,5 +90,6 @@ public class RoftSceneNavi : MonoBehaviour
         }
 
         isDoneLoading = true;
+        StopCoroutine(LoadAsyncronously(_sceneIndex));
     }
 }
