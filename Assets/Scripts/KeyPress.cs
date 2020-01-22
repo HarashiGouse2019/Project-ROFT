@@ -41,7 +41,7 @@ public class KeyPress : MonoBehaviour
         {
             for (int keyNum = 0; keyNum < key_Layout.primaryBindedKeys.Count; keyNum++)
             {
-                if (Input.GetKey(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKey(key_Layout.secondaryBindedKeys[keyNum]))
+                if (Input.GetKey(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKey(key_Layout.primaryBindedKeys[keyNum]))
                 {
                     #region Write to RFTM File
                     if (RoftPlayer.Instance.record && Input.GetKeyDown(key_Layout.primaryBindedKeys[keyNum]))
@@ -57,7 +57,7 @@ public class KeyPress : MonoBehaviour
 
                     ActivateKey(keyNum, true);
 
-                    if (Input.GetKey(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKey(key_Layout.secondaryBindedKeys[keyNum]))
+                    if (Input.GetKeyDown(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKey(key_Layout.primaryBindedKeys[keyNum]))
                         keyPressInput = activeInput;
                 }
                 else

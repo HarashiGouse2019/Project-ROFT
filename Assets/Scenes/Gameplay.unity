@@ -1150,7 +1150,7 @@ MonoBehaviour:
   isGamePaused: 0
   PAUSE_OVERLAY: {fileID: 1452287091}
   editMode: 0
-  gameMode: 1
+  gameMode: 0
   TM_SONGNAME: {fileID: 0}
   TM_TOTALNOTES: {fileID: 0}
   TM_TOTALKEYS: {fileID: 0}
@@ -1305,7 +1305,6 @@ MonoBehaviour:
   autoBindKeys: 1
   dataText: {fileID: 7113210978643432506}
   primaryBindedKeys: 
-  secondaryBindedKeys: 
   tempShowKeyObjs: []
   key: {fileID: 5638931420957669192, guid: 377a8d4d67f416f43a4f76325d952053, type: 3}
   pooler: {fileID: 615216640}
@@ -2503,7 +2502,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: Phantom Sage - Holystone
+  m_name: noraneko
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0
