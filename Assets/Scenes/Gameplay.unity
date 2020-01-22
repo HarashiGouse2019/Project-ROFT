@@ -3824,16 +3824,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd988ba1a1847f44b99409f6c3ec4e0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialSensitivity: 1
   refreshRate: 0.2
   TMP_MOUSEDIRECTION: {fileID: 0}
-  m_mousePosition: {x: 0, y: 0, z: 0}
   hdir: 0
   vdir: 0
   sensitivity: 0
   mouseMovementInput: 0
   resetPosition: {x: 0, y: 0, z: 0}
-  m_camera: {fileID: 7113210979240481049}
   horIndex: 0
   verIndex: 0
 --- !u!212 &1533655340

@@ -300,6 +300,7 @@ public class Key_Layout : MonoBehaviour
     //This will be called based on frames. This will use the
     //TypeByRegion class to do it's magic.
     //There's 2 Stages or Processes
+    #region Subject for removal
     public KeyCode RandomizeAndProcess()
     {
         if (layoutMethod == LayoutMethod.Region_Scatter)
@@ -340,7 +341,8 @@ public class Key_Layout : MonoBehaviour
             #endregion 
         }
         return KeyCode.None;
-    }
+    } 
+    #endregion
 
     //This function will directly change the layout mode.
     //0 is Abstract, 1 is Scatter

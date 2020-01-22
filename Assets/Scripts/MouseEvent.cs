@@ -7,10 +7,6 @@ public class MouseEvent : MonoBehaviour
     public static MouseEvent Instance;
 
     #region Public Members
-    //Initial Sensitivity
-    [Header("Sensitivity"), Range(1f, 20f)]
-    public float initialSensitivity = 5f;
-
     //Refresh Rate: How long it'll take to reset to center to read direction
     [Header("Refresh Rate")]
     public float refreshRate = 0.5f;
@@ -21,14 +17,8 @@ public class MouseEvent : MonoBehaviour
 
     #region Private Members
 
-    //Get vector3 for mouse position
-    public Vector3 m_mousePosition;
-
     //The general direction of mouse cursor
     public float hdir = 2, vdir = 2;
-
-    //Default Sensitivity
-    const float defaultSensitivity = 5f;
 
     //Set Sensitivity
     public float sensitivity;
@@ -46,21 +36,11 @@ public class MouseEvent : MonoBehaviour
 
     //Input Value for Mouse
     public int mouseMovementInput = 0;
-    const int activeInput = 1;
-    const int inactiveInput = 0;
 
     //Reset
     const uint reset = 0;
     public Vector3 resetPosition;
-    public Camera m_camera;
-    string[] horizontalString =
-    {
-        "<Left>", "<Right>", "<Null>"
-    };
-    string[] verticalString =
-    {
-        "<Up>", "<Down>", "<Null>"
-    };
+    
     public int horIndex = 2;
     public int verIndex = 2;
 
@@ -73,25 +53,11 @@ public class MouseEvent : MonoBehaviour
         Instance = this;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        m_mousePosition = Input.mousePosition;
-    }
-
     // Update is called once per frame
     void FixedUpdate()
     {
-        ParseArrowsToMouse();
+        ArrowInputs();
         RunRefreshRate();
-        CalculateXDifference();
-        CalculateYDifference();
-    }
-
-    float GetSensitivity()
-    {
-        sensitivity = (defaultSensitivity + ((defaultSensitivity + 1) - initialSensitivity)) * 10;
-        return sensitivity;
     }
 
     void RunRefreshRate()
@@ -103,7 +69,6 @@ public class MouseEvent : MonoBehaviour
             hdir = reset;
             vdir = reset;
             time = reset;
-            UpdateResetPosition();
         }
     }
 
@@ -112,11 +77,10 @@ public class MouseEvent : MonoBehaviour
         hdir = reset;
         vdir = reset;
         time = reset;
-        UpdateResetPosition();
     }
 
     //As an alternative, you could use arrow keys opposed to the mouse
-    void ParseArrowsToMouse()
+    void ArrowInputs()
     {
         foreach (KeyCode key in ArrowDirectionKeys)
         {
@@ -140,28 +104,6 @@ public class MouseEvent : MonoBehaviour
                 };
             }
         }
-    }
-
-    float CalculateXDifference()
-    {
-        m_mousePosition = Input.mousePosition;
-
-        hdir = resetPosition.x - m_mousePosition.x;
-        return hdir;
-    }
-
-    float CalculateYDifference()
-    {
-        m_mousePosition = Input.mousePosition;
-
-        vdir = resetPosition.y - m_mousePosition.y;
-        return vdir;
-    }
-
-    void UpdateResetPosition()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        resetPosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1f);
     }
 
     public void StartArrowKeyDelay()
