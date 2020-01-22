@@ -230,17 +230,11 @@ public class MapReader : MonoBehaviour
             case 8:
                 keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_2x4;
                 break;
-            case 10:
-                keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_HomeRow;
-                break;
             case 12:
                 keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_3x4;
                 break;
             case 16:
                 keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_4x4;
-                break;
-            case 30:
-                keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_3Row;
                 break;
         } 
         #endregion

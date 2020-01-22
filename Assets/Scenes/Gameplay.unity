@@ -1172,10 +1172,6 @@ MonoBehaviour:
   IMG_STRESSBACKGROUND: {fileID: 0}
   IMG_SCREEN_OVERLAY: {fileID: 786974382}
   IMG_PROGRESSION_FILL: {fileID: 1039563774}
-  totalScore: 0
-  previousScore: 0
-  combo: 0
-  maxCombo: 0
   overallAccuracy: 100
   accuracyPercentile: 0
   overallGrade: 0
@@ -1325,7 +1321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   approachSpeed: 9.350000381469727
-  alignment: 2000
+  alignment: 6000
   keyAppearOffset: 1
   accuracy: 8.75
   accuracyVal:
@@ -2503,7 +2499,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: Camellia - werewolf howls
+  m_name: Teminite & Panda Eyes - Highscore
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0

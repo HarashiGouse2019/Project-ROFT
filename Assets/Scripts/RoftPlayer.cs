@@ -224,7 +224,7 @@ public class RoftPlayer : MonoBehaviour
     {
         string rftmFileName = _name + ".rftm";
         string rftmFilePath = _path + rftmFileName;
-        
+
         if (!File.Exists(rftmFilePath))
         {
             Debug.Log("Creating new .rftm file...");
@@ -289,18 +289,15 @@ public class RoftPlayer : MonoBehaviour
                     case Key_Layout.KeyLayoutType.Layout_3x4:
                         keyInfo = "12";
                         break;
-                    case Key_Layout.KeyLayoutType.Layout_HomeRow:
-                        keyInfo = "10";
-                        break;
-                    case Key_Layout.KeyLayoutType.Layout_3Row:
-                        keyInfo = "30";
+                    case Key_Layout.KeyLayoutType.Layout_4x4:
+                        keyInfo = "16";
                         break;
                     default:
                         break;
                 }
                 #endregion
                 string p_KeyCount = "KeyCount: " + keyInfo + newLine;
-                
+
                 string p_AccuracyHarshness = "AccuracyHarshness: " + noteEffector.accuracy.ToString() + newLine;
                 string p_ApproachSpeed = "ApproachSpeed: " + noteEffector.approachSpeed.ToString() + newLine;
                 #endregion
@@ -312,12 +309,12 @@ public class RoftPlayer : MonoBehaviour
                 #region .rftm Information
                 string[] rftmInformation = new string[]
                 {
-                   t_general +  
-                   p_Author + 
+                   t_general +
+                   p_Author +
                    p_AudioFileName +
                    p_Gamemode,
 
-                   t_metadata + 
+                   t_metadata +
                    p_Title +
                    p_TitleUnicode +
                    p_Artist +
