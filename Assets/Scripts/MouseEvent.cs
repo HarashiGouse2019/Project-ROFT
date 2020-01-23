@@ -40,7 +40,7 @@ public class MouseEvent : MonoBehaviour
     //Reset
     const uint reset = 0;
     public Vector3 resetPosition;
-    
+
     public int horIndex = 2;
     public int verIndex = 2;
 

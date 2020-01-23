@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PanelEvents : MonoBehaviour
 {
@@ -40,7 +38,7 @@ public class PanelEvents : MonoBehaviour
     //Used for animation events
     public void EnableLoadingIcon(string _destinationAfter)
     {
-        //RoftSceneNavi.Instance.loadingIcon.gameObject.SetActive(true);
+        RoftSceneNavi.Instance.loadingIcon.gameObject.SetActive(true);
         RoftSceneNavi.Instance.SendMeToScene(_destinationAfter);
     }
 
@@ -48,6 +46,4 @@ public class PanelEvents : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
-
-   
 }

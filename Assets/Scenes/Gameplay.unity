@@ -1127,7 +1127,6 @@ GameObject:
   - component: {fileID: 563326976}
   - component: {fileID: 563326977}
   - component: {fileID: 563326975}
-  - component: {fileID: 563326978}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1207,19 +1206,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentTargetKey: {fileID: 0}
---- !u!114 &563326978
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 563326974}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 791b57b019f3bee4e8254d4b58d449d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  comments: Scenes have to be in order as shown in the Build Settings
 --- !u!1 &615216635
 GameObject:
   m_ObjectHideFlags: 0
@@ -2437,8 +2423,6 @@ GameObject:
   - component: {fileID: 1100497924}
   - component: {fileID: 1100497929}
   - component: {fileID: 1100497928}
-  - component: {fileID: 1100497927}
-  - component: {fileID: 1100497923}
   m_Layer: 0
   m_Name: MapReaderObj
   m_TagString: Untagged
@@ -2446,19 +2430,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
---- !u!114 &1100497923
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1100497922}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a72212f7a878ead47a43f263c8654168, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objects: []
 --- !u!114 &1100497924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2499,32 +2470,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: Teminite & Panda Eyes - Highscore
+  m_name: Exit This Earth Most Atomosphere 200-Step Remix
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0
   maxScore: 0
   keyLayoutEnum: 0
-  keys: []
+  noteObjs: []
   keyLayoutClass: {fileID: 615216638}
   tapObjectReader: {fileID: 1100497924}
   holdObjectReader: {fileID: 1100497929}
   slideObjectReader: {fileID: 1100497928}
-  trailObjectReader: {fileID: 1100497927}
-  clickObjectReader: {fileID: 1100497923}
---- !u!114 &1100497927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1100497922}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5be4fed22a301704390e8e3f5fbd2db1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objects: []
+  trailObjectReader: {fileID: 0}
+  clickObjectReader: {fileID: 0}
 --- !u!114 &1100497928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10062,6 +10020,7 @@ MonoBehaviour:
   scroll: 100
   zoom: 100
   pixelSpread: 1
+  timelineControlDrawn: 0
   lines: []
 --- !u!222 &7113210980340432637
 CanvasRenderer:

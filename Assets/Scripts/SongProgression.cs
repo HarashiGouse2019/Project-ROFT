@@ -23,16 +23,16 @@ public class SongProgression : MonoBehaviour
 
         //In order to know how much time we have until the first note,
         //we'll have to reference to the first note in our MapReader
-        firstNoteInSamples = MapReader.Instance.keys[0].keySample;
+        firstNoteInSamples = MapReader.Instance.noteObjs[0].instSample;
 
         //Now we calculate the percentage with the music sample and the firstNoteInSamples
         float firstNotePercentile = RoftPlayer.musicSource.timeSamples / firstNoteInSamples;
 
         //Now we want to get the percentage between
         //Our current sample, and the last key sample in our song!!!
-        int lastKey = MapReader.Instance.keys.Count - 1;
+        int lastKey = MapReader.Instance.noteObjs.Count - 1;
 
-        lastNoteInSamples = MapReader.Instance.keys[lastKey].keySample;
+        lastNoteInSamples = MapReader.Instance.noteObjs[lastKey].instSample;
 
         //We get out percentage
         float lastNotePercentile = 

@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    public static RoftIO mainIO = new RoftIO();
+
     public static bool inSong = true;
 
     public static string[] accuracyString =
@@ -162,10 +164,6 @@ public class GameManager : MonoBehaviour
     float stressAmp = 0f;
     float gain = 1f;
 
-    //Pulse effects
-    PulseEffect pulseEffect;
-    OverlayPulseEffect overlayPulseEffect; //Refers to side flares on screen
-
     private void Awake()
     {
         #region Singleton
@@ -173,7 +171,6 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             CreateRecords();
-            ReferenceAllEffects();
             DontDestroyOnLoad(Instance);
         }
         else
@@ -512,12 +509,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void ReferenceAllEffects()
-    {
-        pulseEffect = GetComponent<PulseEffect>();
-        overlayPulseEffect = GetComponent<OverlayPulseEffect>();
-    }
-
     public void SetCombo(int _value)
     {
         combo = _value;
@@ -526,5 +517,10 @@ public class GameManager : MonoBehaviour
     public void IncrementCombo()
     {
         combo++;
+    }
+
+    public static RoftIO GiveAccessToIO()
+    {
+        return mainIO;
     }
 }

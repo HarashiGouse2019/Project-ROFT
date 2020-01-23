@@ -3,7 +3,7 @@ using UnityEngine;
 [System.Serializable]
 public class ObjectTypes : MonoBehaviour
 {
-    public List<Key> objects = new List<Key>();
+    public List<NoteObj> objects = new List<NoteObj>();
 
     //This will be responsible for reading different types of the same file
     public virtual void ReadTapsFromFile()

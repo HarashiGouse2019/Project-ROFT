@@ -2,22 +2,22 @@
 using UnityEngine;
 
 [Serializable]
-public class Key
+public class NoteObj
 { 
-    public enum KeyType
+    public enum NoteObjType
     {
         Tap,
         Hold,
-        Slide,
-        Trail,
-        Click
+        Burst
     }
 
     //Central Values
     [Header("Central Values")]
-    public int keyNum;
-    public int keySample;
-    public KeyType type;
+
+    //NoteInstanceID
+    public int instID;
+    public int instSample;
+    public NoteObjType instType;
 
     //Miscellaneous Values
     [Header("Miscellaneous Values")]

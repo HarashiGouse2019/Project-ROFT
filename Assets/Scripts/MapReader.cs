@@ -19,7 +19,7 @@ public class MapReader : MonoBehaviour
 
     public int keyLayoutEnum;
 
-    public List<Key> keys = new List<Key>();
+    public List<NoteObj> noteObjs = new List<NoteObj>();
 
     public Key_Layout keyLayoutClass = Key_Layout.Instance;
 
@@ -31,8 +31,11 @@ public class MapReader : MonoBehaviour
     public TrailObjectReader trailObjectReader;
     public ClickObjectReader clickObjectReader;
 
+    private RoftIO mainIO;
+
     private void Awake()
     {
+        mainIO = GameManager.mainIO;
         #region Singleton
         if (Instance == null)
         {
@@ -42,24 +45,28 @@ public class MapReader : MonoBehaviour
         else
         {
             Destroy(gameObject);
-        } 
+        }
         #endregion
+        
     }
 
     private void Start()
     {
+
+
+
         ReadRFTMKeys(m_name);
 
         if (keyLayoutClass != null)
-            KeyLayoutAwake((int)keyLayoutClass.layoutMethod);
+            KeyLayoutAwake();
 
         //Get other values such as Approach Speed, Stress Build, and Accuracy Harshness
         if (RoftPlayer.Instance != null && !RoftPlayer.Instance.record)
         {
-            int difficultyTag = InRFTMJumpTo("Difficulty");
-            NoteEffector.Instance.approachSpeed = float.Parse(ReadPropertyFrom(difficultyTag, "ApproachSpeed"));
-            GameManager.Instance.stressBuild = float.Parse(ReadPropertyFrom(difficultyTag, "StressBuild"));
-            NoteEffector.Instance.accuracy = float.Parse(ReadPropertyFrom(difficultyTag, "AccuracyHarshness"));
+            int difficultyTag = GameManager.mainIO.InRFTMJumpTo("Difficulty", m_name);
+            NoteEffector.Instance.approachSpeed = mainIO.ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", m_name);
+            GameManager.Instance.stressBuild = mainIO.ReadPropertyFrom<float>(difficultyTag, "StressBuild", m_name);
+            NoteEffector.Instance.accuracy = mainIO.ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", m_name);
             maxScore = CalculateMaxScore();
         }
         else
@@ -92,7 +99,7 @@ public class MapReader : MonoBehaviour
             //Then use string.Split(separator, ...)
             const char separator = ',';
             int filePosition = 0;
-            int targetPosition = InRFTMJumpTo("Objects");
+            int targetPosition = mainIO.InRFTMJumpTo("Objects", m_name);
             using (StreamReader rftmReader = new StreamReader(rftmFilePath))
             {
                 while (true)
@@ -103,6 +110,7 @@ public class MapReader : MonoBehaviour
 
                     if (filePosition > targetPosition)
                     {
+                        #region Parse and Convert Information
                         //We'll count the frequency of commas to determine
                         //that they are more values in the object
                         int countCommas = 0;
@@ -111,52 +119,48 @@ public class MapReader : MonoBehaviour
                                 countCommas++;
 
                         //We create a new key, and assign our data value to our key
-                        Key newKey = new Key();
+                        NoteObj newNoteObj = new NoteObj();
 
-                        newKey.keyNum = Convert.ToInt32(line.Split(separator)[0]);
-                        newKey.keySample = Convert.ToInt32(line.Split(separator)[1]);
-                        newKey.type = (Key.KeyType)Convert.ToInt32(line.Split(separator)[2]);
+                        newNoteObj.instID = Convert.ToInt32(line.Split(separator)[0]);
+                        newNoteObj.instSample = Convert.ToInt32(line.Split(separator)[1]);
+                        newNoteObj.instType = (NoteObj.NoteObjType)Convert.ToInt32(line.Split(separator)[2]);
 
                         //Check for any miscellaneous values
                         if (countCommas > 2)
-                            newKey.miscellaneousValue1 = Convert.ToInt32(line.Split(separator)[3]);
+                            newNoteObj.miscellaneousValue1 = Convert.ToInt32(line.Split(separator)[3]);
 
                         else if (countCommas > 3)
-                            newKey.miscellaneousValue2 = Convert.ToInt32(line.Split(separator)[4]);
+                            newNoteObj.miscellaneousValue2 = Convert.ToInt32(line.Split(separator)[4]); 
+                        #endregion
 
-                        //Update maxKeys
-                        if (newKey.keyNum > maxKey)
+                        /*This looks at the noteID
+                         which is simply the number that is linked
+                         to the keyID in the game.
+                         */
+                        if (newNoteObj.instID > maxKey)
                         {
-                            maxKey = newKey.keyNum;
+                            maxKey = newNoteObj.instID;
                             totalKeys = maxKey + 1;
                         }
 
                         //Lastly, add our new key to the list
-                        keys.Add(newKey);
+                        noteObjs.Add(newNoteObj);
 
                         //We'll be integrating our new Object Readers around this area.
                         //We'll distribute the basic values to each one.
                         #region Distribution to Readers
-                        switch (newKey.type)
+                        switch (newNoteObj.instType)
                         {
-                            case Key.KeyType.Tap:
-                                DistributeTypeTo(tapObjectReader, newKey);
+                            case NoteObj.NoteObjType.Tap:
+                                DistributeTypeTo(tapObjectReader, newNoteObj);
                                 break;
 
-                            case Key.KeyType.Hold:
-                                DistributeTypeTo(holdObjectReader, newKey);
+                            case NoteObj.NoteObjType.Hold:
+                                DistributeTypeTo(holdObjectReader, newNoteObj);
                                 break;
 
-                            case Key.KeyType.Slide:
-                                DistributeTypeTo(slideObjectReader, newKey);
-                                break;
-
-                            case Key.KeyType.Trail:
-                                DistributeTypeTo(trailObjectReader, newKey);
-                                break;
-
-                            case Key.KeyType.Click:
-                                DistributeTypeTo(clickObjectReader, newKey);
+                            case NoteObj.NoteObjType.Burst:
+                                DistributeTypeTo(slideObjectReader, newNoteObj);
                                 break;
 
                             default:
@@ -165,29 +169,24 @@ public class MapReader : MonoBehaviour
                         #endregion
 
                         //Update total Notes
-                        totalNotes = keys.Count;
+                        totalNotes = noteObjs.Count;
                     }
                     filePosition++;
                 }
             }
         }
         #endregion
-
-
     }
 
     float CalculateDifficultyRating()
     {
-        int totalNotes = keys.Count;
+        int totalNotes = noteObjs.Count;
         float songLengthInSec = RoftPlayer.musicSource.clip.length;
         float notesPerSec = (totalNotes / songLengthInSec);
         float totalKeys = keyLayoutClass.primaryBindedKeys.Count;
         float approachSpeedInPercent = (float)NoteEffector.Instance.approachSpeed / 100;
         float gameModeBoost = 0;
         const int maxKeys = 30;
-
-        if (keyLayoutClass.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
-            gameModeBoost = 2.0f;
 
         float calculatedRating = notesPerSec +
             (totalKeys / maxKeys) +
@@ -208,16 +207,14 @@ public class MapReader : MonoBehaviour
         return ini_Score;
     }
 
-    void KeyLayoutAwake(int _appearEffectOn)
+    void KeyLayoutAwake()
     {
-        int difficultyTag = InRFTMJumpTo("Difficulty");
-        int keyCount = Convert.ToInt32(ReadPropertyFrom(difficultyTag, "KeyCount"));
+        int difficultyTag = mainIO.InRFTMJumpTo("Difficulty", m_name);
+        int keyCount = mainIO.ReadPropertyFrom<int>(difficultyTag, "KeyCount", m_name);
         totalKeys = keyCount;
         if (!keyLayoutClass.gameObject.activeInHierarchy)
         {
             keyLayoutClass.gameObject.SetActive(true);
-            if (_appearEffectOn == 1)
-                keyLayoutClass.GetComponent<AppearEffect>().enabled = keyLayoutClass.gameObject.activeInHierarchy;
         }
 
         #region Reading KeyCount
@@ -245,106 +242,8 @@ public class MapReader : MonoBehaviour
             Key_Layout.Instance.SetUpLayout();
     }
 
-    public int InRFTMJumpTo(string _tag, string _fileName = "", string _fileDirectory = "")
-    {
-        //Setting default for directory
-        if (_fileDirectory == "")
-            _fileDirectory = Application.streamingAssetsPath;
-
-        //Setting default for file name
-        if (_fileName == "" && m_name != null)
-            _fileName = m_name;
-
-        string line;
-
-        string rftmFileName = _fileName + ".rftm";
-        string rftmFilePath = _fileDirectory + @"/" + rftmFileName;
-
-
-        int targetPosition = 0;
-        #region Read .rftm data
-        if (File.Exists(rftmFilePath))
-        {
-            //Read each line, split with a array string
-            //Name it separator
-            //Then use string.Split(separator, ...)
-            char[] separator = { '[', ']' };
-            using (StreamReader rftmReader = new StreamReader(rftmFilePath))
-            {
-                while (true)
-                {
-                    line = rftmReader.ReadLine();
-
-                    if (line == null)
-                    {
-                        Debug.Log("The tag " + _tag + " doesn't exist.");
-                        return -1;
-                    }
-
-                    line.Split(separator);
-                    if (line.Contains(_tag))
-                    {
-                        return targetPosition;
-                    }
-                    targetPosition++;
-                }
-            }
-        }
-
-        Debug.Log("The specified file doesn't exist: " + _fileDirectory);
-        #endregion
-
-        return -1;
-    }
-
-    public string ReadPropertyFrom(int _startPosition, string _property)
-    {
-        string line;
-        string rftmFilePath = Application.streamingAssetsPath + @"/" + m_name + ".rftm";
-        int position = 0;
-
-        //Check if it actually found something
-        bool foundProperty = false;
-
-        if (File.Exists(rftmFilePath))
-        {
-            using (StreamReader rftmReader = new StreamReader(rftmFilePath))
-            {
-                while (true)
-                {
-                    string targetVal = null;
-
-                    line = rftmReader.ReadLine();
-
-                    if (line == null)
-                    {
-
-                        if (!foundProperty) Debug.Log("This tag does not exist");
-                        return line;
-                    }
-
-                    if (position > _startPosition)
-                    {
-                        if (line == "")
-                            return null;
-
-                        //If not empty, you can do whatever!!!
-                        if (line.Contains(_property))
-                        {
-                            foundProperty = true;
-                            targetVal = line.Replace(_property + ": ", "");
-
-                            return targetVal;
-                        }
-                    }
-                    position++;
-                }
-            }
-        }
-        return null;
-    }
-
-    void DistributeTypeTo(ObjectTypes _objectReader, Key _key)
+    
+    void DistributeTypeTo(ObjectTypes _objectReader, NoteObj _key)
     {
         if (_objectReader != null)
             _objectReader.objects.Add(_key);

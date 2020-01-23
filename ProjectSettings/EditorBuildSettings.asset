@@ -9,9 +9,6 @@ EditorBuildSettings:
     path: 
     guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Scenes/Gameplay.unity
-    guid: 1f0dffbc05b189e4e9f936b17bbf8444
-  - enabled: 1
     path: Assets/Scenes/TitleScreen.unity
     guid: ead9b76f258d82b4cabcb3313c818ae6
   - enabled: 1
@@ -20,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SongSelectionMenu.unity
     guid: f6da84f1092952842a30fa894883b759
+  - enabled: 1
+    path: Assets/Scenes/Gameplay.unity
+    guid: 1f0dffbc05b189e4e9f936b17bbf8444
   - enabled: 1
     path: Assets/Scenes/Results.unity
     guid: f905991181c748a449c4392cf48d62b0

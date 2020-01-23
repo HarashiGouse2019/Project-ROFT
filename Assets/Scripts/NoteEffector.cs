@@ -57,6 +57,7 @@ public class NoteEffector : MonoBehaviour
         12000
     }; //Default Accurary; 2-4-2 Format
 
+    private RoftIO mainIO;
     #endregion
 
     #region Protected Members
@@ -74,6 +75,7 @@ public class NoteEffector : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        mainIO = GameManager.GiveAccessToIO();
         RetrieveEffectConfigs();
         UpdateAccuracyHarshness();
     }
@@ -94,7 +96,7 @@ public class NoteEffector : MonoBehaviour
         CloseInEffect effect = null;
         CloseInEffect arrowEffect = null;
 
-        if (keySequencePosition < mapReader.keys.Count)
+        if (keySequencePosition < mapReader.noteObjs.Count)
         {
             ObjectPooler keyPooler;
 
@@ -105,7 +107,7 @@ public class NoteEffector : MonoBehaviour
             //Most of this information is from the MapReader, in which that object
             //reads from the song file. 
             #endregion
-            keyPooler = Key_Layout.keyObjects[mapReader.keys[keySequencePosition].keyNum].GetComponent<ObjectPooler>();
+            keyPooler = Key_Layout.keyObjects[mapReader.noteObjs[keySequencePosition].instID].GetComponent<ObjectPooler>();
 
             //We want to get our game objects from the same key for both the approach circle, and the arrow
             GameObject approachCircle = keyPooler.GetMember("Approach Circle");
@@ -114,7 +116,7 @@ public class NoteEffector : MonoBehaviour
             effect = approachCircle.GetComponent<CloseInEffect>();
 
             //We don't want arrows to show or do an effect, until we know that's the type we're dealing with
-            if (mapReader.keys[keySequencePosition].type == Key.KeyType.Slide)
+            if (mapReader.noteObjs[keySequencePosition].instType == NoteObj.NoteObjType.Burst)
                 arrowEffect = arrowDirection.GetComponent<CloseInEffect>();
 
             //Check if Approach Cirlce is not active
@@ -126,12 +128,12 @@ public class NoteEffector : MonoBehaviour
 
             //If in Techmeister and there's a sliding type, check if Arrow is not active
             if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
-                mapReader.keys[keySequencePosition].type == Key.KeyType.Slide &&
+                mapReader.noteObjs[keySequencePosition].instType == NoteObj.NoteObjType.Burst &&
                 !arrowDirection.activeInHierarchy)
             {
                 WakeUpNoteMember(arrowDirection);
 
-                arrowDirection.GetComponent<ArrowDirectionSet>().SetDirection(mapReader.keys[keySequencePosition].miscellaneousValue1);
+                arrowDirection.GetComponent<ArrowDirectionSet>().SetDirection(mapReader.noteObjs[keySequencePosition].miscellaneousValue1);
 
                 effect.attachedArrow = arrowDirection;
 
@@ -147,8 +149,8 @@ public class NoteEffector : MonoBehaviour
     private void WakeUpNoteMember(GameObject _obj)
     {
         _obj.SetActive(true);
-        _obj.transform.position = Key_Layout.keyObjects[mapReader.keys[keySequencePosition].keyNum].transform.position;
-        _obj.transform.localScale = Key_Layout.keyObjects[mapReader.keys[keySequencePosition].keyNum].transform.localScale;
+        _obj.transform.position = Key_Layout.keyObjects[mapReader.noteObjs[keySequencePosition].instID].transform.position;
+        _obj.transform.localScale = Key_Layout.keyObjects[mapReader.noteObjs[keySequencePosition].instID].transform.localScale;
     }
 
     private void UpdateToNextNote()
@@ -160,9 +162,9 @@ public class NoteEffector : MonoBehaviour
     //Approach Circle, and Key
     bool ApproachCircleSpawnTime()
     {
-        if (keySequencePosition < mapReader.keys.Count)
+        if (keySequencePosition < mapReader.noteObjs.Count)
         {
-            noteSample = mapReader.keys[keySequencePosition].keySample - (int)alignment;
+            noteSample = mapReader.noteObjs[keySequencePosition].instSample - (int)alignment;
             float offsetStart = noteSample - noteOffset;
 
             //This is strictly for checking when notes should appear
@@ -196,7 +198,7 @@ public class NoteEffector : MonoBehaviour
         _effect.keyNum = keySequencePosition;
 
         //This is the index regarding each "key" on screen
-        _effect.keyNumPosition = mapReader.keys[_effect.keyNum].keyNum;
+        _effect.keyNumPosition = mapReader.noteObjs[_effect.keyNum].instID;
     }
 
     protected virtual float GetPercentage()
@@ -207,8 +209,8 @@ public class NoteEffector : MonoBehaviour
     void RetrieveEffectConfigs()
     {
         //Set Up values for NoteEffect
-        int difficultyTag = MapReader.Instance.InRFTMJumpTo("Difficulty");
-        accuracy = float.Parse(MapReader.Instance.ReadPropertyFrom(difficultyTag, "AccuracyHarshness"));
-        approachSpeed = float.Parse(MapReader.Instance.ReadPropertyFrom(difficultyTag, "ApproachSpeed"));
+        int difficultyTag = mainIO.InRFTMJumpTo("Difficulty", mapReader.m_name);
+        accuracy = mainIO.ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", mapReader.m_name);
+        approachSpeed = mainIO.ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", mapReader.m_name);
     }
 }

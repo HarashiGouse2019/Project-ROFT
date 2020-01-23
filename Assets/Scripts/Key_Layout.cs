@@ -150,12 +150,12 @@ public class Key_Layout : MonoBehaviour
     void InitiateAutoKeyBind()
     {
         //I want to first bind the primary layout
-        for (int keyNum = 0; keyNum < primaryLayout[(int)keyLayout].Length; keyNum++)
-            InvokeKeyBind(primaryLayout[(int)keyLayout][keyNum], _rank: "primary");
+        for (int keyID = 0; keyID < primaryLayout[(int)keyLayout].Length; keyID++)
+            InvokeKeyBind(primaryLayout[(int)keyLayout][keyID], _rank: "primary");
 
         //Then I bind the secondary layout
-        for (int keyNum = 0; keyNum < secondaryLayout[(int)keyLayout].Length; keyNum++)
-            InvokeKeyBind(secondaryLayout[(int)keyLayout][keyNum], _rank: "secondary");
+        for (int keyID = 0; keyID < secondaryLayout[(int)keyLayout].Length; keyID++)
+            InvokeKeyBind(secondaryLayout[(int)keyLayout][keyID], _rank: "secondary");
     }
 
     //This will simply take any character, and keybind it.

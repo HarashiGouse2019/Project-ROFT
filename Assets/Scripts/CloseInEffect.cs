@@ -85,11 +85,8 @@ public class CloseInEffect : NoteEffector
         keyInputReceived = Input.GetKey(Key_Layout.Instance.primaryBindedKeys[keyNumPosition]) ||
                 Input.GetKey(Key_Layout.Instance.secondaryBindedKeys[keyNumPosition]);
 
-        if (mapReader.keys[keyNum].type == Key.KeyType.Tap)
+        if (mapReader.noteObjs[keyNum].instType == NoteObj.NoteObjType.Tap)
             sprite.color = originalAppearance;
-
-        else if (mapReader.keys[keyNum].type == Key.KeyType.Click)
-            sprite.color = Color.red;
 
         transform.localScale = new Vector3(1 / GetPercentage(), 1 / GetPercentage(), 1f);
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.15f);
@@ -146,20 +143,16 @@ public class CloseInEffect : NoteEffector
 
             
             bool tapType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
-                mapReader.keys[keyNum].type == Key.KeyType.Tap &&
+                mapReader.noteObjs[keyNum].instType == NoteObj.NoteObjType.Tap &&
                 keyInputDownReceived);
 
-            bool clickType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
-                mapReader.keys[keyNum].type == Key.KeyType.Click &&
-                ClickEvent.ClickReceived());
-
             bool BurstType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
-                mapReader.keys[keyNum].type == Key.KeyType.Slide &&
+                mapReader.noteObjs[keyNum].instType == NoteObj.NoteObjType.Burst &&
                 attachedArrow != null &&
                 keyInputReceived &&
                 GameManager.multiInputValue == 2);
 
-            if (accuracyString != "" && (tapType || clickType || BurstType))
+            if (accuracyString != "" && (tapType || BurstType))
             {
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                 {
@@ -264,7 +257,6 @@ public class CloseInEffect : NoteEffector
             sign.SetActive(true);
             sign.transform.position = gameObject.transform.position;
             sign.GetComponent<AccuracySign>().ShowSign(4);
-
         }
 
         BuildStress(4);
