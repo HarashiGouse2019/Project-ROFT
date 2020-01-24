@@ -103,6 +103,11 @@ public class Song_Entity : MonoBehaviour
         numbers.Add(value);
     }
 
+    void RemoveNumber(int value)
+    {
+        numbers.RemoveAt(value);
+    }
+
     void Orderize()
     {
         numbers.Sort();

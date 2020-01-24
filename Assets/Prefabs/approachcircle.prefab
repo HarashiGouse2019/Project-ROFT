@@ -196,6 +196,7 @@ MonoBehaviour:
   accuracyString: 
   dispose: 0
   dontEffectMe: 0
+  mapReaderSeqPos: 0
 --- !u!222 &8432298229018716898
 CanvasRenderer:
   m_ObjectHideFlags: 0

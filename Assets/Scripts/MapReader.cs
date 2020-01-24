@@ -28,7 +28,7 @@ public class MapReader : MonoBehaviour
     [Header("Object Readers")]
     public TapObjectReader tapObjectReader;
     public HoldObjectReader holdObjectReader;
-    public SlideObjectReader slideObjectReader;
+    public BurstObjectReader burstObjectReader;
     public TrailObjectReader trailObjectReader;
     public ClickObjectReader clickObjectReader;
 
@@ -177,7 +177,7 @@ public class MapReader : MonoBehaviour
                                     break;
 
                                 case NoteObj.NoteObjType.Burst:
-                                    DistributeTypeTo(slideObjectReader, newNoteObj);
+                                    DistributeTypeTo(burstObjectReader, newNoteObj);
                                     break;
 
                                 default:

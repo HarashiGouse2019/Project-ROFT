@@ -177,6 +177,7 @@ MonoBehaviour:
   accuracyString: 
   dispose: 0
   dontEffectMe: 0
+  mapReaderSeqPos: 0
   assignedKeyBind: 0
   overlaySprites: []
   childSprite: {fileID: 0}

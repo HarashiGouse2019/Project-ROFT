@@ -130,3 +130,4 @@ MonoBehaviour:
   accuracyString: 
   dispose: 0
   dontEffectMe: 1
+  mapReaderSeqPos: 0

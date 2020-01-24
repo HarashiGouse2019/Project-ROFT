@@ -1176,7 +1176,7 @@ MonoBehaviour:
   overallGrade: 0
   stressBuild: 10
   accuracyStats: 0000000000000000000000000000000000000000
-  isAutoPlaying: 1
+  isAutoPlaying: 0
   isCountingDown: 0
 --- !u!4 &563326976
 Transform:
@@ -1312,7 +1312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   approachSpeed: 9.350000381469727
-  alignment: 6000
+  alignment: 2000
   keyAppearOffset: 1
   accuracy: 8.75
   accuracyVal:
@@ -2431,6 +2431,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objects: []
+  sequencePos: 0
 --- !u!4 &1100497925
 Transform:
   m_ObjectHideFlags: 0
@@ -2458,7 +2459,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: Phantom Sage - Holystone
+  m_name: Teminite & Panda Eyes - Highscore
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0
@@ -2468,7 +2469,7 @@ MonoBehaviour:
   keyLayoutClass: {fileID: 615216638}
   tapObjectReader: {fileID: 1100497924}
   holdObjectReader: {fileID: 1100497929}
-  slideObjectReader: {fileID: 1100497928}
+  burstObjectReader: {fileID: 1100497928}
   trailObjectReader: {fileID: 0}
   clickObjectReader: {fileID: 0}
 --- !u!114 &1100497928
@@ -2484,6 +2485,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objects: []
+  sequencePos: 0
 --- !u!114 &1100497929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2497,6 +2499,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objects: []
+  sequencePos: 0
 --- !u!1 &1177057892
 GameObject:
   m_ObjectHideFlags: 0
@@ -7592,7 +7595,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.06919678, y: 4.8806458}
+  m_AnchoredPosition: {x: -0.06919678, y: 4.880768}
   m_SizeDelta: {x: 696.7, y: 130.88}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &7113210979678610685

@@ -160,6 +160,9 @@ public class GameManager : MonoBehaviour
     //Countdown for player to prepare
     public bool isCountingDown = false;
 
+    private delegate void Main();
+    Main core;
+
     private void Awake()
     {
         #region Singleton
@@ -171,6 +174,19 @@ public class GameManager : MonoBehaviour
         }
         else
             Destroy(gameObject);
+        #endregion
+
+        //Multicasting core delegate
+        //When Invoked, it'll run all of these functions.
+        //NEVER USE AN = SIGN WITH MUTLITASKING
+        //It'll reset in reseting all castings that
+        //it had in order to add a new one.
+        #region Core Delegate MultiCasting
+        core += RunScoreSystem;
+        core += RunUI;
+        core += RunInGameControls;
+        core += CheckSignsOfInput;
+        core += CheckStressMaxed; 
         #endregion
     }
 
@@ -201,13 +217,8 @@ public class GameManager : MonoBehaviour
     IEnumerator RUN_GAME_MANAGEMENT()
     {
         if (inSong && MapReader.KeysReaded)
-        {
-            RunScoreSystem();
-            RunUI();
-            RunInGameControls();
-            CheckSignsOfInput();
-            CheckStressMaxed();
-        }
+            //Invoke core and all methods associated with it
+            core.Invoke();
 
         yield return null;
     }
@@ -324,7 +335,9 @@ public class GameManager : MonoBehaviour
 
     public void RestartSong()
     {
-        NoteEffector.tapObjSeqPos = reset;
+        mapReader.tapObjectReader.SequencePositionReset();
+        mapReader.holdObjectReader.SequencePositionReset();
+        mapReader.burstObjectReader.SequencePositionReset();
 
         for (int stat = 0; stat < accuracyStats.Length; stat++)
             accuracyStats[stat] = reset;
@@ -421,7 +434,7 @@ public class GameManager : MonoBehaviour
         return sumOfStats;
     }
 
-    int CheckSignsOfInput()
+    void CheckSignsOfInput()
     {
         if (gameMode == GameMode.TECHMEISTER)
         {
@@ -430,10 +443,7 @@ public class GameManager : MonoBehaviour
             //Check for second input
             if (multiInputValue > 0)
                 StartMultiInputDelay();
-
-            return multiInputValue;
         }
-        return -1;
     }
 
     void StartMultiInputDelay()

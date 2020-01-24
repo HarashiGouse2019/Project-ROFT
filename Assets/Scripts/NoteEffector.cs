@@ -60,7 +60,9 @@ public class NoteEffector : MonoBehaviour
 
     private bool tapObjCanSpawn;
     private bool holdObjCanSpawn;
+    private bool burstObjCanSpawn;
     #endregion
+
 
     #region Protected Members
     protected float percentage; //Lerping for effects
@@ -91,10 +93,11 @@ public class NoteEffector : MonoBehaviour
         {
             if (ManageObjTypeSequence(out tapObjCanSpawn, mapReader.tapObjectReader)) SpawnNoteObj(mapReader.tapObjectReader);
             if (ManageObjTypeSequence(out holdObjCanSpawn, mapReader.holdObjectReader)) SpawnNoteObj(mapReader.holdObjectReader);
+            if (ManageObjTypeSequence(out burstObjCanSpawn, mapReader.burstObjectReader)) SpawnNoteObj(mapReader.burstObjectReader);
         }
     }
 
-    void SpawnNoteObj(ObjectTypes _objReader)
+    void SpawnNoteObj(ObjectTypes _objReader = null)
     {
         int sequencePos = (int)_objReader.GetSequencePosition();
         if (sequencePos < _objReader.objects.Count)
@@ -111,7 +114,7 @@ public class NoteEffector : MonoBehaviour
             keyPooler = Key_Layout.keyObjects[_objReader.objects[sequencePos].instID].GetComponent<ObjectPooler>();
 
             //We want to get our game objects from the same key for both the approach circle, and the arrow
-            GameObject approachCircle = keyPooler.GetMember("Approach Circle");
+            GameObject approachCircle = _objReader.GetTypeFromPool(keyPooler);
 
             //We have two effects for the approach circle, and for the arrows
             CloseInEffect effect = approachCircle.GetComponent<CloseInEffect>();
@@ -126,41 +129,6 @@ public class NoteEffector : MonoBehaviour
             UpdateToNextNote(_objReader);
         }
     }
-
-    #region Uncommented but intend to use
-    //void SpawnBurstObj()
-    //{
-    //    //We don't want arrows to show or do an effect, until we know that's the type we're dealing with
-
-
-    //    if (tapObjReader.objects[tapObjSeqPos].instType == NoteObj.NoteObjType.Burst)
-    //        arrowEffect = arrowDirection.GetComponent<CloseInEffect>();
-    //    //If in Techmeister and there's a sliding type, check if Arrow is not active
-
-
-    //    if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
-    //        mapReader.noteObjs[tapObjSeqPos].instType == NoteObj.NoteObjType.Burst &&
-    //        !arrowDirection.activeInHierarchy)
-    //    {
-    //        WakeUpNoteMember(arrowDirection);
-
-    //        arrowDirection.GetComponent<ArrowDirectionSet>().SetDirection(mapReader.noteObjs[tapObjSeqPos].miscellaneousValue1);
-
-    //        effect.attachedArrow = arrowDirection;
-
-    //        arrowDirection.GetComponent<ArrowDirectionSet>().AttachedCircle = approachCircle;
-
-    //        AssignPosition(arrowEffect);
-    //    }
-    //}
-    #endregion
-
-    #region TODO: Have SpawnHoldObj read from corresponding reader
-    void SpawnHoldObj()
-    {
-
-    }
-    #endregion
 
     private void WakeUpNoteMember(ref GameObject _obj, ObjectTypes _objReader)
     {
