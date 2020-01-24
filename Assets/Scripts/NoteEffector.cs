@@ -86,7 +86,6 @@ public class NoteEffector : MonoBehaviour
     {
         UpdateNoteOffset();
         UpdateAccuracyHarshness();
-
         if (!RoftPlayer.Instance.record) {
             if(ManageObjTypeSequence(out tapObjCanSpawn)) SpawnTapObj();
         }

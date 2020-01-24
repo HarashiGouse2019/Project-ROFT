@@ -33,7 +33,16 @@ public class MapReader : MonoBehaviour
     public ClickObjectReader clickObjectReader;
 
     private RoftIO mainIO;
-    private readonly object noteReadLock = new object();
+    Thread readKeyThread;
+    static bool keysReaded = false;
+    public static bool KeysReaded
+    {
+        get
+        {
+            return keysReaded;
+        }
+    }
+    private readonly object keyReadingLock = new object();
 
     private void Awake()
     {
@@ -54,9 +63,22 @@ public class MapReader : MonoBehaviour
 
     private void Start()
     {
+        readKeyThread = new Thread(() => ReadRFTMKeys(m_name));
+        readKeyThread.Start();
+        while (true)
+        {
+            if (!readKeyThread.IsAlive)
+            {
+                keysReaded = true;
+                Initialize();
+                CalculateDifficultyRating();
+                return;
+            }
+        }
+    }
 
-        ReadRFTMKeys(m_name);
-
+    void Initialize()
+    {
         if (keyLayoutClass != null)
             KeyLayoutAwake();
 
@@ -73,18 +95,11 @@ public class MapReader : MonoBehaviour
         {
             Debug.Log("For some reason, this is not being read....");
         }
-
-    }
-
-    private void Update()
-    {
-        if (GameManager.inSong == true)
-            difficultyRating = CalculateDifficultyRating();
     }
 
     void ReadRFTMKeys(string _name)
     {
-        lock (noteReadLock)
+        lock (keyReadingLock)
         {
             string line;
 
@@ -181,8 +196,9 @@ public class MapReader : MonoBehaviour
         #endregion
     }
 
-    float CalculateDifficultyRating()
+    void CalculateDifficultyRating()
     {
+
         int totalNotes = noteObjs.Count;
         float songLengthInSec = RoftPlayer.musicSource.clip.length;
         float notesPerSec = (totalNotes / songLengthInSec);
@@ -197,7 +213,7 @@ public class MapReader : MonoBehaviour
             (RoftPlayer.musicSource.pitch / 2) +
             gameModeBoost;
 
-        return calculatedRating;
+        difficultyRating = calculatedRating;
     }
 
     long CalculateMaxScore()

@@ -200,7 +200,7 @@ public class GameManager : MonoBehaviour
     //GAME_MANAGEMENT Update
     IEnumerator RUN_GAME_MANAGEMENT()
     {
-        if (inSong)
+        if (inSong && MapReader.KeysReaded)
         {
             RunScoreSystem();
             RunUI();

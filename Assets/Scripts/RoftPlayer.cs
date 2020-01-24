@@ -77,6 +77,7 @@ public class RoftPlayer : MonoBehaviour
 
     private void Awake()
     {
+        
         #region Singleton
         if (Instance == null)
         {
