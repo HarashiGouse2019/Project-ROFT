@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,13 +39,11 @@ public class NoteEffector : MonoBehaviour
     [Header("UI ASSET")]
     public GameObject notePrefab;
 
-    public static int keySequencePosition = 0; //With the collected data, what part of it are we in?
+    public static int tapObjSeqPos = 0, holdObjSeqPos = 0, burstObjSeqPos = 0; //With the collected data, what part of it are we in?
 
     #endregion
 
     #region Private Members
-    private Color alpha;
-
     private const int maxOffset = 100000;
     private const int minOffset = 10000;
     private const int standardAccuracy = 5;
@@ -58,6 +57,8 @@ public class NoteEffector : MonoBehaviour
     }; //Default Accurary; 2-4-2 Format
 
     private RoftIO mainIO;
+
+    private bool tapObjCanSpawn;
     #endregion
 
     #region Protected Members
@@ -86,17 +87,16 @@ public class NoteEffector : MonoBehaviour
         UpdateNoteOffset();
         UpdateAccuracyHarshness();
 
-        if (!RoftPlayer.Instance.record && ApproachCircleSpawnTime())
-            Approach();
+        if (!RoftPlayer.Instance.record) {
+            if(ManageObjTypeSequence(out tapObjCanSpawn)) SpawnTapObj();
+        }
     }
 
-    void Approach()
+    void SpawnTapObj()
     {
-        //We have two effects for the approach circle, and for the arrows
-        CloseInEffect effect = null;
-        CloseInEffect arrowEffect = null;
+        TapObjectReader tapObjReader = mapReader.tapObjectReader;
 
-        if (keySequencePosition < mapReader.noteObjs.Count)
+        if (tapObjSeqPos < tapObjReader.objects.Count)
         {
             ObjectPooler keyPooler;
 
@@ -107,71 +107,89 @@ public class NoteEffector : MonoBehaviour
             //Most of this information is from the MapReader, in which that object
             //reads from the song file. 
             #endregion
-            keyPooler = Key_Layout.keyObjects[mapReader.noteObjs[keySequencePosition].instID].GetComponent<ObjectPooler>();
+            keyPooler = Key_Layout.keyObjects[tapObjReader.objects[tapObjSeqPos].instID].GetComponent<ObjectPooler>();
 
             //We want to get our game objects from the same key for both the approach circle, and the arrow
             GameObject approachCircle = keyPooler.GetMember("Approach Circle");
-            GameObject arrowDirection = keyPooler.GetMember("Arrows");
 
-            effect = approachCircle.GetComponent<CloseInEffect>();
-
-            //We don't want arrows to show or do an effect, until we know that's the type we're dealing with
-            if (mapReader.noteObjs[keySequencePosition].instType == NoteObj.NoteObjType.Burst)
-                arrowEffect = arrowDirection.GetComponent<CloseInEffect>();
+            //We have two effects for the approach circle, and for the arrows
+            CloseInEffect effect = approachCircle.GetComponent<CloseInEffect>();
 
             //Check if Approach Cirlce is not active
             if (!approachCircle.activeInHierarchy)
             {
-                WakeUpNoteMember(approachCircle);
+                WakeUpNoteMember(ref approachCircle);
                 AssignPosition(effect);
-            }
-
-            //If in Techmeister and there's a sliding type, check if Arrow is not active
-            if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
-                mapReader.noteObjs[keySequencePosition].instType == NoteObj.NoteObjType.Burst &&
-                !arrowDirection.activeInHierarchy)
-            {
-                WakeUpNoteMember(arrowDirection);
-
-                arrowDirection.GetComponent<ArrowDirectionSet>().SetDirection(mapReader.noteObjs[keySequencePosition].miscellaneousValue1);
-
-                effect.attachedArrow = arrowDirection;
-
-                arrowDirection.GetComponent<ArrowDirectionSet>().AttachedCircle = approachCircle;
-
-                AssignPosition(arrowEffect);
             }
 
             UpdateToNextNote();
         }
     }
 
-    private void WakeUpNoteMember(GameObject _obj)
+    #region Uncommented but intend to use
+    //void SpawnBurstObj()
+    //{
+    //    //We don't want arrows to show or do an effect, until we know that's the type we're dealing with
+
+
+    //    if (tapObjReader.objects[tapObjSeqPos].instType == NoteObj.NoteObjType.Burst)
+    //        arrowEffect = arrowDirection.GetComponent<CloseInEffect>();
+    //    //If in Techmeister and there's a sliding type, check if Arrow is not active
+
+
+    //    if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
+    //        mapReader.noteObjs[tapObjSeqPos].instType == NoteObj.NoteObjType.Burst &&
+    //        !arrowDirection.activeInHierarchy)
+    //    {
+    //        WakeUpNoteMember(arrowDirection);
+
+    //        arrowDirection.GetComponent<ArrowDirectionSet>().SetDirection(mapReader.noteObjs[tapObjSeqPos].miscellaneousValue1);
+
+    //        effect.attachedArrow = arrowDirection;
+
+    //        arrowDirection.GetComponent<ArrowDirectionSet>().AttachedCircle = approachCircle;
+
+    //        AssignPosition(arrowEffect);
+    //    }
+    //}
+    #endregion
+
+    #region Currently not implemented
+    //void SpawnHoldObj() { } 
+    #endregion
+
+    private void WakeUpNoteMember(ref GameObject _obj)
     {
         _obj.SetActive(true);
-        _obj.transform.position = Key_Layout.keyObjects[mapReader.noteObjs[keySequencePosition].instID].transform.position;
-        _obj.transform.localScale = Key_Layout.keyObjects[mapReader.noteObjs[keySequencePosition].instID].transform.localScale;
+        _obj.transform.position = Key_Layout.keyObjects[mapReader.noteObjs[tapObjSeqPos].instID].transform.position;
+        _obj.transform.localScale = Key_Layout.keyObjects[mapReader.noteObjs[tapObjSeqPos].instID].transform.localScale;
     }
 
     private void UpdateToNextNote()
     {
-        keySequencePosition++;
+        tapObjSeqPos++;
     }
 
     //There's two objects;
     //Approach Circle, and Key
-    bool ApproachCircleSpawnTime()
+    bool ManageObjTypeSequence(out bool _objFlag)
     {
-        if (keySequencePosition < mapReader.noteObjs.Count)
+        TapObjectReader tapObjReader = mapReader.tapObjectReader;
+
+        if (tapObjSeqPos < tapObjReader.objects.Count)
         {
-            noteSample = mapReader.noteObjs[keySequencePosition].instSample - (int)alignment;
+            noteSample = tapObjReader.objects[tapObjSeqPos].instSample - (int)alignment;
             float offsetStart = noteSample - noteOffset;
 
             //This is strictly for checking when notes should appear
             if (RoftPlayer.musicSource.timeSamples > offsetStart)
-                return true;
+            {
+                _objFlag = true;
+                return _objFlag;
+            }
         }
-        return false;
+        _objFlag = false;
+        return _objFlag;
     }
 
     void UpdateNoteOffset()
@@ -195,7 +213,7 @@ public class NoteEffector : MonoBehaviour
         _effect.accuracyVal = accuracyVal;
 
         //This is referring to list index in the MapReader
-        _effect.keyNum = keySequencePosition;
+        _effect.keyNum = tapObjSeqPos;
 
         //This is the index regarding each "key" on screen
         _effect.keyNumPosition = mapReader.noteObjs[_effect.keyNum].instID;

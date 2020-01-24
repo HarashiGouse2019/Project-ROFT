@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,6 +33,7 @@ public class MapReader : MonoBehaviour
     public ClickObjectReader clickObjectReader;
 
     private RoftIO mainIO;
+    private readonly object noteReadLock = new object();
 
     private void Awake()
     {
@@ -47,13 +49,11 @@ public class MapReader : MonoBehaviour
             Destroy(gameObject);
         }
         #endregion
-        
+
     }
 
     private void Start()
     {
-
-
 
         ReadRFTMKeys(m_name);
 
@@ -84,94 +84,97 @@ public class MapReader : MonoBehaviour
 
     void ReadRFTMKeys(string _name)
     {
-        string line;
-
-        string rftmFileName = _name + ".rftm";
-        string rftmFilePath = Application.streamingAssetsPath + @"/" + rftmFileName;
-
-        int maxKey = 0;
-
-        #region Read .rftm data
-        if (File.Exists(rftmFilePath))
+        lock (noteReadLock)
         {
-            //Read each line, split with a array string
-            //Name it separator
-            //Then use string.Split(separator, ...)
-            const char separator = ',';
-            int filePosition = 0;
-            int targetPosition = mainIO.InRFTMJumpTo("Objects", m_name);
-            using (StreamReader rftmReader = new StreamReader(rftmFilePath))
+            string line;
+
+            string rftmFileName = _name + ".rftm";
+            string rftmFilePath = Application.streamingAssetsPath + @"/" + rftmFileName;
+
+            int maxKey = 0;
+
+            #region Read .rftm data
+            if (File.Exists(rftmFilePath))
             {
-                while (true)
+                //Read each line, split with a array string
+                //Name it separator
+                //Then use string.Split(separator, ...)
+                const char separator = ',';
+                int filePosition = 0;
+                int targetPosition = mainIO.InRFTMJumpTo("Objects", m_name);
+                using (StreamReader rftmReader = new StreamReader(rftmFilePath))
                 {
-                    line = rftmReader.ReadLine();
-                    if (line == null)
-                        return;
-
-                    if (filePosition > targetPosition)
+                    while (true)
                     {
-                        #region Parse and Convert Information
-                        //We'll count the frequency of commas to determine
-                        //that they are more values in the object
-                        int countCommas = 0;
-                        foreach (char c in line)
-                            if (c == ',')
-                                countCommas++;
+                        line = rftmReader.ReadLine();
+                        if (line == null)
+                            return;
 
-                        //We create a new key, and assign our data value to our key
-                        NoteObj newNoteObj = new NoteObj();
-
-                        newNoteObj.instID = Convert.ToInt32(line.Split(separator)[0]);
-                        newNoteObj.instSample = Convert.ToInt32(line.Split(separator)[1]);
-                        newNoteObj.instType = (NoteObj.NoteObjType)Convert.ToInt32(line.Split(separator)[2]);
-
-                        //Check for any miscellaneous values
-                        if (countCommas > 2)
-                            newNoteObj.miscellaneousValue1 = Convert.ToInt32(line.Split(separator)[3]);
-
-                        else if (countCommas > 3)
-                            newNoteObj.miscellaneousValue2 = Convert.ToInt32(line.Split(separator)[4]); 
-                        #endregion
-
-                        /*This looks at the noteID
-                         which is simply the number that is linked
-                         to the keyID in the game.
-                         */
-                        if (newNoteObj.instID > maxKey)
+                        if (filePosition > targetPosition)
                         {
-                            maxKey = newNoteObj.instID;
-                            totalKeys = maxKey + 1;
+                            #region Parse and Convert Information
+                            //We'll count the frequency of commas to determine
+                            //that they are more values in the object
+                            int countCommas = 0;
+                            foreach (char c in line)
+                                if (c == ',')
+                                    countCommas++;
+
+                            //We create a new key, and assign our data value to our key
+                            NoteObj newNoteObj = new NoteObj();
+
+                            newNoteObj.instID = Convert.ToInt32(line.Split(separator)[0]);
+                            newNoteObj.instSample = Convert.ToInt32(line.Split(separator)[1]);
+                            newNoteObj.instType = (NoteObj.NoteObjType)Convert.ToInt32(line.Split(separator)[2]);
+
+                            //Check for any miscellaneous values
+                            if (countCommas > 2)
+                                newNoteObj.miscellaneousValue1 = Convert.ToInt32(line.Split(separator)[3]);
+
+                            else if (countCommas > 3)
+                                newNoteObj.miscellaneousValue2 = Convert.ToInt32(line.Split(separator)[4]);
+                            #endregion
+
+                            /*This looks at the noteID
+                             which is simply the number that is linked
+                             to the keyID in the game.
+                             */
+                            if (newNoteObj.instID > maxKey)
+                            {
+                                maxKey = newNoteObj.instID;
+                                totalKeys = maxKey + 1;
+                            }
+
+                            //Lastly, add our new key to the list
+                            noteObjs.Add(newNoteObj);
+
+                            //We'll be integrating our new Object Readers around this area.
+                            //We'll distribute the basic values to each one.
+                            #region Distribution to Readers
+                            switch (newNoteObj.instType)
+                            {
+                                case NoteObj.NoteObjType.Tap:
+                                    DistributeTypeTo(tapObjectReader, newNoteObj);
+                                    break;
+
+                                case NoteObj.NoteObjType.Hold:
+                                    DistributeTypeTo(holdObjectReader, newNoteObj);
+                                    break;
+
+                                case NoteObj.NoteObjType.Burst:
+                                    DistributeTypeTo(slideObjectReader, newNoteObj);
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                            #endregion
+
+                            //Update total Notes
+                            totalNotes = noteObjs.Count;
                         }
-
-                        //Lastly, add our new key to the list
-                        noteObjs.Add(newNoteObj);
-
-                        //We'll be integrating our new Object Readers around this area.
-                        //We'll distribute the basic values to each one.
-                        #region Distribution to Readers
-                        switch (newNoteObj.instType)
-                        {
-                            case NoteObj.NoteObjType.Tap:
-                                DistributeTypeTo(tapObjectReader, newNoteObj);
-                                break;
-
-                            case NoteObj.NoteObjType.Hold:
-                                DistributeTypeTo(holdObjectReader, newNoteObj);
-                                break;
-
-                            case NoteObj.NoteObjType.Burst:
-                                DistributeTypeTo(slideObjectReader, newNoteObj);
-                                break;
-
-                            default:
-                                break;
-                        }
-                        #endregion
-
-                        //Update total Notes
-                        totalNotes = noteObjs.Count;
+                        filePosition++;
                     }
-                    filePosition++;
                 }
             }
         }
@@ -209,6 +212,7 @@ public class MapReader : MonoBehaviour
 
     void KeyLayoutAwake()
     {
+
         int difficultyTag = mainIO.InRFTMJumpTo("Difficulty", m_name);
         int keyCount = mainIO.ReadPropertyFrom<int>(difficultyTag, "KeyCount", m_name);
         totalKeys = keyCount;
@@ -233,16 +237,17 @@ public class MapReader : MonoBehaviour
             case 16:
                 keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_4x4;
                 break;
-        } 
+        }
         #endregion
 
         if
            (GameManager.Instance.gameMode == GameManager.GameMode.TECHMEISTER ||
             GameManager.Instance.gameMode == GameManager.GameMode.STANDARD)
             Key_Layout.Instance.SetUpLayout();
+
     }
 
-    
+
     void DistributeTypeTo(ObjectTypes _objectReader, NoteObj _key)
     {
         if (_objectReader != null)

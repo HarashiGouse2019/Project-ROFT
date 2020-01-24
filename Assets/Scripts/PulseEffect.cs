@@ -13,8 +13,6 @@ public class PulseEffect : MonoBehaviour
     bool waiting = false;
     float time;
 
-    GameManager gameManager;
-
     // Start is called before the first frame update
     void Start()
     {

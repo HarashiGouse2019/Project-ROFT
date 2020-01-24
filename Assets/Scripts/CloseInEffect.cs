@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Threading;
 using UnityEngine;
 
 public class CloseInEffect : NoteEffector
@@ -28,7 +29,7 @@ public class CloseInEffect : NoteEffector
 
     //keyInputDownReceived will be given a true for one frame
     //keyInputReceived will be given so long as it's being pressed down for
-    bool keyInputDownReceived, keyInputReceived;
+    private bool keyInputDownReceived, keyInputReceived;
 
     //So they don't have to look screwed up
     protected Color originalAppearance;
@@ -45,16 +46,16 @@ public class CloseInEffect : NoteEffector
     {
         initiatedNoteSample = noteSample;
         initiatedNoteOffset = noteOffset;
-        keyNumPosition = keySequencePosition;
+        keyNumPosition = tapObjSeqPos;
 
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
         if (!RoftPlayer.Instance.record && GameManager.Instance.IsInteractable())
-            CloseIn();
+            StartClosingIn();
 
     }
 
@@ -74,23 +75,22 @@ public class CloseInEffect : NoteEffector
             ClosestObjectClass.closestObject[keyNumPosition] = null;
         }
     }
-    
-    void CloseIn()
+
+    void StartClosingIn()
     {
-        InHitRange();
-
-        keyInputDownReceived = Input.GetKeyDown(Key_Layout.Instance.primaryBindedKeys[keyNumPosition]) ||
-                Input.GetKeyDown(Key_Layout.Instance.secondaryBindedKeys[keyNumPosition]);
-
-        keyInputReceived = Input.GetKey(Key_Layout.Instance.primaryBindedKeys[keyNumPosition]) ||
-                Input.GetKey(Key_Layout.Instance.secondaryBindedKeys[keyNumPosition]);
-
         if (mapReader.noteObjs[keyNum].instType == NoteObj.NoteObjType.Tap)
             sprite.color = originalAppearance;
 
         transform.localScale = new Vector3(1 / GetPercentage(), 1 / GetPercentage(), 1f);
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.15f);
 
+        InHitRange();
+
+        CheckTimeWindow();
+    }
+
+    void CheckTimeWindow()
+    {
         #region Auto Play
         if (CheckSoloPlay())
         {
@@ -141,22 +141,22 @@ public class CloseInEffect : NoteEffector
                 dispose = true;
             }
 
-            
+
             bool tapType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
                 mapReader.noteObjs[keyNum].instType == NoteObj.NoteObjType.Tap &&
-                keyInputDownReceived);
+                DetectArrowKeyInput(0));
 
             bool BurstType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
                 mapReader.noteObjs[keyNum].instType == NoteObj.NoteObjType.Burst &&
                 attachedArrow != null &&
-                keyInputReceived &&
+                DetectArrowKeyInput(1) &&
                 GameManager.multiInputValue == 2);
 
             if (accuracyString != "" && (tapType || BurstType))
             {
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                 {
-                    
+
                     GameManager.Instance.ResetMultiInputDelay();
                     GameManager.multiInputValue = 0;
 
@@ -186,6 +186,23 @@ public class CloseInEffect : NoteEffector
                 }
             }
         }
+    }
+
+    private bool DetectArrowKeyInput(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                return keyInputDownReceived = Input.GetKeyDown(Key_Layout.Instance.primaryBindedKeys[keyNumPosition]) ||
+                    Input.GetKeyDown(Key_Layout.Instance.secondaryBindedKeys[keyNumPosition]);
+
+            case 1:
+                return keyInputReceived = Input.GetKey(Key_Layout.Instance.primaryBindedKeys[keyNumPosition]) ||
+                        Input.GetKey(Key_Layout.Instance.secondaryBindedKeys[keyNumPosition]);
+
+            default: break;
+        }
+        return false;
     }
 
     protected override float GetPercentage()

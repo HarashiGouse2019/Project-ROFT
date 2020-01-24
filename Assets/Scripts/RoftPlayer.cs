@@ -109,7 +109,7 @@ public class RoftPlayer : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (songTrackPosition.value > 1)
+        if (songTrackPosition != null && songTrackPosition.value > 1)
         {
             PauseMusic();
             musicSource.timeSamples = (int)musicLengthInSamples;

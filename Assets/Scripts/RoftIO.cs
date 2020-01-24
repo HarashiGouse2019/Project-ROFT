@@ -61,6 +61,8 @@ public class RoftIO
     {
         string line;
         string rftmFilePath = Application.streamingAssetsPath + @"/" + m_name + ".rftm";
+
+        //This is used to iterate and find the tag specified by the _startPosition parameter.
         int position = 0;
 
         //Check if it actually found something
@@ -76,16 +78,23 @@ public class RoftIO
 
                     line = rftmReader.ReadLine();
 
+                    /*If we iterate through the file and can not find
+                     the tag needed to access its property, we
+                     return default
+                     */
                     if (line == null)
                     {
                         if (!foundProperty) Debug.Log("This tag does not exist");
-                        return (T)Convert.ChangeType(line, typeof(T));
+                        return default;
                     }
 
+                    /*If we're at the position where our tag is defined in file
+                     we then check for our property.
+                     */
                     if (position > _startPosition)
                     {
                         if (line == "")
-                            return (T)Convert.DBNull;
+                            return default;
 
                         //If not empty, you can do whatever!!!
                         if (line.Contains(_property))
@@ -100,7 +109,7 @@ public class RoftIO
                 }
             }
         }
-        return (T)Convert.DBNull;
+        return default;
     }
 
 }

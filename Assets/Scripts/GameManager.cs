@@ -117,7 +117,7 @@ public class GameManager : MonoBehaviour
     [Header("In-Game Statistics and Values")]
     private long totalScore;
     private long previousScore; //This will be used for a increasing effect
-    private int combo { set; get; }
+    private int Combo { set; get; }
     private int maxCombo;
     public float overallAccuracy = 100.00f; //The average accuracy during the song
     public float accuracyPercentile; //The data in which gets accuracy in percent;
@@ -139,8 +139,8 @@ public class GameManager : MonoBehaviour
 
     //Time value
     float inputDelayTime = 0;
-    float multiInputDuration = 0.1f;
-    KeyCode[] inGameControlKeys = {
+    readonly float multiInputDuration = 0.1f;
+    readonly KeyCode[] inGameControlKeys = {
         KeyCode.Backspace,
         KeyCode.Escape,
         KeyCode.Q,
@@ -155,14 +155,10 @@ public class GameManager : MonoBehaviour
 
     //This will be used for the GameManager to assure that
     //when we restart, all approach circles are inactive
-    List<GameObject> activeApproachObjects = new List<GameObject>();
+    readonly List<GameObject> activeApproachObjects = new List<GameObject>();
 
     //Countdown for player to prepare
     public bool isCountingDown = false;
-
-    //Push in stress
-    float stressAmp = 0f;
-    float gain = 1f;
 
     private void Awake()
     {
@@ -221,8 +217,8 @@ public class GameManager : MonoBehaviour
         //Raising effect
         if (previousScore < totalScore && !isGamePaused)
         {
-            previousScore += combo ^ initialGain;
-            initialGain += combo;
+            previousScore += Combo ^ initialGain;
+            initialGain += Combo;
         }
         else
         {
@@ -233,15 +229,15 @@ public class GameManager : MonoBehaviour
 
     void UpdateMaxCombo()
     {
-        if (combo > maxCombo)
-            maxCombo = combo;
+        if (Combo > maxCombo)
+            maxCombo = Combo;
     }
 
     void RunUI()
     {
         TM_SCORE.text = previousScore.ToString("D10");
-        TM_COMBO.text = "x" + combo.ToString();
-        TM_COMBO_UNDERLAY.text = "x" + combo.ToString();
+        TM_COMBO.text = "x" + Combo.ToString();
+        TM_COMBO_UNDERLAY.text = "x" + Combo.ToString();
         TM_DIFFICULTY.text = "DIFFICULTY: " + mapReader.difficultyRating.ToString("F2", CultureInfo.InvariantCulture);
         TM_MAXSCORE.text = "MAX SCORE:     " + mapReader.maxScore.ToString();
 
@@ -279,7 +275,7 @@ public class GameManager : MonoBehaviour
         if (isCountingDown == false)
             PAUSE_OVERLAY.SetActive(isGamePaused);
 
-        if (RoftPlayer.musicSource.isPlaying && SongProgression.isPassedFirstNote) ManageStressMeter();
+        if (RoftPlayer.musicSource.isPlaying && SongProgression.isPassedFirstNote && !SongProgression.isFinished) ManageStressMeter();
     }
 
     void ManageStressMeter()
@@ -328,13 +324,13 @@ public class GameManager : MonoBehaviour
 
     public void RestartSong()
     {
-        NoteEffector.keySequencePosition = reset;
+        NoteEffector.tapObjSeqPos = reset;
 
         for (int stat = 0; stat < accuracyStats.Length; stat++)
             accuracyStats[stat] = reset;
 
         //Reset all values
-        combo = reset;
+        Combo = reset;
         maxCombo = reset;
         totalScore = reset;
         sentScore = reset;
@@ -380,7 +376,7 @@ public class GameManager : MonoBehaviour
         UpdateMaxCombo();
         UpdateGrade();
         initialGain++;
-        totalScore += sentScore * combo;
+        totalScore += sentScore * Combo;
     }
 
     //Be sure that when our score updates we call this function
@@ -504,19 +500,19 @@ public class GameManager : MonoBehaviour
         string roftRecordPath = Application.persistentDataPath + @"/records.rft";
         if (!File.Exists(roftRecordPath))
         {
-            FileStream roftRecordFiles = File.Create(roftRecordPath);
+            File.Create(roftRecordPath);
             Debug.Log(roftRecordPath + " created.");
         }
     }
 
     public void SetCombo(int _value)
     {
-        combo = _value;
+        Combo = _value;
     }
 
     public void IncrementCombo()
     {
-        combo++;
+        Combo++;
     }
 
     public static RoftIO GiveAccessToIO()
