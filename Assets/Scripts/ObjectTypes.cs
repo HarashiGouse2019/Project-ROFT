@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 [System.Serializable]
-public class ObjectTypes : MonoBehaviour
+public abstract class ObjectTypes : MonoBehaviour
 {
     public List<NoteObj> objects = new List<NoteObj>();
+
+    [SerializeField]
+    private long sequencePos = 0;
 
     //This will be responsible for reading different types of the same file
     public virtual void ReadTapsFromFile()
@@ -29,5 +32,15 @@ public class ObjectTypes : MonoBehaviour
     public virtual void ReadTrailsFromFile()
     {
 
+    }
+
+    public virtual long GetSequencePosition()
+    {
+        return sequencePos;
+    }
+
+    public virtual void Next()
+    {
+        sequencePos++;
     }
 }

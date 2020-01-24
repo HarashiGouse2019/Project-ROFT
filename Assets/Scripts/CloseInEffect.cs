@@ -27,6 +27,8 @@ public class CloseInEffect : NoteEffector
 
     public bool dontEffectMe = false;
 
+    public int mapReaderSeqPos;
+
     //keyInputDownReceived will be given a true for one frame
     //keyInputReceived will be given so long as it's being pressed down for
     private bool keyInputDownReceived, keyInputReceived;
@@ -46,9 +48,7 @@ public class CloseInEffect : NoteEffector
     {
         initiatedNoteSample = noteSample;
         initiatedNoteOffset = noteOffset;
-        keyNumPosition = tapObjSeqPos;
-
-
+        keyNumPosition = mapReaderSeqPos;
     }
 
     // Update is called once per frame

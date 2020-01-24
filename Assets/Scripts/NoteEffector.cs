@@ -59,6 +59,7 @@ public class NoteEffector : MonoBehaviour
     private RoftIO mainIO;
 
     private bool tapObjCanSpawn;
+    private bool holdObjCanSpawn;
     #endregion
 
     #region Protected Members
@@ -86,16 +87,17 @@ public class NoteEffector : MonoBehaviour
     {
         UpdateNoteOffset();
         UpdateAccuracyHarshness();
-        if (!RoftPlayer.Instance.record) {
-            if(ManageObjTypeSequence(out tapObjCanSpawn)) SpawnTapObj();
+        if (!RoftPlayer.Instance.record)
+        {
+            if (ManageObjTypeSequence(out tapObjCanSpawn, mapReader.tapObjectReader)) SpawnNoteObj(mapReader.tapObjectReader);
+            if (ManageObjTypeSequence(out holdObjCanSpawn, mapReader.holdObjectReader)) SpawnNoteObj(mapReader.holdObjectReader);
         }
     }
 
-    void SpawnTapObj()
+    void SpawnNoteObj(ObjectTypes _objReader)
     {
-        TapObjectReader tapObjReader = mapReader.tapObjectReader;
-
-        if (tapObjSeqPos < tapObjReader.objects.Count)
+        int sequencePos = (int)_objReader.GetSequencePosition();
+        if (sequencePos < _objReader.objects.Count)
         {
             ObjectPooler keyPooler;
 
@@ -106,7 +108,7 @@ public class NoteEffector : MonoBehaviour
             //Most of this information is from the MapReader, in which that object
             //reads from the song file. 
             #endregion
-            keyPooler = Key_Layout.keyObjects[tapObjReader.objects[tapObjSeqPos].instID].GetComponent<ObjectPooler>();
+            keyPooler = Key_Layout.keyObjects[_objReader.objects[sequencePos].instID].GetComponent<ObjectPooler>();
 
             //We want to get our game objects from the same key for both the approach circle, and the arrow
             GameObject approachCircle = keyPooler.GetMember("Approach Circle");
@@ -117,11 +119,11 @@ public class NoteEffector : MonoBehaviour
             //Check if Approach Cirlce is not active
             if (!approachCircle.activeInHierarchy)
             {
-                WakeUpNoteMember(ref approachCircle);
-                AssignPosition(effect);
+                WakeUpNoteMember(ref approachCircle, _objReader);
+                AssignPosition(effect, _objReader);
             }
 
-            UpdateToNextNote();
+            UpdateToNextNote(_objReader);
         }
     }
 
@@ -153,31 +155,35 @@ public class NoteEffector : MonoBehaviour
     //}
     #endregion
 
-    #region Currently not implemented
-    //void SpawnHoldObj() { } 
+    #region TODO: Have SpawnHoldObj read from corresponding reader
+    void SpawnHoldObj()
+    {
+
+    }
     #endregion
 
-    private void WakeUpNoteMember(ref GameObject _obj)
+    private void WakeUpNoteMember(ref GameObject _obj, ObjectTypes _objReader)
     {
+        int sequencePos = (int)_objReader.GetSequencePosition();
         _obj.SetActive(true);
-        _obj.transform.position = Key_Layout.keyObjects[mapReader.noteObjs[tapObjSeqPos].instID].transform.position;
-        _obj.transform.localScale = Key_Layout.keyObjects[mapReader.noteObjs[tapObjSeqPos].instID].transform.localScale;
+        _obj.transform.position = Key_Layout.keyObjects[_objReader.objects[sequencePos].instID].transform.position;
+        _obj.transform.localScale = Key_Layout.keyObjects[_objReader.objects[sequencePos].instID].transform.localScale;
     }
 
-    private void UpdateToNextNote()
+    private void UpdateToNextNote(ObjectTypes _objReader)
     {
-        tapObjSeqPos++;
+        _objReader.Next();
     }
 
     //There's two objects;
     //Approach Circle, and Key
-    bool ManageObjTypeSequence(out bool _objFlag)
+    bool ManageObjTypeSequence(out bool _objFlag, ObjectTypes _objReader)
     {
-        TapObjectReader tapObjReader = mapReader.tapObjectReader;
+        int sequencePos = (int)_objReader.GetSequencePosition();
 
-        if (tapObjSeqPos < tapObjReader.objects.Count)
+        if (sequencePos < _objReader.objects.Count)
         {
-            noteSample = tapObjReader.objects[tapObjSeqPos].instSample - (int)alignment;
+            noteSample = _objReader.objects[sequencePos].instSample - (int)alignment;
             float offsetStart = noteSample - noteOffset;
 
             //This is strictly for checking when notes should appear
@@ -204,18 +210,21 @@ public class NoteEffector : MonoBehaviour
         }
     }
 
-    void AssignPosition(CloseInEffect _effect)
+    void AssignPosition(CloseInEffect _effect, ObjectTypes _objReader)
     {
+        int sequencePos = (int)_objReader.GetSequencePosition();
+
         _effect.initiatedNoteSample = noteSample;
         _effect.initiatedNoteOffset = noteOffset;
         _effect.offsetStart = noteSample - noteOffset;
         _effect.accuracyVal = accuracyVal;
 
         //This is referring to list index in the MapReader
-        _effect.keyNum = tapObjSeqPos;
+        _effect.keyNum = sequencePos;
+        _effect.mapReaderSeqPos = _effect.keyNum;
 
         //This is the index regarding each "key" on screen
-        _effect.keyNumPosition = mapReader.noteObjs[_effect.keyNum].instID;
+        _effect.keyNumPosition = _objReader.objects[_effect.keyNum].instID;
     }
 
     protected virtual float GetPercentage()
