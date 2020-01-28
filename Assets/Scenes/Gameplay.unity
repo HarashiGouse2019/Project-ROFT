@@ -1312,17 +1312,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   approachSpeed: 9.350000381469727
-  alignment: 2000
-  keyAppearOffset: 1
+  alignment: 6000
   accuracy: 8.75
-  accuracyVal:
-  - 4000
-  - 6000
-  - 10000
-  - 12000
-  mapReader: {fileID: 1100497926}
   notePrefab: {fileID: 7740991288490540822, guid: e2796b60eea1436459b59d2b488f1bf2,
     type: 3}
+  mapReader: {fileID: 1100497926}
 --- !u!114 &615216640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2459,7 +2453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: Yooh - Destroy
+  m_name: Phantom Sage - Holystone
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0

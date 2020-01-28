@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using TMPro;
 
-using static ROFTIOMANAGEMENT.RoftIO;
+using ROFTIOMANAGEMENT;
 
+[RequireComponent(typeof(Key_Layout))]
 public class KeyPress : MonoBehaviour
 {
     public static KeyPress Instance;
@@ -19,9 +20,6 @@ public class KeyPress : MonoBehaviour
     const int activeInput = 1;
     const int inactiveInput = 0;
 
-    float time;
-    float keyResponsiveDuration = 0.25f;
-    const int reset = 0;
 
     // Start is called before the first frame update
     void Awake()
@@ -53,7 +51,7 @@ public class KeyPress : MonoBehaviour
                              + RoftPlayer.musicSource.timeSamples.ToString() + ","
                             + 0.ToString();
 
-                        WriteToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
+                        RoftIO.WriteToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
                     }
                     #endregion
 
@@ -87,20 +85,5 @@ public class KeyPress : MonoBehaviour
     public int GetKeyPressInputValue()
     {
         return keyPressInput;
-    }
-
-    void StartKeyResponsiveDelay()
-    {
-        time += Time.deltaTime;
-        if (time >= keyResponsiveDuration)
-        {
-            keyPressInput = inactiveInput;
-            time = reset;
-        }
-    }
-
-    public void ResetResponsiveDelay()
-    {
-        time = reset;
     }
 }

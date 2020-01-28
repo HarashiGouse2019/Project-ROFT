@@ -157,15 +157,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   approachSpeed: 0
   alignment: 0
-  keyAppearOffset: 1000
   accuracy: 5
-  accuracyVal:
-  - 0
-  - 0
-  - 0
-  - 0
-  mapReader: {fileID: 0}
   notePrefab: {fileID: 0}
+  mapReader: {fileID: 0}
   initiatedNoteSample: 0
   initiatedNoteOffset: 0
   offsetStart: 0

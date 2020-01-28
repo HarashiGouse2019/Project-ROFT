@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 using ROFTIOMANAGEMENT;
@@ -10,19 +7,25 @@ public class NoteEffector : MonoBehaviour
 {
     public static NoteEffector Instance;
 
-    #region Public Members
+    #region Serializable Private/Accessor Members
     [Header("Approach Speed"), Range(1.0f, 10.0f)]
-    public double approachSpeed;
+    [SerializeField]
+    private double approachSpeed;
+    public double ApproachSpeed
+    {
+        set
+        {
+            approachSpeed = value;
+        }
+        get
+        {
+            return approachSpeed;
+        }
+    }
 
     [Header("Alignment")]
-    public float alignment; //To shift notes whenever
-
-    //When TypeByRegion is on,
-    //The keys will need to be off by the
-    //actual approach circle.
-    [Header("KeyAppearOffset"), Range(1.0f, 10.0f)]
-    public float keyAppearOffset = 1f;
-
+    [SerializeField]
+    private float alignment; //To shift notes whenever
 
     /*
      * Perfect - 0
@@ -31,21 +34,32 @@ public class NoteEffector : MonoBehaviour
      * Ok - 3
     */
     [Header("Accuracy"), Range(1f, 10f)]
-    public float accuracy = 5f; //5 is the average/standard accuracy in the game.
-
-    public float[] accuracyVal = new float[4];
-
-    public MapReader mapReader;
+    [SerializeField]
+    private float accuracy = 5f; //5 is the average/standard accuracy in the game.
+    public float Accuracy
+    {
+        set
+        {
+            accuracy = value;
+        }
+        get
+        {
+            return accuracy;
+        }
+    }
 
     //We get our images
     [Header("UI ASSET")]
     public GameObject notePrefab;
 
-    public static int tapObjSeqPos = 0, holdObjSeqPos = 0, burstObjSeqPos = 0; //With the collected data, what part of it are we in?
+
 
     #endregion
 
     #region Private Members
+    private float[] accuracyVal = new float[4];
+    public float[] AccuracyVal { get { return accuracyVal; } }
+
     private const int maxOffset = 100000;
     private const int minOffset = 10000;
     private const int standardAccuracy = 5;
@@ -57,14 +71,11 @@ public class NoteEffector : MonoBehaviour
         10000,
         12000
     }; //Default Accurary; 2-4-2 Format
-
-    private bool tapObjCanSpawn;
-    private bool holdObjCanSpawn;
-    private bool burstObjCanSpawn;
     #endregion
 
-
     #region Protected Members
+    [SerializeField]
+    protected MapReader mapReader;
     protected float percentage; //Lerping for effects
     protected int keyObjPosition = 0;
     protected float noteOffset; //When our note should start appearing
@@ -74,6 +85,7 @@ public class NoteEffector : MonoBehaviour
     protected GameObject lastKeySpawned;
     protected List<GameObject> spawnedKeysHistory = new List<GameObject>();
     protected GameObject targetKey;
+    
     #endregion
 
     private void Awake()
@@ -90,12 +102,17 @@ public class NoteEffector : MonoBehaviour
         UpdateAccuracyHarshness();
         if (!RoftPlayer.Instance.record)
         {
-            if (ManageObjTypeSequence(out tapObjCanSpawn, mapReader.tapObjectReader)) SpawnNoteObj(mapReader.tapObjectReader);
-            if (ManageObjTypeSequence(out holdObjCanSpawn, mapReader.holdObjectReader)) SpawnNoteObj(mapReader.holdObjectReader);
-            if (ManageObjTypeSequence(out burstObjCanSpawn, mapReader.burstObjectReader)) SpawnNoteObj(mapReader.burstObjectReader);
+            if (ManageObjTypeSequence(mapReader.tapObjectReader)) SpawnNoteObj(mapReader.tapObjectReader);
+            if (ManageObjTypeSequence(mapReader.holdObjectReader)) SpawnNoteObj(mapReader.holdObjectReader);
+            if (ManageObjTypeSequence(mapReader.burstObjectReader)) SpawnNoteObj(mapReader.burstObjectReader);
         }
     }
 
+    /// <summary>
+    /// Spawns a specified Note Object Type into
+    /// the playing filed
+    /// </summary>
+    /// <param name="_objReader">Object Reader of a certain type.</param>
     void SpawnNoteObj(ObjectTypes _objReader = null)
     {
         int sequencePos = (int)_objReader.GetSequencePosition();
@@ -129,6 +146,12 @@ public class NoteEffector : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This will wake up a note from the Game Key's object pooler
+    /// </summary>
+    /// <param name="_obj">This object must be a gameObject assigned from an ObjectPooler
+    /// mainly with GetTypeFromPool()</param>
+    /// <param name="_objReader">Object Reader of a certain type.</param>
     private void WakeUpNoteMember(ref GameObject _obj, ObjectTypes _objReader)
     {
         int sequencePos = (int)_objReader.GetSequencePosition();
@@ -137,38 +160,52 @@ public class NoteEffector : MonoBehaviour
         _obj.transform.localScale = Key_Layout.keyObjects[_objReader.objects[sequencePos].instID].transform.localScale;
     }
 
+    /// <summary>
+    /// Change the sequence number of a specified Object Reader
+    /// </summary>
+    /// <param name="_objReader"></param>
     private void UpdateToNextNote(ObjectTypes _objReader)
     {
         _objReader.Next();
     }
 
-    //There's two objects;
-    //Approach Circle, and Key
-    bool ManageObjTypeSequence(out bool _objFlag, ObjectTypes _objReader)
+    /// <summary>
+    /// Keep track of when a Note Object can be spawned onto
+    /// the game view
+    /// </summary>
+    /// <param name="_objFlag">A boolean checking if it's time to spawn</param>
+    /// <param name="_objReader">Object Reader of a certain type.</param>
+    /// <returns></returns>
+    bool ManageObjTypeSequence( ObjectTypes _objReader)
     {
         int sequencePos = (int)_objReader.GetSequencePosition();
 
         if (sequencePos < _objReader.objects.Count)
         {
             noteSample = _objReader.objects[sequencePos].instSample - (int)alignment;
+
             float offsetStart = noteSample - noteOffset;
 
             //This is strictly for checking when notes should appear
             if (RoftPlayer.musicSource.timeSamples > offsetStart)
-            {
-                _objFlag = true;
-                return _objFlag;
-            }
+                return true;
         }
-        _objFlag = false;
-        return _objFlag;
+        return false;
     }
 
+    /// <summary>
+    /// Change the offset of when Note Object should
+    /// spawn into the game view.
+    /// </summary>
     void UpdateNoteOffset()
     {
         noteOffset = maxOffset - (minOffset * (((float)approachSpeed / 1.10f) - 1));
     }
 
+    /// <summary>
+    /// Change the window of accuracy when hitting
+    /// Note Objects.
+    /// </summary>
     void UpdateAccuracyHarshness()
     {
         for (int accuracyScoreIndex = 0; accuracyScoreIndex < accuracyVal.Length; accuracyScoreIndex++)
@@ -177,6 +214,14 @@ public class NoteEffector : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Assign the spawned Note Object to a key in the
+    /// game view, the inital time that it appears,
+    /// and the point that the player should hit the
+    /// respective key
+    /// </summary>
+    /// <param name="_effect">The effect responsible for the Note Objects closing in.</param>
+    /// <param name="_objReader">Object Reader of a certain type.</param>
     void AssignPosition(CloseInEffect _effect, ObjectTypes _objReader)
     {
         int sequencePos = (int)_objReader.GetSequencePosition();
@@ -197,11 +242,18 @@ public class NoteEffector : MonoBehaviour
         _effect.Modifier.ChangeType((int)_objReader.objects[_effect.keyNum].instType);
     }
 
+    /// <summary>
+    /// Return the percentage of a Note Object.
+    /// </summary>
+    /// <returns></returns>
     protected virtual float GetPercentage()
     {
         return 0;
     }
 
+    /// <summary>
+    /// Get effect configs from read RFTM File
+    /// </summary>
     void RetrieveEffectConfigs()
     {
         //Set Up values for NoteEffect

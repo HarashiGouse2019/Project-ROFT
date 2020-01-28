@@ -105,7 +105,7 @@ public class CloseInEffect : NoteEffector
         #region Auto Play
         if (CheckSoloPlay())
         {
-            if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
+            if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + AccuracyVal[3]))
             {
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                     ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
@@ -140,7 +140,7 @@ public class CloseInEffect : NoteEffector
         #endregion
         else
         {
-            if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
+            if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + AccuracyVal[3]))
             {
                 if (ClosestObjectClass.closestObject[keyNumPosition] == null)
                     ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
@@ -224,10 +224,10 @@ public class CloseInEffect : NoteEffector
 
     public string InHitRange()
     {
-        for (int range = 0; range < accuracyVal.Length; range++)
+        for (int range = 0; range < AccuracyVal.Length; range++)
         {
-            bool beforePerfect = RoftPlayer.musicSource.timeSamples >= (initiatedNoteSample) - accuracyVal[range];
-            bool afterPerfect = RoftPlayer.musicSource.timeSamples <= (initiatedNoteSample) + accuracyVal[range];
+            bool beforePerfect = RoftPlayer.musicSource.timeSamples >= (initiatedNoteSample) - AccuracyVal[range];
+            bool afterPerfect = RoftPlayer.musicSource.timeSamples <= (initiatedNoteSample) + AccuracyVal[range];
 
             if (beforePerfect && afterPerfect)
             {

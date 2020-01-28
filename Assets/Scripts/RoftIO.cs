@@ -21,7 +21,7 @@ namespace ROFTIOMANAGEMENT
                 {
                     const string newLine = "\n";
 
-                    #region General
+                    #region [General]
                     string t_general = "[General]\n";
                     string p_Author = "Author: " + System.Environment.UserName + newLine;
                     string p_AudioFileName = "AudioFilename: " + newLine;
@@ -49,7 +49,7 @@ namespace ROFTIOMANAGEMENT
                     }
                     #endregion
 
-                    #region Metadata
+                    #region [Metadata]
                     string t_metadata = "[Metadata]\n";
                     string p_Title = "Title: " + newLine;
                     string p_TitleUnicode = "TitleUnicode: " + newLine;
@@ -60,7 +60,7 @@ namespace ROFTIOMANAGEMENT
                     string p_GROUPID = "GROUPID: G-" + GenerateGROUPID() + newLine;
                     #endregion
 
-                    #region Difficulty
+                    #region [Difficulty]
                     string t_difficulty = "[Difficulty]\n";
                     string p_StressBuild = "StressBuild: " + GameManager.Instance.stressBuild.ToString() + newLine;
                     string p_ObjectCount = "ObjectCount: " + newLine;
@@ -87,12 +87,12 @@ namespace ROFTIOMANAGEMENT
                     #endregion
                     string p_KeyCount = "KeyCount: " + keyInfo + newLine;
 
-                    string p_AccuracyHarshness = "AccuracyHarshness: " + NoteEffector.Instance.accuracy.ToString() + newLine;
-                    string p_ApproachSpeed = "ApproachSpeed: " + NoteEffector.Instance.approachSpeed.ToString() + newLine;
+                    string p_AccuracyHarshness = "AccuracyHarshness: " + NoteEffector.Instance.Accuracy.ToString() + newLine;
+                    string p_ApproachSpeed = "ApproachSpeed: " + NoteEffector.Instance.ApproachSpeed.ToString() + newLine;
                     #endregion
 
-                    #region Objects
-                    string objectsTag = "[Objects]";
+                    #region [Objects]
+                    string t_objects = "[Objects]";
                     #endregion
 
                     #region .rftm Information
@@ -119,7 +119,7 @@ namespace ROFTIOMANAGEMENT
                    p_AccuracyHarshness +
                    p_ApproachSpeed,
 
-                   objectsTag
+                   t_objects
                     };
                     #endregion
 
@@ -208,7 +208,6 @@ namespace ROFTIOMANAGEMENT
             rftmWriter.WriteLine(_data);
             rftmWriter.Close();
         }
-
 
         public static int InRFTMJumpTo(string _tag, string m_name, string _fileName = "", string _fileDirectory = "")
         {

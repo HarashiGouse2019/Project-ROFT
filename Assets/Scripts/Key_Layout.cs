@@ -4,7 +4,6 @@ using Random = UnityEngine.Random;
 using TMPro;
 
 //This is going to be an abstract class. This will be the base class of all other layouts in the game
-
 public class Key_Layout : MonoBehaviour
 {
     public static Key_Layout Instance;
