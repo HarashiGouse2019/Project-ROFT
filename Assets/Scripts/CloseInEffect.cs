@@ -14,6 +14,7 @@ public class CloseInEffect : NoteEffector
     public GameObject attachedArrow;
 
     public SpriteRenderer sprite;
+    public SpriteRenderer innerSprite;
 
     public int index;
 
@@ -28,19 +29,31 @@ public class CloseInEffect : NoteEffector
     public bool dontEffectMe = false;
 
     public int mapReaderSeqPos;
+    public ObjectTypes objReader;
 
     //keyInputDownReceived will be given a true for one frame
     //keyInputReceived will be given so long as it's being pressed down for
     private bool keyInputDownReceived, keyInputReceived;
 
+    //Get Circle Modifier
+    private CircleTypeModifier modifier;
+    public CircleTypeModifier Modifier
+    {
+        get
+        {
+            return modifier;
+        }
+    }
+
     //So they don't have to look screwed up
     protected Color originalAppearance;
+
     private void Awake()
     {
         mapReader = MapReader.Instance;
         sprite = GetComponent<SpriteRenderer>();
 
-        originalAppearance = sprite.color;
+        modifier = GetComponent<CircleTypeModifier>();
     }
 
     //Start
@@ -78,11 +91,9 @@ public class CloseInEffect : NoteEffector
 
     void StartClosingIn()
     {
-        if (mapReader.noteObjs[keyNum].instType == NoteObj.NoteObjType.Tap)
-            sprite.color = originalAppearance;
-
         transform.localScale = new Vector3(1 / GetPercentage(), 1 / GetPercentage(), 1f);
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.15f);
+        innerSprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.15f);
 
         InHitRange();
 
@@ -290,6 +301,7 @@ public class CloseInEffect : NoteEffector
     private void OnDisable()
     {
         sprite.color = originalAppearance;
+        if (innerSprite != null) innerSprite.color = originalAppearance;
         percentage = 0;
         index = 0;
         initiatedNoteSample = 0;

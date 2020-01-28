@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using ROFTIOMANAGEMENT;
+
 public class NoteEffector : MonoBehaviour
 {
     public static NoteEffector Instance;
@@ -56,8 +58,6 @@ public class NoteEffector : MonoBehaviour
         12000
     }; //Default Accurary; 2-4-2 Format
 
-    private RoftIO mainIO;
-
     private bool tapObjCanSpawn;
     private bool holdObjCanSpawn;
     private bool burstObjCanSpawn;
@@ -79,7 +79,6 @@ public class NoteEffector : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        mainIO = GameManager.GiveAccessToIO();
         RetrieveEffectConfigs();
         UpdateAccuracyHarshness();
     }
@@ -193,6 +192,9 @@ public class NoteEffector : MonoBehaviour
 
         //This is the index regarding each "key" on screen
         _effect.keyNumPosition = _objReader.objects[_effect.keyNum].instID;
+
+        //Change look of circle
+        _effect.Modifier.ChangeType((int)_objReader.objects[_effect.keyNum].instType);
     }
 
     protected virtual float GetPercentage()
@@ -203,8 +205,8 @@ public class NoteEffector : MonoBehaviour
     void RetrieveEffectConfigs()
     {
         //Set Up values for NoteEffect
-        int difficultyTag = mainIO.InRFTMJumpTo("Difficulty", mapReader.m_name);
-        accuracy = mainIO.ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", mapReader.m_name);
-        approachSpeed = mainIO.ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", mapReader.m_name);
+        int difficultyTag = RoftIO.InRFTMJumpTo("Difficulty", mapReader.m_name);
+        accuracy = RoftIO.ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", mapReader.m_name);
+        approachSpeed = RoftIO.ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", mapReader.m_name);
     }
 }

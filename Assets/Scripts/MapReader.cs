@@ -4,6 +4,8 @@ using System.Threading;
 using System.Collections.Generic;
 using UnityEngine;
 
+using static ROFTIOMANAGEMENT.RoftIO;
+
 public class MapReader : MonoBehaviour
 {
     public static MapReader Instance;
@@ -32,7 +34,6 @@ public class MapReader : MonoBehaviour
     public TrailObjectReader trailObjectReader;
     public ClickObjectReader clickObjectReader;
 
-    private RoftIO mainIO;
     Thread readKeyThread;
     static bool keysReaded = false;
     public static bool KeysReaded
@@ -46,7 +47,6 @@ public class MapReader : MonoBehaviour
 
     private void Awake()
     {
-        mainIO = GameManager.mainIO;
         #region Singleton
         if (Instance == null)
         {
@@ -85,10 +85,10 @@ public class MapReader : MonoBehaviour
         //Get other values such as Approach Speed, Stress Build, and Accuracy Harshness
         if (RoftPlayer.Instance != null && !RoftPlayer.Instance.record)
         {
-            int difficultyTag = GameManager.mainIO.InRFTMJumpTo("Difficulty", m_name);
-            NoteEffector.Instance.approachSpeed = mainIO.ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", m_name);
-            GameManager.Instance.stressBuild = mainIO.ReadPropertyFrom<float>(difficultyTag, "StressBuild", m_name);
-            NoteEffector.Instance.accuracy = mainIO.ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", m_name);
+            int difficultyTag = InRFTMJumpTo("Difficulty", m_name);
+            NoteEffector.Instance.approachSpeed = ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", m_name);
+            GameManager.Instance.stressBuild = ReadPropertyFrom<float>(difficultyTag, "StressBuild", m_name);
+            NoteEffector.Instance.accuracy = ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", m_name);
             maxScore = CalculateMaxScore();
         }
         else
@@ -116,7 +116,7 @@ public class MapReader : MonoBehaviour
                 //Then use string.Split(separator, ...)
                 const char separator = ',';
                 int filePosition = 0;
-                int targetPosition = mainIO.InRFTMJumpTo("Objects", m_name);
+                int targetPosition = InRFTMJumpTo("Objects", m_name);
                 using (StreamReader rftmReader = new StreamReader(rftmFilePath))
                 {
                     while (true)
@@ -229,8 +229,8 @@ public class MapReader : MonoBehaviour
     void KeyLayoutAwake()
     {
 
-        int difficultyTag = mainIO.InRFTMJumpTo("Difficulty", m_name);
-        int keyCount = mainIO.ReadPropertyFrom<int>(difficultyTag, "KeyCount", m_name);
+        int difficultyTag = InRFTMJumpTo("Difficulty", m_name);
+        int keyCount = ReadPropertyFrom<int>(difficultyTag, "KeyCount", m_name);
         totalKeys = keyCount;
         if (!keyLayoutClass.gameObject.activeInHierarchy)
         {

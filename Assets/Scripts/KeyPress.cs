@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using TMPro;
 
+using static ROFTIOMANAGEMENT.RoftIO;
+
 public class KeyPress : MonoBehaviour
 {
     public static KeyPress Instance;
@@ -51,7 +53,7 @@ public class KeyPress : MonoBehaviour
                              + RoftPlayer.musicSource.timeSamples.ToString() + ","
                             + 0.ToString();
 
-                        RoftPlayer.Instance.WriteToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
+                        WriteToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
                     }
                     #endregion
 

@@ -126,8 +126,10 @@ MonoBehaviour:
   keyNum: 0
   attachedArrow: {fileID: 0}
   sprite: {fileID: 0}
+  innerSprite: {fileID: 0}
   index: 0
   accuracyString: 
   dispose: 0
   dontEffectMe: 1
   mapReaderSeqPos: 0
+  objReader: {fileID: 0}

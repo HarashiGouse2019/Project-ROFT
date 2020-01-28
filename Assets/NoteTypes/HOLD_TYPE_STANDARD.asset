@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4b1dbe715c648c34fb8d03f6ad9e6b49, type: 3}
-  m_Name: TAP_TYPE_STANDARD
+  m_Name: HOLD_TYPE_STANDARD
   m_EditorClassIdentifier: 
   typeOuterTexture: {fileID: 21300000, guid: b913a1e39cc07f74da9d901d5b636685, type: 3}
-  typeInnerTexture: {fileID: 0}
-  typeColor: {r: 0, g: 1, b: 0.79538155, a: 0}
+  typeInnerTexture: {fileID: 21300000, guid: a661d3ec30d47724a89808f364b55656, type: 3}
+  typeColor: {r: 0.79227173, g: 1, b: 0.6509804, a: 0}

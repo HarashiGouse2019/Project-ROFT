@@ -4,15 +4,12 @@ using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-
-    public static RoftIO mainIO = new RoftIO();
 
     public static bool inSong = true;
 
@@ -523,10 +520,5 @@ public class GameManager : MonoBehaviour
     public void IncrementCombo()
     {
         Combo++;
-    }
-
-    public static RoftIO GiveAccessToIO()
-    {
-        return mainIO;
     }
 }
