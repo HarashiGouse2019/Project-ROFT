@@ -30,7 +30,6 @@ public class RoftScouter
             Instance = this;
 
         string curApp_Dir = Application.persistentDataPath;
-        GameManager.Instance.DEBUG_FILEDIR.text = curApp_Dir;
     }
 
     private List<Song_Entity> Commence_Scouting()

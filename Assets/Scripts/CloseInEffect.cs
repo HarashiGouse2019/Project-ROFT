@@ -95,106 +95,100 @@ public class CloseInEffect : NoteEffector
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.15f);
         innerSprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.15f);
 
+        if (CheckAutoPlay())
+            RunAutoPlay();
+
         InHitRange();
 
         CheckTimeWindow();
     }
 
-    void CheckTimeWindow()
+    void RunAutoPlay()
     {
         #region Auto Play
-        if (CheckSoloPlay())
+        if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + AccuracyVal[3]))
         {
-            if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + AccuracyVal[3]))
+            if (ClosestObjectClass.closestObject[keyNumPosition] == null)
+                ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
+
+            BreakComboChain();
+
+            GameManager.consecutiveMisses++;
+
+            dispose = true;
+        }
+
+        if (accuracyString == "Perfect")
+        {
+            if (ClosestObjectClass.closestObject[keyNumPosition] == null)
             {
-                if (ClosestObjectClass.closestObject[keyNumPosition] == null)
-                    ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
+                ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
 
-                BreakComboChain();
+                Pulse();
+                AudioManager.Instance.Play("Normal", 100, true);
 
-                GameManager.consecutiveMisses++;
+
+                GameManager.Instance.IncrementCombo();
+                SendAccuracyScore();
+                BuildStress(index);
+
+                GameManager.consecutiveMisses = 0;
 
                 dispose = true;
-            }
-
-            if (accuracyString == "Perfect")
-            {
-                if (ClosestObjectClass.closestObject[keyNumPosition] == null)
-                {
-                    ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
-
-                    Pulse();
-                    AudioManager.Instance.Play("Normal", 100, true);
-
-
-                    GameManager.Instance.IncrementCombo();
-                    SendAccuracyScore();
-                    BuildStress(index);
-
-                    GameManager.consecutiveMisses = 0;
-
-                    dispose = true;
-                }
             }
         }
         #endregion
-        else
+    }
+
+    void CheckTimeWindow()
+    {
+        CheckIfOutOfWindow();
+
+        bool tapType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
+            mapReader.noteObjs[keyNum].instType == NoteObj.NoteObjType.Tap &&
+            DetectArrowKeyInput(0));
+
+        bool BurstType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
+            mapReader.noteObjs[keyNum].instType == NoteObj.NoteObjType.Burst &&
+            attachedArrow != null &&
+            DetectArrowKeyInput(1) &&
+            GameManager.multiInputValue == 2);
+
+        if (accuracyString != "" && (tapType || BurstType))
         {
-            if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + AccuracyVal[3]))
+            if (ClosestObjectClass.closestObject[keyNumPosition] == null)
             {
-                if (ClosestObjectClass.closestObject[keyNumPosition] == null)
-                    ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
 
-                BreakComboChain();
+                if (gameObject.CompareTag("approachCircle")) ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
 
-                GameManager.consecutiveMisses++;
+                if (GetPercentage() > 0.99f) targetKey = gameObject;
+
+                //Check type and add sound
+                if (tapType)
+                    AudioManager.Instance.Play("Normal", 100, true);
+
+                if (BurstType)
+                {
+                    if (attachedArrow.GetComponent<ArrowDirectionSet>().Detect())
+                        AudioManager.Instance.Play("Ding", 100, true);
+                    else return;
+                }
+
+                GameManager.Instance.IncrementCombo();
+
+                GameManager.consecutiveMisses = 0;
+
+                GameManager.Instance.ResetMultiInputDelay();
+
+                GameManager.multiInputValue = 0;
+
+                SendAccuracyScore();
+
+                BuildStress(index);
+
+                Pulse();
 
                 dispose = true;
-            }
-
-
-            bool tapType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
-                mapReader.noteObjs[keyNum].instType == NoteObj.NoteObjType.Tap &&
-                DetectArrowKeyInput(0));
-
-            bool BurstType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
-                mapReader.noteObjs[keyNum].instType == NoteObj.NoteObjType.Burst &&
-                attachedArrow != null &&
-                DetectArrowKeyInput(1) &&
-                GameManager.multiInputValue == 2);
-
-            if (accuracyString != "" && (tapType || BurstType))
-            {
-                if (ClosestObjectClass.closestObject[keyNumPosition] == null)
-                {
-
-                    GameManager.Instance.ResetMultiInputDelay();
-                    GameManager.multiInputValue = 0;
-
-                    if (gameObject.CompareTag("approachCircle")) ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
-
-                    if (GetPercentage() > 0.99f) targetKey = gameObject;
-
-                    Pulse();
-
-                    //Check type and add sound
-                    if (tapType)
-                        AudioManager.Instance.Play("Normal", 100, true);
-                    if (BurstType)
-                    {
-                        if (attachedArrow.GetComponent<ArrowDirectionSet>().Detect())
-                            AudioManager.Instance.Play("Ding", 100, true);
-                        else return;
-                    }
-
-                    GameManager.Instance.IncrementCombo();
-                    SendAccuracyScore();
-                    BuildStress(index);
-
-                    GameManager.consecutiveMisses = 0;
-
-                    dispose = true;
-                }
             }
         }
     }
@@ -290,6 +284,21 @@ public class CloseInEffect : NoteEffector
         BuildStress(4);
     }
 
+    void CheckIfOutOfWindow()
+    {
+        if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + AccuracyVal[3]))
+        {
+            if (ClosestObjectClass.closestObject[keyNumPosition] == null)
+                ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
+
+            BreakComboChain();
+
+            GameManager.consecutiveMisses++;
+
+            dispose = true;
+        }
+    }
+
     public void BuildStress(int _index)
     {
         GameManager.sentStress = GameManager.stressAmount[_index] + (GameManager.Instance.stressBuild / 100);
@@ -312,7 +321,7 @@ public class CloseInEffect : NoteEffector
         dispose = false;
     }
 
-    bool CheckSoloPlay()
+    bool CheckAutoPlay()
     {
         return GameManager.Instance.isAutoPlaying;
     }
@@ -326,9 +335,9 @@ public class CloseInEffect : NoteEffector
             key = Key_Layout.keyObjects[keyNumPosition];
             key.GetComponent<PulseEffect>().DoPulseReaction(0.15f);
             key.GetComponentInChildren<PulseEffect>().DoPulseReaction(0.15f);
-            GameManager.Instance.TM_COMBO.GetComponent<PulseEffect>().DoPulseReaction(0.05f);
-            GameManager.Instance.TM_COMBO_UNDERLAY.GetComponent<PulseEffect>().DoPulseReaction();
-            GameManager.Instance.IMG_SCREEN_OVERLAY.GetComponent<OverlayPulseEffect>().DoPulseReaction();
+            GameManager.Instance.GetTMCombo().GetComponent<PulseEffect>().DoPulseReaction(0.05f);
+            GameManager.Instance.GetTMComboUnderlay().GetComponent<PulseEffect>().DoPulseReaction();
+            GameManager.Instance.GetScreenOverlay().GetComponent<OverlayPulseEffect>().DoPulseReaction();
         }
     }
 }

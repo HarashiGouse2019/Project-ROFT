@@ -20,7 +20,7 @@ public class AccuracySign : MonoBehaviour
 
     private void Update()
     {
-        if (!GameManager.Instance.isGamePaused)
+        if (!GameManager.Instance.IsGamePaused)
         {
             FadeOut();
             if (active) ShowFor(showDuration, 0.5f);

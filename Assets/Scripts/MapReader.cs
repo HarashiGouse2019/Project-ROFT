@@ -257,8 +257,8 @@ public class MapReader : MonoBehaviour
         #endregion
 
         if
-           (GameManager.Instance.gameMode == GameManager.GameMode.TECHMEISTER ||
-            GameManager.Instance.gameMode == GameManager.GameMode.STANDARD)
+           (GameManager.Instance.GetGameMode == GameManager.GameMode.TECHMEISTER ||
+            GameManager.Instance.GetGameMode == GameManager.GameMode.STANDARD)
             Key_Layout.Instance.SetUpLayout();
 
     }

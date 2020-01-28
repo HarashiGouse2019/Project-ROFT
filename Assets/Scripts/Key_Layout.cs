@@ -133,8 +133,8 @@ public class Key_Layout : MonoBehaviour
     private void Start()
     {
         if (
-            GameManager.Instance.gameMode == GameManager.GameMode.TBR_ALL ||
-            GameManager.Instance.gameMode == GameManager.GameMode.TBR_HOMEROW)
+            GameManager.Instance.GetGameMode == GameManager.GameMode.TBR_ALL ||
+            GameManager.Instance.GetGameMode == GameManager.GameMode.TBR_HOMEROW)
             ChangeLayoutMethod(1);
         else
             ChangeLayoutMethod(0);

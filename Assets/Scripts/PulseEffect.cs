@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PulseEffect : MonoBehaviour
 {
@@ -24,7 +21,7 @@ public class PulseEffect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!GameManager.Instance.isGamePaused)
+        if (!GameManager.Instance.IsGamePaused)
             if (waiting) Wait(waitDuration, shrinkRate);
     }
 

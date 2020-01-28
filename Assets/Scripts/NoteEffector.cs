@@ -25,7 +25,7 @@ public class NoteEffector : MonoBehaviour
 
     [Header("Alignment")]
     [SerializeField]
-    private float alignment; //To shift notes whenever
+    private float alignment = 0; //To shift notes whenever
 
     /*
      * Perfect - 0

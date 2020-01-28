@@ -26,7 +26,7 @@ namespace ROFTIOMANAGEMENT
                     string p_Author = "Author: " + System.Environment.UserName + newLine;
                     string p_AudioFileName = "AudioFilename: " + newLine;
                     string p_Gamemode = "";
-                    switch (GameManager.Instance.gameMode)
+                    switch (GameManager.Instance.GetGameMode)
                     {
                         case GameManager.GameMode.STANDARD:
                             p_Gamemode = "GameMode: " + "Standard" + newLine;

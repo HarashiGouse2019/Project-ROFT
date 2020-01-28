@@ -41,13 +41,13 @@ public class SongProgression : MonoBehaviour
 
         if (!isPassedFirstNote)
         {
-            GameManager.Instance.IMG_PROGRESSION_FILL.fillAmount = firstNotePercentile;
+            GameManager.Instance.GetSongProgressionFill().fillAmount = firstNotePercentile;
 
             if (firstNotePercentile > 0.99f)
                 isPassedFirstNote = true;
         }
         else
-            GameManager.Instance.IMG_PROGRESSION_FILL.fillAmount = lastNotePercentile;
+            GameManager.Instance.GetSongProgressionFill().fillAmount = lastNotePercentile;
 
         //Now, if the fillAmount is full (or once we hit the last note), have RoftPlayer fade out
         if (RoftPlayer.musicSource.timeSamples > lastNoteInSamples)

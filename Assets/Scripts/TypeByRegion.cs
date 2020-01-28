@@ -157,14 +157,14 @@ public class TypeByRegion : MonoBehaviour
             {
                 //If all keys are being used, we need values 0 through 8
                 #region If TBR_ALL
-                if (GameManager.Instance.gameMode == GameManager.GameMode.TBR_ALL && (_position.x == xSide && _position.y == ySide))
+                if (GameManager.Instance.GetGameMode == GameManager.GameMode.TBR_ALL && (_position.x == xSide && _position.y == ySide))
                     return (xSide + (ySide * cellDivisor));
                 #endregion
 
                 //However if we are only using homerows, we take our normal equation and add or 
                 //subtract cellDivisor (3) to get all home row keys (3 - 5)
                 #region If TBR_HomeRow
-                else if (GameManager.Instance.gameMode == GameManager.GameMode.TBR_HOMEROW &&
+                else if (GameManager.Instance.GetGameMode == GameManager.GameMode.TBR_HOMEROW &&
             (_position.x == xSide && _position.y == ySide))
                 {
                     int cellEquation = xSide + (ySide * cellDivisor);

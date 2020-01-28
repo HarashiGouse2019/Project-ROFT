@@ -77,39 +77,51 @@ public class GameManager : MonoBehaviour
         TBR_ALL
     };
     [Header("Game Pause Overlay")]
-    public bool isGamePaused = false;
-    public GameObject PAUSE_OVERLAY;
+    [SerializeField] private bool isGamePaused = false;
+    public bool IsGamePaused
+    {
+        get
+        {
+            return isGamePaused;
+        }
+    }
 
-    [Header("Edit Mode")]
-    public bool editMode;
+    [SerializeField] private GameObject PAUSE_OVERLAY = null;
 
     [Header("Game Modes")]
-    public GameMode gameMode;
+    [SerializeField] private GameMode gameMode = default;
+    public GameMode GetGameMode
+    {
+        get
+        {
+            return gameMode;
+        }
+    }
 
     [Header("UI TEXT MESH PRO")]
-    public TextMeshProUGUI TM_SONGNAME;
-    public TextMeshProUGUI TM_TOTALNOTES;
-    public TextMeshProUGUI TM_TOTALKEYS;
-    public TextMeshProUGUI TM_SCORE;
-    public TextMeshProUGUI TM_MAXSCORE;
-    public TextMeshProUGUI TM_COMBO;
-    public TextMeshProUGUI TM_COMBO_UNDERLAY;
-    public TextMeshProUGUI TM_MAXCOMBO;
-    public TextMeshProUGUI TM_DIFFICULTY;
-    public TextMeshProUGUI TM_PERFECT;
-    public TextMeshProUGUI TM_GREAT;
-    public TextMeshProUGUI TM_GOOD;
-    public TextMeshProUGUI TM_OK;
-    public TextMeshProUGUI TM_MISS;
-    public TextMeshProUGUI TM_ACCURACYPERCENTILE;
-    public TextMeshProUGUI TM_ACCURACYGRADE;
-    public TextMeshProUGUI DEBUG_FILEDIR;
+    [SerializeField] private TextMeshProUGUI TM_SONGNAME = null;
+    [SerializeField] private TextMeshProUGUI TM_TOTALNOTES = null;
+    [SerializeField] private TextMeshProUGUI TM_TOTALKEYS = null;
+    [SerializeField] private TextMeshProUGUI TM_SCORE = null;
+    [SerializeField] private TextMeshProUGUI TM_MAXSCORE = null;
+    [SerializeField] private TextMeshProUGUI TM_COMBO = null;
+    [SerializeField] private TextMeshProUGUI TM_COMBO_UNDERLAY = null;
+    [SerializeField] private TextMeshProUGUI TM_MAXCOMBO = null;
+    [SerializeField] private TextMeshProUGUI TM_DIFFICULTY = null;
+    [SerializeField] private TextMeshProUGUI TM_PERFECT = null;
+    [SerializeField] private TextMeshProUGUI TM_GREAT = null;
+    [SerializeField] private TextMeshProUGUI TM_GOOD = null;
+    [SerializeField] private TextMeshProUGUI TM_OK = null;
+    [SerializeField] private TextMeshProUGUI TM_MISS = null;
+    [SerializeField] private TextMeshProUGUI TM_ACCURACYPERCENTILE = null;
+    [SerializeField] private TextMeshProUGUI TM_ACCURACYGRADE = null;
+    [SerializeField] private TextMeshProUGUI DEBUG_FILEDIR = null;
 
     [Header("UI IMAGES")]
-    public Image IMG_STRESS;
-    public Image IMG_STRESSBACKGROUND;
-    public Image IMG_SCREEN_OVERLAY;
-    public Image IMG_PROGRESSION_FILL;
+    [SerializeField] private Image IMG_STRESS = null;
+    [SerializeField] private Image IMG_STRESSBACKGROUND = null;
+    [SerializeField] private Image IMG_SCREEN_OVERLAY = null;
+    [SerializeField] private Image IMG_PROGRESSION_FILL = null;
 
     [Header("In-Game Statistics and Values")]
     private long totalScore;
@@ -183,7 +195,7 @@ public class GameManager : MonoBehaviour
         core += RunUI;
         core += RunInGameControls;
         core += CheckSignsOfInput;
-        core += CheckStressMaxed; 
+        core += CheckStressMaxed;
         #endregion
     }
 
@@ -521,4 +533,26 @@ public class GameManager : MonoBehaviour
     {
         Combo++;
     }
+
+    #region Get Methods
+    public Image GetSongProgressionFill()
+    {
+        return IMG_PROGRESSION_FILL;
+    } 
+
+    public TextMeshProUGUI GetTMCombo()
+    {
+        return TM_COMBO;
+    }
+
+    public TextMeshProUGUI GetTMComboUnderlay()
+    {
+        return TM_COMBO_UNDERLAY;
+    }
+
+    public Image GetScreenOverlay()
+    {
+        return IMG_SCREEN_OVERLAY;
+    }
+    #endregion
 }
