@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[Serializable]
 public class Song_Entity : MonoBehaviour
 {
     #region Outline/Plan
@@ -83,34 +84,32 @@ public class Song_Entity : MonoBehaviour
     private bool ent_MarkAsFavorite;
     private float[] ent_GradeRequirements; //Some songs can be different to default gradeRequirements
     private FC_STATUS ent_FCStatus;
+    private RoftRecords ent_Record;
+    private AudioClip ent_clip;
 
-    public static Tuple<string, string, Image, uint, float, long, long, Tuple<char, bool, FC_STATUS>> ent_Song_Parameters { get; set; }
-
-    //I wanna test somethign real quick
-    List<long> numbers = new List<long>();
+    public object[] songEntityObj;
 
     // Start is called before the first frame update
-    void Start()
+    public Song_Entity()
     {
-        for (int i = 0; i < 10; i++)
-            AddNumber(UnityEngine.Random.Range(1, 100000000));
-
-        Orderize();
-    }
-
-    void AddNumber(int value)
-    {
-        numbers.Add(value);
-    }
-
-    void RemoveNumber(int value)
-    {
-        numbers.RemoveAt(value);
-    }
-
-    void Orderize()
-    {
-        numbers.Sort();
-        numbers.Reverse();
+        #region Creating the object data for Song Entity
+        songEntityObj = new object[]
+        {
+            ent_SongName,
+            ent_Artist,
+            ent_CoverArt,
+            ent_BPM,
+            ent_Grade,
+            ent_InitialDifficulty,
+            ent_TopScore,
+            ent_TopScore,
+            ent_TopCombo,
+            ent_MarkAsFavorite,
+            ent_GradeRequirements,
+            ent_FCStatus,
+            ent_Record,
+            ent_clip
+        };
+        #endregion
     }
 }

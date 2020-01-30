@@ -15,13 +15,43 @@ public class NoteObj
     [Header("Central Values")]
 
     //NoteInstanceID
-    public int instID;
-    public int instSample;
-    public NoteObjType instType;
+    private uint instID;
+    private long instSample;
+    private NoteObjType instType;
 
     //Miscellaneous Values
     [Header("Miscellaneous Values")]
-    public int miscellaneousValue1;
-    public int miscellaneousValue2;
+    public object miscellaneousValue1;
+    public object miscellaneousValue2;
+
+    public void SetInstanceID(uint value)
+    {
+        instID = value;
+    }
+
+    public void SetInstanceSample(long value)
+    {
+        instSample = value;
+    }
+
+    public void SetInstanceType(NoteObjType type)
+    {
+        instType = type;
+    }
+
+    public uint GetInstanceID()
+    {
+        return instID;
+    }
+
+    public long GetInstanceSample()
+    {
+        return instSample;
+    }
+
+    public NoteObjType GetInstanceType()
+    {
+        return instType;
+    }
 }
 

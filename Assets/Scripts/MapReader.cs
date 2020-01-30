@@ -138,9 +138,9 @@ public class MapReader : MonoBehaviour
                             //We create a new key, and assign our data value to our key
                             NoteObj newNoteObj = new NoteObj();
 
-                            newNoteObj.instID = Convert.ToInt32(line.Split(separator)[0]);
-                            newNoteObj.instSample = Convert.ToInt32(line.Split(separator)[1]);
-                            newNoteObj.instType = (NoteObj.NoteObjType)Convert.ToInt32(line.Split(separator)[2]);
+                            newNoteObj.SetInstanceID((uint)Convert.ToInt32(line.Split(separator)[0]));
+                            newNoteObj.SetInstanceSample(Convert.ToInt32(line.Split(separator)[1]));
+                            newNoteObj.SetInstanceType((NoteObj.NoteObjType)Convert.ToInt32(line.Split(separator)[2]));
 
                             //Check for any miscellaneous values
                             if (countCommas > 2)
@@ -154,9 +154,9 @@ public class MapReader : MonoBehaviour
                              which is simply the number that is linked
                              to the keyID in the game.
                              */
-                            if (newNoteObj.instID > maxKey)
+                            if (newNoteObj.GetInstanceID() > maxKey)
                             {
-                                maxKey = newNoteObj.instID;
+                                maxKey = (int)newNoteObj.GetInstanceID();
                                 totalKeys = maxKey + 1;
                             }
 
@@ -166,7 +166,7 @@ public class MapReader : MonoBehaviour
                             //We'll be integrating our new Object Readers around this area.
                             //We'll distribute the basic values to each one.
                             #region Distribution to Readers
-                            switch (newNoteObj.instType)
+                            switch (newNoteObj.GetInstanceType())
                             {
                                 case NoteObj.NoteObjType.Tap:
                                     DistributeTypeTo(tapObjectReader, newNoteObj);

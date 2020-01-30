@@ -21,7 +21,6 @@ public class RoftTransition : MonoBehaviour
          Whatever the destination target is, use "is<Destination>Target
          */
         Transitions transitions = (Transitions)_transitionIndex;
-        Debug.Log(transitions);
         PanelEvents.Instance.gameObject.SetActive(true);
         RoftSceneNavi.Instance.isDoneLoading = false;
         switch (transitions)

@@ -85,10 +85,7 @@ public class RoftSceneNavi : MonoBehaviour
         AsyncOperation operation = SceneManager.LoadSceneAsync(_sceneIndex);
 
         while (!operation.isDone)
-        {
-            Debug.Log("Progress: " + Mathf.Clamp01(operation.progress / 0.9f));
             yield return null;
-        }
 
         isDoneLoading = true;
         StopCoroutine(LoadAsyncronously(_sceneIndex));

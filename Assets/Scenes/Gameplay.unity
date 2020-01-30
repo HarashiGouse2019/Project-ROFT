@@ -1148,7 +1148,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isGamePaused: 0
   PAUSE_OVERLAY: {fileID: 1452287091}
-  editMode: 0
   gameMode: 0
   TM_SONGNAME: {fileID: 0}
   TM_TOTALNOTES: {fileID: 0}

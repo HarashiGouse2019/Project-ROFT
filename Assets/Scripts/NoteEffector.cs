@@ -51,9 +51,6 @@ public class NoteEffector : MonoBehaviour
     //We get our images
     [Header("UI ASSET")]
     public GameObject notePrefab;
-
-
-
     #endregion
 
     #region Private Members
@@ -64,7 +61,7 @@ public class NoteEffector : MonoBehaviour
     private const int minOffset = 10000;
     private const int standardAccuracy = 5;
 
-    readonly private float[] accuracyDefault = new float[4]
+    private readonly float[] accuracyDefault = new float[4]
     {
         4000,
         6000,
@@ -115,11 +112,12 @@ public class NoteEffector : MonoBehaviour
     /// <param name="_objReader">Object Reader of a certain type.</param>
     void SpawnNoteObj(ObjectTypes _objReader = null)
     {
+        ObjectPooler keyPooler;
+
         int sequencePos = (int)_objReader.GetSequencePosition();
+
         if (sequencePos < _objReader.objects.Count)
         {
-            ObjectPooler keyPooler;
-
             #region HELP?
             //This grabs our note objects from the "key object" based on what
             //note instance is occuring, as well as if it's 
@@ -127,7 +125,11 @@ public class NoteEffector : MonoBehaviour
             //Most of this information is from the MapReader, in which that object
             //reads from the song file. 
             #endregion
-            keyPooler = Key_Layout.keyObjects[_objReader.objects[sequencePos].instID].GetComponent<ObjectPooler>();
+            NoteObj objToBeSpawned = _objReader.objects[sequencePos];
+
+            int objId = (int)objToBeSpawned.GetInstanceID();
+
+            keyPooler = Key_Layout.keyObjects[objId].GetComponent<ObjectPooler>();
 
             //We want to get our game objects from the same key for both the approach circle, and the arrow
             GameObject approachCircle = _objReader.GetTypeFromPool(keyPooler);
@@ -155,9 +157,12 @@ public class NoteEffector : MonoBehaviour
     private void WakeUpNoteMember(ref GameObject _obj, ObjectTypes _objReader)
     {
         int sequencePos = (int)_objReader.GetSequencePosition();
+
+        NoteObj targetObj = _objReader.objects[sequencePos];
+
         _obj.SetActive(true);
-        _obj.transform.position = Key_Layout.keyObjects[_objReader.objects[sequencePos].instID].transform.position;
-        _obj.transform.localScale = Key_Layout.keyObjects[_objReader.objects[sequencePos].instID].transform.localScale;
+        _obj.transform.position = Key_Layout.keyObjects[(int)targetObj.GetInstanceID()].transform.position;
+        _obj.transform.localScale = Key_Layout.keyObjects[(int)targetObj.GetInstanceID()].transform.localScale;
     }
 
     /// <summary>
@@ -173,16 +178,17 @@ public class NoteEffector : MonoBehaviour
     /// Keep track of when a Note Object can be spawned onto
     /// the game view
     /// </summary>
-    /// <param name="_objFlag">A boolean checking if it's time to spawn</param>
     /// <param name="_objReader">Object Reader of a certain type.</param>
     /// <returns></returns>
-    bool ManageObjTypeSequence( ObjectTypes _objReader)
+    bool ManageObjTypeSequence(ObjectTypes _objReader)
     {
         int sequencePos = (int)_objReader.GetSequencePosition();
 
         if (sequencePos < _objReader.objects.Count)
         {
-            noteSample = _objReader.objects[sequencePos].instSample - (int)alignment;
+            NoteObj targetObj = _objReader.objects[sequencePos];
+
+            noteSample = (int)targetObj.GetInstanceSample() - (int)alignment;
 
             float offsetStart = noteSample - noteOffset;
 
@@ -226,6 +232,8 @@ public class NoteEffector : MonoBehaviour
     {
         int sequencePos = (int)_objReader.GetSequencePosition();
 
+        NoteObj noteObj = null;
+
         _effect.initiatedNoteSample = noteSample;
         _effect.initiatedNoteOffset = noteOffset;
         _effect.offsetStart = noteSample - noteOffset;
@@ -236,10 +244,12 @@ public class NoteEffector : MonoBehaviour
         _effect.mapReaderSeqPos = _effect.keyNum;
 
         //This is the index regarding each "key" on screen
-        _effect.keyNumPosition = _objReader.objects[_effect.keyNum].instID;
+        noteObj = _objReader.objects[_effect.keyNum];
+
+        _effect.keyNumPosition = (int)noteObj.GetInstanceID();
 
         //Change look of circle
-        _effect.Modifier.ChangeType((int)_objReader.objects[_effect.keyNum].instType);
+        _effect.Modifier.ChangeType((int)noteObj.GetInstanceType());
     }
 
     /// <summary>
@@ -256,8 +266,10 @@ public class NoteEffector : MonoBehaviour
     /// </summary>
     void RetrieveEffectConfigs()
     {
-        //Set Up values for NoteEffect
+        //Get Position of Difficulty Tag in File
         int difficultyTag = RoftIO.InRFTMJumpTo("Difficulty", mapReader.m_name);
+
+        //Use difficultyTag to read its property values
         accuracy = RoftIO.ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", mapReader.m_name);
         approachSpeed = RoftIO.ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", mapReader.m_name);
     }

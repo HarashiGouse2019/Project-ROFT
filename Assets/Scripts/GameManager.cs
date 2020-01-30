@@ -137,18 +137,17 @@ public class GameManager : MonoBehaviour
 
     private readonly int reset = 0;
 
-    int initialGain = 1;
+    private int initialGain = 1;
+
+    //Time value
+    private float inputDelayTime = 0;
+
+    private readonly float multiInputDuration = 0.1f;
 
     //Check for multiple input
     public static int multiInputValue;
 
-    //RoftScouter will be our "Go collect some songs that I may or may not have
-    //put in this directory.
-    public RoftScouter scouter;
-
-    //Time value
-    float inputDelayTime = 0;
-    readonly float multiInputDuration = 0.1f;
+    [Header("In-Game Control Keys")]
     readonly KeyCode[] inGameControlKeys = {
         KeyCode.Backspace,
         KeyCode.Escape,
@@ -158,19 +157,23 @@ public class GameManager : MonoBehaviour
         KeyCode.Comma
     };
 
+    //RoftScouter will be our "Go collect some songs that I may or may not have
+    //put in this directory.
+    private RoftScouter scouter;
+
     //Make to much easier to access other classes
-    RoftPlayer roftPlayer;
-    MapReader mapReader;
+    private RoftPlayer roftPlayer;
+    private MapReader mapReader;
 
     //This will be used for the GameManager to assure that
     //when we restart, all approach circles are inactive
-    readonly List<GameObject> activeApproachObjects = new List<GameObject>();
+    private readonly List<GameObject> activeApproachObjects = new List<GameObject>();
 
     //Countdown for player to prepare
     public bool isCountingDown = false;
 
     private delegate void Main();
-    Main core;
+    private Main core;
 
     private void Awake()
     {
