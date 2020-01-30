@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using static ROFTIOMANAGEMENT.RoftIO;
+
 public class InteractableKey : MonoBehaviour
 {
     SpriteRenderer sprite;
@@ -31,7 +33,7 @@ public class InteractableKey : MonoBehaviour
                  + RoftPlayer.musicSource.timeSamples.ToString() + ","
                 + 0.ToString();
 
-            RoftPlayer.Instance.WriteToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
+           WriteToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
         }
         #endregion
     }

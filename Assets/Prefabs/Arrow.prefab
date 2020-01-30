@@ -94,12 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3c9fc67ec749854ab5326c1ebd27635, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enum_Direction: 0
   coolDownRate: 0
-  setHorizontal: 0
-  setVertical: 0
-  time: 0
-  attachedCircle: {fileID: 0}
   m_Event: {fileID: 0}
 --- !u!114 &3695297897117473196
 MonoBehaviour:
@@ -115,15 +110,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   approachSpeed: 0
   alignment: 0
-  keyAppearOffset: 1
   accuracy: 5
-  accuracyVal:
-  - 0
-  - 0
-  - 0
-  - 0
-  mapReader: {fileID: 0}
   notePrefab: {fileID: 0}
+  mapReader: {fileID: 0}
   initiatedNoteSample: 0
   initiatedNoteOffset: 0
   offsetStart: 0
@@ -131,7 +120,10 @@ MonoBehaviour:
   keyNum: 0
   attachedArrow: {fileID: 0}
   sprite: {fileID: 0}
+  innerSprite: {fileID: 0}
   index: 0
   accuracyString: 
   dispose: 0
   dontEffectMe: 1
+  mapReaderSeqPos: 0
+  objReader: {fileID: 0}

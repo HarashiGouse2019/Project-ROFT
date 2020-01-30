@@ -15,16 +15,26 @@ public class ArrowDirectionSet : MonoBehaviour
         DOWN = 270
     }
 
-    public Direction enum_Direction;
-    public float coolDownRate = 0.5f;
-    public int setHorizontal;
-    public int setVertical;
+    private Direction enum_Direction;
 
-    bool coolDown = false;
+    [SerializeField] private float coolDownRate = 0.25f;
 
-    public float time;
+    private int setHorizontal;
 
-    public GameObject attachedCircle;
+    private int setVertical;
+
+    private bool coolDown = false;
+
+    private float time;
+
+    private GameObject attachedCircle;
+    public GameObject AttachedCircle
+    {
+        set
+        {
+            attachedCircle = value;
+        }
+    }
 
     //Mouse Event to read input
     public MouseEvent m_Event;
@@ -47,6 +57,11 @@ public class ArrowDirectionSet : MonoBehaviour
         transform.eulerAngles = new Vector3(0, 0, (float)enum_Direction);
     }
 
+    //This is used in Note Effector
+    //It takes what's in file of the direction
+    //of the arrows, and setting it based on that values,
+    //which them using the value of enum_Direction
+    //to change the rotation
     public void SetDirection(int _direction)
     {
         switch (_direction)
@@ -73,11 +88,14 @@ public class ArrowDirectionSet : MonoBehaviour
         }
     }
 
+    //With a given note appears of Type Burst,
+    //it will check if the player response matches to the
+    //direction of the arrow
     public bool Detect()
     {
         if (!coolDown &&
-    (m_Event.horIndex == setHorizontal && (enum_Direction == Direction.LEFT || enum_Direction == Direction.RIGHT) ||
-    (m_Event.verIndex == setVertical && (enum_Direction == Direction.UP || enum_Direction == Direction.DOWN))))
+    (m_Event.horIndex == setHorizontal && (enum_Direction == Direction.LEFT || enum_Direction == Direction.RIGHT)) ||
+    (m_Event.verIndex == setVertical && (enum_Direction == Direction.UP || enum_Direction == Direction.DOWN)))
         {
             m_Event.Refresh();
             m_Event.horIndex = 2;
@@ -88,6 +106,7 @@ public class ArrowDirectionSet : MonoBehaviour
         return false;
     }
 
+    //This will prevent multiple hits to occur when this method is called
     void CoolDown()
     {
         if (coolDown)
@@ -99,5 +118,10 @@ public class ArrowDirectionSet : MonoBehaviour
                 time = 0f;
             }
         }
+    }
+
+    public GameObject GetAttachedCircle()
+    {
+        return attachedCircle;
     }
 }

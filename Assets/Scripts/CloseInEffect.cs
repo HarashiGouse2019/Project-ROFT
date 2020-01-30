@@ -1,10 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Threading;
 using UnityEngine;
 
 public class CloseInEffect : NoteEffector
 {
-
-
     public float initiatedNoteSample;
     public float initiatedNoteOffset;
     public float offsetStart;
@@ -15,6 +14,7 @@ public class CloseInEffect : NoteEffector
     public GameObject attachedArrow;
 
     public SpriteRenderer sprite;
+    public SpriteRenderer innerSprite;
 
     public int index;
 
@@ -28,14 +28,32 @@ public class CloseInEffect : NoteEffector
 
     public bool dontEffectMe = false;
 
+    public int mapReaderSeqPos;
+    public ObjectTypes objReader;
+
+    //keyInputDownReceived will be given a true for one frame
+    //keyInputReceived will be given so long as it's being pressed down for
+    private bool keyInputDownReceived, keyInputReceived;
+
+    //Get Circle Modifier
+    private CircleTypeModifier modifier;
+    public CircleTypeModifier Modifier
+    {
+        get
+        {
+            return modifier;
+        }
+    }
+
     //So they don't have to look screwed up
     protected Color originalAppearance;
+
     private void Awake()
     {
         mapReader = MapReader.Instance;
         sprite = GetComponent<SpriteRenderer>();
 
-        originalAppearance = sprite.color;
+        modifier = GetComponent<CircleTypeModifier>();
     }
 
     //Start
@@ -43,14 +61,14 @@ public class CloseInEffect : NoteEffector
     {
         initiatedNoteSample = noteSample;
         initiatedNoteOffset = noteOffset;
-        keyNumPosition = keyPosition;
+        keyNumPosition = mapReaderSeqPos;
     }
 
     // Update is called once per frame
     void Update()
     {
         if (!RoftPlayer.Instance.record && GameManager.Instance.IsInteractable())
-            CloseIn();
+            StartClosingIn();
 
     }
 
@@ -71,115 +89,125 @@ public class CloseInEffect : NoteEffector
         }
     }
 
-
-    void CloseIn()
+    void StartClosingIn()
     {
-        InHitRange();
-
-        if (mapReader.keys[keyNum].type == Key.KeyType.Tap)
-            sprite.color = originalAppearance;
-
-        else if (mapReader.keys[keyNum].type == Key.KeyType.Click)
-            sprite.color = Color.red;
-
         transform.localScale = new Vector3(1 / GetPercentage(), 1 / GetPercentage(), 1f);
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.15f);
+        innerSprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.15f);
 
+        if (CheckAutoPlay())
+            RunAutoPlay();
+
+        InHitRange();
+
+        CheckTimeWindow();
+    }
+
+    void RunAutoPlay()
+    {
         #region Auto Play
-        if (CheckSoloPlay())
+        if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + AccuracyVal[3]))
         {
-            if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
+            if (ClosestObjectClass.closestObject[keyNumPosition] == null)
+                ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
+
+            BreakComboChain();
+
+            GameManager.consecutiveMisses++;
+
+            dispose = true;
+        }
+
+        if (accuracyString == "Perfect")
+        {
+            if (ClosestObjectClass.closestObject[keyNumPosition] == null)
             {
-                if (ClosestObjectClass.closestObject[keyNumPosition] == null)
-                    ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
+                ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
 
-                BreakComboChain();
+                Pulse();
+                AudioManager.Instance.Play("Normal", 100, true);
 
-                GameManager.consecutiveMisses++;
+
+                GameManager.Instance.IncrementCombo();
+                SendAccuracyScore();
+                BuildStress(index);
+
+                GameManager.consecutiveMisses = 0;
 
                 dispose = true;
-            }
-
-            if (accuracyString == "Perfect")
-            {
-                if (ClosestObjectClass.closestObject[keyNumPosition] == null)
-                {
-                    ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
-
-                    Pulse();
-                    AudioManager.Instance.Play("Normal", 100, true);
-
-
-                    IncrementComboChain();
-                    SendAccuracyScore();
-                    BuildStress(index);
-
-                    GameManager.consecutiveMisses = 0;
-
-                    dispose = true;
-                }
             }
         }
         #endregion
-        else
+    }
+
+    void CheckTimeWindow()
+    {
+        CheckIfOutOfWindow();
+
+        bool tapType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
+            mapReader.noteObjs[keyNum].GetInstanceType() == NoteObj.NoteObjType.Tap &&
+            DetectArrowKeyInput(0));
+
+        bool BurstType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
+            mapReader.noteObjs[keyNum].GetInstanceType() == NoteObj.NoteObjType.Burst &&
+            attachedArrow != null &&
+            DetectArrowKeyInput(1) &&
+            GameManager.multiInputValue == 2);
+
+        if (accuracyString != "" && (tapType || BurstType))
         {
-            if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + accuracyVal[3]))
+            if (ClosestObjectClass.closestObject[keyNumPosition] == null)
             {
-                if (ClosestObjectClass.closestObject[keyNumPosition] == null)
-                    ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
 
-                BreakComboChain();
+                if (gameObject.CompareTag("approachCircle")) ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
 
-                GameManager.consecutiveMisses++;
+                if (GetPercentage() > 0.99f) targetKey = gameObject;
+
+                //Check type and add sound
+                if (tapType)
+                    AudioManager.Instance.Play("Normal", 100, true);
+
+                if (BurstType)
+                {
+                    if (attachedArrow.GetComponent<ArrowDirectionSet>().Detect())
+                        AudioManager.Instance.Play("Ding", 100, true);
+                    else return;
+                }
+
+                GameManager.Instance.IncrementCombo();
+
+                GameManager.consecutiveMisses = 0;
+
+                GameManager.Instance.ResetMultiInputDelay();
+
+                GameManager.multiInputValue = 0;
+
+                SendAccuracyScore();
+
+                BuildStress(index);
+
+                Pulse();
 
                 dispose = true;
             }
-
-
-
-            bool tapType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
-                mapReader.keys[keyNum].type == Key.KeyType.Tap &&
-                Input.GetKeyDown(Key_Layout.Instance.bindedKeys[keyNumPosition]));
-
-            bool clickType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
-                mapReader.keys[keyNum].type == Key.KeyType.Click &&
-                ClickEvent.ClickReceived());
-
-            bool BurstType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
-                mapReader.keys[keyNum].type == Key.KeyType.Slide &&
-                attachedArrow != null &&
-                GameManager.multiInputValue == 2);
-
-            if (accuracyString != "" && (tapType || clickType || BurstType))
-            {
-                if (ClosestObjectClass.closestObject[keyNumPosition] == null)
-                {
-                    
-                    GameManager.Instance.ResetMultiInputDelay();
-                    GameManager.multiInputValue = 0;
-
-                    if (gameObject.CompareTag("approachCircle")) ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
-
-                    if (GetPercentage() > 0.99f) targetKey = gameObject;
-
-                    Pulse();
-
-                    //Check type and add sound
-                    if (tapType)
-                        AudioManager.Instance.Play("Normal", 100, true);
-                    if (BurstType)
-                        AudioManager.Instance.Play("Ding", 100, true);
-
-                    IncrementComboChain();
-                    SendAccuracyScore();
-                    BuildStress(index);
-
-                    GameManager.consecutiveMisses = 0;
-
-                    dispose = true;
-                }
-            }
         }
+    }
+
+    private bool DetectArrowKeyInput(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                return keyInputDownReceived = Input.GetKeyDown(Key_Layout.Instance.primaryBindedKeys[keyNumPosition]) ||
+                    Input.GetKeyDown(Key_Layout.Instance.secondaryBindedKeys[keyNumPosition]);
+
+            case 1:
+                return keyInputReceived = Input.GetKey(Key_Layout.Instance.primaryBindedKeys[keyNumPosition]) ||
+                        Input.GetKey(Key_Layout.Instance.secondaryBindedKeys[keyNumPosition]);
+
+            default: break;
+        }
+        return false;
     }
 
     protected override float GetPercentage()
@@ -190,10 +218,10 @@ public class CloseInEffect : NoteEffector
 
     public string InHitRange()
     {
-        for (int range = 0; range < accuracyVal.Length; range++)
+        for (int range = 0; range < AccuracyVal.Length; range++)
         {
-            bool beforePerfect = RoftPlayer.musicSource.timeSamples >= (initiatedNoteSample) - accuracyVal[range];
-            bool afterPerfect = RoftPlayer.musicSource.timeSamples <= (initiatedNoteSample) + accuracyVal[range];
+            bool beforePerfect = RoftPlayer.musicSource.timeSamples >= (initiatedNoteSample) - AccuracyVal[range];
+            bool afterPerfect = RoftPlayer.musicSource.timeSamples <= (initiatedNoteSample) + AccuracyVal[range];
 
             if (beforePerfect && afterPerfect)
             {
@@ -215,7 +243,7 @@ public class CloseInEffect : NoteEffector
         {
             sign.SetActive(true);
             sign.transform.position = ClosestObjectClass.closestObject[keyNumPosition].transform.position;
-            sign.GetComponent<AccuracySign>().ShowSign(accuracyString);
+            sign.GetComponent<AccuracySign>().ShowSign(index);
 
             GameManager.sentScore = GameManager.accuracyScore[index];
 
@@ -230,16 +258,19 @@ public class CloseInEffect : NoteEffector
 
     public void IncrementComboChain()
     {
-        GameManager.Instance.combo++;
+        GameManager.Instance.IncrementCombo();
 
     }
 
+    //This is unique from actually sending the accuracy score
+    //There's different data to be handled and different actions to perform
+    //which is why this may look like a copy-pasted SendAccuracyScore
     public void BreakComboChain()
     {
         GameManager.Instance.accuracyStats[4] += 1;
         GameManager.Instance.accuracyPercentile += (((possibleAccuracy - index) / possibleAccuracy) * 100);
         GameManager.Instance.overallAccuracy = GameManager.Instance.accuracyPercentile / GameManager.Instance.GetSumOfStats();
-        GameManager.Instance.combo = m_break;
+        GameManager.Instance.SetCombo(m_break);
 
         GameObject sign = GetComponentInParent<ObjectPooler>().GetMember("Signs");
 
@@ -247,11 +278,25 @@ public class CloseInEffect : NoteEffector
         {
             sign.SetActive(true);
             sign.transform.position = gameObject.transform.position;
-            sign.GetComponent<AccuracySign>().ShowSign("miss");
-
+            sign.GetComponent<AccuracySign>().ShowSign(4);
         }
 
         BuildStress(4);
+    }
+
+    void CheckIfOutOfWindow()
+    {
+        if (RoftPlayer.musicSource.timeSamples > (initiatedNoteSample + AccuracyVal[3]))
+        {
+            if (ClosestObjectClass.closestObject[keyNumPosition] == null)
+                ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
+
+            BreakComboChain();
+
+            GameManager.consecutiveMisses++;
+
+            dispose = true;
+        }
     }
 
     public void BuildStress(int _index)
@@ -259,9 +304,13 @@ public class CloseInEffect : NoteEffector
         GameManager.sentStress = GameManager.stressAmount[_index] + (GameManager.Instance.stressBuild / 100);
     }
 
+    //We want to reset all values that may
+    //show itself when it reactivates.
+    //We want it to be clean and refresh when we respond
     private void OnDisable()
     {
         sprite.color = originalAppearance;
+        if (innerSprite != null) innerSprite.color = originalAppearance;
         percentage = 0;
         index = 0;
         initiatedNoteSample = 0;
@@ -272,7 +321,7 @@ public class CloseInEffect : NoteEffector
         dispose = false;
     }
 
-    bool CheckSoloPlay()
+    bool CheckAutoPlay()
     {
         return GameManager.Instance.isAutoPlaying;
     }
@@ -286,9 +335,9 @@ public class CloseInEffect : NoteEffector
             key = Key_Layout.keyObjects[keyNumPosition];
             key.GetComponent<PulseEffect>().DoPulseReaction(0.15f);
             key.GetComponentInChildren<PulseEffect>().DoPulseReaction(0.15f);
-            GameManager.Instance.TM_COMBO.GetComponent<PulseEffect>().DoPulseReaction(0.05f);
-            GameManager.Instance.TM_COMBO_UNDERLAY.GetComponent<PulseEffect>().DoPulseReaction();
-            GameManager.Instance.IMG_SCREEN_OVERLAY.GetComponent<OverlayPulseEffect>().DoPulseReaction();
+            GameManager.Instance.GetTMCombo().GetComponent<PulseEffect>().DoPulseReaction(0.05f);
+            GameManager.Instance.GetTMComboUnderlay().GetComponent<PulseEffect>().DoPulseReaction();
+            GameManager.Instance.GetScreenOverlay().GetComponent<OverlayPulseEffect>().DoPulseReaction();
         }
     }
 }

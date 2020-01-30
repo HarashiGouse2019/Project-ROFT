@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
@@ -78,45 +77,57 @@ public class GameManager : MonoBehaviour
         TBR_ALL
     };
     [Header("Game Pause Overlay")]
-    public bool isGamePaused = false;
-    public GameObject PAUSE_OVERLAY;
+    [SerializeField] private bool isGamePaused = false;
+    public bool IsGamePaused
+    {
+        get
+        {
+            return isGamePaused;
+        }
+    }
 
-    [Header("Edit Mode")]
-    public bool editMode;
+    [SerializeField] private GameObject PAUSE_OVERLAY = null;
 
     [Header("Game Modes")]
-    public GameMode gameMode;
+    [SerializeField] private GameMode gameMode = default;
+    public GameMode GetGameMode
+    {
+        get
+        {
+            return gameMode;
+        }
+    }
 
     [Header("UI TEXT MESH PRO")]
-    public TextMeshProUGUI TM_SONGNAME;
-    public TextMeshProUGUI TM_TOTALNOTES;
-    public TextMeshProUGUI TM_TOTALKEYS;
-    public TextMeshProUGUI TM_SCORE;
-    public TextMeshProUGUI TM_MAXSCORE;
-    public TextMeshProUGUI TM_COMBO;
-    public TextMeshProUGUI TM_COMBO_UNDERLAY;
-    public TextMeshProUGUI TM_MAXCOMBO;
-    public TextMeshProUGUI TM_DIFFICULTY;
-    public TextMeshProUGUI TM_PERFECT;
-    public TextMeshProUGUI TM_GREAT;
-    public TextMeshProUGUI TM_GOOD;
-    public TextMeshProUGUI TM_OK;
-    public TextMeshProUGUI TM_MISS;
-    public TextMeshProUGUI TM_ACCURACYPERCENTILE;
-    public TextMeshProUGUI TM_ACCURACYGRADE;
-    public TextMeshProUGUI DEBUG_FILEDIR;
+    [SerializeField] private TextMeshProUGUI TM_SONGNAME = null;
+    [SerializeField] private TextMeshProUGUI TM_TOTALNOTES = null;
+    [SerializeField] private TextMeshProUGUI TM_TOTALKEYS = null;
+    [SerializeField] private TextMeshProUGUI TM_SCORE = null;
+    [SerializeField] private TextMeshProUGUI TM_MAXSCORE = null;
+    [SerializeField] private TextMeshProUGUI TM_COMBO = null;
+    [SerializeField] private TextMeshProUGUI TM_COMBO_UNDERLAY = null;
+    [SerializeField] private TextMeshProUGUI TM_MAXCOMBO = null;
+    [SerializeField] private TextMeshProUGUI TM_DIFFICULTY = null;
+    [SerializeField] private TextMeshProUGUI TM_PERFECT = null;
+    [SerializeField] private TextMeshProUGUI TM_GREAT = null;
+    [SerializeField] private TextMeshProUGUI TM_GOOD = null;
+    [SerializeField] private TextMeshProUGUI TM_OK = null;
+    [SerializeField] private TextMeshProUGUI TM_MISS = null;
+    [SerializeField] private TextMeshProUGUI TM_ACCURACYPERCENTILE = null;
+    [SerializeField] private TextMeshProUGUI TM_ACCURACYGRADE = null;
+    [SerializeField] private TextMeshProUGUI DEBUG_FILEDIR = null;
 
     [Header("UI IMAGES")]
-    public Image IMG_STRESS;
-    public Image IMG_STRESSBACKGROUND;
-    public Image IMG_SCREEN_OVERLAY;
-    public Image IMG_PROGRESSION_FILL;
+    [SerializeField] private Image IMG_STRESS = null;
+    [SerializeField] private Image IMG_STRESSBACKGROUND = null;
+    [SerializeField] private Image IMG_SCREEN_OVERLAY = null;
+    [SerializeField] private Image IMG_PROGRESSION_FILL = null;
 
     [Header("In-Game Statistics and Values")]
-    public long totalScore;
-    public long previousScore; //This will be used for a increasing effect
-    public int combo;
-    public int maxCombo;
+    private long totalScore;
+    private long previousScore; //This will be used for a increasing effect
+    private int Combo { set; get; }
+    private int maxCombo;
     public float overallAccuracy = 100.00f; //The average accuracy during the song
     public float accuracyPercentile; //The data in which gets accuracy in percent;
     public float overallGrade = 0f;
@@ -126,36 +137,43 @@ public class GameManager : MonoBehaviour
 
     private readonly int reset = 0;
 
-    int initialGain = 1;
+    private int initialGain = 1;
+
+    //Time value
+    private float inputDelayTime = 0;
+
+    private readonly float multiInputDuration = 0.1f;
 
     //Check for multiple input
     public static int multiInputValue;
 
+    [Header("In-Game Control Keys")]
+    readonly KeyCode[] inGameControlKeys = {
+        KeyCode.Backspace,
+        KeyCode.Escape,
+        KeyCode.Q,
+        KeyCode.P,
+        KeyCode.Semicolon,
+        KeyCode.Comma
+    };
+
     //RoftScouter will be our "Go collect some songs that I may or may not have
     //put in this directory.
-    public RoftScouter scouter;
-
-    //Time value
-    float inputDelayTime = 0;
-    float multiInputDuration = 0.1f;
-    KeyCode[] inGameControlKeys = { KeyCode.Backspace, KeyCode.Escape };
+    private RoftScouter scouter;
 
     //Make to much easier to access other classes
-    RoftPlayer roftPlayer;
-    MapReader mapReader;
-    MouseEvent mouse_env;
-    KeyPress keypress_env;
+    private RoftPlayer roftPlayer;
+    private MapReader mapReader;
 
     //This will be used for the GameManager to assure that
     //when we restart, all approach circles are inactive
-    List<GameObject> activeApproachObjects = new List<GameObject>();
+    private readonly List<GameObject> activeApproachObjects = new List<GameObject>();
 
     //Countdown for player to prepare
     public bool isCountingDown = false;
 
-    //Push in stress
-    float stressAmp = 0f;
-    float gain = 1f;
+    private delegate void Main();
+    private Main core;
 
     private void Awake()
     {
@@ -168,6 +186,19 @@ public class GameManager : MonoBehaviour
         }
         else
             Destroy(gameObject);
+        #endregion
+
+        //Multicasting core delegate
+        //When Invoked, it'll run all of these functions.
+        //NEVER USE AN = SIGN WITH MUTLITASKING
+        //It'll reset in reseting all castings that
+        //it had in order to add a new one.
+        #region Core Delegate MultiCasting
+        core += RunScoreSystem;
+        core += RunUI;
+        core += RunInGameControls;
+        core += CheckSignsOfInput;
+        core += CheckStressMaxed;
         #endregion
     }
 
@@ -186,27 +217,20 @@ public class GameManager : MonoBehaviour
          */
         roftPlayer = RoftPlayer.Instance;
         mapReader = MapReader.Instance;
-        mouse_env = MouseEvent.Instance;
-        keypress_env = KeyPress.Instance;
     }
 
     private void Update()
     {
-       if (RoftPlayer.Instance.record == false)
+        if (RoftPlayer.Instance.record == false)
             StartCoroutine(RUN_GAME_MANAGEMENT());
     }
 
     //GAME_MANAGEMENT Update
     IEnumerator RUN_GAME_MANAGEMENT()
     {
-        if (inSong)
-        {
-            RunScoreSystem();
-            RunUI();
-            RunInGameControls();
-            CheckSignsOfInput();
-            CheckStressMaxed();
-        }
+        if (inSong && MapReader.KeysReaded)
+            //Invoke core and all methods associated with it
+            core.Invoke();
 
         yield return null;
     }
@@ -216,8 +240,8 @@ public class GameManager : MonoBehaviour
         //Raising effect
         if (previousScore < totalScore && !isGamePaused)
         {
-            previousScore += combo ^ initialGain;
-            initialGain += combo;
+            previousScore += Combo ^ initialGain;
+            initialGain += Combo;
         }
         else
         {
@@ -228,15 +252,15 @@ public class GameManager : MonoBehaviour
 
     void UpdateMaxCombo()
     {
-        if (combo > maxCombo)
-            maxCombo = combo;
+        if (Combo > maxCombo)
+            maxCombo = Combo;
     }
 
     void RunUI()
     {
         TM_SCORE.text = previousScore.ToString("D10");
-        TM_COMBO.text = "x" + combo.ToString();
-        TM_COMBO_UNDERLAY.text = "x" + combo.ToString();
+        TM_COMBO.text = "x" + Combo.ToString();
+        TM_COMBO_UNDERLAY.text = "x" + Combo.ToString();
         TM_DIFFICULTY.text = "DIFFICULTY: " + mapReader.difficultyRating.ToString("F2", CultureInfo.InvariantCulture);
         TM_MAXSCORE.text = "MAX SCORE:     " + mapReader.maxScore.ToString();
 
@@ -274,14 +298,14 @@ public class GameManager : MonoBehaviour
         if (isCountingDown == false)
             PAUSE_OVERLAY.SetActive(isGamePaused);
 
-        if (RoftPlayer.musicSource.isPlaying && SongProgression.isPassedFirstNote) ManageStressMeter();
+        if (RoftPlayer.musicSource.isPlaying && SongProgression.isPassedFirstNote && !SongProgression.isFinished) ManageStressMeter();
     }
 
     void ManageStressMeter()
     {
         const uint millsInSec = 1000;
         float subtleProgression = (stressBuild / millsInSec);
-        
+
         IMG_STRESS.fillAmount += (subtleProgression / (consecutiveMisses + stressBuild)) - sentStress;
 
         //Okay, so I have to think about this....
@@ -323,13 +347,15 @@ public class GameManager : MonoBehaviour
 
     public void RestartSong()
     {
-        NoteEffector.keyPosition = reset;
+        mapReader.tapObjectReader.SequencePositionReset();
+        mapReader.holdObjectReader.SequencePositionReset();
+        mapReader.burstObjectReader.SequencePositionReset();
 
         for (int stat = 0; stat < accuracyStats.Length; stat++)
             accuracyStats[stat] = reset;
 
         //Reset all values
-        combo = reset;
+        Combo = reset;
         maxCombo = reset;
         totalScore = reset;
         sentScore = reset;
@@ -343,12 +369,12 @@ public class GameManager : MonoBehaviour
         //Now we make sure all approach circles are inactive
         CollectApproachCircles();
         foreach (var activeCirlces in activeApproachObjects)
-        {
             activeCirlces.SetActive(false);
-        }
 
         //Now we clear our list.
         activeApproachObjects.Clear();
+
+        SongProgression.isPassedFirstNote = false;
     }
 
     public void Pause()
@@ -375,7 +401,7 @@ public class GameManager : MonoBehaviour
         UpdateMaxCombo();
         UpdateGrade();
         initialGain++;
-        totalScore += sentScore * combo;
+        totalScore += sentScore * Combo;
     }
 
     //Be sure that when our score updates we call this function
@@ -420,7 +446,7 @@ public class GameManager : MonoBehaviour
         return sumOfStats;
     }
 
-    int CheckSignsOfInput()
+    void CheckSignsOfInput()
     {
         if (gameMode == GameMode.TECHMEISTER)
         {
@@ -429,10 +455,7 @@ public class GameManager : MonoBehaviour
             //Check for second input
             if (multiInputValue > 0)
                 StartMultiInputDelay();
-
-            return multiInputValue;
         }
-        return -1;
     }
 
     void StartMultiInputDelay()
@@ -499,8 +522,40 @@ public class GameManager : MonoBehaviour
         string roftRecordPath = Application.persistentDataPath + @"/records.rft";
         if (!File.Exists(roftRecordPath))
         {
-            FileStream roftRecordFiles = File.Create(roftRecordPath);
+            File.Create(roftRecordPath);
             Debug.Log(roftRecordPath + " created.");
         }
     }
+
+    public void SetCombo(int _value)
+    {
+        Combo = _value;
+    }
+
+    public void IncrementCombo()
+    {
+        Combo++;
+    }
+
+    #region Get Methods
+    public Image GetSongProgressionFill()
+    {
+        return IMG_PROGRESSION_FILL;
+    } 
+
+    public TextMeshProUGUI GetTMCombo()
+    {
+        return TM_COMBO;
+    }
+
+    public TextMeshProUGUI GetTMComboUnderlay()
+    {
+        return TM_COMBO_UNDERLAY;
+    }
+
+    public Image GetScreenOverlay()
+    {
+        return IMG_SCREEN_OVERLAY;
+    }
+    #endregion
 }

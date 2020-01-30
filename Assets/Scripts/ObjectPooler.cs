@@ -39,8 +39,6 @@ public class ObjectPooler : MonoBehaviour
         {
             OverridePoolSizeOf("Song Panel", MusicManager.Instance.getMusic.Length);
         }
-
-        
     }
 
     private void Update()

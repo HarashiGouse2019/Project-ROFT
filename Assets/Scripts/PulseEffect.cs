@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PulseEffect : MonoBehaviour
 {
@@ -12,8 +9,6 @@ public class PulseEffect : MonoBehaviour
     Vector3 normalScale;
     bool waiting = false;
     float time;
-
-    GameManager gameManager;
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +21,7 @@ public class PulseEffect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!GameManager.Instance.isGamePaused)
+        if (!GameManager.Instance.IsGamePaused)
             if (waiting) Wait(waitDuration, shrinkRate);
     }
 

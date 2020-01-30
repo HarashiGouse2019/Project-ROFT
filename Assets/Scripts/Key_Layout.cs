@@ -4,7 +4,6 @@ using Random = UnityEngine.Random;
 using TMPro;
 
 //This is going to be an abstract class. This will be the base class of all other layouts in the game
-
 public class Key_Layout : MonoBehaviour
 {
     public static Key_Layout Instance;
@@ -20,9 +19,7 @@ public class Key_Layout : MonoBehaviour
         Layout_1x4,
         Layout_2x4,
         Layout_3x4,
-        Layout_4x4,
-        Layout_HomeRow,
-        Layout_3Row
+        Layout_4x4
     }
 
     //This enum will change depending on the game mode in 
@@ -48,7 +45,9 @@ public class Key_Layout : MonoBehaviour
     public TextMeshProUGUI dataText;
 
     //After iterating through strings, we'll return a Input corresponding avaliable keys.
-    public List<KeyCode> bindedKeys = new List<KeyCode>();
+    public List<KeyCode> primaryBindedKeys = new List<KeyCode>();
+    public List<KeyCode> secondaryBindedKeys = new List<KeyCode>();
+
     public static List<GameObject> keyObjects = new List<GameObject>();
     public List<GameObject> tempShowKeyObjs = new List<GameObject>();
 
@@ -66,22 +65,29 @@ public class Key_Layout : MonoBehaviour
     #endregion
 
     #region Private Members
-    readonly private string[] defaultLayout = new string[5]
-    {
-        "asl;",
-        "qwopasl;",
-        "qwopasl;zx./",
-        "1290qwopasl;zx./",
-        "qwertyuiopasdfghjkl;zxcvbnm,./"
-    };
-    readonly private string[] defaultLayoutTechmeister = new string[5]
+    #region Subject to Removal/Modification
+    //primaryLayout is the key layout where you control
+    //both ends of the in-game layout
+    private readonly string[] primaryLayout = new string[4]
     {
         "asdf",
         "qwerasdf",
         "qwerasdfzxcv",
         "asdfghjkl;",
-        "qwertyuiopasdfghjkl;zxcvbnm,./"
     };
+
+    //secondaryLayout is other key bindings that also affect
+    //one end of the in-game layout
+    private readonly string[] secondaryLayout = new string[4]
+    {
+        "asl;",
+        "qwopasl;",
+        "qwopasl;zx./",
+        "1290qwopasl;zx./"
+    };
+
+    #endregion
+    [SerializeField]
     readonly private float[] defaultKeyScale = new float[5]
     {
         2.25f,
@@ -90,6 +96,8 @@ public class Key_Layout : MonoBehaviour
         1.4f,
         1f
     };
+
+    [SerializeField]
     readonly private float[] keyHorizontalSpread = new float[5] {
         3.5f,
         2.5f,
@@ -98,6 +106,7 @@ public class Key_Layout : MonoBehaviour
         1.5f
     };
 
+    [SerializeField]
     readonly private float[] keyVerticalSpread = new float[5]
     {
         3.5f,
@@ -124,8 +133,8 @@ public class Key_Layout : MonoBehaviour
     private void Start()
     {
         if (
-            GameManager.Instance.gameMode == GameManager.GameMode.TBR_ALL ||
-            GameManager.Instance.gameMode == GameManager.GameMode.TBR_HOMEROW)
+            GameManager.Instance.GetGameMode == GameManager.GameMode.TBR_ALL ||
+            GameManager.Instance.GetGameMode == GameManager.GameMode.TBR_HOMEROW)
             ChangeLayoutMethod(1);
         else
             ChangeLayoutMethod(0);
@@ -139,48 +148,60 @@ public class Key_Layout : MonoBehaviour
 
     void InitiateAutoKeyBind()
     {
-        //Find all objects in parent.
-        switch (GameManager.Instance.gameMode)
-        {
-            case GameManager.GameMode.STANDARD:
-                for (int keyNum = 0; keyNum < defaultLayout[(int)keyLayout].Length; keyNum++)
-                    InvokeKeyBind(defaultLayout[(int)keyLayout][keyNum]);
-                break;
+        //I want to first bind the primary layout
+        for (int keyID = 0; keyID < primaryLayout[(int)keyLayout].Length; keyID++)
+            InvokeKeyBind(primaryLayout[(int)keyLayout][keyID], _rank: "primary");
 
-            case GameManager.GameMode.TECHMEISTER:
-                for (int keyNum = 0; keyNum < defaultLayoutTechmeister[(int)keyLayout].Length; keyNum++)
-                    InvokeKeyBind(defaultLayoutTechmeister[(int)keyLayout][keyNum]);
-                break;
-        }
+        //Then I bind the secondary layout
+        for (int keyID = 0; keyID < secondaryLayout[(int)keyLayout].Length; keyID++)
+            InvokeKeyBind(secondaryLayout[(int)keyLayout][keyID], _rank: "secondary");
     }
 
     //This will simply take any character, and keybind it.
-    public KeyCode InvokeKeyBind(char m_char, bool _addToList = true)
+    public KeyCode InvokeKeyBind(char m_char, bool _addToList = true, string _rank = "primary")
     {
 
         KeyCode key;
         key = (KeyCode)m_char;
 
         if (_addToList)
-            bindedKeys.Add(key);
+        {
+            switch (_rank.ToLower())
+            {
+                case "primary":
+                    primaryBindedKeys.Add(key);
+                    break;
+                case "secondary":
+                    secondaryBindedKeys.Add(key);
+                    break;
+            }
+        }
 
         return key;
     }
 
     //This takes any ASCII integer that exists on the keyboard
     //if the player so desires to manually keybind
-    public KeyCode InvokeKeyBind(int m_int, bool _addToList = true)
+    public KeyCode InvokeKeyBind(int m_int, bool _addToList = true, string _rank = "primary")
     {
         KeyCode key;
         key = (KeyCode)m_int;
 
         if (_addToList)
-            bindedKeys.Add(key);
-
+        {
+            switch (_rank.ToLower())
+            {
+                case "primary":
+                    primaryBindedKeys.Add(key);
+                    break;
+                case "secondary":
+                    secondaryBindedKeys.Add(key);
+                    break;
+            }
+        }
         return key;
 
     }
-
 
     public void SetUpLayout()
     {
@@ -215,12 +236,6 @@ public class Key_Layout : MonoBehaviour
                 break;
             case KeyLayoutType.Layout_4x4:
                 numRows = 4; numCols = 4;
-                break;
-            case KeyLayoutType.Layout_HomeRow:
-                numRows = 1; numCols = 10;
-                break;
-            case KeyLayoutType.Layout_3Row:
-                numRows = 3; numCols = 10;
                 break;
             default:
                 break;
@@ -272,51 +287,6 @@ public class Key_Layout : MonoBehaviour
 
         }
         InitiateAutoKeyBind();
-    }
-
-    //This will be called based on frames. This will use the
-    //TypeByRegion class to do it's magic.
-    //There's 2 Stages or Processes
-    public KeyCode RandomizeAndProcess()
-    {
-        if (layoutMethod == LayoutMethod.Region_Scatter)
-        {
-            #region Cell Number Process
-            TypeByRegion recipient = TypeByRegion.Instance;
-
-            float randX = Random.Range(TypeByRegion.left, TypeByRegion.screenWidth - TypeByRegion.right);
-            float randY = Random.Range(TypeByRegion.bottom, TypeByRegion.screenHeight - TypeByRegion.top);
-
-            //Give newXPosition and newYPosition for the key
-            spawnPositionX = randX;
-            spawnPositionY = randY;
-
-            //Make a Vector2 with our random coordinates
-            Vector2 positionInScreen = new Vector2(randX + keyHorizontalSpread[0], randY + keyHorizontalSpread[0]);
-
-            //We get our Regional Position
-            Vector2 regionalPosition = recipient.CheckRegionalPositionFrom(positionInScreen);
-
-            //Now we get the Cell Number
-            int cellNum = recipient.RegionalPositionToCellNumber(regionalPosition);
-
-            //With our cellNum, we can now tell our recipient to give use the keyClusters that
-            //We need
-            string usedKeyCluster = recipient.GetKeyClusterFromCellNum(cellNum);
-            #endregion
-
-            #region Key Binding Process
-            //Now we randomize a number between
-            //0 and the length of the key cluster to get
-            //the desired key to bind
-            int randNum = Random.Range(0, usedKeyCluster.Length);
-            char randChar = usedKeyCluster[randNum];
-
-            //And now, parse to KeyCode
-            return InvokeKeyBind(randChar, false);
-            #endregion 
-        }
-        return KeyCode.None;
     }
 
     //This function will directly change the layout mode.

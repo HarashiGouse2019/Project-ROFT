@@ -23,16 +23,16 @@ public class SongProgression : MonoBehaviour
 
         //In order to know how much time we have until the first note,
         //we'll have to reference to the first note in our MapReader
-        firstNoteInSamples = MapReader.Instance.keys[0].keySample;
+        firstNoteInSamples = MapReader.Instance.noteObjs[0].GetInstanceSample();
 
         //Now we calculate the percentage with the music sample and the firstNoteInSamples
         float firstNotePercentile = RoftPlayer.musicSource.timeSamples / firstNoteInSamples;
 
         //Now we want to get the percentage between
         //Our current sample, and the last key sample in our song!!!
-        int lastKey = MapReader.Instance.keys.Count - 1;
+        int lastKey = MapReader.Instance.noteObjs.Count - 1;
 
-        lastNoteInSamples = MapReader.Instance.keys[lastKey].keySample;
+        lastNoteInSamples = MapReader.Instance.noteObjs[lastKey].GetInstanceSample();
 
         //We get out percentage
         float lastNotePercentile = 
@@ -41,13 +41,13 @@ public class SongProgression : MonoBehaviour
 
         if (!isPassedFirstNote)
         {
-            GameManager.Instance.IMG_PROGRESSION_FILL.fillAmount = firstNotePercentile;
+            GameManager.Instance.GetSongProgressionFill().fillAmount = firstNotePercentile;
 
             if (firstNotePercentile > 0.99f)
                 isPassedFirstNote = true;
         }
         else
-            GameManager.Instance.IMG_PROGRESSION_FILL.fillAmount = lastNotePercentile;
+            GameManager.Instance.GetSongProgressionFill().fillAmount = lastNotePercentile;
 
         //Now, if the fillAmount is full (or once we hit the last note), have RoftPlayer fade out
         if (RoftPlayer.musicSource.timeSamples > lastNoteInSamples)
