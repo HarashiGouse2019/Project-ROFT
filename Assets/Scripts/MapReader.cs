@@ -10,15 +10,15 @@ public class MapReader : MonoBehaviour
 {
     public static MapReader Instance;
 
-    public string m_name;
+    [SerializeField] private string m_name;
 
-    public float difficultyRating;
+    [SerializeField] private float difficultyRating;
 
-    public float totalNotes;
+    [SerializeField] private float totalNotes;
 
-    public float totalKeys;
+    [SerializeField] private float totalKeys;
 
-    public long maxScore;
+    [SerializeField] private long maxScore;
 
     public int keyLayoutEnum;
 
@@ -28,11 +28,11 @@ public class MapReader : MonoBehaviour
 
     //All Object Readers
     [Header("Object Readers")]
-    public TapObjectReader tapObjectReader;
-    public HoldObjectReader holdObjectReader;
-    public BurstObjectReader burstObjectReader;
-    public TrailObjectReader trailObjectReader;
-    public ClickObjectReader clickObjectReader;
+    [SerializeField] private TapObjectReader tapObjectReader;
+    [SerializeField] private HoldObjectReader holdObjectReader;
+    [SerializeField] private BurstObjectReader burstObjectReader;
+    [SerializeField] private TrailObjectReader trailObjectReader;
+    [SerializeField] private ClickObjectReader clickObjectReader;
 
     Thread readKeyThread;
     static bool keysReaded = false;
@@ -72,6 +72,7 @@ public class MapReader : MonoBehaviour
                 keysReaded = true;
                 Initialize();
                 CalculateDifficultyRating();
+
                 return;
             }
         }
@@ -263,10 +264,58 @@ public class MapReader : MonoBehaviour
 
     }
 
-
     void DistributeTypeTo(ObjectTypes _objectReader, NoteObj _key)
     {
         if (_objectReader != null)
             _objectReader.objects.Add(_key);
     }
+
+    #region Set Methods
+    public void SetName(string _value)
+    {
+        m_name = _value;
+    }
+    #endregion
+
+    #region Get Methods
+    public string GetName()
+    {
+        return m_name;
+    }
+
+    public float GetDifficultyRating()
+    {
+        return difficultyRating;
+    }
+
+    public float GetTotalNotes()
+    {
+        return totalNotes;
+    }
+
+    public float GetTotalKeys()
+    {
+        return totalKeys;
+    }
+
+    public long GetMaxScore()
+    {
+        return maxScore;
+    }
+
+    public ObjectTypes GetReaderType<T>()
+    {
+        if (typeof(T) == tapObjectReader.GetType())
+            return tapObjectReader;
+
+        if (typeof(T) == holdObjectReader.GetType())
+            return holdObjectReader;
+
+        if (typeof(T) == burstObjectReader.GetType())
+            return burstObjectReader;
+
+        return null;
+    }
+
+    #endregion
 }

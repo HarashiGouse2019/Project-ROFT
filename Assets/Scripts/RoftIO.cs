@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using UnityEngine;
+
 using Random = UnityEngine.Random;
 
 
@@ -203,7 +204,7 @@ namespace ROFTIOMANAGEMENT
 
             StreamWriter rftmWriter = File.AppendText(rftmFilePath);
 
-            MapReader.Instance.m_name = _name;
+            MapReader.Instance.SetName(_name);
 
             rftmWriter.WriteLine(_data);
             rftmWriter.Close();

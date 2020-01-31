@@ -8,7 +8,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5443026936034782058}
+  - component: {fileID: 8393543708405631006}
   - component: {fileID: 2879025948228699850}
   - component: {fileID: 1793199902681462402}
   - component: {fileID: 6469167855242339063}
@@ -19,8 +19,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5443026936034782058
-Transform:
+--- !u!224 &8393543708405631006
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -33,6 +33,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1.28, y: 1.28}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &2879025948228699850
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -93,7 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78234e4a5db00e94cac9b9d8f62e1540, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_transform: {fileID: 5443026936034782058}
+  m_transform: {fileID: 0}
   waitDuration: 0.05
   shrinkRate: 0.05
 --- !u!95 &6469167855242339063

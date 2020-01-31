@@ -261,34 +261,34 @@ public class GameManager : MonoBehaviour
         TM_SCORE.text = previousScore.ToString("D10");
         TM_COMBO.text = "x" + Combo.ToString();
         TM_COMBO_UNDERLAY.text = "x" + Combo.ToString();
-        TM_DIFFICULTY.text = "DIFFICULTY: " + mapReader.difficultyRating.ToString("F2", CultureInfo.InvariantCulture);
-        TM_MAXSCORE.text = "MAX SCORE:     " + mapReader.maxScore.ToString();
+        TM_DIFFICULTY.text = "DIFFICULTY: " + mapReader.GetDifficultyRating().ToString("F2", CultureInfo.InvariantCulture);
+        TM_MAXSCORE.text = "MAX SCORE:     " + mapReader.GetMaxScore().ToString();
 
         //This will be temporary
         #region DEBUG_STATS_UI
         TM_PERFECT.text = "PERFECT:   " +
             accuracyStats[0].ToString() +
-            " (" + Mathf.Floor((accuracyStats[0] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[0] / MapReader.Instance.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_GREAT.text = "GREAT:       " +
             accuracyStats[1].ToString() +
-            " (" + Mathf.Floor((accuracyStats[1] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[1] / MapReader.Instance.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_GOOD.text = "GOOD:         " +
             accuracyStats[2].ToString() +
-            " (" + Mathf.Floor((accuracyStats[2] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[2] / MapReader.Instance.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_OK.text = "OK:            " +
             accuracyStats[3].ToString() +
-            " (" + Mathf.Floor((accuracyStats[3] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[3] / MapReader.Instance.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_MISS.text = "MISSES:       " +
             accuracyStats[4].ToString() +
-            " (" + Mathf.Floor((accuracyStats[4] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[4] / MapReader.Instance.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_MAXCOMBO.text = "MAX COMBO:     "
             + maxCombo.ToString() +
-            " (" + Mathf.Floor((maxCombo / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((maxCombo / MapReader.Instance.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_ACCURACYPERCENTILE.text = "ACCURACY:     "
            + overallAccuracy.ToString("F2", CultureInfo.InvariantCulture) + "%";
@@ -347,9 +347,9 @@ public class GameManager : MonoBehaviour
 
     public void RestartSong()
     {
-        mapReader.tapObjectReader.SequencePositionReset();
-        mapReader.holdObjectReader.SequencePositionReset();
-        mapReader.burstObjectReader.SequencePositionReset();
+        mapReader.GetReaderType<TapObjectReader>().SequencePositionReset();
+        mapReader.GetReaderType<HoldObjectReader>().SequencePositionReset();
+        mapReader.GetReaderType<BurstObjectReader>().SequencePositionReset();
 
         for (int stat = 0; stat < accuracyStats.Length; stat++)
             accuracyStats[stat] = reset;

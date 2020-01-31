@@ -36,7 +36,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 2622662406182688577}
+  - {fileID: 1988284469371319349}
   - {fileID: 2144147790692662835}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -505,9 +505,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc71359671f99f0438f5b24182e3994c, type: 3}
---- !u!4 &2622662406182688577 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5443026936034782058, guid: dc71359671f99f0438f5b24182e3994c,
+--- !u!224 &1988284469371319349 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8393543708405631006, guid: dc71359671f99f0438f5b24182e3994c,
     type: 3}
   m_PrefabInstance: {fileID: 8064844916749384747}
   m_PrefabAsset: {fileID: 0}
