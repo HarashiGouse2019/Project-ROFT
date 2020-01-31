@@ -25,29 +25,7 @@ namespace ROFTIOMANAGEMENT
                     #region [General]
                     string t_general = "[General]\n";
                     string p_Author = "Author: " + System.Environment.UserName + newLine;
-                    string p_AudioFileName = "AudioFilename: " + newLine;
-                    string p_Gamemode = "";
-                    switch (GameManager.Instance.GetGameMode)
-                    {
-                        case GameManager.GameMode.STANDARD:
-                            p_Gamemode = "GameMode: " + "Standard" + newLine;
-                            break;
-
-                        case GameManager.GameMode.TECHMEISTER:
-                            p_Gamemode = "GameMode: " + "Techmeister" + newLine;
-                            break;
-
-                        case GameManager.GameMode.TBR_HOMEROW:
-                            p_Gamemode = "GameMode: " + "Type-By-Region(Homerow)" + newLine;
-                            break;
-
-                        case GameManager.GameMode.TBR_ALL:
-                            p_Gamemode = "GameMode: " + "Type-By-Region(Allrows)" + newLine;
-                            break;
-
-                        default:
-                            break;
-                    }
+                    string p_AudioFileName = "AudioFilename: " +  newLine;
                     #endregion
 
                     #region [Metadata]
@@ -101,8 +79,7 @@ namespace ROFTIOMANAGEMENT
                     {
                    t_general +
                    p_Author +
-                   p_AudioFileName +
-                   p_Gamemode,
+                   p_AudioFileName,
 
                    t_metadata +
                    p_Title +
@@ -134,14 +111,8 @@ namespace ROFTIOMANAGEMENT
         public static int GenerateROFTID()
         {
             /*ROFTID is as structured:
-             * R-yy-dd-mm-(100 to 999)
-             * Example: R-180512841
-             * 
-             * R - ROFTID
-             * 18 - 2018
-             * 05 - 5th
-             * 12 - Dec
-             * Number randomized to 841
+             * GROUPID-(100 to 999)
+             * Example: 1805121000-841
              */
 
             int[] numRange =
@@ -154,12 +125,9 @@ namespace ROFTIOMANAGEMENT
 
             DateTime date = DateTime.Now;
 
-            string yearDigit = date.ToString("yy");
-            string dayDigit = date.ToString("dd");
-            string monthDigit = date.ToString("mm");
             int uniqueNum = Random.Range(numRange[0], numRange[1]);
 
-            stringROFTID += (yearDigit + dayDigit + monthDigit + uniqueNum.ToString());
+            stringROFTID += (uniqueNum.ToString());
 
             return Convert.ToInt32(stringROFTID);
         }
@@ -167,14 +135,14 @@ namespace ROFTIOMANAGEMENT
         public static int GenerateGROUPID()
         {
             /*GROUPID is as structured:
-             * G-yy-dd-mm-(1000 to 9990)
-             * Example: G-1805121240
+             * yy-dd-mm-(1000 to 9990)
+             * Example: 1805121000
              * 
              * G - GROUPID
              * 18 - 2018
              * 05 - 5th
              * 12 - Dec
-             * Number randomized to 1240
+             * Number 1000
              */
 
             int[] numRange =
@@ -183,7 +151,7 @@ namespace ROFTIOMANAGEMENT
             9999
         };
 
-            string stringROFTID = "";
+            string stringGROUPID = "";
 
             DateTime date = DateTime.Now;
 
@@ -192,9 +160,9 @@ namespace ROFTIOMANAGEMENT
             string monthDigit = date.ToString("mm");
             string uniqueNum = Random.Range(numRange[0], numRange[1]).ToString();
 
-            stringROFTID += (yearDigit + dayDigit + monthDigit + uniqueNum);
+            stringGROUPID += (yearDigit + monthDigit + dayDigit + uniqueNum);
 
-            return Convert.ToInt32(stringROFTID);
+            return Convert.ToInt32(stringGROUPID);
         }
 
         public static void WriteToRFTM(string _name, string _path, string _data)
