@@ -123,9 +123,9 @@ public class RoftCreator : MonoBehaviour
     /// Get total keys being used.
     /// </summary>
     /// <returns></returns>
-    public static int GetTotalKeys()
+    public static Key_Layout.KeyLayoutType GetTotalKeys()
     {
-        return (int)keyLayout;
+        return keyLayout;
     }
 
     /// <summary>

@@ -25,18 +25,18 @@ namespace ROFTIOMANAGEMENT
                     #region [General]
                     string t_general = "[General]\n";
                     string p_Author = "Author: " + System.Environment.UserName + newLine;
-                    string p_AudioFileName = "AudioFilename: " +  newLine;
+                    string p_AudioFileName = "AudioFilename: " + RoftCreator.GetAudioFile().name + newLine;
                     #endregion
 
                     #region [Metadata]
                     string t_metadata = "[Metadata]\n";
-                    string p_Title = "Title: " + newLine;
-                    string p_TitleUnicode = "TitleUnicode: " + newLine;
-                    string p_Artist = "Artist: " + newLine;
-                    string p_ArtistUnicode = "ArtistUnicode: " + newLine;
-                    string p_Creator = "Creator: " + newLine;
-                    string p_ROFTID = "ROFTID: R-" + GenerateROFTID() + newLine;
-                    string p_GROUPID = "GROUPID: G-" + GenerateGROUPID() + newLine;
+                    string p_Title = "Title: " + RoftCreator.GetSongTitle() + newLine;
+                    string p_TitleUnicode = "TitleUnicode: " + RoftCreator.GetSongTitle(true) + newLine;
+                    string p_Artist = "Artist: " + RoftCreator.GetSongArtist() + newLine;
+                    string p_ArtistUnicode = "ArtistUnicode: " + RoftCreator.GetSongArtist(true) + newLine;
+                    string p_Creator = "Creator: " + p_Author + newLine;
+                    string p_ROFTID = "ROFTID: " + GenerateROFTID() + newLine;
+                    string p_GROUPID = "GROUPID: " + GenerateGROUPID() + newLine;
                     #endregion
 
                     #region [Difficulty]
@@ -46,7 +46,7 @@ namespace ROFTIOMANAGEMENT
                     string keyInfo = "";
                     #region Key Count
 
-                    switch (Key_Layout.Instance.keyLayout)
+                    switch (RoftCreator.GetTotalKeys())
                     {
                         case Key_Layout.KeyLayoutType.Layout_1x4:
                             keyInfo = "4";
@@ -66,8 +66,8 @@ namespace ROFTIOMANAGEMENT
                     #endregion
                     string p_KeyCount = "KeyCount: " + keyInfo + newLine;
 
-                    string p_AccuracyHarshness = "AccuracyHarshness: " + NoteEffector.Instance.Accuracy.ToString() + newLine;
-                    string p_ApproachSpeed = "ApproachSpeed: " + NoteEffector.Instance.ApproachSpeed.ToString() + newLine;
+                    string p_AccuracyHarshness = "AccuracyHarshness: " + RoftCreator.GetAccuracyHarshness() + newLine;
+                    string p_ApproachSpeed = "ApproachSpeed: " + RoftCreator.GetApproachSpeed() + newLine;
                     #endregion
 
                     #region [Objects]
