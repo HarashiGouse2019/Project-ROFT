@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using UnityEngine;
+using UnityEditor;
 
 using Random = UnityEngine.Random;
 
@@ -25,28 +26,31 @@ namespace ROFTIOMANAGEMENT
                     #region [General]
                     string t_general = "[General]\n";
                     string p_Author = "Author: " + System.Environment.UserName + newLine;
-                    string p_AudioFileName = "AudioFilename: " + RoftCreator.GetAudioFile().name + newLine;
+                    string p_AudioFileName = "AudioFilename: " + AssetDatabase.GetAssetPath(RoftCreator.Instance.GetAudioFile()) + newLine;
+                    string p_BackgroundImage = "BackgroundImage: " + RoftCreator.Instance.GetBackgroundImage().name + newLine;
+                    string p_BackgroundVideo = "BackgroundVideo: " + newLine;
                     #endregion
 
                     #region [Metadata]
                     string t_metadata = "[Metadata]\n";
-                    string p_Title = "Title: " + RoftCreator.GetSongTitle() + newLine;
-                    string p_TitleUnicode = "TitleUnicode: " + RoftCreator.GetSongTitle(true) + newLine;
-                    string p_Artist = "Artist: " + RoftCreator.GetSongArtist() + newLine;
-                    string p_ArtistUnicode = "ArtistUnicode: " + RoftCreator.GetSongArtist(true) + newLine;
-                    string p_Creator = "Creator: " + p_Author + newLine;
-                    string p_ROFTID = "ROFTID: " + GenerateROFTID() + newLine;
-                    string p_GROUPID = "GROUPID: " + GenerateGROUPID() + newLine;
+                    string p_Title = "Title: " + RoftCreator.Instance.GetSongTitle() + newLine;
+                    string p_TitleUnicode = "TitleUnicode: " + RoftCreator.Instance.GetSongTitle(true) + newLine;
+                    string p_Artist = "Artist: " + RoftCreator.Instance.GetSongArtist() + newLine;
+                    string p_ArtistUnicode = "ArtistUnicode: " + RoftCreator.Instance.GetSongArtist(true) + newLine;
+                    string p_Creator = "Creator: " + System.Environment.UserName + newLine;
+                    string p_ROFTID = "ROFTID: " + RoftCreator.Instance.GetROFTID() + newLine;
+                    string p_GROUPID = "GROUPID: " + RoftCreator.Instance.GetGROUPID() + newLine;
                     #endregion
 
                     #region [Difficulty]
                     string t_difficulty = "[Difficulty]\n";
+                    string p_DifficultyName = "DifficultyName: " + RoftCreator.Instance.GetDifficultyName() + newLine;
                     string p_StressBuild = "StressBuild: " + GameManager.Instance.stressBuild.ToString() + newLine;
                     string p_ObjectCount = "ObjectCount: " + newLine;
                     string keyInfo = "";
                     #region Key Count
 
-                    switch (RoftCreator.GetTotalKeys())
+                    switch (RoftCreator.Instance.GetTotalKeys())
                     {
                         case Key_Layout.KeyLayoutType.Layout_1x4:
                             keyInfo = "4";
@@ -66,8 +70,8 @@ namespace ROFTIOMANAGEMENT
                     #endregion
                     string p_KeyCount = "KeyCount: " + keyInfo + newLine;
 
-                    string p_AccuracyHarshness = "AccuracyHarshness: " + RoftCreator.GetAccuracyHarshness() + newLine;
-                    string p_ApproachSpeed = "ApproachSpeed: " + RoftCreator.GetApproachSpeed() + newLine;
+                    string p_AccuracyHarshness = "AccuracyHarshness: " + RoftCreator.Instance.GetAccuracyHarshness() + newLine;
+                    string p_ApproachSpeed = "ApproachSpeed: " + RoftCreator.Instance.GetApproachSpeed() + newLine;
                     #endregion
 
                     #region [Objects]
@@ -79,7 +83,9 @@ namespace ROFTIOMANAGEMENT
                     {
                    t_general +
                    p_Author +
-                   p_AudioFileName,
+                   p_AudioFileName +
+                   p_BackgroundImage +
+                   p_BackgroundVideo,
 
                    t_metadata +
                    p_Title +
@@ -91,6 +97,7 @@ namespace ROFTIOMANAGEMENT
                    p_GROUPID,
 
                    t_difficulty +
+                   p_DifficultyName +
                    p_StressBuild +
                    p_ObjectCount +
                    p_KeyCount +

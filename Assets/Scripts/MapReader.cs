@@ -64,7 +64,9 @@ public class MapReader : MonoBehaviour
     private void Start()
     {
         readKeyThread = new Thread(() => ReadRFTMKeys(m_name));
+
         readKeyThread.Start();
+
         while (true)
         {
             if (!readKeyThread.IsAlive)
@@ -84,7 +86,7 @@ public class MapReader : MonoBehaviour
             KeyLayoutAwake();
 
         //Get other values such as Approach Speed, Stress Build, and Accuracy Harshness
-        if (RoftPlayer.Instance != null && !RoftPlayer.Instance.record)
+        if (RoftPlayer.Instance != null && RoftPlayer.Instance.record == false)
         {
             int difficultyTag = InRFTMJumpTo("Difficulty", m_name);
             NoteEffector.Instance.ApproachSpeed = ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", m_name);
@@ -95,6 +97,8 @@ public class MapReader : MonoBehaviour
         else
         {
             Debug.Log("For some reason, this is not being read....");
+            if (RoftPlayer.Instance == null)
+                print("RoftPlayer.Instance was raw...");
         }
     }
 
@@ -229,7 +233,6 @@ public class MapReader : MonoBehaviour
 
     void KeyLayoutAwake()
     {
-
         int difficultyTag = InRFTMJumpTo("Difficulty", m_name);
         int keyCount = ReadPropertyFrom<int>(difficultyTag, "KeyCount", m_name);
         totalKeys = keyCount;
@@ -278,30 +281,15 @@ public class MapReader : MonoBehaviour
     #endregion
 
     #region Get Methods
-    public string GetName()
-    {
-        return m_name;
-    }
+    public string GetName() => m_name;
 
-    public float GetDifficultyRating()
-    {
-        return difficultyRating;
-    }
+    public float GetDifficultyRating() => difficultyRating;
 
-    public float GetTotalNotes()
-    {
-        return totalNotes;
-    }
+    public float GetTotalNotes() => totalNotes;
 
-    public float GetTotalKeys()
-    {
-        return totalKeys;
-    }
+    public float GetTotalKeys() => totalKeys;
 
-    public long GetMaxScore()
-    {
-        return maxScore;
-    }
+    public long GetMaxScore() => maxScore;
 
     public ObjectTypes GetReaderType<T>()
     {

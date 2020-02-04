@@ -120,8 +120,5 @@ public class ArrowDirectionSet : MonoBehaviour
         }
     }
 
-    public GameObject GetAttachedCircle()
-    {
-        return attachedCircle;
-    }
+    public GameObject GetAttachedCircle() => attachedCircle;
 }

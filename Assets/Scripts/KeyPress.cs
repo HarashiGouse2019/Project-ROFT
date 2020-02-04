@@ -51,7 +51,7 @@ public class KeyPress : MonoBehaviour
                              + RoftPlayer.musicSource.timeSamples.ToString() + ","
                             + 0.ToString();
 
-                        RoftIO.WriteToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
+                        RoftIO.WriteToRFTM(RoftCreator.filename, Application.streamingAssetsPath + "/", data);
                     }
                     #endregion
 
@@ -82,8 +82,5 @@ public class KeyPress : MonoBehaviour
         return _on;
     }
 
-    public int GetKeyPressInputValue()
-    {
-        return keyPressInput;
-    }
+    public int GetKeyPressInputValue() => keyPressInput;
 }

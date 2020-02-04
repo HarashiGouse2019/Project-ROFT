@@ -918,146 +918,8 @@ MonoBehaviour:
   soundVolumeAdjust: {fileID: 0}
   nowPlaying: 
   getMusic:
-  - name: Camellia - werewolf howls
-    clip: {fileID: 8300000, guid: 0ba0520a60c53344888514c30de0560b, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: Exit This Earth Most Atomosphere 200-Step Remix
-    clip: {fileID: 8300000, guid: f8a327c17f8cc3c4397922c584bd3d0f, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: Ginkiha - EOS
-    clip: {fileID: 8300000, guid: 5cd7bbda60f36174aa511506a5889d08, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: Helblinde - Life starts at 200bpm - 12 Grief & Malice
-    clip: {fileID: 8300000, guid: 243c70d36ac783543ad8867eaab23729, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: miracle_5ympho_x
-    clip: {fileID: 8300000, guid: 256be60ab5aae6a4bbf9e4c35739f39b, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: Teminite & Panda Eyes - Highscore
-    clip: {fileID: 8300000, guid: 0cafef172cb36a4498167f61a8cf8afe, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
   - name: Perfume - Tokimeki Lights
     clip: {fileID: 8300000, guid: 498e7b70fd7590348909153a370a1245, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: Shoujo Shuumatsu Ryoko - More One Night (Assertive Hardcore Bootleg)
-    clip: {fileID: 8300000, guid: 6b6593956a00a214bbad2316d67e67c3, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: Welcome
-    clip: {fileID: 8300000, guid: f45ac5c08cc3578408c0f1812cb86ea8, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: I Don't Want to Leave
-    clip: {fileID: 8300000, guid: 697e0d93494a0e442bc64c980e436e34, type: 3}
-    volume: 1
-    pitch: 2.89
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: Untitled Song (1)
-    clip: {fileID: 8300000, guid: 41bf06e9ac3898849aeb052d19cda149, type: 3}
-    volume: 1
-    pitch: 2.89
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: Plexi - The Sweet New Groove
-    clip: {fileID: 8300000, guid: a61763859ff6cf9449e2def2e495ccbc, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: Xi - Blue Zenith
-    clip: {fileID: 8300000, guid: ecdedf33e1dc90847ab48e5475dc8fe4, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: Nekomata Master - Scars of FAUNA
-    clip: {fileID: 8300000, guid: b3bf560caac312440a874415d391bec3, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: Project Grimoire - Excalibur _Revived Resolution
-    clip: {fileID: 8300000, guid: 3749f238002a65d41a7986f15b1e000b, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: Rough Heroine
-    clip: {fileID: 8300000, guid: 80e46aae44716ab45b11d7858acdb7b9, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: GYARI feat.Kizuna Akari - Akari ga Yatte Kita Zou
-    clip: {fileID: 8300000, guid: 7b450e58cc981aa4a8d00ef6306784e0, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: KASAI HARDCORES - Cycle Hit
-    clip: {fileID: 8300000, guid: 4d38aadcef726fd4581d632acad6b91d, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: Camellia - Secret Boss
-    clip: {fileID: 8300000, guid: af9b332501cdd1a4b8a8263efb96e459, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: Yooh - Destroy
-    clip: {fileID: 8300000, guid: 729b17df3ee12fc41bcad7209d4d927e, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: noraneko
-    clip: {fileID: 8300000, guid: f9e4301cbc3898a4f8d477cbc7cab10c, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: PSYQUI - Vital Error
-    clip: {fileID: 8300000, guid: 00a60ddf03367c345b37a20c1ba19eb0, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: PSYQUI - Education
-    clip: {fileID: 8300000, guid: dc7b5ce934fbef24cb08a56fcab8564e, type: 3}
-    volume: 1
-    pitch: 1
-    enableLoop: 0
-    source: {fileID: 0}
-  - name: Phantom Sage - Holystone
-    clip: {fileID: 8300000, guid: f002c403923c62843b08d78bd65a04b0, type: 3}
     volume: 1
     pitch: 1
     enableLoop: 0
@@ -2452,7 +2314,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: Perfume - Tokimeki Lights
+  m_name: 
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0
@@ -3620,7 +3482,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1452287092
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3733,7 +3595,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!114 &1505021164
 MonoBehaviour:
@@ -3747,18 +3609,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65af08cbbdc82154bbea00871abf0ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioFile: {fileID: 0}
-  backgroundImage: {fileID: 0}
+  audioFile: {fileID: 8300000, guid: 498e7b70fd7590348909153a370a1245, type: 3}
+  backgroundImage: {fileID: 2800000, guid: d5776c098b954e945b29fcd6f4f5c49a, type: 3}
   backgroundVideo: {fileID: 0}
-  songTitle: 
-  songArtist: 
-  songTitleUnicode: 
-  songArtistUnicode: 
-  difficultyName: 
+  songTitle: Tokimeki Lights
+  songArtist: Perfume
+  songTitleUnicode: "\u3068\u304D\u3081\u304D\u30E9\u30A4\u30FC\u30C8"
+  songArtistUnicode: Perfume
+  difficultyName: Lights
   keyLayout: 0
-  approachSpeed: 0
-  accuracyHarshness: 0
-  stressBuild: 0
+  approachSpeed: 6
+  accuracyHarshness: 5
+  stressBuild: 5
   createNewDifficulty: 0
   GROUPID: 0
 --- !u!4 &1505021165
@@ -5944,8 +5806,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ec2119ba0127ce439f515369208fd1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  music: {fileID: 8300000, guid: 0cafef172cb36a4498167f61a8cf8afe, type: 3}
-  record: 0
+  music: {fileID: 0}
+  record: 1
   tickSignature: 4
   playButton: {fileID: 0}
   pauseButton: {fileID: 0}
@@ -7646,7 +7508,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.06919678, y: 4.8807373}
+  m_AnchoredPosition: {x: -0.06919678, y: 4.880615}
   m_SizeDelta: {x: 696.7, y: 130.88}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &7113210979678610685

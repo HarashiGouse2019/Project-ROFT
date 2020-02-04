@@ -94,8 +94,7 @@ public class RoftPlayer : MonoBehaviour
 
     private void Start()
     {
-        if (record == true) InitialRecord();
-        else StartCoroutine(Wait(3, () => PlayMusic()));
+        if (record == false) StartCoroutine(Wait(3, () => PlayMusic()));
     }
 
     // Update is called once per frame
@@ -122,7 +121,7 @@ public class RoftPlayer : MonoBehaviour
         musicSource = gameObject.AddComponent<AudioSource>();
 
         if (record)
-            musicSource.clip = music;
+            musicSource.clip = RoftCreator.Instance.GetAudioFile();
         else
             musicSource.clip = MusicManager.Instance.GetMusic(MapReader.Instance.GetName());
 
@@ -149,12 +148,6 @@ public class RoftPlayer : MonoBehaviour
     {
         musicSource.Stop();
     }
-
-    void InitialRecord()
-    {
-        CreateNewRFTM(music.name, Application.streamingAssetsPath + @"/");
-    }
-  
 
     public float GetMusicLengthInSamples()
     {

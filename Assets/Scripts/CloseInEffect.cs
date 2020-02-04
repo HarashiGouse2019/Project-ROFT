@@ -321,10 +321,7 @@ public class CloseInEffect : NoteEffector
         dispose = false;
     }
 
-    bool CheckAutoPlay()
-    {
-        return GameManager.Instance.isAutoPlaying;
-    }
+    bool CheckAutoPlay() => GameManager.Instance.isAutoPlaying;
 
     void Pulse()
     {

@@ -95,10 +95,11 @@ public class NoteEffector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateNoteOffset();
-        UpdateAccuracyHarshness();
         if (!RoftPlayer.Instance.record)
         {
+            UpdateNoteOffset();
+            UpdateAccuracyHarshness();
+
             if (ManageObjTypeSequence(mapReader.GetReaderType<TapObjectReader>())) 
                 SpawnNoteObj(mapReader.GetReaderType<TapObjectReader>());
 
@@ -271,11 +272,14 @@ public class NoteEffector : MonoBehaviour
     /// </summary>
     void RetrieveEffectConfigs()
     {
-        //Get Position of Difficulty Tag in File
-        int difficultyTag = RoftIO.InRFTMJumpTo("Difficulty", mapReader.GetName());
+        if (RoftPlayer.Instance.record == false)
+        {
+            //Get Position of Difficulty Tag in File
+            int difficultyTag = RoftIO.InRFTMJumpTo("Difficulty", mapReader.GetName());
 
-        //Use difficultyTag to read its property values
-        accuracy = RoftIO.ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", mapReader.GetName());
-        approachSpeed = RoftIO.ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", mapReader.GetName());
+            //Use difficultyTag to read its property values
+            accuracy = RoftIO.ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", mapReader.GetName());
+            approachSpeed = RoftIO.ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", mapReader.GetName());
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class AccuracySign : MonoBehaviour
 {
@@ -12,18 +13,29 @@ public class AccuracySign : MonoBehaviour
 
     private const float showDuration = 10f;
 
+    //AccuracySignUpdate()
+    public IEnumerator accuracySignRoutine;
+
     // Start is called before the first frame update
     void Awake()
     {
         spriteRender = GetComponent<SpriteRenderer>();
+
+        accuracySignRoutine = AccuracySignUpdate();
+        StartCoroutine(accuracySignRoutine);
     }
 
-    private void Update()
+    private IEnumerator AccuracySignUpdate()
     {
-        if (!GameManager.Instance.IsGamePaused)
+        while (true)
         {
-            FadeOut();
-            if (active) ShowFor(showDuration, 0.5f);
+            if (!GameManager.Instance.IsGamePaused)
+            {
+                FadeOut();
+                if (active) ShowFor(showDuration, 0.5f);
+            }
+
+            yield return new WaitForEndOfFrame();
         }
     }
 

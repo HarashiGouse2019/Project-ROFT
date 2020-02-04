@@ -16,31 +16,45 @@ public class RoftCreator : MonoBehaviour
      create a good enough software editor to make creating Beatmaps a easier.
      */
 
+    public static RoftCreator Instance;
+
     [Header("Audio Clip To Use")]
-    [SerializeField] private static AudioClip audioFile;
+    [SerializeField] private AudioClip audioFile;
 
     [Header("Image/Video Background")]
-    [SerializeField] private static RawImage backgroundImage;
-    [SerializeField] private static VideoClip backgroundVideo;
+    [SerializeField] private Texture backgroundImage;
+    [SerializeField] private VideoClip backgroundVideo;
 
     [Header("General Setup")]
-    [SerializeField] private static string songTitle;
-    [SerializeField] private static string songArtist;
-    [SerializeField] private static string songTitleUnicode;
-    [SerializeField] private static string songArtistUnicode;
-    [SerializeField] private static string difficultyName;
-    [SerializeField] private static Key_Layout.KeyLayoutType keyLayout;
+    [SerializeField] private string songTitle;
+    [SerializeField] private string songArtist;
+    [SerializeField] private string songTitleUnicode;
+    [SerializeField] private string songArtistUnicode;
+    [SerializeField] private string difficultyName;
+    [SerializeField] private Key_Layout.KeyLayoutType keyLayout;
 
     [Header("Difficulty Setup")]
-    [SerializeField, Range(1f, 10f)] private static float approachSpeed;
-    [SerializeField, Range(1f, 10f)] private static float accuracyHarshness;
-    [SerializeField, Range(1f, 10f)] private static float stressBuild;
+    [SerializeField, Range(1f, 10f)] private float approachSpeed;
+    [SerializeField, Range(1f, 10f)] private float accuracyHarshness;
+    [SerializeField, Range(1f, 10f)] private float stressBuild;
 
     [Header("Create New Difficulty")]
-    [SerializeField, Tooltip("Toggle if creating new difficulty.")] private static bool createNewDifficulty;
-    [SerializeField, Tooltip("If creating a new difficulty, define what group the difficulty derives.")] private static int GROUPID;
+    [SerializeField, Tooltip("Toggle if creating new difficulty.")] private bool createNewDifficulty;
+    [SerializeField, Tooltip("If creating a new difficulty, define what group the difficulty derives.")] private int GROUPID;
+
+    //The filename that will be generated 
+    public static string filename;
+
+    //Generated ROFTID 
+    private int ROFTID;
 
     private void Awake()
+    {
+        
+        Instance = this;
+    }
+
+    private void Start()
     {
         /*We'll check if we're recording.
          If we are, we generate a new .rftm file.
@@ -48,6 +62,21 @@ public class RoftCreator : MonoBehaviour
          If there's no defined GROUPID, we'll generate one,
          followed by a folder for all difficulties.*/
 
+        if (RoftPlayer.Instance.record)
+        {
+            CheckForGROUPID();
+            filename = songArtist + " - " + songTitle + "(" + difficultyName + ")";
+            RoftIO.CreateNewRFTM(filename, Application.streamingAssetsPath + @"/");
+        }
+    }
+
+    void CheckForGROUPID()
+    {
+        if (GROUPID == null || createNewDifficulty == false)
+        {
+            GROUPID = RoftIO.GenerateGROUPID();
+            ROFTID = RoftIO.GenerateROFTID();
+        }
     }
 
     #region Get Methods
@@ -55,35 +84,26 @@ public class RoftCreator : MonoBehaviour
     /// Get audio file being used.
     /// </summary>
     /// <returns>AudioClip</returns>
-    public static AudioClip GetAudioFile()
-    {
-        return audioFile;
-    } 
+    public AudioClip GetAudioFile() => audioFile;
 
     /// <summary>
     /// Get background image being used.
     /// </summary>
     /// <returns>RawImage</returns>
-    public static RawImage GetBackgroundImage()
-    {
-        return backgroundImage;
-    }
+    public Texture GetBackgroundImage() => backgroundImage;
 
     /// <summary>
     /// Get background video being used.
     /// </summary>
     /// <returns>VideoClip</returns>
-    public static VideoClip GetVideoClip()
-    {
-        return backgroundVideo;
-    }
+    public  VideoClip GetVideoClip() => backgroundVideo;
 
     /// <summary>
     /// Get song title being used.
     /// </summary>
     /// <param name="_inUnicode">Return the unicode of song title</param>
     /// <returns>String</returns>
-    public static string GetSongTitle(bool _inUnicode = false)
+    public string GetSongTitle(bool _inUnicode = false)
     {
         switch (_inUnicode)
         {
@@ -92,6 +112,7 @@ public class RoftCreator : MonoBehaviour
             case true:
                 return songTitleUnicode;
         }
+        return "";
     }
 
     /// <summary>
@@ -99,7 +120,7 @@ public class RoftCreator : MonoBehaviour
     /// </summary>
     /// <param name="_inUnicode">Return the unicode of song artist</param>
     /// <returns></returns>
-    public static string GetSongArtist(bool _inUnicode = false)
+    public string GetSongArtist(bool _inUnicode = false)
     {
         switch (_inUnicode)
         {
@@ -108,62 +129,46 @@ public class RoftCreator : MonoBehaviour
             case true:
                 return songArtistUnicode;
         }
+        return "";
     }
 
     /// <summary>
     /// Get difficulty name being used.
     /// </summary>
     /// <returns></returns>
-    public static string GetDifficultyName()
-    {
-        return difficultyName;
-    }
+    public  string GetDifficultyName() => difficultyName;
 
     /// <summary>
     /// Get total keys being used.
     /// </summary>
     /// <returns></returns>
-    public static Key_Layout.KeyLayoutType GetTotalKeys()
-    {
-        return keyLayout;
-    }
+    public  Key_Layout.KeyLayoutType GetTotalKeys() => keyLayout;
 
     /// <summary>
     /// Get the harshness of difficulty being used.
     /// </summary>
     /// <returns></returns>
-    public static float GetAccuracyHarshness()
-    {
-        return accuracyHarshness;
-    }
+    public float GetAccuracyHarshness() => accuracyHarshness;
 
     /// <summary>
     /// Get the speed of circle enclosing.
     /// </summary>
     /// <returns></returns>
-    public static float GetApproachSpeed()
-    {
-        return approachSpeed;
-    }
+    public float GetApproachSpeed() => approachSpeed;
 
     /// <summary>
     /// Get how much stress will build up.
     /// </summary>
     /// <returns></returns>
-    public static float GetStressBuild()
-    {
-        return stressBuild;
-    }
+    public float GetStressBuild() => stressBuild;
 
     /// <summary>
     /// Get Group ID.
     /// </summary>
     /// <returns></returns>
-    public static string GetGROUDIP()
-    {
-        return GROUPID.ToString();
-    }
+    public string GetGROUPID() => GROUPID.ToString();
+
+    public string GetROFTID() => ROFTID.ToString();
+
     #endregion
-
-
 }

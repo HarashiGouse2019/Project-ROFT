@@ -116,8 +116,5 @@ public class MouseEvent : MonoBehaviour
         }
     }
 
-    public int GetMouseInputValue()
-    {
-        return mouseMovementInput;
-    }
+    public int GetMouseInputValue() => mouseMovementInput;
 }
