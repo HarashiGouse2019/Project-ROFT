@@ -1,0 +1,71 @@
+[General]
+Author: TYRTEER
+AudioFilename: Assets/Music/Perfume - Tokimeki Lights.mp3
+BackgroundImage: Akari ga yatte kita zou
+BackgroundVideo: 
+
+[Metadata]
+Title: Tokimeki Lights
+TitleUnicode: ときめきライート
+Artist: Perfume
+ArtistUnicode: Perfume
+Creator: TYRTEER
+ROFTID: 558
+GROUPID: 2027055664
+
+[Difficulty]
+DifficultyName: Lights
+StressBuild: 10
+ObjectCount: 
+KeyCount: 4
+AccuracyHarshness: 5
+ApproachSpeed: 6
+
+[Objects]
+0,79027,0
+1,98783,0
+5,119481,0
+9,140179,0
+4,159935,0
+8,178751,0
+9,197567,0
+5,218265,0
+4,237081,0
+0,258719,0
+1,278476,0
+5,297292,0
+4,316108,0
+8,335865,0
+9,356563,0
+5,374438,0
+1,393254,0
+0,413011,0
+5,433708,0
+4,451583,0
+9,473222,0
+8,492038,0
+5,511795,0
+4,531551,0
+0,551308,0
+5,569183,0
+8,589881,0
+4,609638,0
+5,631276,0
+0,648211,0
+1,667967,0
+4,686783,0
+5,746995,0
+8,766751,0
+5,825081,0
+0,842956,0
+4,870239,0
+5,885292,0
+5,982195,0
+4,1001011,0
+5,1061222,0
+0,1081919,0
+5,1137427,0
+8,1157183,0
+9,1178822,0
+5,1207987,0
+1,1246559,0

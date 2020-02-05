@@ -32,7 +32,7 @@ public class Key_Layout : MonoBehaviour
         Region_Scatter
     }
 
-    public KeyLayoutType keyLayout;
+    public KeyLayoutType keyLayout { get; set; }
 
     public LayoutMethod layoutMethod;
 
@@ -54,13 +54,6 @@ public class Key_Layout : MonoBehaviour
     [Header("Creating Layout")]
     public GameObject key;
     public ObjectPooler pooler;
-
-    //spawnPosX and Y are used for Regional Scatter
-    public float spawnPositionX = 0;
-    public float spawnPositionY = 0;
-
-    //This is for Regional Scatter spawning to help prevent overlapping
-    public static float padding = 3.5f;
 
     #endregion
 
@@ -121,24 +114,12 @@ public class Key_Layout : MonoBehaviour
     private float newYPosition = 0f;
     private uint numCols = 0;
     private uint numRows = 0;
-    public Camera m_camera;
     #endregion
 
     // Start is called before the first frame update
     void Awake()
     {
         Instance = this;
-    }
-
-    private void Start()
-    {
-        if (
-            GameManager.Instance.GetGameMode == GameManager.GameMode.TBR_ALL ||
-            GameManager.Instance.GetGameMode == GameManager.GameMode.TBR_HOMEROW)
-            ChangeLayoutMethod(1);
-        else
-            ChangeLayoutMethod(0);
-
     }
 
     private void Update()
@@ -287,13 +268,5 @@ public class Key_Layout : MonoBehaviour
 
         }
         InitiateAutoKeyBind();
-    }
-
-    //This function will directly change the layout mode.
-    //0 is Abstract, 1 is Scatter
-    int ChangeLayoutMethod(int _mode)
-    {
-        layoutMethod = (LayoutMethod)_mode;
-        return _mode;
     }
 }
