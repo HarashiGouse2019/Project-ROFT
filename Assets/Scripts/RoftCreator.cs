@@ -50,7 +50,6 @@ public class RoftCreator : MonoBehaviour
 
     private void Awake()
     {
-        
         Instance = this;
     }
 
@@ -169,6 +168,8 @@ public class RoftCreator : MonoBehaviour
     public string GetGROUPID() => GROUPID.ToString();
 
     public string GetROFTID() => ROFTID.ToString();
+
+    public Key_Layout.KeyLayoutType GetKeyLayout() => keyLayout;
 
     #endregion
 }

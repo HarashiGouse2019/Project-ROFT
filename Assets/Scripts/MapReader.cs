@@ -97,8 +97,6 @@ public class MapReader : MonoBehaviour
         else
         {
             Debug.Log("For some reason, this is not being read....");
-            if (RoftPlayer.Instance == null)
-                print("RoftPlayer.Instance was raw...");
         }
     }
 

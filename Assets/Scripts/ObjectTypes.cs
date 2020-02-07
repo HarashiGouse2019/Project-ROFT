@@ -39,10 +39,8 @@ public abstract class ObjectTypes : MonoBehaviour
 
     }
 
-    public virtual long GetSequencePosition()
-    {
-        return sequencePos;
-    }
+    public virtual long GetSequencePosition() => sequencePos;
+
 
     public virtual void SequencePositionReset()
     {

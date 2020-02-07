@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class KeyConfig
+public class KeyConfig : MonoBehaviour
 {
     public static KeyConfig Instance;
 
@@ -52,6 +52,7 @@ public class KeyConfig
     void Awake()
     {
         Instance = this;
+        SaveConfig();
     }
 
     // Update is called once per frame
@@ -66,9 +67,6 @@ public class KeyConfig
          key totals, and the scale and distribution of it. That will then be save and send into the playerprefs,
          saving those preferences onto the user's computer.*/
         CreateJSON();
-
-
-        
     }
 
     public static void LoadConfig()

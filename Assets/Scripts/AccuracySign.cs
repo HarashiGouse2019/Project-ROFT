@@ -20,22 +20,14 @@ public class AccuracySign : MonoBehaviour
     void Awake()
     {
         spriteRender = GetComponent<SpriteRenderer>();
-
-        accuracySignRoutine = AccuracySignUpdate();
-        StartCoroutine(accuracySignRoutine);
     }
 
-    private IEnumerator AccuracySignUpdate()
+    private void Update()
     {
-        while (true)
+        if (!GameManager.Instance.IsGamePaused)
         {
-            if (!GameManager.Instance.IsGamePaused)
-            {
-                FadeOut();
-                if (active) ShowFor(showDuration, 0.5f);
-            }
-
-            yield return new WaitForEndOfFrame();
+            FadeOut();
+            if (active) ShowFor(showDuration, 0.5f);
         }
     }
 

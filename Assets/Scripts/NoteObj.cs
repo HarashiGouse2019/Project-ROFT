@@ -3,7 +3,7 @@ using UnityEngine;
 
 [Serializable]
 public class NoteObj
-{ 
+{
     public enum NoteObjType
     {
         Tap,
@@ -15,9 +15,9 @@ public class NoteObj
     [Header("Central Values")]
 
     //NoteInstanceID
-    private uint instID;
-    private long instSample;
-    private NoteObjType instType;
+    [SerializeField] private uint instID;
+    [SerializeField] private long instSample;
+    [SerializeField] private NoteObjType instType;
 
     //Miscellaneous Values
     [Header("Miscellaneous Values")]
@@ -39,19 +39,10 @@ public class NoteObj
         instType = type;
     }
 
-    public uint GetInstanceID()
-    {
-        return instID;
-    }
+    public uint GetInstanceID() => instID;
 
-    public long GetInstanceSample()
-    {
-        return instSample;
-    }
+    public long GetInstanceSample() => instSample;
 
-    public NoteObjType GetInstanceType()
-    {
-        return instType;
-    }
+    public NoteObjType GetInstanceType() => instType;
 }
 

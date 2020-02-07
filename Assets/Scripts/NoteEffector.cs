@@ -95,11 +95,11 @@ public class NoteEffector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        UpdateNoteOffset();
+        UpdateAccuracyHarshness();
+
         if (!RoftPlayer.Instance.record)
         {
-            UpdateNoteOffset();
-            UpdateAccuracyHarshness();
-
             if (ManageObjTypeSequence(mapReader.GetReaderType<TapObjectReader>())) 
                 SpawnNoteObj(mapReader.GetReaderType<TapObjectReader>());
 
@@ -118,7 +118,6 @@ public class NoteEffector : MonoBehaviour
     /// <param name="_objReader">Object Reader of a certain type.</param>
     void SpawnNoteObj(ObjectTypes _objReader = null)
     {
-        ObjectPooler keyPooler;
 
         int sequencePos = (int)_objReader.GetSequencePosition();
 
@@ -135,7 +134,7 @@ public class NoteEffector : MonoBehaviour
 
             int objId = (int)objToBeSpawned.GetInstanceID();
 
-            keyPooler = Key_Layout.keyObjects[objId].GetComponent<ObjectPooler>();
+            ObjectPooler keyPooler = Key_Layout.keyObjects[objId].GetComponent<ObjectPooler>();
 
             //We want to get our game objects from the same key for both the approach circle, and the arrow
             GameObject approachCircle = _objReader.GetTypeFromPool(keyPooler);

@@ -44,7 +44,7 @@ public class KeyPress : MonoBehaviour
                 if (Input.GetKey(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKey(key_Layout.secondaryBindedKeys[keyNum]))
                 {
                     #region Write to RFTM File
-                    if (RoftPlayer.Instance.record && Input.GetKeyDown(key_Layout.primaryBindedKeys[keyNum]))
+                    if (RoftPlayer.Instance.record && Input.GetKeyDown(key_Layout.secondaryBindedKeys[keyNum]))
                     {
                         string data =
                             keyNum.ToString() + ","

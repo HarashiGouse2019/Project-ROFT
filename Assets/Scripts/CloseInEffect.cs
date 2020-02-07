@@ -174,7 +174,7 @@ public class CloseInEffect : NoteEffector
                     else return;
                 }
 
-                GameManager.Instance.IncrementCombo();
+                IncrementComboChain();
 
                 GameManager.consecutiveMisses = 0;
 

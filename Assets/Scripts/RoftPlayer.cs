@@ -149,10 +149,7 @@ public class RoftPlayer : MonoBehaviour
         musicSource.Stop();
     }
 
-    public float GetMusicLengthInSamples()
-    {
-        return musicLengthInSamples;
-    }
+    public float GetMusicLengthInSamples() => musicLengthInSamples;
 
     IEnumerator Wait(int duration, Action function = null)
     {
