@@ -36,9 +36,6 @@ public class Key_Layout : MonoBehaviour
 
     public LayoutMethod layoutMethod;
 
-    public float[] setXOffset;
-    public float[] setYOffset;
-
     public bool autoBindKeys = true;
 
     [Header("Data Ui")]
@@ -176,8 +173,11 @@ public class Key_Layout : MonoBehaviour
         if (RoftPlayer.Instance.record)
             keyLayout = RoftCreator.Instance.GetKeyLayout();
 
-        float xOffset = setXOffset[(int)keyLayout];
-        float yOffset = setYOffset[(int)keyLayout];
+        //float xOffset = setXOffset[(int)keyLayout];
+        //float yOffset = setYOffset[(int)keyLayout];
+
+        float xOffset = keyConfig.GetXOffset[(int)keyLayout];
+        float yOffset = keyConfig.GetYOffset[(int)keyLayout];
 
         GameObject newKey;
         Vector2 keyPosition;
@@ -217,18 +217,12 @@ public class Key_Layout : MonoBehaviour
                     newKey.GetComponent<SpawnedFrom>().origin = gameObject;
                 }
 
-                //newXPosition = (newKey.transform.localPosition.x + (numCols + (keyHorizontalSpread[(int)keyLayout] * col)));
-                //newYPosition = (newKey.transform.localPosition.y - (numRows + (keyVerticalSpread[(int)keyLayout] * row)));
-
-                //New Revised one
                 newXPosition = (newKey.transform.localPosition.x + (numCols + (keyConfig.GetHorizontalSpread[(int)keyLayout] * col)));
                 newYPosition = (newKey.transform.localPosition.x + (numRows + (keyConfig.GetVerticalSpread[(int)keyLayout] * row)));
 
                 keyPosition = new Vector2(newXPosition, newYPosition);
                 newKey.transform.localPosition = keyPosition;
-                //newKey.transform.localScale = new Vector3(defaultKeyScale[(int)keyLayout], defaultKeyScale[(int)keyLayout]);
 
-                //New revised one
                 newKey.transform.localScale = new Vector3(keyConfig.GetDefaultKeyScale[(int)keyLayout], keyConfig.GetDefaultKeyScale[(int)keyLayout]);
 
                 keyObjects.Add(newKey);

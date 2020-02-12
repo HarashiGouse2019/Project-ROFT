@@ -16,7 +16,25 @@ public class KeyConfig
     //No! Actually, what we want to do is take all of those values out from Key_Layout, and move it to this class.
     //Now that I think about it, having a separate class to handle the configuration of the layout of the keys
     //sounds a lot more to handle, and I really do approve that message! Yay!!!!!!
-    public float[] defaultKeyScale = new float[5]
+    private float[] keyXOffset { get; } = new float[5]
+    {
+        -11f,
+        -9.25f,
+        -8.5f,
+        -8.5f,
+        -17f
+    };
+
+    private float[] keyYOffset { get; } = new float[5]
+    {
+        -3f,
+        2f,
+        4.2f,
+        6f,
+        1.5f
+    };
+
+    private float[] defaultKeyScale { get; } = new float[5]
     {
         2.25f,
         1.75f,
@@ -25,7 +43,7 @@ public class KeyConfig
         1f
     };
 
-    public float[] keyHorizontalSpread = new float[5] {
+    private float[] keyHorizontalSpread { get; } = new float[5] {
         3.5f,
         2.5f,
         2f,
@@ -33,7 +51,7 @@ public class KeyConfig
         1.5f
     };
 
-    public float[] keyVerticalSpread = new float[5]
+    private float[] keyVerticalSpread { get; } = new float[5]
     {
         3.5f,
         2.5f,
@@ -56,7 +74,7 @@ public class KeyConfig
         /*SaveConfig method will be responsible of saving our scale, the position of different
          key totals, and the scale and distribution of it. That will then be save and send into the playerprefs,
          saving those preferences onto the user's computer.*/
-         if(!File.Exists(Application.dataPath + "/keyConfig.json"))
+        if (!File.Exists(Application.dataPath + "/keyConfig.json"))
             CreateJSON();
     }
 
@@ -70,6 +88,8 @@ public class KeyConfig
     public float[] GetDefaultKeyScale => defaultKeyScale;
     public float[] GetHorizontalSpread => keyHorizontalSpread;
     public float[] GetVerticalSpread => keyVerticalSpread;
+    public float[] GetXOffset => keyXOffset;
+    public float[] GetYOffset => keyYOffset;
     public string GetJSONString() => File.ReadAllText(Application.dataPath + "/keyConfig.json");
-  
+
 }
