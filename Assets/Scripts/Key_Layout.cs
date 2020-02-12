@@ -218,7 +218,7 @@ public class Key_Layout : MonoBehaviour
                 }
 
                 newXPosition = (newKey.transform.localPosition.x + (numCols + (keyConfig.GetHorizontalSpread[(int)keyLayout] * col)));
-                newYPosition = (newKey.transform.localPosition.x + (numRows + (keyConfig.GetVerticalSpread[(int)keyLayout] * row)));
+                newYPosition = (newKey.transform.localPosition.y - (numRows + (keyConfig.GetVerticalSpread[(int)keyLayout] * row)));
 
                 keyPosition = new Vector2(newXPosition, newYPosition);
                 newKey.transform.localPosition = keyPosition;

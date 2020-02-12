@@ -3563,9 +3563,9 @@ MonoBehaviour:
   songTitleUnicode: "\u3068\u304D\u3081\u304D\u30E9\u30A4\u30FC\u30C8"
   songArtistUnicode: Perfume
   difficultyName: Lights
-  keyLayout: 0
+  keyLayout: 1
   approachSpeed: 7
-  accuracyHarshness: 5
+  accuracyHarshness: 7
   stressBuild: 5
   createNewDifficulty: 0
   GROUPID: 0
@@ -5723,7 +5723,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   music: {fileID: 0}
-  record: 0
+  record: 1
   tickSignature: 4
   playButton: {fileID: 0}
   pauseButton: {fileID: 0}
