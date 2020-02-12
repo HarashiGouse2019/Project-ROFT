@@ -126,7 +126,7 @@ public class GameManager : MonoBehaviour
     [Header("In-Game Statistics and Values")]
     private long totalScore;
     private long previousScore; //This will be used for a increasing effect
-    private int Combo { set; get; }
+    public int Combo { set; get; }
     private int maxCombo;
     public float overallAccuracy = 100.00f; //The average accuracy during the song
     public float accuracyPercentile; //The data in which gets accuracy in percent;
