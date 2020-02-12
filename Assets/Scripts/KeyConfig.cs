@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using System.IO;
 using UnityEngine;
 
-public class KeyConfig : MonoBehaviour
+[SerializeField]
+public class KeyConfig
 {
     public static KeyConfig Instance;
 
@@ -17,8 +16,7 @@ public class KeyConfig : MonoBehaviour
     //No! Actually, what we want to do is take all of those values out from Key_Layout, and move it to this class.
     //Now that I think about it, having a separate class to handle the configuration of the layout of the keys
     //sounds a lot more to handle, and I really do approve that message! Yay!!!!!!
-    [SerializeField]
-    readonly private float[] defaultKeyScale = new float[5]
+    public float[] defaultKeyScale = new float[5]
     {
         2.25f,
         1.75f,
@@ -27,8 +25,7 @@ public class KeyConfig : MonoBehaviour
         1f
     };
 
-    [SerializeField]
-    readonly private float[] keyHorizontalSpread = new float[5] {
+    public float[] keyHorizontalSpread = new float[5] {
         3.5f,
         2.5f,
         2f,
@@ -36,8 +33,7 @@ public class KeyConfig : MonoBehaviour
         1.5f
     };
 
-    [SerializeField]
-    readonly private float[] keyVerticalSpread = new float[5]
+    public float[] keyVerticalSpread = new float[5]
     {
         3.5f,
         2.5f,
@@ -49,37 +45,31 @@ public class KeyConfig : MonoBehaviour
     //String info
     private static string json;
 
-    void Awake()
+    public KeyConfig()
     {
         Instance = this;
         SaveConfig();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public static void SaveConfig()
+    private void SaveConfig()
     {
         /*SaveConfig method will be responsible of saving our scale, the position of different
          key totals, and the scale and distribution of it. That will then be save and send into the playerprefs,
          saving those preferences onto the user's computer.*/
-        CreateJSON();
-    }
-
-    public static void LoadConfig()
-    {
-        /*LoadConfig will load all values from player prefs, and will use the referenced Key_Layout
-         and assign those respective values to it before starting the song.*/
+         if(!File.Exists(Application.dataPath + "/keyConfig.json"))
+            CreateJSON();
     }
 
     private static void CreateJSON()
     {
         //Simply make this into a JSON
         json = JsonUtility.ToJson(Instance);
+        File.WriteAllText(Application.dataPath + "/keyConfig.json", json);
     }
 
-    private static KeyConfig LoadJSON() => JsonUtility.FromJson<KeyConfig>(json);
+    public float[] GetDefaultKeyScale => defaultKeyScale;
+    public float[] GetHorizontalSpread => keyHorizontalSpread;
+    public float[] GetVerticalSpread => keyVerticalSpread;
+    public string GetJSONString() => File.ReadAllText(Application.dataPath + "/keyConfig.json");
+  
 }

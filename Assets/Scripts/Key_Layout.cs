@@ -80,34 +80,8 @@ public class Key_Layout : MonoBehaviour
     };
 
     #endregion
-    [SerializeField]
-    readonly private float[] defaultKeyScale = new float[5]
-    {
-        2.25f,
-        1.75f,
-        1.4f,
-        1.4f,
-        1f
-    };
 
-    [SerializeField]
-    readonly private float[] keyHorizontalSpread = new float[5] {
-        3.5f,
-        2.5f,
-        2f,
-        2.25f,
-        1.5f
-    };
-
-    [SerializeField]
-    readonly private float[] keyVerticalSpread = new float[5]
-    {
-        3.5f,
-        2.5f,
-        2f,
-        1.75f,
-        1.5f
-    };
+    private KeyConfig keyConfig;
 
     //newX and newY are for Abstract Layout
     private float newXPosition = 0f;
@@ -120,6 +94,8 @@ public class Key_Layout : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        keyConfig = new KeyConfig();
+        keyConfig = JsonUtility.FromJson<KeyConfig>(keyConfig.GetJSONString());
     }
 
     private void Update()
@@ -241,12 +217,19 @@ public class Key_Layout : MonoBehaviour
                     newKey.GetComponent<SpawnedFrom>().origin = gameObject;
                 }
 
-                newXPosition = (newKey.transform.localPosition.x + (numCols + (keyHorizontalSpread[(int)keyLayout] * col)));
-                newYPosition = (newKey.transform.localPosition.y - (numRows + (keyVerticalSpread[(int)keyLayout] * row)));
+                //newXPosition = (newKey.transform.localPosition.x + (numCols + (keyHorizontalSpread[(int)keyLayout] * col)));
+                //newYPosition = (newKey.transform.localPosition.y - (numRows + (keyVerticalSpread[(int)keyLayout] * row)));
+
+                //New Revised one
+                newXPosition = (newKey.transform.localPosition.x + (numCols + (keyConfig.GetHorizontalSpread[(int)keyLayout] * col)));
+                newYPosition = (newKey.transform.localPosition.x + (numRows + (keyConfig.GetVerticalSpread[(int)keyLayout] * row)));
 
                 keyPosition = new Vector2(newXPosition, newYPosition);
                 newKey.transform.localPosition = keyPosition;
-                newKey.transform.localScale = new Vector3(defaultKeyScale[(int)keyLayout], defaultKeyScale[(int)keyLayout]);
+                //newKey.transform.localScale = new Vector3(defaultKeyScale[(int)keyLayout], defaultKeyScale[(int)keyLayout]);
+
+                //New revised one
+                newKey.transform.localScale = new Vector3(keyConfig.GetDefaultKeyScale[(int)keyLayout], keyConfig.GetDefaultKeyScale[(int)keyLayout]);
 
                 keyObjects.Add(newKey);
 
