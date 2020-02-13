@@ -5723,7 +5723,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   music: {fileID: 0}
-  record: 1
+  record: 0
   tickSignature: 4
   playButton: {fileID: 0}
   pauseButton: {fileID: 0}
