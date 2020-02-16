@@ -26,7 +26,7 @@ namespace ROFTIOMANAGEMENT
                     #region [General]
                     string t_general = "[General]\n";
                     string p_Author = "Author: " + System.Environment.UserName + newLine;
-                    string p_AudioFileName = "AudioFilename: " + AssetDatabase.GetAssetPath(RoftCreator.Instance.GetAudioFile()) + newLine;
+                    string p_AudioFileName = "AudioFilename: " + newLine;
                     string p_BackgroundImage = "BackgroundImage: " + RoftCreator.Instance.GetBackgroundImage().name + newLine;
                     string p_BackgroundVideo = "BackgroundVideo: " + newLine;
                     #endregion
@@ -170,6 +170,22 @@ namespace ROFTIOMANAGEMENT
             stringGROUPID += (yearDigit + monthDigit + dayDigit + uniqueNum);
 
             return Convert.ToInt32(stringGROUPID);
+        }
+
+        public static string GenerateDirectory(long? _GROUPID, string _songArtist, string _songName)
+        {
+            string _path = Application.persistentDataPath + "/Songs/" + "(" + _GROUPID + ") " + _songArtist + "-" + _songName + "@/";
+            //Create a Directory Specific for a song
+            Directory.CreateDirectory(_path);
+            return _path;
+        }
+
+        public static string GenerateDirectory(string _directoryName)
+        {
+            string _path = Application.persistentDataPath + "/" + _directoryName;
+            //Create a Directory Specific for a song
+            Directory.CreateDirectory(_path);
+            return _path;
         }
 
         public static void WriteToRFTM(string _name, string _path, string _data)

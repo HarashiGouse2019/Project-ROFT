@@ -74,7 +74,7 @@ public class KeyConfig
         /*SaveConfig method will be responsible of saving our scale, the position of different
          key totals, and the scale and distribution of it. That will then be save and send into the playerprefs,
          saving those preferences onto the user's computer.*/
-        if (!File.Exists(Application.dataPath + "/keyConfig.json"))
+        if (!File.Exists(Application.persistentDataPath + "/keyConfig.json"))
             CreateJSON();
     }
 
@@ -82,7 +82,7 @@ public class KeyConfig
     {
         //Simply make this into a JSON
         json = JsonUtility.ToJson(Instance);
-        File.WriteAllText(Application.dataPath + "/keyConfig.json", json);
+        File.WriteAllText(Application.persistentDataPath + "/keyConfig.json", json);
     }
 
     public float[] GetDefaultKeyScale => defaultKeyScale;
@@ -90,6 +90,6 @@ public class KeyConfig
     public float[] GetVerticalSpread => keyVerticalSpread;
     public float[] GetXOffset => keyXOffset;
     public float[] GetYOffset => keyYOffset;
-    public string GetJSONString() => File.ReadAllText(Application.dataPath + "/keyConfig.json");
+    public string GetJSONString() => File.ReadAllText(Application.persistentDataPath + "/keyConfig.json");
 
 }

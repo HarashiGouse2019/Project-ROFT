@@ -40,13 +40,16 @@ public class RoftCreator : MonoBehaviour
 
     [Header("Create New Difficulty")]
     [SerializeField, Tooltip("Toggle if creating new difficulty.")] private bool createNewDifficulty;
-    [SerializeField, Tooltip("If creating a new difficulty, define what group the difficulty derives.")] private int GROUPID;
+    [SerializeField, Tooltip("If creating a new difficulty, define what group the difficulty derives.")] private long? GROUPID;
 
     //The filename that will be generated 
     public static string filename;
 
     //Generated ROFTID 
-    private int ROFTID;
+    private int? ROFTID;
+
+    //Song Identifier; Contains GROUPID-ROFTID
+    private string songID;
 
     private void Awake()
     {
@@ -61,11 +64,18 @@ public class RoftCreator : MonoBehaviour
          If there's no defined GROUPID, we'll generate one,
          followed by a folder for all difficulties.*/
 
+        
+
         if (RoftPlayer.Instance.record)
         {
             CheckForGROUPID();
-            filename = songArtist + " - " + songTitle + "(" + difficultyName + ")";
-            RoftIO.CreateNewRFTM(filename, Application.streamingAssetsPath + @"/");
+
+            songID = "(" + GROUPID + "-" + ROFTID + ")";
+
+            //Testing Time!!!
+            filename = songID + songArtist + " - " + songTitle + "(" + difficultyName + ")";
+            string _newSongDirectoryPath = RoftIO.GenerateDirectory(GROUPID, songArtist, songTitle);
+            RoftIO.CreateNewRFTM(filename, _newSongDirectoryPath + "/");
         }
     }
 
