@@ -174,7 +174,7 @@ namespace ROFTIOMANAGEMENT
 
         public static string GenerateDirectory(long? _GROUPID, string _songArtist, string _songName)
         {
-            string _path = Application.persistentDataPath + "/Songs/" + "(" + _GROUPID + ") " + _songArtist + "-" + _songName + "@/";
+            string _path = Application.persistentDataPath + "/Songs/" + "(" + _GROUPID + ") " + _songArtist + "-" + _songName;
             //Create a Directory Specific for a song
             Directory.CreateDirectory(_path);
             return _path;
