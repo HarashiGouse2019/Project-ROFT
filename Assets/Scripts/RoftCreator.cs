@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System.IO;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -73,12 +75,14 @@ public class RoftCreator : MonoBehaviour
         {
             CheckForGROUPID();
 
-            songID = "(" + GROUPID + "-" + ROFTID + ")";
+            songID = "(" + GROUPID + "-" + ROFTID + ") ";
 
             //Testing Time!!!
-            filename = songID + songArtist + " - " + songTitle + "(" + difficultyName + ")";
+            filename = songID + songArtist + " - " + songTitle + " (" + difficultyName + ")";
             newSongDirectoryPath = RoftIO.GenerateDirectory(GROUPID, songArtist, songTitle);
             RoftIO.CreateNewRFTM(filename, newSongDirectoryPath + "/");
+            string audioExtension = Path.GetExtension(AssetDatabase.GetAssetPath(audioFile));
+            File.Copy(AssetDatabase.GetAssetPath(audioFile), newSongDirectoryPath + "/" + audioFile.name + audioExtension);
         }
     }
 
