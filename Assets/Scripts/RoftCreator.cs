@@ -47,6 +47,9 @@ public class RoftCreator : MonoBehaviour
     //The filename that will be generated 
     public static string filename;
 
+    //The audio file name and extension
+    public static string audioFilePath;
+
     //Directory of the new song, so that notes can be recorded to it
     public static string newSongDirectoryPath;
 
@@ -75,13 +78,22 @@ public class RoftCreator : MonoBehaviour
         {
             CheckForGROUPID();
 
+            //songID will be important for group the same song with different difficulties
             songID = "(" + GROUPID + "-" + ROFTID + ") ";
 
-            //Testing Time!!!
-            filename = songID + songArtist + " - " + songTitle + " (" + difficultyName + ")";
-            newSongDirectoryPath = RoftIO.GenerateDirectory(GROUPID, songArtist, songTitle);
-            RoftIO.CreateNewRFTM(filename, newSongDirectoryPath + "/");
+            //audioExtension will be very important to take a song in a song folder, and converting it to a UnityAsset in which
+            //we can assign to the RoftPlayer.cs
             string audioExtension = Path.GetExtension(AssetDatabase.GetAssetPath(audioFile));
+            audioFilePath = audioFile.name + audioExtension;
+
+            //Filename will include the ID, Artis, SongName, and what Difficulty
+            filename = songID + songArtist + " - " + songTitle + " (" + difficultyName + ")";
+
+            //We then generate a new folder of the song
+            newSongDirectoryPath = RoftIO.GenerateDirectory(GROUPID, songArtist, songTitle);
+
+            //And create our roft file into it, as well as copy the AudioClip that we used into this folder
+            RoftIO.CreateNewRFTM(filename, newSongDirectoryPath + "/");
             File.Copy(AssetDatabase.GetAssetPath(audioFile), newSongDirectoryPath + "/" + audioFile.name + audioExtension);
         }
     }

@@ -26,7 +26,7 @@ namespace ROFTIOMANAGEMENT
                     #region [General]
                     string t_general = "[General]\n";
                     string p_Author = "Author: " + System.Environment.UserName + newLine;
-                    string p_AudioFileName = "AudioFilename: " + newLine;
+                    string p_AudioFileName = "AudioFilename: " + RoftCreator.audioFilePath + newLine;
                     string p_BackgroundImage = "BackgroundImage: " + RoftCreator.Instance.GetBackgroundImage().name + newLine;
                     string p_BackgroundVideo = "BackgroundVideo: " + newLine;
                     #endregion
