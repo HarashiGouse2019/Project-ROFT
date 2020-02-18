@@ -45,6 +45,9 @@ public class RoftCreator : MonoBehaviour
     //The filename that will be generated 
     public static string filename;
 
+    //Directory of the new song, so that notes can be recorded to it
+    public static string newSongDirectoryPath;
+
     //Generated ROFTID 
     private int? ROFTID;
 
@@ -74,8 +77,8 @@ public class RoftCreator : MonoBehaviour
 
             //Testing Time!!!
             filename = songID + songArtist + " - " + songTitle + "(" + difficultyName + ")";
-            string _newSongDirectoryPath = RoftIO.GenerateDirectory(GROUPID, songArtist, songTitle);
-            RoftIO.CreateNewRFTM(filename, _newSongDirectoryPath + "/");
+            newSongDirectoryPath = RoftIO.GenerateDirectory(GROUPID, songArtist, songTitle);
+            RoftIO.CreateNewRFTM(filename, newSongDirectoryPath + "/");
         }
     }
 

@@ -35,14 +35,21 @@ public class KeyPress : MonoBehaviour
         RunInteractivity();
     }
 
+    /*This is how key presses are being registered in game.
+    This is also how beatmaps can be recorded manually by the user.*/
     void RunInteractivity()
     {
+        //Check if we can interact with keys
         if (GameManager.Instance.IsInteractable())
         {
             for (int keyNum = 0; keyNum < key_Layout.primaryBindedKeys.Count; keyNum++)
             {
-                if (Input.GetKey(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKey(key_Layout.secondaryBindedKeys[keyNum]))
+                bool bindKeysPressed = Input.GetKey(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKey(key_Layout.secondaryBindedKeys[keyNum]);
+
+                if (bindKeysPressed)
                 {
+                    /*If we happen to be recording, and we hit the second set of binded keys, the
+                    data will be written to a file.*/
                     #region Write to RFTM File
                     if (RoftPlayer.Instance.record && Input.GetKeyDown(key_Layout.secondaryBindedKeys[keyNum]))
                     {
@@ -51,13 +58,13 @@ public class KeyPress : MonoBehaviour
                              + RoftPlayer.musicSource.timeSamples.ToString() + ","
                             + 0.ToString();
 
-                        RoftIO.WriteToRFTM(RoftCreator.filename, Application.streamingAssetsPath + "/", data);
+                        RoftIO.WriteToRFTM(RoftCreator.filename, RoftCreator.newSongDirectoryPath + "/", data);
                     }
                     #endregion
 
                     ActivateKey(keyNum, true);
 
-                    if (Input.GetKey(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKey(key_Layout.secondaryBindedKeys[keyNum]))
+                    if (bindKeysPressed)
                         keyPressInput = activeInput;
                 }
                 else
@@ -67,6 +74,7 @@ public class KeyPress : MonoBehaviour
         }
     }
 
+    //This will turn the keys on, signifying that the key is being pressed
     public bool ActivateKey(int _keyNum, bool _on)
     {
         SpriteRenderer keySpriteRenderer = Key_Layout.keyObjects[_keyNum].GetComponent<SpriteRenderer>();
