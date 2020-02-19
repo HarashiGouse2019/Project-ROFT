@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.IO;
 using UnityEngine;
 using UnityEditor;
@@ -147,11 +148,12 @@ namespace ROFTIOMANAGEMENT
             //We'll reference to the file ihist file.
             //This file will keep track of all the used IDs.
             string iHistPath = Application.persistentDataPath + "/ihist.ID";
-
+            byte[] bytesToEncode = Encoding.UTF32.GetBytes(_content);
+            string encodedText = Convert.ToBase64String(bytesToEncode);
             if (File.Exists(iHistPath))
             {
                 StreamWriter streamWriter = File.AppendText(iHistPath);
-                streamWriter.Write(_content + "\n");
+                streamWriter.Write(encodedText + "\n");
                 streamWriter.Close();
             }
             else
@@ -167,7 +169,14 @@ namespace ROFTIOMANAGEMENT
         /// <returns></returns>
         public static string[] GetAllID()
         {
-            return File.ReadAllLines(iHistPath);
+            List<string> data = new List<string>();
+            for(int id = 0; id < File.ReadAllLines(iHistPath).Length; id++)
+            {
+                byte[] decodedBytes = Convert.FromBase64String(File.ReadAllLines(iHistPath)[id]);
+                string encodedText = Encoding.UTF32.GetString(decodedBytes);
+                data.Add(encodedText);
+            }
+            return data.ToArray();
         }
 
         /// <summary>

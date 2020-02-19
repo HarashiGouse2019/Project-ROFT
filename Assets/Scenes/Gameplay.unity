@@ -3562,11 +3562,11 @@ MonoBehaviour:
   songArtist: Perfume
   songTitleUnicode: "\u3068\u304D\u3081\u304D\u30E9\u30A4\u30FC\u30C8"
   songArtistUnicode: Perfume
-  difficultyName: Lights
+  difficultyName: Insane
   keyLayout: 2
-  approachSpeed: 7.72
-  accuracyHarshness: 6.51
-  stressBuild: 6.2
+  approachSpeed: 8.02
+  accuracyHarshness: 7.19
+  stressBuild: 6.3
   createNewDifficulty: 0
   GROUPID: 0
 --- !u!4 &1505021165
