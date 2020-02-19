@@ -3564,11 +3564,11 @@ MonoBehaviour:
   songArtistUnicode: Perfume
   difficultyName: Insane
   keyLayout: 2
-  approachSpeed: 8.02
-  accuracyHarshness: 7.19
-  stressBuild: 6.3
-  createNewDifficulty: 0
-  GROUPID: 0
+  approachSpeed: 8.5
+  accuracyHarshness: 7
+  stressBuild: 6
+  createNewDifficulty: 1
+  GROUPID: 2033192540
 --- !u!4 &1505021165
 Transform:
   m_ObjectHideFlags: 0

@@ -107,6 +107,9 @@ public class RoftCreator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Check if the user wants to create a new song, or a difficulty.
+    /// </summary>
     void CheckForGROUPID()
     {
         if (GROUPID == 0 && createNewDifficulty == false)
@@ -213,8 +216,16 @@ public class RoftCreator : MonoBehaviour
     /// <returns></returns>
     public string GetGROUPID() => GROUPID.ToString();
 
+    /// <summary>
+    /// Get Roft ID.
+    /// </summary>
+    /// <returns></returns>
     public string GetROFTID() => ROFTID.ToString();
 
+    /// <summary>
+    /// Get Key Layout being used.
+    /// </summary>
+    /// <returns></returns>
     public Key_Layout.KeyLayoutType GetKeyLayout() => keyLayout;
 
     #endregion

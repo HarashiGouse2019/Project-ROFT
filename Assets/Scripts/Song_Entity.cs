@@ -73,43 +73,17 @@ public class Song_Entity : MonoBehaviour
     }
 
     //Song entity properties
-    private string ent_SongName;
-    private string ent_Artist;
-    private RawImage ent_CoverArt;
-    private uint ent_BPM;
-    private float ent_InitialDifficulty; //Initial Difficulty is the Overall Difficulty of a song with its difficulties
-    private long ent_TopScore;
-    private long ent_TopCombo;
-    private char ent_Grade;
-    private bool ent_MarkAsFavorite;
-    private float[] ent_GradeRequirements; //Some songs can be different to default gradeRequirements
-    private FC_STATUS ent_FCStatus;
-    private RoftRecords ent_Record;
-    private AudioClip ent_clip;
-
-    public object[] songEntityObj;
-
-    // Start is called before the first frame update
-    public Song_Entity()
-    {
-        #region Creating the object data for Song Entity
-        songEntityObj = new object[]
-        {
-            ent_SongName,
-            ent_Artist,
-            ent_CoverArt,
-            ent_BPM,
-            ent_Grade,
-            ent_InitialDifficulty,
-            ent_TopScore,
-            ent_TopScore,
-            ent_TopCombo,
-            ent_MarkAsFavorite,
-            ent_GradeRequirements,
-            ent_FCStatus,
-            ent_Record,
-            ent_clip
-        };
-        #endregion
-    }
+    public string ent_SongName { get; set; }
+    public string ent_Artist { get; set; }
+    public RawImage ent_CoverArt { get; set; }
+    public uint ent_BPM { get; set; }
+    public float ent_InitialDifficulty { get; set; }//Initial Difficulty is the Overall Difficulty of a song with its difficulties
+    public long ent_TopScore { get; set; }
+    public long ent_TopCombo { get; set; }
+    public char ent_Grade { get; set; }
+    public bool ent_MarkAsFavorite { get; set; }
+    public float[] ent_GradeRequirements { get; set; } //Some songs can be different to default gradeRequirements
+    public FC_STATUS ent_FCStatus { get; set; }
+    public RoftRecords ent_Record { get; set; }
+    public AudioClip ent_clip { get; set; }
 }

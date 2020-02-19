@@ -33,7 +33,7 @@ public class InteractableKey : MonoBehaviour
                  + RoftPlayer.musicSource.timeSamples.ToString() + ","
                 + 0.ToString();
 
-           WriteToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
+           WriteNewObjectToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
         }
         #endregion
     }

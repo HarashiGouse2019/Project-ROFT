@@ -96,6 +96,10 @@ namespace ROFTIOMANAGEMENT
         };
         #endregion
 
+        /// <summary>
+        /// Get Layouttype used in generating format.
+        /// </summary>
+        /// <returns>Layout type, or how many keys are used.</returns>
         static string GetLayoutType()
         {
             switch (RoftCreator.Instance.GetTotalKeys())
@@ -113,12 +117,16 @@ namespace ROFTIOMANAGEMENT
             }
         }
 
+        /// <summary>
+        /// Get the newly generated format as an array.
+        /// </summary>
+        /// <returns>An array of information that include tags and their properties.</returns>
         public static string[] GetFormatInfo() => rftmInformation;
     }
 
-    [SerializeField]
     public static class IDHIST
     {
+        //Defalt Identity History path.
         private static string iHistPath { get; } = Application.persistentDataPath + "/ihist.ID";
 
         /// <summary>
@@ -126,7 +134,7 @@ namespace ROFTIOMANAGEMENT
         /// </summary>
         public static void NewHistory()
         {
-            File.CreateText(iHistPath);
+            File.Create(iHistPath);
         }
 
         /// <summary>
@@ -148,13 +156,14 @@ namespace ROFTIOMANAGEMENT
             //We'll reference to the file ihist file.
             //This file will keep track of all the used IDs.
             string iHistPath = Application.persistentDataPath + "/ihist.ID";
-            byte[] bytesToEncode = Encoding.UTF32.GetBytes(_content);
+            byte[] bytesToEncode = Encoding.UTF8.GetBytes(_content);
             string encodedText = Convert.ToBase64String(bytesToEncode);
             if (File.Exists(iHistPath))
             {
-                StreamWriter streamWriter = File.AppendText(iHistPath);
-                streamWriter.Write(encodedText + "\n");
-                streamWriter.Close();
+                BinaryWriter binaryWriter = new BinaryWriter(File.Open(iHistPath, FileMode.Append));
+                binaryWriter.Write(encodedText + "\n");
+                binaryWriter.Flush();
+                binaryWriter.Close();
             }
             else
             {
@@ -169,14 +178,28 @@ namespace ROFTIOMANAGEMENT
         /// <returns></returns>
         public static string[] GetAllID()
         {
+            //We need something to keep track of all the data that's
+            //converted from a binary encode base 64 utf 8 back into a string
             List<string> data = new List<string>();
-            for(int id = 0; id < File.ReadAllLines(iHistPath).Length; id++)
+
+            //Since we're dealing with a binary file, we have to use a filestream
+            //which is mostly suggested, followed by reader with a BinaryReader
+            //It'll iterate through the file and decode each value in the file,
+            //then adds the decoded string into our data list.
+            using (FileStream fileStream = File.OpenRead(iHistPath))
             {
-                byte[] decodedBytes = Convert.FromBase64String(File.ReadAllLines(iHistPath)[id]);
-                string encodedText = Encoding.UTF32.GetString(decodedBytes);
-                data.Add(encodedText);
+                using (BinaryReader binaryReader = new BinaryReader(fileStream))
+                {
+                    while(binaryReader.BaseStream.Position != binaryReader.BaseStream.Length) {
+                        string curString = binaryReader.ReadString();
+                        byte[] decodedBytes = Convert.FromBase64String(curString);
+                        string encodedText = Encoding.UTF8.GetString(decodedBytes);
+                        data.Add(encodedText);
+                    }
+                    fileStream.Flush();
+                }
+                return data.ToArray();
             }
-            return data.ToArray();
         }
 
         /// <summary>
@@ -189,7 +212,11 @@ namespace ROFTIOMANAGEMENT
             //We'll have to iterate through out ihist.ID file, and parse for GROUPID
             string[] data = GetAllID();
 
+            //We want to ignore the following symbols...
             char[] delimiters = { '-', '(', ')' };
+
+            //We search through our array of data until we've confirm that this
+            //GROUPID exists.
             foreach (string id in data)
             {
                 if (_groupID == Convert.ToInt64(id.Split(delimiters)[1]))
@@ -200,7 +227,7 @@ namespace ROFTIOMANAGEMENT
         }
 
         /// <summary>
-        /// 
+        /// Will a give GroupId, check if there's an existing RoftId.
         /// </summary>
         /// <param name="_roftID">The specified RoftID to search for.</param>
         /// <param name="_groupID">The GroupID that the RoftID is associated with.</param>
@@ -209,11 +236,25 @@ namespace ROFTIOMANAGEMENT
         {
             string[] data = GetAllID();
 
+            //We want to ignore the following symbols...
             char[] delimiters = { '-', '(', ')' };
 
             //Iterate and find matching GroupId first
             foreach(string id in data)
             {
+                //We use the Contain method because this will track the specific
+                //ID if the GROUPID happens to exists.
+                //This prevents any difficulty besides the first to continue a number.
+
+                #region Can't understand? Here's a scenario...
+                /*We create a song with it's first difficulty, so it gets 1000000-100.
+                 You can keep creating new diffculties from this, incrementing by 1 from 100 (101, 102, etc).
+
+                 But when a new song is made with a new GroupId (so 1000001-100), the first difficulty
+                 will be fine, but without the Contain method, the second difficulty of the new song will now be
+                 1000001-103 instead of 1000001-101 as it should be.*/
+                #endregion
+
                 if (GROUPIDExists(_groupID) && id.Contains(_groupID + "-" + _roftID))
                     return true;
             }
@@ -221,9 +262,13 @@ namespace ROFTIOMANAGEMENT
         }
     }
 
-    [SerializeField]
     public static class RoftIO
     {
+        /// <summary>
+        /// Create a new RFTM file.
+        /// </summary>
+        /// <param name="_name">The name of the file.</param>
+        /// <param name="_path">The path in which to create the file.</param>
         public static void CreateNewRFTM(string _name, string _path)
         {
             string rftmFileName = _name + ".rftm";
@@ -244,6 +289,13 @@ namespace ROFTIOMANAGEMENT
             }
         }
 
+        /// <summary>
+        /// Generates a ROFTID based on ihist.ID. When a song is first created,
+        /// the base value will always be 100. The value above this can be consider a difficulty
+        /// of a particular song.
+        /// </summary>
+        /// <param name="_groupID">The id used to associate with a song.</param>
+        /// <returns>A ROFTID, which will be associate with difficulty of a song.</returns>
         public static int GenerateROFTID(long _groupID)
         {
             /*ROFTID is as structured:
@@ -273,6 +325,10 @@ namespace ROFTIOMANAGEMENT
             return numRange[0];
         }
 
+        /// <summary>
+        /// Generate a GROUPID to be able to create a song with its unique ID.
+        /// </summary>
+        /// <returns>A GROUPID, which is associated with a new song.</returns>
         public static int GenerateGROUPID()
         {
             /*GROUPID is as structured:
@@ -306,6 +362,13 @@ namespace ROFTIOMANAGEMENT
             return Convert.ToInt32(stringGROUPID);
         }
 
+        /// <summary>
+        /// Generate a directory when a new song is created. The directory will always be persistent.
+        /// </summary>
+        /// <param name="_GROUPID">The songs associated GROUPID</param>
+        /// <param name="_songArtist">The Artist of the Song</param>
+        /// <param name="_songName">The Name of the Song</param>
+        /// <returns>A path of the newly created directory.</returns>
         public static string GenerateDirectory(long? _GROUPID, string _songArtist, string _songName)
         {
             string _path = Application.persistentDataPath + "/Songs/" + "(" + _GROUPID + ") " + _songArtist + "-" + _songName;
@@ -314,6 +377,11 @@ namespace ROFTIOMANAGEMENT
             return _path;
         }
 
+        /// <summary>
+        /// Generate a generate directory. The directory will always be persistent.
+        /// </summary>
+        /// <param name="_directoryName">The name of that directory.</param>
+        /// <returns>A path of the newly created directory.</returns>
         public static string GenerateDirectory(string _directoryName)
         {
             string _path = Application.persistentDataPath + "/" + _directoryName;
@@ -322,7 +390,13 @@ namespace ROFTIOMANAGEMENT
             return _path;
         }
 
-        public static void WriteToRFTM(string _name, string _path, string _data)
+        /// <summary>
+        /// Creates a new note object into the specified .rftm file.
+        /// </summary>
+        /// <param name="_name">The name of the .rftm file.</param>
+        /// <param name="_path">The path in which to find the .rftm file.</param>
+        /// <param name="_data">The data in which to pass in.</param>
+        public static void WriteNewObjectToRFTM(string _name, string _path, string _data)
         {
             string rftmFileName = _name + ".rftm";
             string rftmFilePath = _path + rftmFileName;
@@ -335,6 +409,14 @@ namespace ROFTIOMANAGEMENT
             rftmWriter.Close();
         }
 
+        /// <summary>
+        /// Allows to jump to a tag that is position in a .rftm file.
+        /// </summary>
+        /// <param name="_tag">The tag to search for.</param>
+        /// <param name="m_name">The name of the .rftm file.</param>
+        /// <param name="_fileName">The name of the .rftm file.</param>
+        /// <param name="_fileDirectory">The path in which to find the .rftm file.</param>
+        /// <returns>A position in file.</returns>
         public static int InRFTMJumpTo(string _tag, string m_name, string _fileName = "", string _fileDirectory = "")
         {
             //Setting default for directory
@@ -387,6 +469,14 @@ namespace ROFTIOMANAGEMENT
             return -1;
         }
 
+        /// <summary>
+        /// Read a property value with the targeted tag. Use InRFTMJumpTo method for _startPosition value;
+        /// </summary>
+        /// <typeparam name="T">The type of property to return.</typeparam>
+        /// <param name="_startPosition">The position in file to start looking for the property.</param>
+        /// <param name="_property">The property to look for.</param>
+        /// <param name="m_name">The name of the .rftm file.</param>
+        /// <returns>The value of the specified property</returns>
         public static T ReadPropertyFrom<T>(int _startPosition, string _property, string m_name)
         {
             string line;

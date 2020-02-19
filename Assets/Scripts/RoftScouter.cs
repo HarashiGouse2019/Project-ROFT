@@ -20,7 +20,9 @@ public class RoftScouter
     */
     #endregion
 
-    public DirectoryInfo directoryInfo;
+    public string curApp_Dir { get; set; } = Application.persistentDataPath + "/Songs";
+
+    public DirectoryInfo directoryInfo { get; set; }
 
     //Construct ROFT_SCOUTER
     public RoftScouter()
@@ -29,27 +31,27 @@ public class RoftScouter
         if (Instance != null)
             Instance = this;
 
-        string curApp_Dir = Application.persistentDataPath;
+        directoryInfo = new DirectoryInfo(curApp_Dir);
+
+        List<FileInfo> obj = Commence_Scouting();
+        foreach(FileInfo o in obj)
+        {
+            Debug.Log(o.Name);
+        }
     }
 
-    private List<Song_Entity> Commence_Scouting()
+    private List<FileInfo> Commence_Scouting()
     {
-        List<Song_Entity> discoveredSongFiles = new List<Song_Entity>();
+        List<FileInfo> discoveredSongFiles = new List<FileInfo>();
         //We want loop through each file, and extract every little information that 
         //we can graph to assign them to our Song_Entity list
-        foreach(var discovered in directoryInfo.GetFiles("*.rftm"))
+        foreach(var discovered in directoryInfo.GetFiles("*.rftm", SearchOption.AllDirectories))
         {
-            //We'll need to some how incorporate our tag finding method from MapReader in order
-            //To find a tag to assign to our song entity.
-            Song_Entity entity = new Song_Entity
-            {
-
-            };
-
             //Once a new entity's instansiated, we'll push to our discoveredSongFiles
-            discoveredSongFiles.Add(entity);
+            discoveredSongFiles.Add(discovered);
         }
-
+        if (discoveredSongFiles.Count == 0)
+            Debug.Log("New songs were not detected!!!");
         return discoveredSongFiles;
     }
 }
