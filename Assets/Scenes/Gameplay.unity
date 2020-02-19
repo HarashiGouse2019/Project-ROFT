@@ -3564,10 +3564,11 @@ MonoBehaviour:
   songArtistUnicode: Perfume
   difficultyName: Lights
   keyLayout: 2
-  approachSpeed: 7
-  accuracyHarshness: 7
-  stressBuild: 5
+  approachSpeed: 7.72
+  accuracyHarshness: 6.51
+  stressBuild: 6.2
   createNewDifficulty: 0
+  GROUPID: 0
 --- !u!4 &1505021165
 Transform:
   m_ObjectHideFlags: 0

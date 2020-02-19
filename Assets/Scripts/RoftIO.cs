@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEditor;
@@ -8,6 +9,209 @@ using Random = UnityEngine.Random;
 
 namespace ROFTIOMANAGEMENT
 {
+    public static class ROFTFormat
+    {
+        const string newLine = "\n";
+
+        #region Format Version
+        static string t_version = "[Format Version]\n";
+        static string p_formatVer = "1.0v" + newLine;
+        #endregion
+
+        #region [General]
+        static string t_general = "[General]\n";
+        static string p_Author = "Author: " + System.Environment.UserName + newLine;
+        static string p_AudioFileName = "AudioFilename: " + RoftCreator.audioFilePath + newLine;
+        static string p_BackgroundImage = "BackgroundImage: " + RoftCreator.backgroundFilePath + newLine;
+        static string p_BackgroundVideo = "BackgroundVideo: " + newLine;
+        #endregion
+
+        #region [Metadata]
+        static string t_metadata = "[Metadata]\n";
+        static string p_Title = "Title: " + RoftCreator.Instance.GetSongTitle() + newLine;
+        static string p_TitleUnicode = "TitleUnicode: " + RoftCreator.Instance.GetSongTitle(true) + newLine;
+        static string p_Artist = "Artist: " + RoftCreator.Instance.GetSongArtist() + newLine;
+        static string p_ArtistUnicode = "ArtistUnicode: " + RoftCreator.Instance.GetSongArtist(true) + newLine;
+        static string p_Creator = "Creator: " + System.Environment.UserName + newLine;
+        static string p_ROFTID = "ROFTID: " + RoftCreator.Instance.GetROFTID() + newLine;
+        static string p_GROUPID = "GROUPID: " + RoftCreator.Instance.GetGROUPID() + newLine;
+        #endregion
+
+        #region [Difficulty]
+        static string t_difficulty = "[Difficulty]\n";
+        static string p_DifficultyName = "DifficultyName: " + RoftCreator.Instance.GetDifficultyName() + newLine;
+        static string p_StressBuild = "StressBuild: " + GameManager.Instance.stressBuild.ToString() + newLine;
+        static string p_ObjectCount = "ObjectCount: " + newLine;
+        #region Key Count
+        static string keyInfo = GetLayoutType();
+
+
+        #endregion
+        static string p_KeyCount = "KeyCount: " + keyInfo + newLine;
+
+        static string p_AccuracyHarshness = "AccuracyHarshness: " + RoftCreator.Instance.GetAccuracyHarshness() + newLine;
+        static string p_ApproachSpeed = "ApproachSpeed: " + RoftCreator.Instance.GetApproachSpeed() + newLine;
+        #endregion
+
+        #region [Objects]
+        static string t_objects = "[Objects]";
+        #endregion
+
+        #region .rftm Information
+        static string[] rftmInformation = new string[]
+        {
+                   //Format Version
+                   t_version +
+                   p_formatVer,
+
+                   //General
+                   t_general +
+                   p_Author +
+                   p_AudioFileName +
+                   p_BackgroundImage +
+                   p_BackgroundVideo,
+
+                   //Metadata
+                   t_metadata +
+                   p_Title +
+                   p_TitleUnicode +
+                   p_Artist +
+                   p_ArtistUnicode +
+                   p_Creator +
+                   p_ROFTID +
+                   p_GROUPID,
+
+                   //Difficulty
+                   t_difficulty +
+                   p_DifficultyName +
+                   p_StressBuild +
+                   p_ObjectCount +
+                   p_KeyCount +
+                   p_AccuracyHarshness +
+                   p_ApproachSpeed,
+
+                   //Objects
+                   t_objects
+        };
+        #endregion
+
+        static string GetLayoutType()
+        {
+            switch (RoftCreator.Instance.GetTotalKeys())
+            {
+                case Key_Layout.KeyLayoutType.Layout_1x4:
+                    return "4";
+                case Key_Layout.KeyLayoutType.Layout_2x4:
+                    return "8";
+                case Key_Layout.KeyLayoutType.Layout_3x4:
+                    return "12";
+                case Key_Layout.KeyLayoutType.Layout_4x4:
+                    return "16";
+                default:
+                    return "";
+            }
+        }
+
+        public static string[] GetFormatInfo() => rftmInformation;
+    }
+
+    [SerializeField]
+    public static class IDHIST
+    {
+        private static string iHistPath { get; } = Application.persistentDataPath + "/ihist.ID";
+
+        /// <summary>
+        /// Create a new Identity histroy
+        /// </summary>
+        public static void NewHistory()
+        {
+            File.CreateText(iHistPath);
+        }
+
+        /// <summary>
+        /// Check if Identity History exists.
+        /// </summary>
+        /// <returns></returns>
+        public static bool HistoryExists()
+        {
+            bool exist = File.Exists(iHistPath);
+            return exist;
+        }
+
+        /// <summary>
+        /// Write a new ID into history file.
+        /// </summary>
+        /// <param name="_content"></param>
+        public static void Write(string _content)
+        {
+            //We'll reference to the file ihist file.
+            //This file will keep track of all the used IDs.
+            string iHistPath = Application.persistentDataPath + "/ihist.ID";
+
+            if (File.Exists(iHistPath))
+            {
+                StreamWriter streamWriter = File.AppendText(iHistPath);
+                streamWriter.Write(_content + "\n");
+                streamWriter.Close();
+            }
+            else
+            {
+                Debug.Log("ID History File doesn't exist.");
+                Application.Quit();
+            }
+        }
+
+        /// <summary>
+        /// Iterate through ihist.ID and return an array of data
+        /// </summary>
+        /// <returns></returns>
+        public static string[] GetAllID()
+        {
+            return File.ReadAllLines(iHistPath);
+        }
+
+        /// <summary>
+        /// Check if the specified GroupID is used in our ID history
+        /// </summary>
+        /// <param name="_groupID">The GroupId for the method to search for.</param>
+        /// <returns>If the GroupID is used.</returns>
+        public static bool GROUPIDExists(long _groupID)
+        {
+            //We'll have to iterate through out ihist.ID file, and parse for GROUPID
+            string[] data = GetAllID();
+
+            char[] delimiters = { '-', '(', ')' };
+            foreach (string id in data)
+            {
+                if (_groupID == Convert.ToInt64(id.Split(delimiters)[1]))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_roftID">The specified RoftID to search for.</param>
+        /// <param name="_groupID">The GroupID that the RoftID is associated with.</param>
+        /// <returns>If the RoftID is used.</returns>
+        public static bool ROFTIDExistsInGroupID(int _roftID, long _groupID)
+        {
+            string[] data = GetAllID();
+
+            char[] delimiters = { '-', '(', ')' };
+
+            //Iterate and find matching GroupId first
+            foreach(string id in data)
+            {
+                if (GROUPIDExists(_groupID) && id.Contains(_groupID + "-" + _roftID))
+                    return true;
+            }
+            return false;
+        }
+    }
+
     [SerializeField]
     public static class RoftIO
     {
@@ -21,101 +225,17 @@ namespace ROFTIOMANAGEMENT
                 Debug.Log("Creating new .rftm file...");
                 using (StreamWriter rftmWriter = File.CreateText(rftmFilePath))
                 {
-                    const string newLine = "\n";
 
-                    #region [General]
-                    string t_general = "[General]\n";
-                    string p_Author = "Author: " + System.Environment.UserName + newLine;
-                    string p_AudioFileName = "AudioFilename: " + RoftCreator.audioFilePath + newLine;
-                    string p_BackgroundImage = "BackgroundImage: " + RoftCreator.Instance.GetBackgroundImage().name + newLine;
-                    string p_BackgroundVideo = "BackgroundVideo: " + newLine;
-                    #endregion
+                    string[] rftmInfo = ROFTFormat.GetFormatInfo();
 
-                    #region [Metadata]
-                    string t_metadata = "[Metadata]\n";
-                    string p_Title = "Title: " + RoftCreator.Instance.GetSongTitle() + newLine;
-                    string p_TitleUnicode = "TitleUnicode: " + RoftCreator.Instance.GetSongTitle(true) + newLine;
-                    string p_Artist = "Artist: " + RoftCreator.Instance.GetSongArtist() + newLine;
-                    string p_ArtistUnicode = "ArtistUnicode: " + RoftCreator.Instance.GetSongArtist(true) + newLine;
-                    string p_Creator = "Creator: " + System.Environment.UserName + newLine;
-                    string p_ROFTID = "ROFTID: " + RoftCreator.Instance.GetROFTID() + newLine;
-                    string p_GROUPID = "GROUPID: " + RoftCreator.Instance.GetGROUPID() + newLine;
-                    #endregion
-
-                    #region [Difficulty]
-                    string t_difficulty = "[Difficulty]\n";
-                    string p_DifficultyName = "DifficultyName: " + RoftCreator.Instance.GetDifficultyName() + newLine;
-                    string p_StressBuild = "StressBuild: " + GameManager.Instance.stressBuild.ToString() + newLine;
-                    string p_ObjectCount = "ObjectCount: " + newLine;
-                    string keyInfo = "";
-                    #region Key Count
-
-                    switch (RoftCreator.Instance.GetTotalKeys())
-                    {
-                        case Key_Layout.KeyLayoutType.Layout_1x4:
-                            keyInfo = "4";
-                            break;
-                        case Key_Layout.KeyLayoutType.Layout_2x4:
-                            keyInfo = "8";
-                            break;
-                        case Key_Layout.KeyLayoutType.Layout_3x4:
-                            keyInfo = "12";
-                            break;
-                        case Key_Layout.KeyLayoutType.Layout_4x4:
-                            keyInfo = "16";
-                            break;
-                        default:
-                            break;
-                    }
-                    #endregion
-                    string p_KeyCount = "KeyCount: " + keyInfo + newLine;
-
-                    string p_AccuracyHarshness = "AccuracyHarshness: " + RoftCreator.Instance.GetAccuracyHarshness() + newLine;
-                    string p_ApproachSpeed = "ApproachSpeed: " + RoftCreator.Instance.GetApproachSpeed() + newLine;
-                    #endregion
-
-                    #region [Objects]
-                    string t_objects = "[Objects]";
-                    #endregion
-
-                    #region .rftm Information
-                    string[] rftmInformation = new string[]
-                    {
-                   t_general +
-                   p_Author +
-                   p_AudioFileName +
-                   p_BackgroundImage +
-                   p_BackgroundVideo,
-
-                   t_metadata +
-                   p_Title +
-                   p_TitleUnicode +
-                   p_Artist +
-                   p_ArtistUnicode +
-                   p_Creator +
-                   p_ROFTID +
-                   p_GROUPID,
-
-                   t_difficulty +
-                   p_DifficultyName +
-                   p_StressBuild +
-                   p_ObjectCount +
-                   p_KeyCount +
-                   p_AccuracyHarshness +
-                   p_ApproachSpeed,
-
-                   t_objects
-                    };
-                    #endregion
-
-                    for (int line = 0; line < rftmInformation.Length; line++)
-                        rftmWriter.WriteLine(rftmInformation[line]);
+                    for (int line = 0; line < rftmInfo.Length; line++)
+                        rftmWriter.WriteLine(rftmInfo[line]);
                 }
                 Debug.Log(".rftm file created!");
             }
         }
 
-        public static int GenerateROFTID()
+        public static int GenerateROFTID(long _groupID)
         {
             /*ROFTID is as structured:
              * GROUPID-(100 to 999)
@@ -124,19 +244,24 @@ namespace ROFTIOMANAGEMENT
 
             int[] numRange =
             {
-            100,
-            999
-        };
+                100,
+                999
+            };
 
             string stringROFTID = "";
 
-            DateTime date = DateTime.Now;
+            //We will then iterate the ihist file and check if a roftID exists
+            //This has to be in a specified GroupID.
+            for (int uniqueNum = numRange[0]; uniqueNum < numRange[1] + 1; uniqueNum++)
+            {
+                if (!IDHIST.ROFTIDExistsInGroupID(uniqueNum, _groupID))
+                {
+                    stringROFTID += (uniqueNum.ToString());
+                    return Convert.ToInt32(stringROFTID);
+                }
+            }
 
-            int uniqueNum = Random.Range(numRange[0], numRange[1]);
-
-            stringROFTID += (uniqueNum.ToString());
-
-            return Convert.ToInt32(stringROFTID);
+            return numRange[0];
         }
 
         public static int GenerateGROUPID()

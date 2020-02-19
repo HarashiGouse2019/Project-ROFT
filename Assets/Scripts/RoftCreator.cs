@@ -42,13 +42,15 @@ public class RoftCreator : MonoBehaviour
 
     [Header("Create New Difficulty")]
     [SerializeField, Tooltip("Toggle if creating new difficulty.")] private bool createNewDifficulty;
-    [SerializeField, Tooltip("If creating a new difficulty, define what group the difficulty derives.")] private long? GROUPID;
+    [SerializeField, Tooltip("If creating a new difficulty, define what group the difficulty derives.")] private long GROUPID;
 
     //The filename that will be generated 
     public static string filename;
 
-    //The audio file name and extension
+    //The audio file, background img, and video name and extension
     public static string audioFilePath;
+    public static string backgroundFilePath;
+    public static string videoFilePath;
 
     //Directory of the new song, so that notes can be recorded to it
     public static string newSongDirectoryPath;
@@ -72,19 +74,20 @@ public class RoftCreator : MonoBehaviour
          If there's no defined GROUPID, we'll generate one,
          followed by a folder for all difficulties.*/
 
-        
+        if (!IDHIST.HistoryExists())
+            IDHIST.NewHistory();
 
         if (RoftPlayer.Instance.record)
         {
             CheckForGROUPID();
 
-            //songID will be important for group the same song with different difficulties
-            songID = "(" + GROUPID + "-" + ROFTID + ") ";
-
             //audioExtension will be very important to take a song in a song folder, and converting it to a UnityAsset in which
             //we can assign to the RoftPlayer.cs
-            string audioExtension = Path.GetExtension(AssetDatabase.GetAssetPath(audioFile));
-            audioFilePath = audioFile.name + audioExtension;
+            string audioExt = Path.GetExtension(AssetDatabase.GetAssetPath(audioFile));
+            string backgroundImgExt = Path.GetExtension(AssetDatabase.GetAssetPath(backgroundImage));
+
+            audioFilePath = audioFile.name + audioExt;
+            backgroundFilePath = backgroundImage.name + backgroundImgExt;
 
             //Filename will include the ID, Artis, SongName, and what Difficulty
             filename = songID + songArtist + " - " + songTitle + " (" + difficultyName + ")";
@@ -92,19 +95,33 @@ public class RoftCreator : MonoBehaviour
             //We then generate a new folder of the song
             newSongDirectoryPath = RoftIO.GenerateDirectory(GROUPID, songArtist, songTitle);
 
-            //And create our roft file into it, as well as copy the AudioClip that we used into this folder
+            //And create our roft file into it, as well as copy the AudioClip, Image, and Video that we used into this folder
             RoftIO.CreateNewRFTM(filename, newSongDirectoryPath + "/");
-            File.Copy(AssetDatabase.GetAssetPath(audioFile), newSongDirectoryPath + "/" + audioFile.name + audioExtension);
+
+            try
+            {
+                File.Copy(AssetDatabase.GetAssetPath(audioFile), newSongDirectoryPath + "/" + audioFile.name + audioExt);
+                File.Copy(AssetDatabase.GetAssetPath(backgroundImage), newSongDirectoryPath + "/" + backgroundImage.name + backgroundImgExt);
+            }
+            catch {/*This just means they already exists...*/};
         }
     }
 
     void CheckForGROUPID()
     {
-        if (GROUPID == null || createNewDifficulty == false)
+        if (GROUPID == 0 && createNewDifficulty == false)
         {
             GROUPID = RoftIO.GenerateGROUPID();
-            ROFTID = RoftIO.GenerateROFTID();
+            ROFTID = RoftIO.GenerateROFTID(GROUPID);
         }
+        else
+        {
+            //Since GROUPID is defined in the inspector, we don't need to generate one
+            //We just need to generate a ROFTID with the specfied GROUPID
+            ROFTID = RoftIO.GenerateROFTID(GROUPID);
+        }
+        songID = "(" + GROUPID + "-" + ROFTID + ") ";
+        IDHIST.Write(songID);
     }
 
     #region Get Methods
