@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Threading;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEditor;
 
 using static ROFTIOMANAGEMENT.RoftIO;
 
-public class RoftScouter
+public class RoftScouter : MonoBehaviour
 {
     public static RoftScouter Instance;
     #region Roft_Scouter Outline/Plan
@@ -28,6 +30,12 @@ public class RoftScouter
     public DirectoryInfo directoryInfo { get; set; }
 
     public List<Song_Entity> SongsFound { get; set; } = new List<Song_Entity>();
+
+    private bool isRequestDone = false;
+
+    private AudioClip requestedClip;
+
+    IEnumerator requesting;
 
     //Construct ROFT_SCOUTER
     public RoftScouter()
@@ -107,14 +115,28 @@ public class RoftScouter
             if (!CompareGroupID(ref currentGROUPID, ref GROUPID))
             {
                 Song_Entity newEntity = new Song_Entity();
+
                 currentGROUPID = GROUPID;
                 newEntity.SongTitle = songTitle;
-                newEntity.SongArtist = songArtist;
-                newEntity.GROUPID = GROUPID;
-                convertedObj.Add(newEntity);
 
-                //We generate a difficulty once number change because if we don't, it'll skip any ROFTID with 100
-                GenerateDifficulty(ROFTID, difficultyName, approachSpeed, stressBuild, accuracyHarshness, totalNotes, keyCount, f, convertedObj);
+                
+                StartCoroutine(Requesting(f));
+
+                while (true)
+                {
+                    if (isRequestDone)
+                    {
+                        Debug.Log("Bing Bong!!");
+                        newEntity.SongArtist = songArtist;
+                        newEntity.GROUPID = GROUPID;
+                        newEntity.AudioFile = GetAudioClip();
+                        convertedObj.Add(newEntity);
+
+                        //We generate a difficulty once number change because if we don't, it'll skip any ROFTID with 100
+                        GenerateDifficulty(ROFTID, difficultyName, approachSpeed, stressBuild, accuracyHarshness, totalNotes, keyCount, f, convertedObj);
+                        break;
+                    }
+                }
             }
             else
                 //Now we generate the rest of the difficulties in the folder.
@@ -123,6 +145,37 @@ public class RoftScouter
         }
 
         return convertedObj;
+    }
+
+    AudioClip GetAudioClip() => requestedClip;
+
+    IEnumerator Requesting(FileInfo _url)
+    {
+        using (UnityWebRequest requestAudio = UnityWebRequestMultimedia.GetAudioClip(_url.FullName, AudioType.OGGVORBIS))
+        {
+            Debug.Log("Requesting now...");
+
+            UnityWebRequestAsyncOperation operation = requestAudio.SendWebRequest();
+
+            while (!operation.isDone)
+                yield return null;
+
+            isRequestDone = true;
+
+            if (requestAudio.isNetworkError)
+                Debug.Log("Failed to load audio.");
+            else
+            {
+                requestedClip = DownloadHandlerAudioClip.GetContent(requestAudio);
+
+                if (requestedClip == null)
+                {
+                    Debug.Log("Audio file wasn't found.");
+                }
+            }
+
+            StopCoroutine(Requesting(_url));
+        }
     }
 
     public bool CompareGroupID(ref long _val1, ref long _val2) => (_val1 == _val2);
