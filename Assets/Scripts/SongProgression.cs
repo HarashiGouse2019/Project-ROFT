@@ -14,7 +14,7 @@ public class SongProgression : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!RoftPlayer.Instance.record && isFinished == false)
+        if (!RoftPlayer.Instance.record && isFinished == false && MapReader.Instance.GetName() != "")
             ShowProgression();
     }
 

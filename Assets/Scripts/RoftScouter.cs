@@ -1,6 +1,8 @@
 ﻿using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Video;
 using UnityEngine.Networking;
 
 using static ROFTIOMANAGEMENT.RoftIO;
@@ -21,13 +23,22 @@ public class RoftScouter
     */
     #endregion
 
+    public enum MediaType
+    {
+        AUDIO,
+        RAWIMAGE,
+        VIDEO
+    }
+
     public static string curApp_Dir { get; set; } = Application.persistentDataPath + "/Songs";
 
     public static DirectoryInfo directoryInfo { get; set; }
 
     public static List<Song_Entity> SongsFound { get; set; } = new List<Song_Entity>();
 
-    private static AudioClip requestedClip;
+    private static AudioClip RequestedClip { get; set; }
+    private static Texture2D RequestedImage { get; set; }
+    private static VideoClip RequestedVideo { get; set; }
 
     public RoftScouter()
     {
@@ -81,30 +92,29 @@ public class RoftScouter
         //regularily create new SongEntities as needed.
         long currentGROUPID = 0;
 
-        int loopAmount = 0;
-
-        foreach (FileInfo f in files)
+        foreach (FileInfo fileNum in files)
         {
-            int generalTag = InRFTMJumpTo("General", f.FullName);
-            int metadataTag = InRFTMJumpTo("Metadata", f.FullName);
-            int difficultyTag = InRFTMJumpTo("Difficulty", f.FullName);
+            int generalTag = InRFTMJumpTo("General", fileNum.FullName);
+            int metadataTag = InRFTMJumpTo("Metadata", fileNum.FullName);
+            int difficultyTag = InRFTMJumpTo("Difficulty", fileNum.FullName);
 
             //Now with our tags assigned a value, I want to get all the information
-            string audioFile = ReadPropertyFrom<string>(generalTag, "AudioFilename", f.FullName);
+            string audioFile = ReadPropertyFrom<string>(generalTag, "AudioFilename", fileNum.FullName);
+            string backgroundImageFile = ReadPropertyFrom<string>(generalTag, "BackgroundImage", fileNum.FullName);
 
-            string songTitle = ReadPropertyFrom<string>(metadataTag, "Title", f.FullName);
-            string songArtist = ReadPropertyFrom<string>(metadataTag, "Artist", f.FullName);
-            int ROFTID = ReadPropertyFrom<int>(metadataTag, "ROFTID", f.FullName);
-            long GROUPID = ReadPropertyFrom<long>(metadataTag, "GROUPID", f.FullName);
+            string songTitle = ReadPropertyFrom<string>(metadataTag, "Title", fileNum.FullName);
+            string songArtist = ReadPropertyFrom<string>(metadataTag, "Artist", fileNum.FullName);
+            int ROFTID = ReadPropertyFrom<int>(metadataTag, "ROFTID", fileNum.FullName);
+            long GROUPID = ReadPropertyFrom<long>(metadataTag, "GROUPID", fileNum.FullName);
 
-            string difficultyName = ReadPropertyFrom<string>(difficultyTag, "DifficultyName", f.FullName);
-            float stressBuild = ReadPropertyFrom<float>(difficultyTag, "StressBuild", f.FullName);
-            int keyCount = ReadPropertyFrom<int>(difficultyTag, "KeyCount", f.FullName);
-            float accuracyHarshness = ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", f.FullName);
-            float approachSpeed = ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", f.FullName);
+            string difficultyName = ReadPropertyFrom<string>(difficultyTag, "DifficultyName", fileNum.FullName);
+            float stressBuild = ReadPropertyFrom<float>(difficultyTag, "StressBuild", fileNum.FullName);
+            int keyCount = ReadPropertyFrom<int>(difficultyTag, "KeyCount", fileNum.FullName);
+            float accuracyHarshness = ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", fileNum.FullName);
+            float approachSpeed = ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", fileNum.FullName);
 
             //And then I want to know how many objects this song has
-            int totalNotes = GetNoteObjectCountInRFTMFile(f.FullName);
+            int totalNotes = GetNoteObjectCountInRFTMFile(fileNum.FullName);
 
             //Now we can instantiate a new object
             if (!CompareGroupID(ref currentGROUPID, ref GROUPID))
@@ -113,36 +123,43 @@ public class RoftScouter
 
                 currentGROUPID = GROUPID;
                 newEntity.SongTitle = songTitle;
+                newEntity.SongArtist = songArtist;
+                newEntity.GROUPID = GROUPID;
 
-                while (true)
+                //Request for audio
+                if (newEntity.AudioFile == null)
                 {
-                    if (Requesting(f, audioFile))
+                    while (true)
                     {
-                        newEntity.SongArtist = songArtist;
-                        newEntity.GROUPID = GROUPID;
-                        newEntity.AudioFile = GetAudioClip();
-                        convertedObj.Add(newEntity);
-
-                        //We generate a difficulty once number change because if we don't, it'll skip any ROFTID with 100
-                        GenerateDifficulty(ROFTID, difficultyName, approachSpeed, stressBuild, accuracyHarshness, totalNotes, keyCount, f, convertedObj);
-                        break;
+                        if (RequestingAudio(fileNum, audioFile))
+                        {
+                            newEntity.AudioFile = GetAudioClip();
+                            break;
+                        }
                     }
                 }
+
+                convertedObj.Add(newEntity);
+
+                //Generate our first difficulty
+                GenerateDifficulty(ROFTID, difficultyName, approachSpeed, stressBuild, accuracyHarshness, totalNotes, keyCount, fileNum, convertedObj);
             }
             else
                 //Now we generate the rest of the difficulties in the folder.
-                GenerateDifficulty(ROFTID, difficultyName, approachSpeed, stressBuild, accuracyHarshness, totalNotes, keyCount, f, convertedObj);
+                GenerateDifficulty(ROFTID, difficultyName, approachSpeed, stressBuild, accuracyHarshness, totalNotes, keyCount, fileNum, convertedObj);
 
         }
 
         return convertedObj;
     }
 
-    static AudioClip GetAudioClip() => requestedClip;
+    static AudioClip GetAudioClip() => RequestedClip;
+    static Texture2D GetRawImage() => RequestedImage;
 
-    static bool Requesting(FileInfo _url, string _name)
+    static bool RequestingAudio(FileInfo _url, string _name)
     {
         string link = @"file:\\\" + _url.Directory + @"\" + _name;
+        #region Requesting Audio
         using (UnityWebRequest requestAudio = UnityWebRequestMultimedia.GetAudioClip(link, AudioType.WAV))
         {
             UnityWebRequestAsyncOperation operation = requestAudio.SendWebRequest();
@@ -157,11 +174,39 @@ public class RoftScouter
             }
             else
             {
-                requestedClip = DownloadHandlerAudioClip.GetContent(requestAudio);
-                requestedClip.name = _name;
+                RequestedClip = DownloadHandlerAudioClip.GetContent(requestAudio);
+                RequestedClip.name = _name;
                 return operation.isDone;
             }
         }
+        #endregion
+    }
+
+    static bool RequestingImage(FileInfo _url, string _name)
+    {
+        string link = @"file:\\\" + _url.Directory + @"\" + _name;
+        #region Requesting Image
+        using (UnityWebRequest requestImage = UnityWebRequestTexture.GetTexture(link))
+        {
+            UnityWebRequestAsyncOperation operation = requestImage.SendWebRequest();
+            
+            while (!operation.isDone)
+                continue;
+
+
+            if (requestImage.isNetworkError || requestImage.isHttpError)
+            {
+                Debug.Log("Failed to load image.");
+                return operation.isDone;
+            }
+            else
+            {
+                RequestedImage = DownloadHandlerTexture.GetContent(requestImage);
+                RequestedImage.name = _name;
+                return operation.isDone;
+            }
+        }
+        #endregion
     }
 
     static bool CompareGroupID(ref long _val1, ref long _val2) => (_val1 == _val2);

@@ -908,14 +908,7 @@ MonoBehaviour:
   musicVolumeAdjust: {fileID: 0}
   soundVolumeAdjust: {fileID: 0}
   nowPlaying: 
-  songs:
-  - SongTitle: 
-    SongArtist: 
-    GROUPID: 0
-    InitialDifficultyRating: 0
-    AudioFile: {fileID: 0}
-    BackgroundImage: {fileID: 0}
-    Difficulties: []
+  songs: []
   timeSamples: 0
   positionSeconds:
   - 0.123
@@ -2264,7 +2257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_name: Perfume - Tokimeki Lights
+  m_name: 
   difficultyRating: 0
   totalNotes: 0
   totalKeys: 0
