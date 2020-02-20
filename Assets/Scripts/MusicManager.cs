@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
@@ -38,7 +39,7 @@ public class MusicManager : MonoBehaviour
 
     public string nowPlaying;
 
-    public Music[] getMusic;
+    public List<Song_Entity> songs;
 
     // Start is called before the first frame update
     public float timeSamples;
@@ -58,17 +59,17 @@ public class MusicManager : MonoBehaviour
         }
     }
 
-    public AudioClip GetMusic(string _name)
-    {
-        Music a = Array.Find(getMusic, sound => sound.name == _name);
-        if (a == null)
-        {
-            Debug.LogWarning("Sound name " + _name + " was not found.");
-            return null;
-        }
-        else
-        {
-            return a.clip;
-        }
-    }
+    //public AudioClip GetMusic(string _name)
+    //{
+    //    Music a = Array.Find(getMusic, sound => sound.name == _name);
+    //    if (a == null)
+    //    {
+    //        Debug.LogWarning("Sound name " + _name + " was not found.");
+    //        return null;
+    //    }
+    //    else
+    //    {
+    //        return a.clip;
+    //    }
+    //}
 }

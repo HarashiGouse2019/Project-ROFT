@@ -35,10 +35,10 @@ public class ObjectPooler : MonoBehaviour
 
     private void Start()
     {
-        if (readFromMusicManager == true)
-        {
-            OverridePoolSizeOf("Song Panel", MusicManager.Instance.getMusic.Length);
-        }
+        //if (readFromMusicManager == true)
+        //{
+        //    OverridePoolSizeOf("Song Panel", MusicManager.Instance.getMusic.Length);
+        //}
     }
 
     private void Update()

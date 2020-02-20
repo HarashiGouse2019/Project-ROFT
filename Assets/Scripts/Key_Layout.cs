@@ -63,7 +63,7 @@ public class Key_Layout : MonoBehaviour
         "asdf",
         "qwerasdf",
         "qwerasdfzxcv",
-        "asdfghjkl;",
+        "1234qwerasdfzxcv",
     };
 
     //secondaryLayout is other key bindings that also affect

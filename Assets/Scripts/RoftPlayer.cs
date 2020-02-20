@@ -122,8 +122,8 @@ public class RoftPlayer : MonoBehaviour
 
         if (record)
             musicSource.clip = RoftCreator.Instance.GetAudioFile();
-        else
-            musicSource.clip = MusicManager.Instance.GetMusic(MapReader.Instance.GetName());
+        //else
+        //    musicSource.clip = MusicManager.Instance.GetMusic(MapReader.Instance.GetName());
 
         musicLengthInSamples = musicSource.clip.length * musicSource.clip.frequency;
         musicSource.outputAudioMixerGroup = pitchMixer;

@@ -417,20 +417,16 @@ namespace ROFTIOMANAGEMENT
         /// <param name="_fileName">The name of the .rftm file.</param>
         /// <param name="_fileDirectory">The path in which to find the .rftm file.</param>
         /// <returns>A position in file.</returns>
-        public static int InRFTMJumpTo(string _tag, string m_name, string _fileName = "", string _fileDirectory = "")
+        public static int InRFTMJumpTo(string _tag, string _fileDirectory = "")
         {
             //Setting default for directory
             if (_fileDirectory == "")
                 _fileDirectory = Application.streamingAssetsPath;
 
-            //Setting default for file name
-            if (_fileName == "" && m_name != null)
-                _fileName = m_name;
 
             string line;
 
-            string rftmFileName = _fileName + ".rftm";
-            string rftmFilePath = _fileDirectory + @"/" + rftmFileName;
+            string rftmFilePath = _fileDirectory;
 
 
             int targetPosition = 0;
@@ -477,10 +473,10 @@ namespace ROFTIOMANAGEMENT
         /// <param name="_property">The property to look for.</param>
         /// <param name="m_name">The name of the .rftm file.</param>
         /// <returns>The value of the specified property</returns>
-        public static T ReadPropertyFrom<T>(int _startPosition, string _property, string m_name)
+        public static T ReadPropertyFrom<T>(int _startPosition, string _property, string _path)
         {
             string line;
-            string rftmFilePath = Application.streamingAssetsPath + @"/" + m_name + ".rftm";
+            string rftmFilePath = _path;
 
             //This is used to iterate and find the tag specified by the _startPosition parameter.
             int position = 0;
@@ -530,6 +526,32 @@ namespace ROFTIOMANAGEMENT
                 }
             }
             return default;
+        }
+
+        public static int GetNoteObjectCountInRFTMFile(string _path)
+        {
+            //Position tracking
+            int position = 0;
+
+            //And get the total object
+            int totalNotes = 0;
+
+            if(File.Exists(_path))
+            {
+                using(StreamReader streamReader = new StreamReader(_path))
+                {
+                    if(position == InRFTMJumpTo("Objects", _path) + 1)
+                    {
+                        totalNotes++;
+                    }
+                    position++;
+
+                    if (streamReader.EndOfStream)
+                        return totalNotes;
+                }
+            }
+
+            return -1;
         }
     }
 }
