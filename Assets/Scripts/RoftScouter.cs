@@ -1,15 +1,11 @@
-﻿using System;
-using System.Threading;
-using System.IO;
-using System.Collections;
+﻿using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEditor;
 
 using static ROFTIOMANAGEMENT.RoftIO;
 
-public class RoftScouter : MonoBehaviour
+public class RoftScouter
 {
     public static RoftScouter Instance;
     #region Roft_Scouter Outline/Plan
@@ -25,25 +21,24 @@ public class RoftScouter : MonoBehaviour
     */
     #endregion
 
-    public string curApp_Dir { get; set; } = Application.persistentDataPath + "/Songs";
+    public static string curApp_Dir { get; set; } = Application.persistentDataPath + "/Songs";
 
-    public DirectoryInfo directoryInfo { get; set; }
+    public static DirectoryInfo directoryInfo { get; set; }
 
-    public List<Song_Entity> SongsFound { get; set; } = new List<Song_Entity>();
+    public static List<Song_Entity> SongsFound { get; set; } = new List<Song_Entity>();
 
-    private bool isRequestDone = false;
+    private static AudioClip requestedClip;
 
-    private AudioClip requestedClip;
-
-    IEnumerator requesting;
-
-    //Construct ROFT_SCOUTER
     public RoftScouter()
     {
         //Get current application directory
         if (Instance != null)
             Instance = this;
+    }
 
+    //OnStart Event
+    public static void OnStart()
+    {
         directoryInfo = new DirectoryInfo(curApp_Dir);
 
         List<FileInfo> obj = Commence_Scouting();
@@ -51,7 +46,7 @@ public class RoftScouter : MonoBehaviour
         MusicManager.Instance.songs = SongsFound;
     }
 
-    private List<FileInfo> Commence_Scouting()
+    private static List<FileInfo> Commence_Scouting()
     {
         List<FileInfo> discoveredSongFiles = new List<FileInfo>();
         //We want loop through each file, and extract every little information that 
@@ -66,7 +61,7 @@ public class RoftScouter : MonoBehaviour
         return discoveredSongFiles;
     }
 
-    public List<Song_Entity> ConvertDiscoveredRFTMFilesToSongEntityObj(List<FileInfo> files)
+    public static List<Song_Entity> ConvertDiscoveredRFTMFilesToSongEntityObj(List<FileInfo> files)
     {
         /*Our next greatest challenge is right here...
          Taking our generated information, and turning them into actual gameObjects, that we can used for the game
@@ -119,14 +114,10 @@ public class RoftScouter : MonoBehaviour
                 currentGROUPID = GROUPID;
                 newEntity.SongTitle = songTitle;
 
-                
-                StartCoroutine(Requesting(f));
-
                 while (true)
                 {
-                    if (isRequestDone)
+                    if (Requesting(f, audioFile))
                     {
-                        Debug.Log("Bing Bong!!");
                         newEntity.SongArtist = songArtist;
                         newEntity.GROUPID = GROUPID;
                         newEntity.AudioFile = GetAudioClip();
@@ -147,40 +138,35 @@ public class RoftScouter : MonoBehaviour
         return convertedObj;
     }
 
-    AudioClip GetAudioClip() => requestedClip;
+    static AudioClip GetAudioClip() => requestedClip;
 
-    IEnumerator Requesting(FileInfo _url)
+    static bool Requesting(FileInfo _url, string _name)
     {
-        using (UnityWebRequest requestAudio = UnityWebRequestMultimedia.GetAudioClip(_url.FullName, AudioType.OGGVORBIS))
+        string link = @"file:\\\" + _url.Directory + @"\" + _name;
+        using (UnityWebRequest requestAudio = UnityWebRequestMultimedia.GetAudioClip(link, AudioType.WAV))
         {
-            Debug.Log("Requesting now...");
-
             UnityWebRequestAsyncOperation operation = requestAudio.SendWebRequest();
 
             while (!operation.isDone)
-                yield return null;
-
-            isRequestDone = true;
+                continue;
 
             if (requestAudio.isNetworkError)
+            {
                 Debug.Log("Failed to load audio.");
+                return operation.isDone;
+            }
             else
             {
                 requestedClip = DownloadHandlerAudioClip.GetContent(requestAudio);
-
-                if (requestedClip == null)
-                {
-                    Debug.Log("Audio file wasn't found.");
-                }
+                requestedClip.name = _name;
+                return operation.isDone;
             }
-
-            StopCoroutine(Requesting(_url));
         }
     }
 
-    public bool CompareGroupID(ref long _val1, ref long _val2) => (_val1 == _val2);
+    static bool CompareGroupID(ref long _val1, ref long _val2) => (_val1 == _val2);
 
-    public void GenerateDifficulty(int _ROFTID, string _difficultyName, float _approachSpeed, float _stressBuild, float _accuracyHarshness, int _totalNotes, int _keyCount, FileInfo _fileInfo, List<Song_Entity> _convertedObj)
+    static void GenerateDifficulty(int _ROFTID, string _difficultyName, float _approachSpeed, float _stressBuild, float _accuracyHarshness, int _totalNotes, int _keyCount, FileInfo _fileInfo, List<Song_Entity> _convertedObj)
     {
         Song_Entity.Song_Entity_Difficulty newDifficulty = new Song_Entity.Song_Entity_Difficulty();
         newDifficulty.ROFTID = _ROFTID;

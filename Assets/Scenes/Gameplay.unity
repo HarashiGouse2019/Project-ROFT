@@ -908,7 +908,14 @@ MonoBehaviour:
   musicVolumeAdjust: {fileID: 0}
   soundVolumeAdjust: {fileID: 0}
   nowPlaying: 
-  songs: []
+  songs:
+  - SongTitle: 
+    SongArtist: 
+    GROUPID: 0
+    InitialDifficultyRating: 0
+    AudioFile: {fileID: 0}
+    BackgroundImage: {fileID: 0}
+    Difficulties: []
   timeSamples: 0
   positionSeconds:
   - 0.123
@@ -3536,20 +3543,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65af08cbbdc82154bbea00871abf0ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioFile: {fileID: 8300000, guid: 498e7b70fd7590348909153a370a1245, type: 3}
+  audioFile: {fileID: 8300000, guid: 4ea24af2abfe1344c82ddd98e66035ab, type: 3}
   backgroundImage: {fileID: 2800000, guid: d5776c098b954e945b29fcd6f4f5c49a, type: 3}
   backgroundVideo: {fileID: 0}
   songTitle: Tokimeki Lights
   songArtist: Perfume
   songTitleUnicode: "\u3068\u304D\u3081\u304D\u30E9\u30A4\u30FC\u30C8"
   songArtistUnicode: Perfume
-  difficultyName: Insane
-  keyLayout: 3
-  approachSpeed: 8.5
-  accuracyHarshness: 7
+  difficultyName: Easy
+  keyLayout: 0
+  approachSpeed: 6.37
+  accuracyHarshness: 5.96
   stressBuild: 6
   createNewDifficulty: 1
-  GROUPID: 2001195648
+  GROUPID: 2037203851
 --- !u!4 &1505021165
 Transform:
   m_ObjectHideFlags: 0

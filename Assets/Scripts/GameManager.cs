@@ -154,12 +154,9 @@ public class GameManager : MonoBehaviour
         KeyCode.Q,
         KeyCode.P,
         KeyCode.Semicolon,
-        KeyCode.Comma
+        KeyCode.Comma,
+        KeyCode.F5
     };
-
-    //RoftScouter will be our "Go collect some songs that I may or may not have
-    //put in this directory.
-    private RoftScouter scouter;
 
     //Make to much easier to access other classes
     private RoftPlayer roftPlayer;
@@ -206,9 +203,6 @@ public class GameManager : MonoBehaviour
     {
         if (IMG_STRESS != null) IMG_STRESS.fillAmount = 0f;
         Application.targetFrameRate = 60;
-
-        //Instanciate new scouter
-        scouter = new RoftScouter();
 
         //Reference our roftPlayer
         /*I may be right or wrong, but this may be a flyweight pattern...
@@ -343,6 +337,9 @@ public class GameManager : MonoBehaviour
                     return;
             }
         }
+
+        if (Input.GetKeyDown(inGameControlKeys[6]))
+            ExecuteScouting();
     }
 
     public void RestartSong()
@@ -514,6 +511,25 @@ public class GameManager : MonoBehaviour
     public bool IsInteractable()
     {
         return (isGamePaused == false && isCountingDown == false);
+    }
+
+    public void ExecuteScouting()
+    {
+        Debug.Log("Scouting...");
+
+        //We'll be using the EventManager to perform this method.
+        //We have to create a Callback Method (aka; our delegate)
+        EventManager.CallbackMethod scoutingDelegate;
+
+        //We store the function we want into our delegate
+        scoutingDelegate = () => RoftScouter.OnStart();
+
+        //And then we add our delegate (which plays as a listner)
+        EventManager.AddEventListener("ON_BEGIN_SCOUT", scoutingDelegate);
+
+        //Now we execute it, and then remove it.
+        EventManager.TriggerEvent("ON_BEGIN_SCOUT");
+        EventManager.RemoveEventListener("ON_BEGIN_SCOUT", scoutingDelegate);
     }
 
     void CreateRecords()
