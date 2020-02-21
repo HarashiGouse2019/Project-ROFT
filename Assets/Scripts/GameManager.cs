@@ -64,6 +64,8 @@ public class GameManager : MonoBehaviour
 
     public static int consecutiveMisses;
 
+    public static bool SongsNotFound { get; set; } = false;
+
     /*There's 3 modes:
      * STANDARD will be Keyboard and Mouse incorporated
      * KEY_ONLY will be what I've been having for ages

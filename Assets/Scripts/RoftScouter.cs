@@ -54,7 +54,8 @@ public class RoftScouter
 
         List<FileInfo> obj = Commence_Scouting();
         SongsFound = ConvertDiscoveredRFTMFilesToSongEntityObj(obj);
-        MusicManager.Instance.songs = SongsFound;
+        MusicManager.s_songs = SongsFound;
+        MusicManager.Instance.songs = MusicManager.s_songs;
     }
 
     private static List<FileInfo> Commence_Scouting()
@@ -67,8 +68,13 @@ public class RoftScouter
             //Once a new entity's instansiated, we'll push to our discoveredSongFiles
             discoveredSongFiles.Add(discovered);
         }
+
         if (discoveredSongFiles.Count == 0)
+        {
             Debug.Log("New songs were not detected!!!");
+            GameManager.SongsNotFound = true;
+        }
+
         return discoveredSongFiles;
     }
 
@@ -131,9 +137,10 @@ public class RoftScouter
                 {
                     while (true)
                     {
-                        if (RequestingAudio(fileNum, audioFile))
+                        if (RequestingAudio(fileNum, audioFile) && RequestingImage(fileNum, backgroundImageFile))
                         {
                             newEntity.AudioFile = GetAudioClip();
+                            newEntity.BackgroundImage = GetRawImage();
                             break;
                         }
                     }
@@ -167,7 +174,7 @@ public class RoftScouter
             while (!operation.isDone)
                 continue;
 
-            if (requestAudio.isNetworkError)
+            if (requestAudio.isNetworkError || requestAudio.isHttpError)
             {
                 Debug.Log("Failed to load audio.");
                 return operation.isDone;
@@ -185,28 +192,30 @@ public class RoftScouter
     static bool RequestingImage(FileInfo _url, string _name)
     {
         string link = @"file:\\\" + _url.Directory + @"\" + _name;
-        #region Requesting Image
-        using (UnityWebRequest requestImage = UnityWebRequestTexture.GetTexture(link))
-        {
-            UnityWebRequestAsyncOperation operation = requestImage.SendWebRequest();
+        Debug.Log(link);
+        return true;
+        //#region Requesting Image
+        //using (UnityWebRequest requestImage = UnityWebRequestTexture.GetTexture(link))
+        //{
+        //    UnityWebRequestAsyncOperation operation = requestImage.SendWebRequest();
             
-            while (!operation.isDone)
-                continue;
+        //    while (!operation.isDone)
+        //        continue;
 
 
-            if (requestImage.isNetworkError || requestImage.isHttpError)
-            {
-                Debug.Log("Failed to load image.");
-                return operation.isDone;
-            }
-            else
-            {
-                RequestedImage = DownloadHandlerTexture.GetContent(requestImage);
-                RequestedImage.name = _name;
-                return operation.isDone;
-            }
-        }
-        #endregion
+        //    if (requestImage.isNetworkError || requestImage.isHttpError)
+        //    {
+        //        Debug.Log("Failed to load image.");
+        //        return operation.isDone;
+        //    }
+        //    else
+        //    {
+        //        RequestedImage = DownloadHandlerTexture.GetContent(requestImage);
+        //        RequestedImage.name = _name;
+        //        return operation.isDone;
+        //    }
+        //}
+        //#endregion
     }
 
     static bool CompareGroupID(ref long _val1, ref long _val2) => (_val1 == _val2);

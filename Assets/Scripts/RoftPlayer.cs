@@ -89,12 +89,6 @@ public class RoftPlayer : MonoBehaviour
             Destroy(gameObject);
         }
         #endregion
-        LoadMusic();
-    }
-
-    private void Start()
-    {
-        if (record == false) StartCoroutine(Wait(3, () => PlayMusic()));
     }
 
     // Update is called once per frame
@@ -102,6 +96,12 @@ public class RoftPlayer : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T) && record)
             PlayMusic();
+
+        if (Input.GetKeyDown(KeyCode.Return) && !musicSource.isPlaying)
+        {
+            LoadMusic();
+            PlayMusic();
+        }
 
         if (musicSource != null)
             musicIsPlaying = musicSource.isPlaying;
@@ -116,17 +116,18 @@ public class RoftPlayer : MonoBehaviour
         }
     }
 
-    void LoadMusic()
+    public void LoadMusic()
     {
         musicSource = gameObject.AddComponent<AudioSource>();
 
         if (record)
             musicSource.clip = RoftCreator.Instance.GetAudioFile();
-        //else
-        //    musicSource.clip = MusicManager.Instance.GetMusic(MapReader.Instance.GetName());
+        else
+            musicSource.clip = MapReader.SongEntityBeingRead.AudioFile;
 
         musicLengthInSamples = musicSource.clip.length * musicSource.clip.frequency;
         musicSource.outputAudioMixerGroup = pitchMixer;
+        music = musicSource.clip;
     }
 
     //Play the song

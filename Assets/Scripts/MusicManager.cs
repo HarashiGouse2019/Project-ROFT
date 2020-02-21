@@ -35,11 +35,12 @@ public class MusicManager : MonoBehaviour
         [HideInInspector] public AudioSource source;
     }
 
+    public List<Song_Entity> songs;
+    public static List<Song_Entity> s_songs;
+
     public Slider musicVolumeAdjust, soundVolumeAdjust; //Reference to our volume sliders
 
     public string nowPlaying;
-
-    public List<Song_Entity> songs;
 
     // Start is called before the first frame update
     public float timeSamples;
@@ -58,6 +59,8 @@ public class MusicManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public static List<Song_Entity> GetSongEntity() => s_songs;
 
     //public AudioClip GetMusic(string _name)
     //{

@@ -34,6 +34,10 @@ public class MapReader : MonoBehaviour
     [SerializeField] private TrailObjectReader trailObjectReader;
     [SerializeField] private ClickObjectReader clickObjectReader;
 
+    //I'll have to keep track of which files the MapReader is actually reading, or else I can't grab the information
+    public static Song_Entity SongEntityBeingRead { get; set; }
+    public static int DifficultyIndex { get; set; }
+
     Thread readKeyThread;
     static bool keysReaded = false;
     public static bool KeysReaded
@@ -63,20 +67,16 @@ public class MapReader : MonoBehaviour
 
     private void Start()
     {
-        readKeyThread = new Thread(() => ReadRFTMKeys(m_name));
+        GameManager.Instance.ExecuteScouting();
 
-        readKeyThread.Start();
-
-        while (true)
+        if (!GameManager.SongsNotFound)
         {
-            if (!readKeyThread.IsAlive)
-            {
-                keysReaded = true;
-                Initialize();
-                CalculateDifficultyRating();
-
-                return;
-            }
+            SongEntityBeingRead = MusicManager.GetSongEntity()[1];
+            AssignRFTMNameToRead(SongEntityBeingRead, 0);
+        } else
+        {
+            Initialize();
+            CalculateDifficultyRating();
         }
     }
 
@@ -106,8 +106,7 @@ public class MapReader : MonoBehaviour
         {
             string line;
 
-            string rftmFileName = _name + ".rftm";
-            string rftmFilePath = Application.streamingAssetsPath + @"/" + rftmFileName;
+            string rftmFilePath = _name;
 
             int maxKey = 0;
 
@@ -201,7 +200,7 @@ public class MapReader : MonoBehaviour
 
     void CalculateDifficultyRating()
     {
-
+        RoftPlayer.Instance.LoadMusic();
         int totalNotes = noteObjs.Count;
         float songLengthInSec = RoftPlayer.musicSource.clip.length;
         float notesPerSec = (totalNotes / songLengthInSec);
@@ -269,6 +268,38 @@ public class MapReader : MonoBehaviour
     {
         if (_objectReader != null)
             _objectReader.objects.Add(_key);
+    }
+
+    public void AssignRFTMNameToRead(Song_Entity _song, int _difficultValue)
+    {
+        /*We want to be able to get retrieve a song entity, and wiht access to the song
+         entity, we are able to read the .rftm (which are the difficulties) of the song.
+         We will now call the ReadRFTM function to read the data that's been provided to us, thus
+         ROFTPlayer can then retrieve information that is sorted on this object.
+
+         That's at least what I hope this will do.*/
+
+        int count = 0;
+        foreach (Song_Entity.Song_Entity_Difficulty diffVal in _song.Difficulties)
+        {
+            if (count == _difficultValue)
+            {
+                SongEntityBeingRead = _song;
+                DifficultyIndex = _difficultValue;
+                m_name = diffVal.RFTMFile;
+                ReadRFTMKeys(m_name);
+
+                Initialize();
+                CalculateDifficultyRating();
+
+                return;
+            }
+
+            count++;
+        }
+
+        Debug.Log("An Error had occured... ");
+        return;
     }
 
     #region Set Methods
