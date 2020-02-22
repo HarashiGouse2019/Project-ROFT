@@ -254,6 +254,7 @@ public class GameManager : MonoBehaviour
 
     void RunUI()
     {
+        Debug.Log("Ui is continuously being updated...");
         TM_SCORE.text = previousScore.ToString("D10");
         TM_COMBO.text = "x" + Combo.ToString();
         TM_COMBO_UNDERLAY.text = "x" + Combo.ToString();

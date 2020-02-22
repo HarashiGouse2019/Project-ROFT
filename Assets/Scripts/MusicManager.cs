@@ -17,25 +17,8 @@ public class MusicManager : MonoBehaviour
 
     public static MusicManager Instance;
 
-    [System.Serializable]
-    public class Music
-    {
-        public string name; // Name of the audio
-
-        public AudioClip clip; //The Audio Clip Reference
-
-        [Range(0f, 1f)]
-        public float volume; //Adjust Volume
-
-        [Range(.1f, 3f)]
-        public float pitch; //Adject pitch
-
-        public bool enableLoop; //If the audio can repeat
-
-        [HideInInspector] public AudioSource source;
-    }
-
     public List<Song_Entity> songs;
+
     public static List<Song_Entity> s_songs;
 
     public Slider musicVolumeAdjust, soundVolumeAdjust; //Reference to our volume sliders
@@ -61,18 +44,4 @@ public class MusicManager : MonoBehaviour
     }
 
     public static List<Song_Entity> GetSongEntity() => s_songs;
-
-    //public AudioClip GetMusic(string _name)
-    //{
-    //    Music a = Array.Find(getMusic, sound => sound.name == _name);
-    //    if (a == null)
-    //    {
-    //        Debug.LogWarning("Sound name " + _name + " was not found.");
-    //        return null;
-    //    }
-    //    else
-    //    {
-    //        return a.clip;
-    //    }
-    //}
 }

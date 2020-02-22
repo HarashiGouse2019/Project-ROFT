@@ -72,8 +72,9 @@ public class MapReader : MonoBehaviour
         if (!GameManager.SongsNotFound)
         {
             SongEntityBeingRead = MusicManager.GetSongEntity()[1];
-            AssignRFTMNameToRead(SongEntityBeingRead, 0);
-        } else
+            AssignRFTMNameToRead(SongEntityBeingRead, 1);
+        }
+        else
         {
             Initialize();
             CalculateDifficultyRating();
@@ -125,7 +126,11 @@ public class MapReader : MonoBehaviour
                     {
                         line = rftmReader.ReadLine();
                         if (line == null)
+                        {
+                            keysReaded = true;
                             return;
+                        }
+
 
                         if (filePosition > targetPosition)
                         {

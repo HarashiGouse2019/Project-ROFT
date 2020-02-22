@@ -73,6 +73,8 @@ public class RoftPlayer : MonoBehaviour
 
     public NoteEffector noteEffector;
 
+    public Action loadAndPlay;
+
     #endregion
 
     private void Awake()
@@ -89,6 +91,8 @@ public class RoftPlayer : MonoBehaviour
             Destroy(gameObject);
         }
         #endregion
+        loadAndPlay += LoadMusic;
+        loadAndPlay += PlayMusic;
     }
 
     // Update is called once per frame
@@ -98,10 +102,7 @@ public class RoftPlayer : MonoBehaviour
             PlayMusic();
 
         if (Input.GetKeyDown(KeyCode.Return) && !musicSource.isPlaying)
-        {
-            LoadMusic();
-            PlayMusic();
-        }
+            StartCoroutine(Wait(3, loadAndPlay));
 
         if (musicSource != null)
             musicIsPlaying = musicSource.isPlaying;
@@ -156,5 +157,6 @@ public class RoftPlayer : MonoBehaviour
     {
         yield return new WaitForSeconds(duration);
         if (function != null) function.Invoke();
+        GameManager.inSong = true;
     }
 }
