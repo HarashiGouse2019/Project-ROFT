@@ -15,51 +15,51 @@ namespace ROFTIOMANAGEMENT
         const string newLine = "\n";
 
         #region Format Version
-        static string t_version = "[Format Version]\n";
-        static string p_formatVer = "1.0v" + newLine;
+        readonly static string t_version = "[Format Version]\n";
+        readonly static string p_formatVer = "1.0v" + newLine;
         #endregion
 
         #region [General]
-        static string t_general = "[General]\n";
-        static string p_Author = "Author: " + System.Environment.UserName + newLine;
-        static string p_AudioFileName = "AudioFilename: " + RoftCreator.audioFilePath + newLine;
-        static string p_BackgroundImage = "BackgroundImage: " + RoftCreator.backgroundFilePath + newLine;
-        static string p_BackgroundVideo = "BackgroundVideo: " + newLine;
+        readonly static string t_general = "[General]\n";
+        readonly static string p_Author = "Author: " + System.Environment.UserName + newLine;
+        readonly static string p_AudioFileName = "AudioFilename: " + RoftCreator.audioFilePath + newLine;
+        readonly static string p_BackgroundImage = "BackgroundImage: " + RoftCreator.backgroundFilePath + newLine;
+        readonly static string p_BackgroundVideo = "BackgroundVideo: " + newLine;
         #endregion
 
         #region [Metadata]
-        static string t_metadata = "[Metadata]\n";
-        static string p_Title = "Title: " + RoftCreator.Instance.GetSongTitle() + newLine;
-        static string p_TitleUnicode = "TitleUnicode: " + RoftCreator.Instance.GetSongTitle(true) + newLine;
-        static string p_Artist = "Artist: " + RoftCreator.Instance.GetSongArtist() + newLine;
-        static string p_ArtistUnicode = "ArtistUnicode: " + RoftCreator.Instance.GetSongArtist(true) + newLine;
-        static string p_Creator = "Creator: " + System.Environment.UserName + newLine;
-        static string p_ROFTID = "ROFTID: " + RoftCreator.Instance.GetROFTID() + newLine;
-        static string p_GROUPID = "GROUPID: " + RoftCreator.Instance.GetGROUPID() + newLine;
+        readonly static string t_metadata = "[Metadata]\n";
+        readonly static string p_Title = "Title: " + RoftCreator.Instance.GetSongTitle() + newLine;
+        readonly static string p_TitleUnicode = "TitleUnicode: " + RoftCreator.Instance.GetSongTitle(true) + newLine;
+        readonly static string p_Artist = "Artist: " + RoftCreator.Instance.GetSongArtist() + newLine;
+        readonly static string p_ArtistUnicode = "ArtistUnicode: " + RoftCreator.Instance.GetSongArtist(true) + newLine;
+        readonly static string p_Creator = "Creator: " + System.Environment.UserName + newLine;
+        readonly static string p_ROFTID = "ROFTID: " + RoftCreator.Instance.GetROFTID() + newLine;
+        readonly static string p_GROUPID = "GROUPID: " + RoftCreator.Instance.GetGROUPID() + newLine;
         #endregion
 
         #region [Difficulty]
-        static string t_difficulty = "[Difficulty]\n";
-        static string p_DifficultyName = "DifficultyName: " + RoftCreator.Instance.GetDifficultyName() + newLine;
-        static string p_StressBuild = "StressBuild: " + GameManager.Instance.stressBuild.ToString() + newLine;
-        static string p_ObjectCount = "ObjectCount: " + newLine;
+        readonly static string t_difficulty = "[Difficulty]\n";
+        readonly static string p_DifficultyName = "DifficultyName: " + RoftCreator.Instance.GetDifficultyName() + newLine;
+        readonly static string p_StressBuild = "StressBuild: " + GameManager.Instance.stressBuild.ToString() + newLine;
+        readonly static string p_ObjectCount = "ObjectCount: " + newLine;
         #region Key Count
-        static string keyInfo = GetLayoutType();
+        readonly static string keyInfo = GetLayoutType();
 
 
         #endregion
-        static string p_KeyCount = "KeyCount: " + keyInfo + newLine;
+        readonly static string p_KeyCount = "KeyCount: " + keyInfo + newLine;
 
-        static string p_AccuracyHarshness = "AccuracyHarshness: " + RoftCreator.Instance.GetAccuracyHarshness() + newLine;
-        static string p_ApproachSpeed = "ApproachSpeed: " + RoftCreator.Instance.GetApproachSpeed() + newLine;
+        readonly static string p_AccuracyHarshness = "AccuracyHarshness: " + RoftCreator.Instance.GetAccuracyHarshness() + newLine;
+        readonly static string p_ApproachSpeed = "ApproachSpeed: " + RoftCreator.Instance.GetApproachSpeed() + newLine;
         #endregion
 
         #region [Objects]
-        static string t_objects = "[Objects]";
+        readonly static string t_objects = "[Objects]";
         #endregion
 
         #region .rftm Information
-        static string[] rftmInformation = new string[]
+        readonly static string[] rftmInformation = new string[]
         {
                    //Format Version
                    t_version +
@@ -127,14 +127,14 @@ namespace ROFTIOMANAGEMENT
     public static class IDHIST
     {
         //Defalt Identity History path.
-        private static string iHistPath { get; } = Application.persistentDataPath + "/ihist.ID";
+        private static string IHistPath { get; } = Application.persistentDataPath + "/ihist.ID";
 
         /// <summary>
         /// Create a new Identity histroy
         /// </summary>
         public static void NewHistory()
         {
-            File.Create(iHistPath);
+            File.Create(IHistPath);
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace ROFTIOMANAGEMENT
         /// <returns></returns>
         public static bool HistoryExists()
         {
-            bool exist = File.Exists(iHistPath);
+            bool exist = File.Exists(IHistPath);
             return exist;
         }
 
@@ -186,11 +186,12 @@ namespace ROFTIOMANAGEMENT
             //which is mostly suggested, followed by reader with a BinaryReader
             //It'll iterate through the file and decode each value in the file,
             //then adds the decoded string into our data list.
-            using (FileStream fileStream = File.OpenRead(iHistPath))
+            using (FileStream fileStream = File.OpenRead(IHistPath))
             {
                 using (BinaryReader binaryReader = new BinaryReader(fileStream))
                 {
-                    while(binaryReader.BaseStream.Position != binaryReader.BaseStream.Length) {
+                    while (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length)
+                    {
                         string curString = binaryReader.ReadString();
                         byte[] decodedBytes = Convert.FromBase64String(curString);
                         string encodedText = Encoding.UTF8.GetString(decodedBytes);
@@ -240,7 +241,7 @@ namespace ROFTIOMANAGEMENT
             char[] delimiters = { '-', '(', ')' };
 
             //Iterate and find matching GroupId first
-            foreach(string id in data)
+            foreach (string id in data)
             {
                 //We use the Contain method because this will track the specific
                 //ID if the GROUPID happens to exists.
@@ -536,22 +537,64 @@ namespace ROFTIOMANAGEMENT
             //And get the total object
             int totalNotes = 0;
 
-            if(File.Exists(_path))
-            {
-                using(StreamReader streamReader = new StreamReader(_path))
-                {
-                    if(position == InRFTMJumpTo("Objects", _path) + 1)
-                    {
-                        totalNotes++;
-                    }
-                    position++;
+            string rftmFilePath = _path;
 
-                    if (streamReader.EndOfStream)
-                        return totalNotes;
+            //We won't be returning anything, but we'll see if there's even something writtern
+            //at the line, so that we can count.
+            string line;
+
+            //Access the Objects tag
+            int objectsTag = InRFTMJumpTo("Objects", _path);
+
+            //A bool to check that we've even got to the ObjectsTag
+            bool atObjectsTag = false;
+
+            const int FAILURE = -1;
+            const int ZERO = 0;
+
+            if (File.Exists(rftmFilePath))
+            {
+                using (StreamReader streamReader = new StreamReader(_path))
+                {
+                    while (true)
+                    {
+                        line = streamReader.ReadLine();
+
+                        if (line == null)
+                        {
+                            if (atObjectsTag == true)
+                            {
+                                if (totalNotes == ZERO)
+                                {
+                                    Debug.Log("There was no known objects in this file.");
+                                    return ZERO;
+                                }
+                                else
+                                    return totalNotes;
+
+                            }
+                            else
+                            {
+                                Debug.Log("This tag doesn't exist.");
+                                return FAILURE;
+                            }
+                        }
+
+                        if (position == objectsTag)
+                            atObjectsTag = true;
+
+                        if (position > objectsTag)
+                        {
+                            atObjectsTag = true;
+                            totalNotes++;
+                        }
+
+                        position++;
+                    }
                 }
             }
-
-            return -1;
+            Debug.Log("Path " + _path + " doesn't exist.");
+            return FAILURE;
         }
     }
 }

@@ -174,6 +174,8 @@ public class GameManager : MonoBehaviour
     private delegate void Main();
     private Main core;
 
+    EventManager.CallbackMethod scoutingDelegate;
+
     private void Awake()
     {
         #region Singleton
@@ -254,7 +256,7 @@ public class GameManager : MonoBehaviour
 
     void RunUI()
     {
-        Debug.Log("Ui is continuously being updated...");
+
         TM_SCORE.text = previousScore.ToString("D10");
         TM_COMBO.text = "x" + Combo.ToString();
         TM_COMBO_UNDERLAY.text = "x" + Combo.ToString();
@@ -522,10 +524,8 @@ public class GameManager : MonoBehaviour
 
         //We'll be using the EventManager to perform this method.
         //We have to create a Callback Method (aka; our delegate)
-        EventManager.CallbackMethod scoutingDelegate;
-
         //We store the function we want into our delegate
-        scoutingDelegate = () => RoftScouter.OnStart();
+         scoutingDelegate = () => RoftScouter.OnStart();
 
         //And then we add our delegate (which plays as a listner)
         EventManager.AddEventListener("ON_BEGIN_SCOUT", scoutingDelegate);

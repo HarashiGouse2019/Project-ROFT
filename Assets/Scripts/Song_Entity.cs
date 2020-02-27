@@ -71,6 +71,7 @@ public class Song_Entity
         //Song Difficulty will have a lot of information in it, so yeah.
         public enum FC_STATUS
         {
+            NONE,
             FC,
             APFC
         }

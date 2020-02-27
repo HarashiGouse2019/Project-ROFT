@@ -30,9 +30,9 @@ public class RoftScouter
         VIDEO
     }
 
-    public static string curApp_Dir { get; set; } = Application.persistentDataPath + "/Songs";
+    public static string CurApp_Dir { get; set; } = Application.persistentDataPath + "/Songs";
 
-    public static DirectoryInfo directoryInfo { get; set; }
+    public static DirectoryInfo DirectoryInfo { get; set; }
 
     public static List<Song_Entity> SongsFound { get; set; } = new List<Song_Entity>();
 
@@ -50,7 +50,7 @@ public class RoftScouter
     //OnStart Event
     public static void OnStart()
     {
-        directoryInfo = new DirectoryInfo(curApp_Dir);
+        DirectoryInfo = new DirectoryInfo(CurApp_Dir);
 
         List<FileInfo> obj = Commence_Scouting();
         SongsFound = ConvertDiscoveredRFTMFilesToSongEntityObj(obj);
@@ -63,7 +63,7 @@ public class RoftScouter
         List<FileInfo> discoveredSongFiles = new List<FileInfo>();
         //We want loop through each file, and extract every little information that 
         //we can graph to assign them to our Song_Entity list
-        foreach (var discovered in directoryInfo.GetFiles("*.rftm", SearchOption.AllDirectories))
+        foreach (var discovered in DirectoryInfo.GetFiles("*.rftm", SearchOption.AllDirectories))
         {
             //Once a new entity's instansiated, we'll push to our discoveredSongFiles
             discoveredSongFiles.Add(discovered);
@@ -103,6 +103,7 @@ public class RoftScouter
             int generalTag = InRFTMJumpTo("General", fileNum.FullName);
             int metadataTag = InRFTMJumpTo("Metadata", fileNum.FullName);
             int difficultyTag = InRFTMJumpTo("Difficulty", fileNum.FullName);
+            int objectsTag = InRFTMJumpTo("Objects", fileNum.FullName);
 
             //Now with our tags assigned a value, I want to get all the information
             string audioFile = ReadPropertyFrom<string>(generalTag, "AudioFilename", fileNum.FullName);
@@ -192,7 +193,6 @@ public class RoftScouter
     static bool RequestingImage(FileInfo _url, string _name)
     {
         string link = @"file:\\\" + _url.Directory + @"\" + _name;
-        Debug.Log(link);
         return true;
         //#region Requesting Image
         //using (UnityWebRequest requestImage = UnityWebRequestTexture.GetTexture(link))

@@ -38,7 +38,7 @@ public class MapReader : MonoBehaviour
     public static Song_Entity SongEntityBeingRead { get; set; }
     public static int DifficultyIndex { get; set; }
 
-    Thread readKeyThread;
+    readonly Thread readKeyThread;
     static bool keysReaded = false;
     public static bool KeysReaded
     {
@@ -72,7 +72,7 @@ public class MapReader : MonoBehaviour
         if (!GameManager.SongsNotFound)
         {
             SongEntityBeingRead = MusicManager.GetSongEntity()[1];
-            AssignRFTMNameToRead(SongEntityBeingRead, 1);
+            AssignRFTMNameToRead(SongEntityBeingRead, _difficultValue: 2);
         }
         else
         {

@@ -83,8 +83,8 @@ public class RoftCreator : MonoBehaviour
 
             //audioExtension will be very important to take a song in a song folder, and converting it to a UnityAsset in which
             //we can assign to the RoftPlayer.cs
-            string audioExt = Path.GetExtension(AssetDatabase.GetAssetPath(audioFile));
-            string backgroundImgExt = Path.GetExtension(AssetDatabase.GetAssetPath(backgroundImage));
+            string audioExt = null; /*Path.GetExtension(AssetDatabase.GetAssetPath(audioFile));*/
+            string backgroundImgExt = null; /*Path.GetExtension(AssetDatabase.GetAssetPath(backgroundImage));*/
 
             audioFilePath = audioFile.name + audioExt;
             backgroundFilePath = backgroundImage.name + backgroundImgExt;
@@ -100,8 +100,8 @@ public class RoftCreator : MonoBehaviour
 
             try
             {
-                File.Copy(AssetDatabase.GetAssetPath(audioFile), newSongDirectoryPath + "/" + audioFile.name + audioExt);
-                File.Copy(AssetDatabase.GetAssetPath(backgroundImage), newSongDirectoryPath + "/" + backgroundImage.name + backgroundImgExt);
+                //File.Copy(AssetDatabase.GetAssetPath(audioFile), newSongDirectoryPath + "/" + audioFile.name + audioExt);
+                //File.Copy(AssetDatabase.GetAssetPath(backgroundImage), newSongDirectoryPath + "/" + backgroundImage.name + backgroundImgExt);
             }
             catch {/*This just means they already exists...*/};
         }
@@ -151,34 +151,14 @@ public class RoftCreator : MonoBehaviour
     /// </summary>
     /// <param name="_inUnicode">Return the unicode of song title</param>
     /// <returns>String</returns>
-    public string GetSongTitle(bool _inUnicode = false)
-    {
-        switch (_inUnicode)
-        {
-            case false:
-                return songTitle;
-            case true:
-                return songTitleUnicode;
-        }
-        return "";
-    }
+    public string GetSongTitle(bool _inUnicode = false) => (_inUnicode == true) ? songTitleUnicode : songTitle;
 
     /// <summary>
     /// Get song artist being used.
     /// </summary>
     /// <param name="_inUnicode">Return the unicode of song artist</param>
     /// <returns></returns>
-    public string GetSongArtist(bool _inUnicode = false)
-    {
-        switch (_inUnicode)
-        {
-            case false:
-                return songArtist;
-            case true:
-                return songArtistUnicode;
-        }
-        return "";
-    }
+    public string GetSongArtist(bool _inUnicode = false) => (_inUnicode == true) ? songArtistUnicode : songArtist;
 
     /// <summary>
     /// Get difficulty name being used.

@@ -3543,11 +3543,11 @@ MonoBehaviour:
   songArtist: Perfume
   songTitleUnicode: "\u3068\u304D\u3081\u304D\u30E9\u30A4\u30FC\u30C8"
   songArtistUnicode: Perfume
-  difficultyName: Normal
-  keyLayout: 1
-  approachSpeed: 7.5
-  accuracyHarshness: 5.96
-  stressBuild: 6
+  difficultyName: Hard
+  keyLayout: 2
+  approachSpeed: 8.49
+  accuracyHarshness: 6.48
+  stressBuild: 8.13
   createNewDifficulty: 0
   GROUPID: 0
 --- !u!4 &1505021165
