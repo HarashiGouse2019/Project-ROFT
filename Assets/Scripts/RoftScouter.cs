@@ -51,10 +51,20 @@ public class RoftScouter
     //OnStart Event
     public static void OnStart()
     {
+        //Target our defined directory to read information and data.
         DirectoryInfo = new DirectoryInfo(CurApp_Dir);
 
+        /*We will then "Commence Scouting" by looking for all
+        files with the .rftm extenstion in our CurApp_Dir variable.*/
         List<FileInfo> obj = Commence_Scouting();
+
+        /*With the files now collected, we read each individual file
+        and convert them and their subfolders to SongEntities, which
+        defines a songs and it's related difficulties.*/
         SongsFound = ConvertDiscoveredRFTMFilesToSongEntityObj(obj);
+
+        /*We then assign information to our MusicManager will all the
+        songs that's be found and converted.*/
         MusicManager.s_songs = SongsFound;
         MusicManager.Instance.songs = MusicManager.s_songs;
     }
@@ -63,22 +73,24 @@ public class RoftScouter
     {
         List<FileInfo> discoveredSongFiles = new List<FileInfo>();
 
-        //From this point on, we will try to do the same operation as the foreach above,
-        //but this time, using the System.LING functions and stuff that it provides us...
-        //Not sure how all of this is going to work, but I'm willing to try. It kind of look very easy...
+        /*From this point on, we will try to do the same operation as the foreach above,
+        but this time, using the System.LING functions and stuff that it provides us...
+        Not sure how all of this is going to work, but I'm willing to try. It kind of look very easy...*/
 
         //We get our array of files with the extension .rftm, and assign it to data.
         var data = DirectoryInfo.GetFiles("*rftm", SearchOption.AllDirectories);
 
-        //Then for all the files in the data, get all of them, and convert it to a list.
-        //By default, the expression is actually a Query, so by doing .ToList(),
-        //we run through our query immediately, and turn it to a List<T> type.
+        /*Then for all the files in the data, get all of them, and convert it to a list.
+        By default, the expression is actually a Query, so by doing .ToList(),
+        we run through our query immediately, and turn it to a List<T> type.*/
         discoveredSongFiles = (from files in data select files).ToList();
 
-        if (discoveredSongFiles.Count == 0)
+        //Have a bool detecting if there's no songs found.
+        bool noSong = discoveredSongFiles.Count == 0;
+        if (noSong == true)
         {
             Debug.Log("New songs were not detected!!!");
-            GameManager.SongsNotFound = true;
+            GameManager.SongsNotFound = noSong;
         }
 
         return discoveredSongFiles;
@@ -100,8 +112,8 @@ public class RoftScouter
          */
         List<Song_Entity> convertedObj = new List<Song_Entity>();
 
-        //This will be used to compare the file's content, and 
-        //regularily create new SongEntities as needed.
+        /*This will be used to compare the file's content, and 
+        regularily create new SongEntities as needed.*/
         long currentGROUPID = 0;
 
         foreach (FileInfo fileNum in files)
@@ -112,14 +124,18 @@ public class RoftScouter
             int objectsTag = InRFTMJumpTo("Objects", fileNum.FullName);
 
             //Now with our tags assigned a value, I want to get all the information
+
+            //In the [General] tag, we will retrieve the following...
             string audioFile = ReadPropertyFrom<string>(generalTag, "AudioFilename", fileNum.FullName);
             string backgroundImageFile = ReadPropertyFrom<string>(generalTag, "BackgroundImage", fileNum.FullName);
 
+            //In the [Metadata] tag, we will retrieve the following...
             string songTitle = ReadPropertyFrom<string>(metadataTag, "Title", fileNum.FullName);
             string songArtist = ReadPropertyFrom<string>(metadataTag, "Artist", fileNum.FullName);
             int ROFTID = ReadPropertyFrom<int>(metadataTag, "ROFTID", fileNum.FullName);
             long GROUPID = ReadPropertyFrom<long>(metadataTag, "GROUPID", fileNum.FullName);
 
+            //In the [Difficulty] tag, we will retrieve the following...
             string difficultyName = ReadPropertyFrom<string>(difficultyTag, "DifficultyName", fileNum.FullName);
             float stressBuild = ReadPropertyFrom<float>(difficultyTag, "StressBuild", fileNum.FullName);
             int keyCount = ReadPropertyFrom<int>(difficultyTag, "KeyCount", fileNum.FullName);
@@ -132,14 +148,21 @@ public class RoftScouter
             //Now we can instantiate a new object
             if (!CompareGroupID(ref currentGROUPID, ref GROUPID))
             {
+                //We instanstiate a new song entity
                 Song_Entity newEntity = new Song_Entity();
 
+                /*For one song in which holds its difficulty,
+                we need to assign it a GROUPID,
+                the title of the song...
+                and the song artist.*/
                 currentGROUPID = GROUPID;
                 newEntity.SongTitle = songTitle;
                 newEntity.SongArtist = songArtist;
                 newEntity.GROUPID = GROUPID;
 
-                //Request for audio
+                /*We'll attempt to "Request" for the audio file defined in the .rftm file.
+                The only way to do that is through the UnityEngine.Networking namespace
+                through WebRequests.*/
                 if (newEntity.AudioFile == null)
                 {
                     while (true)
@@ -153,6 +176,7 @@ public class RoftScouter
                     }
                 }
 
+                //Now that our SongEntity has been set, we'll add it to our list for further conversion.
                 convertedObj.Add(newEntity);
 
                 //Generate our first difficulty
