@@ -62,20 +62,18 @@ public class RoftScouter
     private static List<FileInfo> Commence_Scouting()
     {
         List<FileInfo> discoveredSongFiles = new List<FileInfo>();
-        //We want loop through each file, and extract every little information that 
-        //we can graph to assign them to our Song_Entity list
-        //foreach (var discovered in DirectoryInfo.GetFiles("*.rftm", SearchOption.AllDirectories))
-        //{
-        //    //Once a new entity's instansiated, we'll push to our discoveredSongFiles
-        //    discoveredSongFiles.Add(discovered);
-        //}
 
         //From this point on, we will try to do the same operation as the foreach above,
         //but this time, using the System.LING functions and stuff that it provides us...
         //Not sure how all of this is going to work, but I'm willing to try. It kind of look very easy...
 
+        //We get our array of files with the extension .rftm, and assign it to data.
         var data = DirectoryInfo.GetFiles("*rftm", SearchOption.AllDirectories);
-        discoveredSongFiles = (from myVar in data select myVar).ToList();
+
+        //Then for all the files in the data, get all of them, and convert it to a list.
+        //By default, the expression is actually a Query, so by doing .ToList(),
+        //we run through our query immediately, and turn it to a List<T> type.
+        discoveredSongFiles = (from files in data select files).ToList();
 
         if (discoveredSongFiles.Count == 0)
         {
