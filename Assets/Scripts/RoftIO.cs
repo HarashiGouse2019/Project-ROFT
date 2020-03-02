@@ -552,25 +552,33 @@ namespace ROFTIOMANAGEMENT
             const int FAILURE = -1;
             const int ZERO = 0;
 
+
+            //We check if the targeted file exists before reading data
             if (File.Exists(rftmFilePath))
             {
                 using (StreamReader streamReader = new StreamReader(_path))
                 {
                     while (true)
                     {
+                        //Read each and every line...
                         line = streamReader.ReadLine();
 
+                        //Untile we come across a line that has no information
                         if (line == null)
                         {
+                            //If we have already made it to our targeted tag to read our data
+                            //which happens to be [Objects], then we'll teach if 
+                            //we got data or not.
                             if (atObjectsTag == true)
                             {
-                                if (totalNotes == ZERO)
+                                if (totalNotes != ZERO)
+                                    return totalNotes - 1;
+                                else
                                 {
                                     Debug.Log("There was no known objects in this file.");
                                     return ZERO;
                                 }
-                                else
-                                    return totalNotes;
+
 
                             }
                             else
@@ -580,12 +588,12 @@ namespace ROFTIOMANAGEMENT
                             }
                         }
 
-                        if (position == objectsTag)
+                        if (position >= objectsTag)
+                        {
+                            //We will mark true if we have hit or is beyond the objectsTag
+                            //basically reading the tag's properties/objects
                             atObjectsTag = true;
 
-                        if (position > objectsTag)
-                        {
-                            atObjectsTag = true;
                             totalNotes++;
                         }
 

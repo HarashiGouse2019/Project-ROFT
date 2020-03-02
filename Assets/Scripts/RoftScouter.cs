@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -63,11 +64,18 @@ public class RoftScouter
         List<FileInfo> discoveredSongFiles = new List<FileInfo>();
         //We want loop through each file, and extract every little information that 
         //we can graph to assign them to our Song_Entity list
-        foreach (var discovered in DirectoryInfo.GetFiles("*.rftm", SearchOption.AllDirectories))
-        {
-            //Once a new entity's instansiated, we'll push to our discoveredSongFiles
-            discoveredSongFiles.Add(discovered);
-        }
+        //foreach (var discovered in DirectoryInfo.GetFiles("*.rftm", SearchOption.AllDirectories))
+        //{
+        //    //Once a new entity's instansiated, we'll push to our discoveredSongFiles
+        //    discoveredSongFiles.Add(discovered);
+        //}
+
+        //From this point on, we will try to do the same operation as the foreach above,
+        //but this time, using the System.LING functions and stuff that it provides us...
+        //Not sure how all of this is going to work, but I'm willing to try. It kind of look very easy...
+
+        var data = DirectoryInfo.GetFiles("*rftm", SearchOption.AllDirectories);
+        discoveredSongFiles = (from myVar in data select myVar).ToList();
 
         if (discoveredSongFiles.Count == 0)
         {
