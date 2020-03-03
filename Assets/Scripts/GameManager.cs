@@ -219,7 +219,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (RoftPlayer.Instance.record == false)
+        if (RoftPlayer.Instance != null && RoftPlayer.Instance.record == false)
             StartCoroutine(RUN_GAME_MANAGEMENT());
     }
 

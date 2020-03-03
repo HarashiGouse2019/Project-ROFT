@@ -1,6 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -37,6 +40,8 @@ public class RoftScouter
 
     public static List<Song_Entity> SongsFound { get; set; } = new List<Song_Entity>();
 
+    public static bool ScoutingComplete { get; set; }
+
     private static AudioClip RequestedClip { get; set; }
     private static Texture2D RequestedImage { get; set; }
     private static VideoClip RequestedVideo { get; set; }
@@ -51,22 +56,37 @@ public class RoftScouter
     //OnStart Event
     public static void OnStart()
     {
-        //Target our defined directory to read information and data.
-        DirectoryInfo = new DirectoryInfo(CurApp_Dir);
-
-        /*We will then "Commence Scouting" by looking for all
-        files with the .rftm extenstion in our CurApp_Dir variable.*/
-        List<FileInfo> obj = Commence_Scouting();
-
-        /*With the files now collected, we read each individual file
-        and convert them and their subfolders to SongEntities, which
-        defines a songs and it's related difficulties.*/
-        SongsFound = ConvertDiscoveredRFTMFilesToSongEntityObj(obj);
-
-        /*We then assign information to our MusicManager will all the
-        songs that's be found and converted.*/
-        MusicManager.s_songs = SongsFound;
+        GameManager.Instance.StartCoroutine(ScoutingRoutine());
         MusicManager.Instance.songs = MusicManager.s_songs;
+    }
+
+    static IEnumerator ScoutingRoutine()
+    {
+        while (!ScoutingComplete)
+        {
+            //Target our defined directory to read information and data.
+            DirectoryInfo = new DirectoryInfo(CurApp_Dir);
+
+            /*We will then "Commence Scouting" by looking for all
+            files with the .rftm extenstion in our CurApp_Dir variable.*/
+
+            Func<List<FileInfo>> scoutingProcess = Commence_Scouting;
+
+            List<FileInfo> obj = scoutingProcess.Invoke();
+
+            /*With the files now collected, we read each individual file
+            and convert them and their subfolders to SongEntities, which
+            defines a songs and it's related difficulties.*/
+            SongsFound = ConvertDiscoveredRFTMFilesToSongEntityObj(obj);
+
+            /*We then assign information to our MusicManager will all the
+            songs that's be found and converted.*/
+            MusicManager.s_songs = SongsFound;
+
+            ScoutingComplete = true;
+
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     private static List<FileInfo> Commence_Scouting()

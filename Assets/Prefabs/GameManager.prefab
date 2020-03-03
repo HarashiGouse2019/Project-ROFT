@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8840939106478104642
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8840939106478112700}
+  - component: {fileID: 8840939106478104643}
+  - component: {fileID: 8840939106478112701}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &8840939106478112700
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8840939106478104642}
+  m_LocalRotation: {x: -0.00000003352761, y: 0.000000029802319, z: -0.0000000074505797,
+    w: 1}
+  m_LocalPosition: {x: 982.2844, y: 355.42773, z: 37817.316}
+  m_LocalScale: {x: 40.68574, y: 40.68574, z: 40.68574}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8840939106478104643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8840939106478104642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc250577b778d4749b520911daad8bf1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isGamePaused: 0
+  PAUSE_OVERLAY: {fileID: 0}
+  gameMode: 0
+  TM_SONGNAME: {fileID: 0}
+  TM_TOTALNOTES: {fileID: 0}
+  TM_TOTALKEYS: {fileID: 0}
+  TM_SCORE: {fileID: 0}
+  TM_MAXSCORE: {fileID: 0}
+  TM_COMBO: {fileID: 0}
+  TM_COMBO_UNDERLAY: {fileID: 0}
+  TM_MAXCOMBO: {fileID: 0}
+  TM_DIFFICULTY: {fileID: 0}
+  TM_PERFECT: {fileID: 0}
+  TM_GREAT: {fileID: 0}
+  TM_GOOD: {fileID: 0}
+  TM_OK: {fileID: 0}
+  TM_MISS: {fileID: 0}
+  TM_ACCURACYPERCENTILE: {fileID: 0}
+  TM_ACCURACYGRADE: {fileID: 0}
+  DEBUG_FILEDIR: {fileID: 0}
+  IMG_STRESS: {fileID: 0}
+  IMG_STRESSBACKGROUND: {fileID: 0}
+  IMG_SCREEN_OVERLAY: {fileID: 0}
+  IMG_PROGRESSION_FILL: {fileID: 0}
+  overallAccuracy: 100
+  accuracyPercentile: 0
+  overallGrade: 0
+  stressBuild: 10
+  accuracyStats: 0000000000000000000000000000000000000000
+  isAutoPlaying: 0
+  isCountingDown: 0
+--- !u!114 &8840939106478112701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8840939106478104642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf90269952cfa444981610abe86222ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentTargetKey: {fileID: 0}

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,11 +39,17 @@ public class SongSelectionNavigator : MonoBehaviour
         CONFIRMATION
     }
 
+    public enum Shift
+    {
+        INCREMENT,
+        DECREMENT
+    }
 
-    private static int SongEntityPosition{get; set;}
-    private static int DifficultyPosition { get; set; }
+    [SerializeField] private uint SongEntityPosition;
 
-    private static int[,] Position { get; set; }
+    [SerializeField] private uint DifficultyPosition;
+
+    private static uint[,] Position { get; set; }
 
     private static KeyCode[] NavigationControls =
     {
@@ -55,32 +62,53 @@ public class SongSelectionNavigator : MonoBehaviour
 
     private static NavigationState navigationState { get; set; }
 
-    //I want to try out using delegates instead just to try decoupling
-    //the amount of methods being called... just the basic stuff
-    public delegate object Initialization();
-    public Initialization init;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        init += GetLastPosition;
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(NavigationControls[0]))
+            ChangeSongEntityPosition(Shift.DECREMENT, 1);
+
+        if (Input.GetKeyDown(NavigationControls[1]))
+            ChangeSongEntityPosition(Shift.INCREMENT, 1);
+
+        if (Input.GetKeyDown(NavigationControls[2]))
+            ChangeDifficultyPosition(Shift.DECREMENT, 1);
+
+        if (Input.GetKeyDown(NavigationControls[3]))
+            ChangeDifficultyPosition(Shift.INCREMENT, 1);
     }
 
-    int[,] GetLastPosition() 
+    uint[,] GetLastPosition() 
     {
         /*Get last position will basically update our functions here,
          Update the SongEntityPosition, the Difficulty Difficulty, in which
          updates the overallPositioning*/
-        int[,] lastPos = new int[3, 3];
+        uint[,] lastPos = new uint[3, 3];
 
+        //This does nothing... for now...
 
         return lastPos;
     }
 
+    void ChangeSongEntityPosition(Shift _shift, uint _value)
+    {
+        //Check value shift: shift up or down; + or -; increment or decrement.
+        switch (_shift)
+        {
+            case Shift.INCREMENT: SongEntityPosition+=_value; return;
+            case Shift.DECREMENT: SongEntityPosition-=_value; return;
+            default: return;
+        }
+
+    }
+
+    void ChangeDifficultyPosition(Shift _shift, uint _value)
+    {
+        //Check value shift
+        switch (_shift)
+        {
+            case Shift.INCREMENT: DifficultyPosition+=_value; return;
+            case Shift.DECREMENT: DifficultyPosition-=_value; return;
+            default: return;
+        }
+    }
 }
