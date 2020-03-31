@@ -52,6 +52,7 @@ public class MapReader : MonoBehaviour
     private void Awake()
     {
         #region Singleton
+        //Our singleton
         if (Instance == null)
         {
             Instance = this;
@@ -67,17 +68,20 @@ public class MapReader : MonoBehaviour
 
     private void Start()
     {
+        //Start scouting for songs one MapReader is initialized
         GameManager.Instance.ExecuteScouting();
 
+        /*After scouting, if songs has been found, go ahead and access
+         this song and it's specified difficulty.*/
         if (!GameManager.SongsNotFound)
         {
             SongEntityBeingRead = MusicManager.GetSongEntity()[1];
-            AssignRFTMNameToRead(SongEntityBeingRead, _difficultValue: 2);
+            AssignRFTMNameToRead(SongEntityBeingRead, _difficultValue: 2); 
         }
         else
         {
-            Initialize();
-            CalculateDifficultyRating();
+            Debug.Log("No songs had been detected. Map Reader is now doing nothing.");
+            return;
         }
     }
 
@@ -94,6 +98,7 @@ public class MapReader : MonoBehaviour
             GameManager.Instance.stressBuild = ReadPropertyFrom<float>(difficultyTag, "StressBuild", m_name);
             NoteEffector.Instance.Accuracy = ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", m_name);
             maxScore = CalculateMaxScore();
+            CalculateDifficultyRating();
         }
         else
         {

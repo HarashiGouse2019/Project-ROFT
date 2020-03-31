@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using System.Globalization;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -52,10 +52,13 @@ public class RoftPlayer : MonoBehaviour
     public static AudioSource musicSource;
     #endregion
 
+
     #region Private Members
     private bool musicIsPlaying = false;
+    private float timeInSamples;
     private float musicLengthInSamples;
-
+    private float sampleDivisor = 1;
+    private float seconds, minutes;
 
     //Recording and getting the bpm and then to get the pulse
     public int taps;
@@ -72,6 +75,12 @@ public class RoftPlayer : MonoBehaviour
     public bool tapCalulationDone = false;
 
     public NoteEffector noteEffector;
+
+    readonly private KeyCode tapKey = KeyCode.T;
+    readonly private int tapLimit = 16;
+    readonly private int doneTapLimit = 3;
+
+    float time = 0f;
 
     public Action loadAndPlay;
 
@@ -110,11 +119,15 @@ public class RoftPlayer : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (!caretIsBeingDragged) UpdateCaret();
+
         if (songTrackPosition != null && songTrackPosition.value > 1)
         {
             PauseMusic();
             musicSource.timeSamples = (int)musicLengthInSamples;
         }
+
+        TimeStamp();
     }
 
     public void LoadMusic()
@@ -158,5 +171,87 @@ public class RoftPlayer : MonoBehaviour
         yield return new WaitForSeconds(duration);
         if (function != null) function.Invoke();
         GameManager.inSong = true;
+    }
+
+    public void UpdateCaret()
+    {
+
+        //So, here's how this is going to work...
+        //The Track Position is between values 0 and 1
+        //We have to find a way to convers a percentage of something to samples...
+        musicSource.pitch = sampleDivisor;
+
+        musicSource.outputAudioMixerGroup.audioMixer.SetFloat("pitchBend", 1 / musicSource.pitch);
+
+        timeInSamples = musicSource.timeSamples;
+
+        songTrackPosition.value = timeInSamples / musicLengthInSamples;
+
+        songPercentage.text = (songTrackPosition.value * 100).ToString("F1", CultureInfo.InvariantCulture) + "%";
+
+        samplesText.text = minutes.ToString() + ":" + Mathf.FloorToInt(seconds).ToString("D2");
+    }
+
+    public void UpdateSampleFromCaretPosition()
+    {
+        ToggleCaretDrag(true);
+
+        //We're doing the opposite of the UpdateCaret
+        musicSource.timeSamples = (int)(songTrackPosition.value * musicLengthInSamples);
+
+        timeInSamples = musicSource.timeSamples;
+
+        songPercentage.text = (songTrackPosition.value * 100).ToString("F1", CultureInfo.InvariantCulture) + "%";
+
+        samplesText.text = minutes.ToString() + ":" + Mathf.FloorToInt(seconds).ToString();
+    }
+
+    public void UpdatePlayBackSpeed()
+    {
+        for (int option = 0; option < playbackRate.options.Count; option++)
+        {
+            if (option == playbackRate.value)
+            {
+                switch (option)
+                {
+                    case 0:
+                        sampleDivisor = 1;
+                        musicSource.outputAudioMixerGroup.audioMixer.SetFloat("fftSize", 927f);
+                        break;
+                    case 1:
+                        sampleDivisor = 0.75f;
+                        musicSource.outputAudioMixerGroup.audioMixer.SetFloat("fftSize", 1060f);
+                        break;
+                    case 2:
+                        sampleDivisor = 0.5f;
+                        musicSource.outputAudioMixerGroup.audioMixer.SetFloat("fftSize", 3608f);
+                        break;
+                    case 3:
+                        sampleDivisor = 0.25f;
+                        break;
+                }
+            }
+        }
+    }
+
+    public void ToggleCaretDrag(bool _on)
+    {
+        caretIsBeingDragged = _on;
+    }
+
+    void TimeStamp()
+    {
+        if (seconds > 59.99f)
+        {
+            seconds = 0;
+            minutes++;
+        }
+        else if (seconds < 0)
+        {
+            seconds = 59;
+            minutes--;
+        }
+
+        seconds = musicSource.time - (60 * minutes);
     }
 }

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 6174661993294546236}
   - component: {fileID: 3358920504996276679}
   - component: {fileID: 2828573570754556420}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: keys
   m_TagString: key
   m_Icon: {fileID: 0}
@@ -246,7 +246,7 @@ GameObject:
   - component: {fileID: 8433763089853209452}
   - component: {fileID: 9177574899582565313}
   - component: {fileID: 3275375603851660603}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -346,7 +346,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: A
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 0}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -447,6 +447,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: KeyOverlay
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661888556525302133, guid: dc71359671f99f0438f5b24182e3994c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5443026936034782058, guid: dc71359671f99f0438f5b24182e3994c,
         type: 3}
