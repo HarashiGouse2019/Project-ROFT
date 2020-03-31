@@ -76,7 +76,7 @@ public class MapReader : MonoBehaviour
         if (!GameManager.SongsNotFound)
         {
             SongEntityBeingRead = MusicManager.GetSongEntity()[1];
-            AssignRFTMNameToRead(SongEntityBeingRead, _difficultValue: 2); 
+            AssignRFTMNameToRead(SongEntityBeingRead, _difficultValue: 0); 
         }
         else
         {
