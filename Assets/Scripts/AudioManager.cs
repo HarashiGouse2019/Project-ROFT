@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance;
+    private static AudioManager Instance;
 
     [System.Serializable]
     public class Audio
@@ -61,9 +61,9 @@ public class AudioManager : MonoBehaviour
     /// Support values between 0 and 100.
     ///
 
-    public void Play(string _name, float _volume = 100, bool _oneShot = false)
+    public static void Play(string _name, float _volume = 100, bool _oneShot = false)
     {
-        Audio a = Array.Find(getAudio, sound => sound.name == _name);
+        Audio a = Array.Find(Instance.getAudio, sound => sound.name == _name);
         if (a == null)
         {
             Debug.LogWarning("Sound name " + _name + " was not found.");
@@ -83,9 +83,9 @@ public class AudioManager : MonoBehaviour
             
         }
     }
-    public void Stop(string _name)
+    public static void Stop(string _name)
     {
-        Audio a = Array.Find(getAudio, sound => sound.name == _name);
+        Audio a = Array.Find(Instance.getAudio, sound => sound.name == _name);
         if (a == null)
         {
             Debug.LogWarning("Sound name " + _name + " was not found.");

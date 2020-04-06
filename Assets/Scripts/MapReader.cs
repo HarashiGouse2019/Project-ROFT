@@ -73,14 +73,16 @@ public class MapReader : MonoBehaviour
 
         /*After scouting, if songs has been found, go ahead and access
          this song and it's specified difficulty.*/
-        if (!GameManager.SongsNotFound)
+        if (!GameManager.SongsNotFound && !RoftPlayer.Instance.record)
         {
-            SongEntityBeingRead = MusicManager.GetSongEntity()[1];
+            SongEntityBeingRead = MusicManager.GetSongEntity()[0];
             AssignRFTMNameToRead(SongEntityBeingRead, _difficultValue: 0); 
         }
         else
         {
             Debug.Log("No songs had been detected. Map Reader is now doing nothing.");
+            Initialize();
+            CalculateDifficultyRating();
             return;
         }
     }
@@ -103,6 +105,7 @@ public class MapReader : MonoBehaviour
         else
         {
             Debug.Log("For some reason, this is not being read....");
+            
         }
     }
 

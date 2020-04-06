@@ -83,8 +83,8 @@ public class RoftCreator : MonoBehaviour
 
             //audioExtension will be very important to take a song in a song folder, and converting it to a UnityAsset in which
             //we can assign to the RoftPlayer.cs
-            string audioExt = null; //Path.GetExtension(AssetDatabase.GetAssetPath(audioFile));
-            string backgroundImgExt = null; /*Path.GetExtension(AssetDatabase.GetAssetPath(backgroundImage));*/
+            string audioExt = null;// Path.GetExtension(AssetDatabase.GetAssetPath(audioFile));
+            string backgroundImgExt = null;// Path.GetExtension(AssetDatabase.GetAssetPath(backgroundImage));
 
             audioFilePath = audioFile.name + audioExt;
             backgroundFilePath = backgroundImage.name + backgroundImgExt;
@@ -100,10 +100,25 @@ public class RoftCreator : MonoBehaviour
 
             try
             {
-                //File.Copy(AssetDatabase.GetAssetPath(audioFile), newSongDirectoryPath + "/" + audioFile.name + audioExt);
+               //File.Copy(AssetDatabase.GetAssetPath(audioFile), newSongDirectoryPath + "/" + audioFile.name + audioExt);
                 //File.Copy(AssetDatabase.GetAssetPath(backgroundImage), newSongDirectoryPath + "/" + backgroundImage.name + backgroundImgExt);
             }
             catch {/*This just means they already exists...*/};
+        }
+    }
+
+    /// <summary>
+    /// This is calculated by the beats per minute
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator Tick(float _bpm)
+    {
+        while (true)
+        {
+            AudioManager.Play("Tick");
+            yield return new WaitForSeconds(60f / _bpm);
+           
+
         }
     }
 

@@ -44,14 +44,15 @@ public class KeyPress : MonoBehaviour
         {
             for (int keyNum = 0; keyNum < key_Layout.primaryBindedKeys.Count; keyNum++)
             {
-                bool bindKeysPressed = Input.GetKey(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKey(key_Layout.secondaryBindedKeys[keyNum]);
+                bool bindKeys = Input.GetKey(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKey(key_Layout.secondaryBindedKeys[keyNum]);
+                bool bindKeysPressed = Input.GetKeyDown(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKeyDown(key_Layout.secondaryBindedKeys[keyNum]);
 
-                if (bindKeysPressed)
+                if (bindKeys)
                 {
                     /*If we happen to be recording, and we hit the second set of binded keys, the
                     data will be written to a file.*/
                     #region Write to RFTM File
-                    if (RoftPlayer.Instance.record && Input.GetKeyDown(key_Layout.secondaryBindedKeys[keyNum]))
+                    if (RoftPlayer.Instance.record && bindKeysPressed)
                     {
                         string data =
                             keyNum.ToString() + ","
@@ -64,7 +65,7 @@ public class KeyPress : MonoBehaviour
 
                     ActivateKey(keyNum, true);
 
-                    if (bindKeysPressed)
+                    if (bindKeys)
                         keyPressInput = activeInput;
                 }
                 else

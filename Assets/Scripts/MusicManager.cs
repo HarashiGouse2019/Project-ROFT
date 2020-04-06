@@ -43,5 +43,10 @@ public class MusicManager : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        GameManager.Instance.ExecuteScouting();
+    }
+
     public static List<Song_Entity> GetSongEntity() => s_songs;
 }

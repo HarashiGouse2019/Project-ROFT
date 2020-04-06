@@ -125,7 +125,7 @@ public class CloseInEffect : NoteEffector
                 ClosestObjectClass.closestObject[keyNumPosition] = gameObject;
 
                 Pulse();
-                AudioManager.Instance.Play("Normal", 100, true);
+                AudioManager.Play("Normal", 100, true);
 
 
                 GameManager.Instance.IncrementCombo();
@@ -165,12 +165,12 @@ public class CloseInEffect : NoteEffector
 
                 //Check type and add sound
                 if (tapType)
-                    AudioManager.Instance.Play("Normal", 100, true);
+                    AudioManager.Play("Normal", 100, true);
 
                 if (BurstType)
                 {
                     if (attachedArrow.GetComponent<ArrowDirectionSet>().Detect())
-                        AudioManager.Instance.Play("Ding", 100, true);
+                        AudioManager.Play("Ding", 100, true);
                     else return;
                 }
 

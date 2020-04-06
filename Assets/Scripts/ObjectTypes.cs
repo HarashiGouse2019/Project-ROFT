@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 [System.Serializable]
-public abstract class ObjectTypes : MonoBehaviour
+public abstract class ObjectTypes : MonoBehaviour, IMusicObj
 {
     public List<NoteObj> objects = new List<NoteObj>();
 

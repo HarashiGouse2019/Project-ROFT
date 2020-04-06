@@ -91,11 +91,12 @@ public class SongSelectionNavigator : MonoBehaviour
 
     void ChangeSongEntityPosition(Shift _shift, uint _value)
     {
+        
         //Check value shift: shift up or down; + or -; increment or decrement.
         switch (_shift)
         {
-            case Shift.INCREMENT: SongEntityPosition+=_value; return;
-            case Shift.DECREMENT: SongEntityPosition-=_value; return;
+            case Shift.INCREMENT: SongEntityPosition+=_value; Debug.Log("Song Position ++"); return;
+            case Shift.DECREMENT: SongEntityPosition-=_value; Debug.Log("Song Position --"); return;
             default: return;
         }
 

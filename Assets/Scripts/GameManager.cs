@@ -497,7 +497,7 @@ public class GameManager : MonoBehaviour
         PAUSE_OVERLAY.SetActive(isGamePaused);
         for (int num = 3; num > reset; num--)
         {
-            AudioManager.Instance.Play("Tick", _oneShot: true);
+            AudioManager.Play("Tick", _oneShot: true);
             yield return new WaitForSecondsRealtime(1f);
         }
         //Now we play music again, and stat

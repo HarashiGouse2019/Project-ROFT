@@ -6,8 +6,6 @@ using UnityEngine.UI;
 using UnityEngine.Audio;
 using TMPro;
 
-using static ROFTIOMANAGEMENT.RoftIO;
-
 public class RoftPlayer : MonoBehaviour
 {
     public static RoftPlayer Instance;

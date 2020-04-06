@@ -3,9 +3,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Video;
 using UnityEngine.Networking;
 
