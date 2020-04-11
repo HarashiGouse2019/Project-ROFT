@@ -2085,8 +2085,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 673874f6f01060a47a2bd6370c03689f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objects: []
-  sequencePos: 0
 --- !u!4 &1100497925
 Transform:
   m_ObjectHideFlags: 0
@@ -2138,8 +2136,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5a8813d4b1001f48a16c688f17e0e7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objects: []
-  sequencePos: 0
 --- !u!114 &1100497929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2152,8 +2148,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af8f47cf1f90e7b49946738a166ce3ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objects: []
-  sequencePos: 0
 --- !u!1 &1177057892
 GameObject:
   m_ObjectHideFlags: 0
@@ -3399,8 +3393,8 @@ MonoBehaviour:
   songArtist: Camellia
   songTitleUnicode: Nacreous Snowmelt
   songArtistUnicode: "\u304B\u3081\u308A\u3042"
-  difficultyName: 70K-THX
-  keyLayout: 3
+  difficultyName: 70K-Hard
+  keyLayout: 2
   approachSpeed: 8.7
   accuracyHarshness: 7
   stressBuild: 7
@@ -7826,7 +7820,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.76862746}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.6627451}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

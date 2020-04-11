@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 [System.Serializable]
-public abstract class ObjectTypes : MonoBehaviour, IMusicObj
+public abstract class ObjectTypes : MonoBehaviour, IReadType
 {
-    public List<NoteObj> objects = new List<NoteObj>();
+    public List<NoteObj> objects { get; set; } = new List<NoteObj>();
 
     [SerializeField]
-    private long sequencePos = 0;
+    public long sequencePos { get; set; } = 0;
 
-    private NoteObj.NoteObjType readerType;
+    public NoteObj.NoteObjType readerType { get; set; }
 
     private const uint reset = 0;
 
@@ -67,7 +67,7 @@ public abstract class ObjectTypes : MonoBehaviour, IMusicObj
         sequencePos++;
     }
 
-    protected virtual void SetToType(NoteObj.NoteObjType type)
+    public virtual void SetToType(NoteObj.NoteObjType type)
     {
         readerType = type;
     }
