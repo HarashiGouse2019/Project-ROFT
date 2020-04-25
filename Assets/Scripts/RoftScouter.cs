@@ -41,7 +41,7 @@ public class RoftScouter
     public static bool ScoutingComplete { get; set; }
 
     private static AudioClip RequestedClip { get; set; }
-    private static Texture2D RequestedImage { get; set; }
+    private static Sprite RequestedImage { get; set; }
     private static VideoClip RequestedVideo { get; set; }
 
     public RoftScouter()
@@ -185,14 +185,15 @@ public class RoftScouter
                 {
                     while (true)
                     {
-                        if (RequestingAudio(fileNum, audioFile) && RequestingImage(fileNum, backgroundImageFile))
+                        if (RequestingAudio(fileNum, audioFile))
                         {
                             newEntity.AudioFile = GetAudioClip();
-                            newEntity.BackgroundImage = GetRawImage();
                             break;
                         }
                     }
                 }
+
+                
 
                 //Now that our SongEntity has been set, we'll add it to our list for further conversion.
                 convertedObj.Add(newEntity);
@@ -210,7 +211,7 @@ public class RoftScouter
     }
 
     static AudioClip GetAudioClip() => RequestedClip;
-    static Texture2D GetRawImage() => RequestedImage;
+    static Sprite GetRawImage() => RequestedImage;
 
     static bool RequestingAudio(FileInfo _url, string _name)
     {
@@ -238,32 +239,50 @@ public class RoftScouter
         #endregion
     }
 
-    static bool RequestingImage(FileInfo _url, string _name)
+    static bool RequestingImage(FileInfo _fileInfo, string _name)
     {
-        string link = @"file:\\\" + _url.Directory + @"\" + _name;
+        string path = @"file:\\\" + _fileInfo.Directory + @"\" + _name;
+
+        Debug.Log(path);
+
+        Sprite image = ConvertTextureToSprite(LoadTexture(path), 100f, SpriteMeshType.Tight);
+
+        RequestedImage = image;
+
         return true;
-        //#region Requesting Image
-        //using (UnityWebRequest requestImage = UnityWebRequestTexture.GetTexture(link))
-        //{
-        //    UnityWebRequestAsyncOperation operation = requestImage.SendWebRequest();
-            
-        //    while (!operation.isDone)
-        //        continue;
+    }
 
+    static Sprite ConvertTextureToSprite(Texture2D _texture, float _pixelPerUnit = 100.0f, SpriteMeshType _spriteType = SpriteMeshType.Tight)
+    {
+        //Converts a Texture2D to a sprite, assign this texture to a new sprite and return its reference
 
-        //    if (requestImage.isNetworkError || requestImage.isHttpError)
-        //    {
-        //        Debug.Log("Failed to load image.");
-        //        return operation.isDone;
-        //    }
-        //    else
-        //    {
-        //        RequestedImage = DownloadHandlerTexture.GetContent(requestImage);
-        //        RequestedImage.name = _name;
-        //        return operation.isDone;
-        //    }
-        //}
-        //#endregion
+        Sprite newSprite = Sprite.Create(_texture, new Rect(0, 0, _texture.width, _texture.height), new Vector2(0,0), _pixelPerUnit, 0, _spriteType);
+
+        return newSprite;
+    }
+
+    static Texture2D LoadTexture(string _filePath)
+    {
+        /*We'll load a png or jpg file from disk to a Texture2D
+         If we fail at doing so, return null.*/
+
+        Texture2D tex2D;
+
+        //We want to read the binary data of this file,
+        //in order to know the formatting. With the formatting,
+        //we'll use the data to create the image that we requested
+        byte[] fileData;
+
+        if (File.Exists(_filePath))
+        {
+            fileData = File.ReadAllBytes(_filePath);
+            tex2D = new Texture2D(2, 2);
+            if (tex2D.LoadImage(fileData))
+                return tex2D;
+
+        }
+
+        return null;
     }
 
     static bool CompareGroupID(ref long _val1, ref long _val2) => (_val1 == _val2);

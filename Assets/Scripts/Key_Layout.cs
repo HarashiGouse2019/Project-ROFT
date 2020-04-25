@@ -90,7 +90,11 @@ public class Key_Layout : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        Instance = this;
+        if(Instance == null)
+            Instance = this;
+
+        Debug.Log(Instance);
+
         keyConfig = new KeyConfig();
         keyConfig = JsonUtility.FromJson<KeyConfig>(keyConfig.GetJSONString());
     }

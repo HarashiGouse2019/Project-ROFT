@@ -134,6 +134,7 @@ public class RoftPlayer : MonoBehaviour
 
         if (record)
             musicSource.clip = RoftCreator.Instance.GetAudioFile();
+
         else
             musicSource.clip = MapReader.SongEntityBeingRead.AudioFile;
 
@@ -173,6 +174,7 @@ public class RoftPlayer : MonoBehaviour
 
     public void UpdateCaret()
     {
+
 
         //So, here's how this is going to work...
         //The Track Position is between values 0 and 1

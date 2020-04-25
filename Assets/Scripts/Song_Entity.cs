@@ -96,7 +96,7 @@ public class Song_Entity
     public long GROUPID ;
     public float InitialDifficultyRating ;
     public AudioClip AudioFile ;
-    public Texture2D BackgroundImage ;
+    public Sprite BackgroundImage ;
     public List<Song_Entity_Difficulty> Difficulties = new List<Song_Entity_Difficulty>();
 
     public void AddNewDifficulty(Song_Entity_Difficulty _difficulty)

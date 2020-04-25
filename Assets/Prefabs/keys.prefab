@@ -125,7 +125,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnInParent: 1
   overridePoolSize: 0
-  readFromMusicManager: 0
   itemsToPool:
   - name: Approach Circle
     size: 30

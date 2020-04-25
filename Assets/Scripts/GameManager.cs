@@ -8,6 +8,8 @@ using UnityEngine.UI;
 using TMPro;
 using Cakewalk.IoC;
 
+using ROFTIO = ROFTIOMANAGEMENT.RoftIO;
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -179,6 +181,9 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        //Check for existing files and directories
+        VerifyDirectories();
+
         #region Singleton
         if (Instance == null)
         {
@@ -189,6 +194,10 @@ public class GameManager : MonoBehaviour
         else
             Destroy(gameObject);
         #endregion
+
+        /*I want to verify the existence of certain files whenever it runs on any computer.
+         If the files do not exist, those files will automatic be generated back in.*/
+
 
         //Multicasting core delegate
         //When Invoked, it'll run all of these functions.
@@ -576,6 +585,23 @@ public class GameManager : MonoBehaviour
     public Image GetScreenOverlay()
     {
         return IMG_SCREEN_OVERLAY;
+    }
+
+    /// <summary>
+    /// Check if the game's directory are present in PersistantPath
+    /// </summary>
+    public void VerifyDirectories()
+    {
+        //Check if song directory exists
+        if (!ROFTIO.DirectoryExists(ROFTIO.GAME_DIRECTORY + @"/Songs"))
+        {
+            ROFTIO.GenerateDirectory(ROFTIO.GAME_DIRECTORY + @"/Songs");
+        } 
+        //Check if KeyConfig exists
+        if (!ROFTIO.FileExists(ROFTIO.GAME_DIRECTORY + @"/KeyConfig.json"))
+        {
+            KeyConfig config = new KeyConfig();
+        }
     }
     #endregion
 }

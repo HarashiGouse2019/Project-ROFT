@@ -7,11 +7,11 @@ public class ObjectPooler : MonoBehaviour
 
     public static ObjectPooler Instance;
 
+    //Spawn inside an object or not, making that object the parent of the object being spawned
     public bool spawnInParent = false;
 
+    //If all object are out of the pool, dynamically change the size
     public bool overridePoolSize = false;
-
-    public bool readFromMusicManager = false;
 
     [System.Serializable]
     public class ObjectPoolItem
@@ -24,7 +24,7 @@ public class ObjectPooler : MonoBehaviour
 
     public List<ObjectPoolItem> itemsToPool;
     public List<GameObject> pooledObjects;
-
+    
     public int poolIndex;
 
     void Awake()
@@ -43,27 +43,31 @@ public class ObjectPooler : MonoBehaviour
 
     private void Update()
     {
-        if (readFromMusicManager)
-        {
-            for (int musicIndex = 0; musicIndex < pooledObjects.Count; musicIndex++)
-                if (!pooledObjects[musicIndex].activeInHierarchy)
-                {
-                    const float defaultSpread = -1.5f;
 
-                    pooledObjects[musicIndex].SetActive(true);
+        //for (int musicIndex = 0; musicIndex < pooledObjects.Count; musicIndex++)
+        //    if (!pooledObjects[musicIndex].activeInHierarchy)
+        //    {
+        //        const float defaultSpread = -1.5f;
 
-                    Image IMG_SONGPANEL = pooledObjects[musicIndex].GetComponent<Image>();
+        //        pooledObjects[musicIndex].SetActive(true);
 
-                    RectTransform IMG_TRANSFORM = IMG_SONGPANEL.rectTransform;
+        //        Image IMG_SONGPANEL = pooledObjects[musicIndex].GetComponent<Image>();
 
-                    IMG_TRANSFORM.position = new Vector3(IMG_TRANSFORM.position.x, IMG_TRANSFORM.position.y + (defaultSpread * musicIndex));
-                    
-                }
-                else
-                    break;
-        }
+        //        RectTransform IMG_TRANSFORM = IMG_SONGPANEL.rectTransform;
+
+        //        IMG_TRANSFORM.position = new Vector3(IMG_TRANSFORM.position.x, IMG_TRANSFORM.position.y + (defaultSpread * musicIndex));
+
+        //    }
+        //    else
+        //        break;
+
     }
 
+
+    /// <summary>
+    /// Start creating Object Pools
+    /// </summary>
+    /// <param name="_spawnInParent"></param>
     void InitObjectPooler(bool _spawnInParent = false)
     {
         pooledObjects = new List<GameObject>();
@@ -77,7 +81,7 @@ public class ObjectPooler : MonoBehaviour
                 else
                     newMember = Instantiate(item.prefab);
 
-                if(newMember.GetComponent<KeyId>() != null)
+                if (newMember.GetComponent<KeyId>() != null)
                     newMember.GetComponent<KeyId>().keyID = i;
 
                 newMember.SetActive(false);
@@ -88,6 +92,11 @@ public class ObjectPooler : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Grab an object in a specified pool by name
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     public GameObject GetMember(string name)
     {
         #region Iteration
@@ -120,6 +129,11 @@ public class ObjectPooler : MonoBehaviour
         return null;
     }
 
+    /// <summary>
+    /// Override a pool size to a different value
+    /// </summary>
+    /// <param name="_name"></param>
+    /// <param name="_size"></param>
     void OverridePoolSizeOf(string _name, int _size)
     {
         for (int i = 0; i < itemsToPool.Count; i++)

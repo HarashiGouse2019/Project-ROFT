@@ -1000,7 +1000,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnInParent: 0
   overridePoolSize: 0
-  readFromMusicManager: 0
   itemsToPool:
   - name: keys
     size: 30
@@ -3386,20 +3385,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65af08cbbdc82154bbea00871abf0ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioFile: {fileID: 8300000, guid: 0a2d654ecf662f245bcecb81487583d9, type: 3}
-  backgroundImage: {fileID: 2800000, guid: 3cdd06a8eafbff14291afcb13c75bd9c, type: 3}
+  audioFile: {fileID: 8300000, guid: a2700fb6f6d7ea0478185933a5e9b1be, type: 3}
+  backgroundImage: {fileID: 0}
   backgroundVideo: {fileID: 0}
-  songTitle: Nacreous Snowmelt
-  songArtist: Camellia
-  songTitleUnicode: Nacreous Snowmelt
-  songArtistUnicode: "\u304B\u3081\u308A\u3042"
-  difficultyName: 70K-Hard
-  keyLayout: 2
-  approachSpeed: 8.7
+  songTitle: The Guardian of Angels
+  songArtist: NIVIRO
+  songTitleUnicode: The Guardian of Angels
+  songArtistUnicode: NIVIRO
+  difficultyName: Intense
+  keyLayout: 3
+  approachSpeed: 9.65
   accuracyHarshness: 7
   stressBuild: 7
-  createNewDifficulty: 1
-  GROUPID: 2041011945
+  createNewDifficulty: 0
+  GROUPID: 0
 --- !u!4 &1505021165
 Transform:
   m_ObjectHideFlags: 0
@@ -3873,6 +3872,16 @@ PrefabInstance:
     - target: {fileID: 11010563174147871, guid: 566e121103a8ef74b845c553ed943abb,
         type: 3}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11010563174147869, guid: 566e121103a8ef74b845c553ed943abb,
+        type: 3}
+      propertyPath: songs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11010563174147869, guid: 566e121103a8ef74b845c553ed943abb,
+        type: 3}
+      propertyPath: songs.Array.data[0].Difficulties.Array.size
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -7806,7 +7815,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &7113210979909691134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9059,6 +9068,11 @@ PrefabInstance:
       propertyPath: IMG_PROGRESSION_FILL
       value: 
       objectReference: {fileID: 1039563774}
+    - target: {fileID: 8840939106478104643, guid: d42c8b68ea8056946a9b376c8ea5d9e9,
+        type: 3}
+      propertyPath: isAutoPlaying
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8840939106478112700, guid: d42c8b68ea8056946a9b376c8ea5d9e9,
         type: 3}
       propertyPath: m_LocalPosition.x

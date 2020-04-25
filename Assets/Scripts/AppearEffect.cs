@@ -97,10 +97,18 @@ public class AppearEffect : CloseInEffect
 
     private void OnDisable()
     {
+        Dump();
+    }
+
+    /// <summary>
+    /// Reset all values to there defaults
+    /// </summary>
+    void Dump()
+    {
         sprite.color = originalAppearance;
 
-        if(childSprite!=null)
-            
+        if (childSprite != null)
+
             childSprite.color = originalOverlayAppearance;
         percentage = 0;
         assignedKeyBind = KeyCode.None;

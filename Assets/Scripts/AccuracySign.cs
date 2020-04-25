@@ -52,6 +52,6 @@ public class AccuracySign : MonoBehaviour
 
     void FadeOut()
     {
-        spriteRender.color = new Color(spriteRender.color.r, spriteRender.color.g, spriteRender.color.b, 1 / time);
+        spriteRender.color = new Color(spriteRender.color.r, spriteRender.color.g, spriteRender.color.b, 1f / time);
     }
 }

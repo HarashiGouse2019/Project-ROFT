@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using UnityEngine;
-
-[System.Serializable]
+﻿[System.Serializable]
 public class BurstObjectReader : ObjectTypes
 {
     public BurstObjectReader()

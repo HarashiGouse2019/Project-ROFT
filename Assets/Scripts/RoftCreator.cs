@@ -17,6 +17,13 @@ public class RoftCreator : MonoBehaviour
      This is the main process of creating Beatmaps until I can figure out how to
      create a good enough software editor to make creating Beatmaps a easier.
      */
+    public enum DifficultyLevel
+    {
+        EASY,
+        NORMAL,
+        HARD,
+        INTENSE
+    }
 
     public static RoftCreator Instance;
 
@@ -77,17 +84,18 @@ public class RoftCreator : MonoBehaviour
         if (!IDHIST.HistoryExists())
             IDHIST.NewHistory();
 
+        #if UNITY_EDITOR
         if (RoftPlayer.Instance.record)
         {
             CheckForGROUPID();
 
             //audioExtension will be very important to take a song in a song folder, and converting it to a UnityAsset in which
             //we can assign to the RoftPlayer.cs
-            string audioExt = null;// Path.GetExtension(AssetDatabase.GetAssetPath(audioFile));
-            string backgroundImgExt = null;// Path.GetExtension(AssetDatabase.GetAssetPath(backgroundImage));
+            string audioExt =  Path.GetExtension(AssetDatabase.GetAssetPath(audioFile));
+            string backgroundImgExt = Path.GetExtension(AssetDatabase.GetAssetPath(backgroundImage));
 
             audioFilePath = audioFile.name + audioExt;
-            backgroundFilePath = backgroundImage.name + backgroundImgExt;
+            //backgroundFilePath = backgroundImage.name + backgroundImgExt;
 
             //Filename will include the ID, Artis, SongName, and what Difficulty
             filename = songID + songArtist + " - " + songTitle + " (" + difficultyName + ")";
@@ -100,11 +108,15 @@ public class RoftCreator : MonoBehaviour
 
             try
             {
-               //File.Copy(AssetDatabase.GetAssetPath(audioFile), newSongDirectoryPath + "/" + audioFile.name + audioExt);
-                //File.Copy(AssetDatabase.GetAssetPath(backgroundImage), newSongDirectoryPath + "/" + backgroundImage.name + backgroundImgExt);
+                File.Copy(AssetDatabase.GetAssetPath(audioFile), newSongDirectoryPath + "/" + audioFile.name + audioExt);
+                File.Copy(AssetDatabase.GetAssetPath(backgroundImage), newSongDirectoryPath + "/" + backgroundImage.name + backgroundImgExt);
             }
             catch {/*This just means they already exists...*/};
         }
+#endif
+
+        
+        RoftPlayer.Instance.LoadMusic();
     }
 
     /// <summary>

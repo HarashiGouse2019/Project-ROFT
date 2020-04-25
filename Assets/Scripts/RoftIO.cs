@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using UnityEngine;
-using UnityEditor;
 
 using Random = UnityEngine.Random;
 
@@ -265,6 +264,43 @@ namespace ROFTIOMANAGEMENT
 
     public static class RoftIO
     {
+        public static FileInfo GAME_DIRECTORY { get; private set; } = new FileInfo(Application.persistentDataPath);
+
+        /// <summary>
+        /// Find an existing directory.
+        /// </summary>
+        /// <param name="directory"></param>
+        public static bool DirectoryExists(DirectoryInfo _directory) => _directory.Exists;
+
+        /// <summary>
+        /// Find an existing directory.
+        /// </summary>
+        /// <param name="_directoryPath"></param>
+        /// <returns></returns>
+        public static bool DirectoryExists(string _directoryPath)
+        {
+            DirectoryInfo directory = new DirectoryInfo(_directoryPath);
+            return directory.Exists;
+        }
+
+        /// <summary>
+        /// If a certain file exists.
+        /// </summary>
+        /// <param name="_fileName"></param>
+        /// <returns></returns>
+        public static bool FileExists(FileInfo _fileName) => _fileName.Exists;
+
+        /// <summary>
+        /// If a certain file exists.
+        /// </summary>
+        /// <param name="_filePath"></param>
+        /// <returns></returns>
+        public static bool FileExists(string _filePath)
+        {
+            FileInfo _fileName = new FileInfo(_filePath);
+            return _fileName.Exists;
+        }
+
         /// <summary>
         /// Create a new RFTM file.
         /// </summary>

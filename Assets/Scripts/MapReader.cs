@@ -68,23 +68,33 @@ public class MapReader : MonoBehaviour
 
     private void Start()
     {
-        //Start scouting for songs one MapReader is initialized
-        GameManager.Instance.ExecuteScouting();
+        
 
         /*After scouting, if songs has been found, go ahead and access
          this song and it's specified difficulty.*/
-        if (!GameManager.SongsNotFound && !RoftPlayer.Instance.record)
+        if (!RoftPlayer.Instance.record)
         {
-            SongEntityBeingRead = MusicManager.GetSongEntity()[0];
-            AssignRFTMNameToRead(SongEntityBeingRead, _difficultValue: 1); 
-        }
-        else
+            if (!GameManager.SongsNotFound)
+            {
+                //Start scouting for songs one MapReader is initialized
+                GameManager.Instance.ExecuteScouting();
+                SongEntityBeingRead = MusicManager.GetSongEntity()[1];
+                AssignRFTMNameToRead(SongEntityBeingRead, _difficultValue: 0);
+            }
+            else
+            {
+                Debug.Log("No songs had been detected.");
+                Initialize();
+                CalculateDifficultyRating();
+                return;
+            }
+        } else
         {
-            Debug.Log("No songs had been detected. Map Reader is now doing nothing.");
             Initialize();
             CalculateDifficultyRating();
             return;
         }
+        
     }
 
     void Initialize()
