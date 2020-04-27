@@ -55,7 +55,6 @@ public class RoftScouter
     public static void OnStart()
     {
         GameManager.Instance.StartCoroutine(ScoutingRoutine());
-        MusicManager.Instance.songs = MusicManager.s_songs;
     }
 
     static IEnumerator ScoutingRoutine()
@@ -79,7 +78,8 @@ public class RoftScouter
 
             /*We then assign information to our MusicManager will all the
             songs that's be found and converted.*/
-            MusicManager.s_songs = SongsFound;
+            MusicManager.Songs = SongsFound;
+            MusicManager.DisplaySongs(SongsFound);
 
             ScoutingComplete = true;
 

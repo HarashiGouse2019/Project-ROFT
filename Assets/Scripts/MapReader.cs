@@ -24,7 +24,8 @@ public class MapReader : MonoBehaviour
 
     public List<NoteObj> noteObjs = new List<NoteObj>();
 
-    public Key_Layout keyLayoutClass = Key_Layout.Instance;
+    [Cakewalk.IoC.Dependency]
+    public Key_Layout keyLayoutClass;
 
     //All Object Readers
     [Header("Object Readers")]

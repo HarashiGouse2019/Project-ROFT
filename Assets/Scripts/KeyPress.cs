@@ -9,6 +9,7 @@ public class KeyPress : MonoBehaviour
     public static KeyPress Instance;
 
     //Taking the binded keys, and making them interactive
+    [Cakewalk.IoC.Dependency]
     public Key_Layout key_Layout;
 
     public Sprite keyActive, keyInActive;

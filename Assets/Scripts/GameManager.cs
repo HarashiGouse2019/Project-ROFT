@@ -164,7 +164,10 @@ public class GameManager : MonoBehaviour
     };
 
     //Make to much easier to access other classes
+    [Dependency]
     private RoftPlayer roftPlayer;
+
+    [Dependency]
     private MapReader mapReader;
 
     //This will be used for the GameManager to assure that

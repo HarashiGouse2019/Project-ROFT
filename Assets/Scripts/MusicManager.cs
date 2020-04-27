@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
@@ -15,15 +14,15 @@ public class MusicManager : MonoBehaviour
      * but give us all kinds of different information.
      */
 
-    public static MusicManager Instance;
+    private static MusicManager Instance;
 
     public List<Song_Entity> songs;
 
-    public static List<Song_Entity> s_songs;
+    public static List<Song_Entity> Songs;
 
     public Slider musicVolumeAdjust, soundVolumeAdjust; //Reference to our volume sliders
 
-    public string nowPlaying;
+    public static string NowPlaying;
 
     // Start is called before the first frame update
     public float timeSamples;
@@ -48,5 +47,10 @@ public class MusicManager : MonoBehaviour
         GameManager.Instance.ExecuteScouting();
     }
 
-    public static List<Song_Entity> GetSongEntity() => s_songs;
+    public static List<Song_Entity> GetSongEntity() => Songs;
+
+    public static void DisplaySongs(List<Song_Entity> _songs)
+    {
+        Instance.songs = _songs;
+    }
 }

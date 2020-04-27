@@ -147,7 +147,7 @@ public class RoftPlayer : MonoBehaviour
     public void PlayMusic()
     {
         musicSource.Play();
-        MusicManager.Instance.nowPlaying = musicSource.clip.name;
+        MusicManager.NowPlaying = musicSource.clip.name;
     }
 
     //Pause the song
