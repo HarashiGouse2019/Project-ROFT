@@ -442,21 +442,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5259896013176399451}
     m_Modifications:
-    - target: {fileID: 5661888556525302133, guid: dc71359671f99f0438f5b24182e3994c,
-        type: 3}
-      propertyPath: m_Name
-      value: KeyOverlay
-      objectReference: {fileID: 0}
-    - target: {fileID: 5661888556525302133, guid: dc71359671f99f0438f5b24182e3994c,
-        type: 3}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5661888556525302133, guid: dc71359671f99f0438f5b24182e3994c,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8393543708405631006, guid: dc71359671f99f0438f5b24182e3994c,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -476,6 +461,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.x
       value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661888556525302133, guid: dc71359671f99f0438f5b24182e3994c,
+        type: 3}
+      propertyPath: m_Name
+      value: KeyOverlay
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661888556525302133, guid: dc71359671f99f0438f5b24182e3994c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661888556525302133, guid: dc71359671f99f0438f5b24182e3994c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2879025948228699850, guid: dc71359671f99f0438f5b24182e3994c,
         type: 3}

@@ -78,7 +78,7 @@ public class MapReader : MonoBehaviour
             {
                 //Start scouting for songs one MapReader is initialized
                 GameManager.Instance.ExecuteScouting();
-                SongEntityBeingRead = MusicManager.GetSongEntity()[1];
+                SongEntityBeingRead = MusicManager.GetSongEntity()[0];
                 AssignRFTMNameToRead(SongEntityBeingRead, _difficultValue: 0);
             }
             else
