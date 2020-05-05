@@ -266,23 +266,16 @@ public class MapReader : MonoBehaviour
 
         switch (keyCount)
         {
-            case 4:
-                keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_1x4;
-                break;
-            case 8:
-                keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_2x4;
-                break;
-            case 12:
-                keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_3x4;
-                break;
-            case 16:
-                keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_4x4;
-                break;
+            case 4: keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_1x4; break;
+            case 8: keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_2x4; break;
+            case 12: keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_3x4; break;
+            case 16: keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_4x4; break;
         }
         #endregion
 
-        if
-           (GameManager.Instance.GetGameMode == GameManager.GameMode.TECHMEISTER ||
+
+        if (Key_Layout.Instance != null &&
+           GameManager.Instance.GetGameMode == GameManager.GameMode.TECHMEISTER ||
             GameManager.Instance.GetGameMode == GameManager.GameMode.STANDARD)
             Key_Layout.Instance.SetUpLayout();
 

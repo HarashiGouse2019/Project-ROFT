@@ -2,11 +2,14 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
 using TMPro;
+using Cakewalk.IoC;
 
 //This is going to be an abstract class. This will be the base class of all other layouts in the game
 public class Key_Layout : MonoBehaviour
 {
+    [Dependency]
     public static Key_Layout Instance;
+
     //So I want to be able to allow the player to freely keybind key layouts (even though there's hardly any reason besides 4x4, 8x8, and 12x12)
     //Other than that, I want to go through a process of getting all homerow, toprow, and bottomrow keys.
     //KeyLayout will be given an enumerator
