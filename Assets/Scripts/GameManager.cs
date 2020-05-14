@@ -181,6 +181,7 @@ public class GameManager : MonoBehaviour
     private Main core;
 
     EventManager.CallbackMethod scoutingDelegate;
+    private bool uiUpdate;
 
     private void Awake()
     {
@@ -253,6 +254,7 @@ public class GameManager : MonoBehaviour
         {
             previousScore += Combo ^ initialGain;
             initialGain += Combo;
+            uiUpdate = true;
         }
         else
         {
@@ -264,12 +266,14 @@ public class GameManager : MonoBehaviour
     void UpdateMaxCombo()
     {
         if (Combo > maxCombo)
+        {
             maxCombo = Combo;
+            uiUpdate = true;
+        }
     }
 
     void RunUI()
     {
-
         TM_SCORE.text = previousScore.ToString("D10");
         TM_COMBO.text = "x" + Combo.ToString();
         TM_COMBO_UNDERLAY.text = "x" + Combo.ToString();
@@ -538,7 +542,7 @@ public class GameManager : MonoBehaviour
         //We'll be using the EventManager to perform this method.
         //We have to create a Callback Method (aka; our delegate)
         //We store the function we want into our delegate
-         scoutingDelegate = () => RoftScouter.OnStart();
+        scoutingDelegate = () => RoftScouter.OnStart();
 
         //And then we add our delegate (which plays as a listner)
         EventManager.AddEventListener("ON_BEGIN_SCOUT", scoutingDelegate);
@@ -573,7 +577,7 @@ public class GameManager : MonoBehaviour
     public Image GetSongProgressionFill()
     {
         return IMG_PROGRESSION_FILL;
-    } 
+    }
 
     public TextMeshProUGUI GetTMCombo()
     {
@@ -599,11 +603,6 @@ public class GameManager : MonoBehaviour
         if (!ROFTIO.DirectoryExists(ROFTIO.GAME_DIRECTORY + @"/Songs"))
         {
             ROFTIO.GenerateDirectory(ROFTIO.GAME_DIRECTORY + @"/Songs");
-        } 
-        //Check if KeyConfig exists
-        if (!ROFTIO.FileExists(ROFTIO.GAME_DIRECTORY + @"/KeyConfig.json"))
-        {
-            KeyConfig config = new KeyConfig();
         }
     }
     #endregion

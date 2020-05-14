@@ -266,10 +266,10 @@ public class MapReader : MonoBehaviour
 
         switch (keyCount)
         {
-            case 4: keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_1x4; break;
-            case 8: keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_2x4; break;
-            case 12: keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_3x4; break;
-            case 16: keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_4x4; break;
+            case 4: keyLayoutClass.KeyLayout = Key_Layout.KeyLayoutType.Layout_1x4; break;
+            case 8: keyLayoutClass.KeyLayout = Key_Layout.KeyLayoutType.Layout_2x4; break;
+            case 12: keyLayoutClass.KeyLayout = Key_Layout.KeyLayoutType.Layout_3x4; break;
+            case 16: keyLayoutClass.KeyLayout = Key_Layout.KeyLayoutType.Layout_4x4; break;
         }
         #endregion
 
