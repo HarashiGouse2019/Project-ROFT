@@ -74,19 +74,7 @@ public class AppearEffect : CloseInEffect
 
     void AppearOn()
     {
-        float appearanceRate = GetPercentage() + 0.02f;
 
-        sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, appearanceRate);
-        if (childSprite != null)
-            childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, appearanceRate);
-
-        if (!assignedCircle.activeInHierarchy)
-        {
-            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0);
-            childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, 0);
-            assignedKeyBind = KeyCode.None;
-            DelayDestroy(0.5f);
-        }
     }
 
     protected override float GetPercentage()

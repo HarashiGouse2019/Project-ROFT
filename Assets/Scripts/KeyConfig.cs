@@ -16,7 +16,7 @@ public class KeyConfig
     //No! Actually, what we want to do is take all of those values out from Key_Layout, and move it to this class.
     //Now that I think about it, having a separate class to handle the configuration of the layout of the keys
     //sounds a lot more to handle, and I really do approve that message! Yay!!!!!!
-    public float[] keyXOffset = new float[8]
+    public float[] keyXOffset = new float[10]
     {
         -11f,
         -9.75f,
@@ -25,10 +25,12 @@ public class KeyConfig
         -13f, 
         -13f,
         -17.5f,
-        -16.5f
+        -16.5f,
+        -20f,
+        -20f
     };
 
-    public float[] keyYOffset  = new float[8]
+    public float[] keyYOffset  = new float[10]
     {
         0.5f,
         3f,
@@ -37,10 +39,12 @@ public class KeyConfig
         4.75f,
         6.75f,
         4.75f,
-        6.75f
+        6.75f,
+        5f,
+        6f,
     };
 
-    public float[] defaultKeyScale = new float[8]
+    public float[] defaultKeyScale = new float[10]
     {
         2.5f,
         2.25f,
@@ -49,10 +53,13 @@ public class KeyConfig
         1.75f,
         1.5f,
         1.75f,
-        1.5f
+        1.5f,
+        1.5f,
+        1.80f
     };
 
-    public float[] keyHorizontalSpread  = new float[8] {
+    public float[] keyHorizontalSpread  = new float[10]
+    {
         3.5f,
         3f,
         2.5f,
@@ -60,10 +67,12 @@ public class KeyConfig
         2.25f,
         2.0f,
         2.25f,
-        2.0f
+        2.0f,
+        2f,
+        1.5f
     };
 
-    public float[] keyVerticalSpread = new float[8]
+    public float[] keyVerticalSpread = new float[10]
     {
         3.5f,
         3f,
@@ -72,7 +81,9 @@ public class KeyConfig
         2.25f,
         2.0f,
         2.25f,
-        2.0f
+        2.0f,
+        2f,
+        1.5f
     };
 
     //String info

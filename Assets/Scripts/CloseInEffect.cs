@@ -91,7 +91,7 @@ public class CloseInEffect : NoteEffector
 
     void StartClosingIn()
     {
-        transform.localScale = new Vector3(1 / GetPercentage(), 1 / GetPercentage(), 1f);
+        transform.localScale = new Vector3(1f / GetPercentage(), 1f / GetPercentage(), 1f);
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.15f);
         innerSprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.15f);
 
@@ -250,7 +250,7 @@ public class CloseInEffect : NoteEffector
             GameManager.Instance.accuracyStats[index] += 1;
             float inverse = ((possibleAccuracy - (index)));
             float percent = inverse / possibleAccuracy;
-            GameManager.Instance.accuracyPercentile += (percent * 100);
+            GameManager.Instance.accuracyPercentile += (percent * 100f);
             GameManager.Instance.overallAccuracy = (GameManager.Instance.accuracyPercentile / GameManager.Instance.GetSumOfStats());
             GameManager.Instance.UpdateScore();
         }
@@ -301,7 +301,7 @@ public class CloseInEffect : NoteEffector
 
     public void BuildStress(int _index)
     {
-        GameManager.sentStress = GameManager.stressAmount[_index] + (GameManager.Instance.stressBuild / 100);
+        GameManager.sentStress = GameManager.stressAmount[_index] + (GameManager.Instance.stressBuild / 100f);
     }
 
     //We want to reset all values that may

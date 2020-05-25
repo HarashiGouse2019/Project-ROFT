@@ -69,7 +69,7 @@ public class MapReader : MonoBehaviour
 
     private void Start()
     {
-        
+
 
         /*After scouting, if songs has been found, go ahead and access
          this song and it's specified difficulty.*/
@@ -78,7 +78,6 @@ public class MapReader : MonoBehaviour
             if (!GameManager.SongsNotFound)
             {
                 //Start scouting for songs one MapReader is initialized
-                GameManager.Instance.ExecuteScouting();
                 SongEntityBeingRead = MusicManager.GetSongEntity()[0];
                 AssignRFTMNameToRead(SongEntityBeingRead, _difficultValue: 0);
             }
@@ -89,13 +88,14 @@ public class MapReader : MonoBehaviour
                 CalculateDifficultyRating();
                 return;
             }
-        } else
+        }
+        else
         {
             Initialize();
             CalculateDifficultyRating();
             return;
         }
-        
+
     }
 
     void Initialize()
@@ -116,7 +116,7 @@ public class MapReader : MonoBehaviour
         else
         {
             Debug.Log("For some reason, this is not being read....");
-            
+
         }
     }
 
@@ -224,22 +224,26 @@ public class MapReader : MonoBehaviour
 
     void CalculateDifficultyRating()
     {
+
         RoftPlayer.Instance.LoadMusic();
-        int totalNotes = noteObjs.Count;
-        float songLengthInSec = RoftPlayer.musicSource.clip.length;
-        float notesPerSec = (totalNotes / songLengthInSec);
-        float totalKeys = keyLayoutClass.primaryBindedKeys.Count;
-        float approachSpeedInPercent = (float)NoteEffector.Instance.ApproachSpeed / 100;
-        float gameModeBoost = 0;
-        const int maxKeys = 30;
+        if (!RoftPlayer.Instance.record)
+        {
+            int totalNotes = noteObjs.Count;
+            float songLengthInSec = RoftPlayer.musicSource.clip.length;
+            float notesPerSec = (totalNotes / songLengthInSec);
+            float totalKeys = keyLayoutClass.primaryBindedKeys.Count;
+            float approachSpeedInPercent = (float)NoteEffector.Instance.ApproachSpeed / 100;
+            float gameModeBoost = 0;
+            const int maxKeys = 30;
 
-        float calculatedRating = notesPerSec +
-            (totalKeys / maxKeys) +
-            approachSpeedInPercent +
-            (RoftPlayer.musicSource.pitch / 2) +
-            gameModeBoost;
+            float calculatedRating = notesPerSec +
+                (totalKeys / maxKeys) +
+                approachSpeedInPercent +
+                (RoftPlayer.musicSource.pitch / 2) +
+                gameModeBoost;
 
-        difficultyRating = calculatedRating;
+            difficultyRating = calculatedRating;
+        }
     }
 
     long CalculateMaxScore()
@@ -254,30 +258,59 @@ public class MapReader : MonoBehaviour
 
     void KeyLayoutAwake()
     {
-        int difficultyTag = InRFTMJumpTo("Difficulty", m_name);
-        int keyCount = ReadPropertyFrom<int>(difficultyTag, "KeyCount", m_name);
-        totalKeys = keyCount;
+
         if (!keyLayoutClass.gameObject.activeInHierarchy)
         {
             keyLayoutClass.gameObject.SetActive(true);
         }
 
-        #region Reading KeyCount
-
-        switch (keyCount)
+        if (!RoftPlayer.Instance.record)
         {
-            case 4: keyLayoutClass.KeyLayout = Key_Layout.KeyLayoutType.Layout_1x4; break;
-            case 8: keyLayoutClass.KeyLayout = Key_Layout.KeyLayoutType.Layout_2x4; break;
-            case 12: keyLayoutClass.KeyLayout = Key_Layout.KeyLayoutType.Layout_3x4; break;
-            case 16: keyLayoutClass.KeyLayout = Key_Layout.KeyLayoutType.Layout_4x4; break;
+            int difficultyTag = InRFTMJumpTo("Difficulty", m_name);
+            string keyLayout = ReadPropertyFrom<string>(difficultyTag, "KeyLayout", m_name);
+
+
+
+            keyLayoutClass.KeyLayout = (Key_Layout.KeyLayoutType)Enum.Parse(typeof(Key_Layout.KeyLayoutType), keyLayout);
+            Debug.Log(keyLayoutClass.KeyLayout.ToString());
+            #region KeyCount through Enum
+            switch (keyLayoutClass.KeyLayout)
+            {
+                case Key_Layout.KeyLayoutType.Layout_1x4:
+                    totalKeys = 4;
+                    break;
+                case Key_Layout.KeyLayoutType.Layout_2x4:
+                    totalKeys = 8;
+                    break;
+                case Key_Layout.KeyLayoutType.Layout_3x4:
+                    totalKeys = 12;
+                    break;
+                case Key_Layout.KeyLayoutType.Layout_4x4:
+                    totalKeys = 16;
+                    break;
+                case Key_Layout.KeyLayoutType.Layout_3x6:
+                    totalKeys = 18;
+                    break;
+                case Key_Layout.KeyLayoutType.Layout_4x6:
+                    totalKeys = 24;
+                    break;
+                case Key_Layout.KeyLayoutType.Layout_3x8:
+                    totalKeys = 24;
+                    break;
+                case Key_Layout.KeyLayoutType.Layout_4x8:
+                    totalKeys = 32;
+                    break;
+                default:
+                    break;
+            }
+            #endregion
         }
-        #endregion
 
 
         if (Key_Layout.Instance != null &&
-           GameManager.Instance.GetGameMode == GameManager.GameMode.TECHMEISTER ||
-            GameManager.Instance.GetGameMode == GameManager.GameMode.STANDARD)
-            Key_Layout.Instance.SetUpLayout();
+GameManager.Instance.GetGameMode == GameManager.GameMode.TECHMEISTER ||
+GameManager.Instance.GetGameMode == GameManager.GameMode.STANDARD)
+            keyLayoutClass.SetUpLayout();
 
     }
 

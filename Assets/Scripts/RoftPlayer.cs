@@ -105,10 +105,10 @@ public class RoftPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T) && record)
+        if (Input.GetKeyDown(KeyCode.Return) && record)
             PlayMusic();
 
-        if (Input.GetKeyDown(KeyCode.Return) && !musicSource.isPlaying)
+        if (Input.GetKeyDown(KeyCode.Return) && !musicSource.isPlaying && !record)
             StartCoroutine(Wait(3, loadAndPlay));
 
         if (musicSource != null)

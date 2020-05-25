@@ -40,14 +40,14 @@ namespace ROFTIOMANAGEMENT
         #region [Difficulty]
         readonly static string t_difficulty = "[Difficulty]\n";
         readonly static string p_DifficultyName = "DifficultyName: " + RoftCreator.Instance.GetDifficultyName() + newLine;
-        readonly static string p_StressBuild = "StressBuild: " + GameManager.Instance.stressBuild.ToString() + newLine;
+        readonly static string p_StressBuild = "StressBuild: " + RoftCreator.Instance.GetStressBuild().ToString() + newLine;
         readonly static string p_ObjectCount = "ObjectCount: " + newLine;
         #region Key Count
         readonly static string keyInfo = GetLayoutType();
 
 
         #endregion
-        readonly static string p_KeyCount = "KeyCount: " + keyInfo + newLine;
+        readonly static string p_KeyCount = "KeyLayout: " + keyInfo + newLine;
 
         readonly static string p_AccuracyHarshness = "AccuracyHarshness: " + RoftCreator.Instance.GetAccuracyHarshness() + newLine;
         readonly static string p_ApproachSpeed = "ApproachSpeed: " + RoftCreator.Instance.GetApproachSpeed() + newLine;
@@ -99,22 +99,7 @@ namespace ROFTIOMANAGEMENT
         /// Get Layouttype used in generating format.
         /// </summary>
         /// <returns>Layout type, or how many keys are used.</returns>
-        static string GetLayoutType()
-        {
-            switch (RoftCreator.Instance.GetTotalKeys())
-            {
-                case Key_Layout.KeyLayoutType.Layout_1x4:
-                    return "4";
-                case Key_Layout.KeyLayoutType.Layout_2x4:
-                    return "8";
-                case Key_Layout.KeyLayoutType.Layout_3x4:
-                    return "12";
-                case Key_Layout.KeyLayoutType.Layout_4x4:
-                    return "16";
-                default:
-                    return "";
-            }
-        }
+        static string GetLayoutType() => RoftCreator.Instance.GetTotalKeys().ToString();
 
         /// <summary>
         /// Get the newly generated format as an array.

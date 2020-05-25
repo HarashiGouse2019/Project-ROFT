@@ -35,7 +35,11 @@ public class Key_Layout : MonoBehaviour
 
         //Advanced literarcy
         Layout_3x8,
-        Layout_4x8
+        Layout_4x8,
+
+        //Expert literacy
+        Layout_3x10,
+        Layout_4x10
     }
 
     //This enum will change depending on the game mode in 
@@ -74,7 +78,7 @@ public class Key_Layout : MonoBehaviour
 
     //primaryLayout is the key layout where you control
     //both ends of the in-game layout
-    private readonly string[] primaryLayout = new string[8]
+    private readonly string[] primaryLayout = new string[10]
     {
         "asdf", // 1 x 4
         "qwerasdf", // 2 x 4
@@ -83,12 +87,14 @@ public class Key_Layout : MonoBehaviour
         "qwertyasdfghzxcvbn", // 3 x 6
         "123456qwertyasdfghzxcvbn", // 4 x 6
         "qweruiopasdfjkl;zxcvm,./", // 3 x 8
-        "12347890qweruiopasdfjkl;zxcvm,./" // 4 x 8
+        "12347890qweruiopasdfjkl;zxcvm,./", // 4 x 8
+        "qwertyuiopasdfghjkl;zxcvbnm,./", // 3 x 10
+        "1234567890qwertyuiopasdfghjkl;zxcvbnm,./" //4 x 10
     };
 
     //secondaryLayout is other key bindings that also affect
     //one end of the in-game layout
-    private readonly string[] secondaryLayout = new string[8]
+    private readonly string[] secondaryLayout = new string[10]
     {
         "asl;", // 1 x 4
         "qwopasl;", // 2 x 4
@@ -97,7 +103,9 @@ public class Key_Layout : MonoBehaviour
         "qweiopasdkl;zxc,./", // 3 x 6
         "123890qweiopasdkl;zxc,./", // 4 x 6
         "qweruiopasdfjkl;zxcvm,./", // 3 x 8
-        "12347890qweruiopasdfjkl;zxcvm,./" // 4 x 8
+        "12347890qweruiopasdfjkl;zxcvm,./", // 4 x 8
+        "qwertyuiopasdfghjkl;zxcvbnm,./", //3 x 10
+        "1234567890qwertyuiopasdfghjkl;zxcvbnm,./" //4 x 10
     };
 
     private KeyConfig keyConfig;
@@ -137,7 +145,11 @@ public class Key_Layout : MonoBehaviour
 
         //Then I bind the secondary layout
         for (int keyID = 0; keyID < secondaryLayout[(int)KeyLayout].Length; keyID++)
+        {
+            GameObject keyObj = keyObjects[keyID];
+            keyObj.GetComponent<ShowLetter>().SetAssignedKeyBind(secondaryLayout[(int)KeyLayout][keyID]);
             InvokeKeyBind(secondaryLayout[(int)KeyLayout][keyID], _rank: "secondary");
+        }
     }
 
     //This will simply take any character, and keybind it.
@@ -246,6 +258,13 @@ public class Key_Layout : MonoBehaviour
                 numRows = 4; numCols = 8;
                 break;
 
+            case KeyLayoutType.Layout_3x10:
+                numRows = 3; numCols = 10;
+                break;
+            case KeyLayoutType.Layout_4x10:
+                numRows = 4; numCols = 10;
+                break;
+
             default:
                 break;
         }
@@ -256,14 +275,14 @@ public class Key_Layout : MonoBehaviour
             {
                 newKey = pooler.GetMember("keys");
 
+                ShowLetter letter = newKey.GetComponent<ShowLetter>();
+
                 if (!newKey.activeInHierarchy)
                 {
                     newKey.SetActive(true);
 
                     newKey.transform.position = transform.position;
                     newKey.transform.rotation = Quaternion.identity;
-
-                    newKey.GetComponent<SpawnedFrom>().origin = gameObject;
                 }
 
                 newXPosition = (newKey.transform.localPosition.x + (numCols + (keyConfig.GetHorizontalSpread[(int)KeyLayout] * col)));
