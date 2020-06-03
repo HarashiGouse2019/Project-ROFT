@@ -49,6 +49,8 @@ public class MusicManager : MonoBehaviour
 
     public static List<Song_Entity> GetSongEntity() => Songs;
 
+    public static MusicManager GetInstance() => Instance;
+
     public static void DisplaySongs(List<Song_Entity> _songs)
     {
         Instance.songs = _songs;

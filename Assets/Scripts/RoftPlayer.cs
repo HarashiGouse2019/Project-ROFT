@@ -117,20 +117,24 @@ public class RoftPlayer : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!caretIsBeingDragged) UpdateCaret();
-
-        if (songTrackPosition != null && songTrackPosition.value > 1)
+        if (record)
         {
-            PauseMusic();
-            musicSource.timeSamples = (int)musicLengthInSamples;
-        }
+            if (!caretIsBeingDragged) UpdateCaret();
 
-        TimeStamp();
+            if (songTrackPosition != null && songTrackPosition.value > 1)
+            {
+                PauseMusic();
+                musicSource.timeSamples = (int)musicLengthInSamples;
+            }
+
+            TimeStamp();
+        }
     }
 
     public void LoadMusic()
     {
         musicSource = gameObject.AddComponent<AudioSource>();
+
 
         if (record)
             musicSource.clip = RoftCreator.Instance.GetAudioFile();
@@ -175,21 +179,23 @@ public class RoftPlayer : MonoBehaviour
     public void UpdateCaret()
     {
 
+        if (musicSource != null && record)
+        {
+            //So, here's how this is going to work...
+            //The Track Position is between values 0 and 1
+            //We have to find a way to convers a percentage of something to samples...
+            musicSource.pitch = sampleDivisor;
 
-        //So, here's how this is going to work...
-        //The Track Position is between values 0 and 1
-        //We have to find a way to convers a percentage of something to samples...
-        musicSource.pitch = sampleDivisor;
+            musicSource.outputAudioMixerGroup.audioMixer.SetFloat("pitchBend", 1 / musicSource.pitch);
 
-        musicSource.outputAudioMixerGroup.audioMixer.SetFloat("pitchBend", 1 / musicSource.pitch);
+            timeInSamples = musicSource.timeSamples;
 
-        timeInSamples = musicSource.timeSamples;
+            songTrackPosition.value = timeInSamples / musicLengthInSamples;
 
-        songTrackPosition.value = timeInSamples / musicLengthInSamples;
+            songPercentage.text = (songTrackPosition.value * 100).ToString("F1", CultureInfo.InvariantCulture) + "%";
 
-        songPercentage.text = (songTrackPosition.value * 100).ToString("F1", CultureInfo.InvariantCulture) + "%";
-
-        samplesText.text = minutes.ToString() + ":" + Mathf.FloorToInt(seconds).ToString("D2");
+            samplesText.text = minutes.ToString() + ":" + Mathf.FloorToInt(seconds).ToString("D2");
+        }
     }
 
     public void UpdateSampleFromCaretPosition()
@@ -241,17 +247,20 @@ public class RoftPlayer : MonoBehaviour
 
     void TimeStamp()
     {
-        if (seconds > 59.99f)
+        if (record)
         {
-            seconds = 0;
-            minutes++;
-        }
-        else if (seconds < 0)
-        {
-            seconds = 59;
-            minutes--;
-        }
+            if (seconds > 59.99f)
+            {
+                seconds = 0;
+                minutes++;
+            }
+            else if (seconds < 0)
+            {
+                seconds = 59;
+                minutes--;
+            }
 
-        seconds = musicSource.time - (60 * minutes);
+            seconds = musicSource.time - (60 * minutes);
+        }
     }
 }

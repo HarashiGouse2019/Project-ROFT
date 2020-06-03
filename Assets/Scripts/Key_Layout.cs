@@ -123,10 +123,6 @@ public class Key_Layout : MonoBehaviour
         if (Instance == null)
             Instance = this;
 
-        Debug.Log(Instance);
-
-
-        
         keyConfig = new KeyConfig();
         keyConfig = JsonUtility.FromJson<KeyConfig>(keyConfig.GetJSONString());
     }

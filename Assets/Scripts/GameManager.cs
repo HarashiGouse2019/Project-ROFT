@@ -43,15 +43,6 @@ public class GameManager : MonoBehaviour
         'D'
     };
 
-    public static float[] gradePrecentageRequirement =
-    {
-        0.95f,
-        0.90f,
-        0.80f,
-        0.70f,
-        0
-    };
-
     public static float[] stressAmount =
     {
        0.2f,
@@ -119,7 +110,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI TM_OK = null;
     [SerializeField] private TextMeshProUGUI TM_MISS = null;
     [SerializeField] private TextMeshProUGUI TM_ACCURACYPERCENTILE = null;
-    [SerializeField] private TextMeshProUGUI TM_ACCURACYGRADE = null;
+    public TextMeshProUGUI TM_ACCURACYGRADE = null;
     [SerializeField] private TextMeshProUGUI DEBUG_FILEDIR = null;
 
     [Header("UI IMAGES")]
@@ -306,7 +297,7 @@ public class GameManager : MonoBehaviour
             + maxCombo.ToString() +
             " (" + Mathf.Floor((maxCombo / MapReader.Instance.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
-        TM_ACCURACYPERCENTILE.text = "ACCURACY:     "
+        TM_ACCURACYPERCENTILE.text = "ACCURACY: "
            + overallAccuracy.ToString("F2", CultureInfo.InvariantCulture) + "%";
         #endregion
 
@@ -418,41 +409,12 @@ public class GameManager : MonoBehaviour
     public void UpdateScore()
     {
         UpdateMaxCombo();
-        UpdateGrade();
+        RankSystem.UpdateGrade();
         initialGain++;
         totalScore += sentScore * Combo;
     }
 
-    //Be sure that when our score updates we call this function
-    //Sense I'm using a for loop, I only want to call it went needed
-    //And that's when the player actually hits a note, and gets a score based
-    //on accuracy.
-    public void UpdateGrade()
-    {
-        /*Grade Calculations...
-         * Grade S) Higher than or equal to 95%
-         * Grade A) Higher than or equal to 90%
-         * Grade B) Higher than or equal to 80%
-         * Grade C) Higher than or equal to 70%
-         * Grade D) Anything lower than 70%
-         * 
-         * This are accounted for Perfect Percentage
-         * 
-         * We want to find a way to use the accuracyGrade array
-         * in terms of percentile (which seems intimidating).
-         */
 
-        for (int gradeIndex = 0; gradeIndex < gradePrecentageRequirement.Length; gradeIndex++)
-        {
-            //Check if overall Accuracy is above percentage values
-            //We'll simple return out of for loop if statement is true
-            if (overallAccuracy >= gradePrecentageRequirement[gradeIndex] * 100f)
-            {
-                TM_ACCURACYGRADE.text = "(" + accuracyGrade[gradeIndex].ToString() + ")";
-                return;
-            }
-        }
-    }
 
     public int GetSumOfStats()
     {

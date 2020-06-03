@@ -112,11 +112,13 @@ public class RoftCreator : MonoBehaviour
                 File.Copy(AssetDatabase.GetAssetPath(backgroundImage), newSongDirectoryPath + "/" + backgroundImage.name + backgroundImgExt);
             }
             catch {/*This just means they already exists...*/};
+
+            RoftPlayer.Instance.LoadMusic();
         }
 #endif
 
         
-        RoftPlayer.Instance.LoadMusic();
+        
     }
 
     /// <summary>

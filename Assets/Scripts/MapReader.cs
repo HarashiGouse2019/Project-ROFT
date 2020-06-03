@@ -67,7 +67,7 @@ public class MapReader : MonoBehaviour
 
     }
 
-    private void Start()
+    public void Read()
     {
 
 
@@ -225,9 +225,10 @@ public class MapReader : MonoBehaviour
     void CalculateDifficultyRating()
     {
 
-        RoftPlayer.Instance.LoadMusic();
+        
         if (!RoftPlayer.Instance.record)
         {
+            RoftPlayer.Instance.LoadMusic();
             int totalNotes = noteObjs.Count;
             float songLengthInSec = RoftPlayer.musicSource.clip.length;
             float notesPerSec = (totalNotes / songLengthInSec);
@@ -272,7 +273,6 @@ public class MapReader : MonoBehaviour
 
 
             keyLayoutClass.KeyLayout = (Key_Layout.KeyLayoutType)Enum.Parse(typeof(Key_Layout.KeyLayoutType), keyLayout);
-            Debug.Log(keyLayoutClass.KeyLayout.ToString());
             #region KeyCount through Enum
             switch (keyLayoutClass.KeyLayout)
             {

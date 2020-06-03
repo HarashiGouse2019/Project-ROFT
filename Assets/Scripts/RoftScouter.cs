@@ -83,6 +83,9 @@ public class RoftScouter
 
             ScoutingComplete = true;
 
+
+            MapReader.Instance.Read();
+
             yield return new WaitForEndOfFrame();
         }
     }
