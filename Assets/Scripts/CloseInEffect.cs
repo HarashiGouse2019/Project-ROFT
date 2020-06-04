@@ -92,7 +92,9 @@ public class CloseInEffect : NoteEffector
     void StartClosingIn()
     {
         transform.localScale = new Vector3(1f / GetPercentage(), 1f / GetPercentage(), 1f);
-        sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.15f);
+
+        sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, Mathf.Sin((GetPercentage() * 2f) - 0.25f));
+
         innerSprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.15f);
 
         if (CheckAutoPlay())
@@ -220,8 +222,8 @@ public class CloseInEffect : NoteEffector
     {
         for (int range = 0; range < AccuracyVal.Length; range++)
         {
-            bool beforePerfect = RoftPlayer.musicSource.timeSamples >= (initiatedNoteSample) - AccuracyVal[range];
-            bool afterPerfect = RoftPlayer.musicSource.timeSamples <= (initiatedNoteSample) + AccuracyVal[range];
+            bool beforePerfect = RoftPlayer.musicSource.timeSamples >= (initiatedNoteSample) - (AccuracyVal[range]);
+            bool afterPerfect = RoftPlayer.musicSource.timeSamples <= (initiatedNoteSample) + (AccuracyVal[range]);
 
             if (beforePerfect && afterPerfect)
             {
@@ -332,9 +334,47 @@ public class CloseInEffect : NoteEffector
             key = Key_Layout.keyObjects[keyNumPosition];
             key.GetComponent<PulseEffect>().DoPulseReaction(0.15f);
             key.GetComponentInChildren<PulseEffect>().DoPulseReaction(0.15f);
+
+            CreateRipple();
+
             GameManager.Instance.GetTMCombo().GetComponent<PulseEffect>().DoPulseReaction(0.05f);
             GameManager.Instance.GetTMComboUnderlay().GetComponent<PulseEffect>().DoPulseReaction();
             GameManager.Instance.GetScreenOverlay().GetComponent<OverlayPulseEffect>().DoPulseReaction();
+        }
+    }
+
+    void CreateRipple()
+    {
+        GameObject key, effectObj;
+
+        RippleEffect effect;
+
+        ObjectPooler pooler;
+
+        if(Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract)
+        {
+            //Get the key object based on position
+            key = Key_Layout.keyObjects[keyNumPosition];
+
+            //Reference the object pooler so we can get the ripple effect
+            pooler = key.GetComponent<ObjectPooler>();
+
+            //Use the pooler object, and get the RippleEffect member
+            effectObj = pooler.GetMember("RippleEffect");
+
+            //Enable the effectObj
+            if (!effectObj.activeInHierarchy)
+            {
+                effectObj.SetActive(true);
+                effectObj.transform.position = transform.position;
+                effectObj.transform.rotation = Quaternion.identity;
+            }
+
+            //Get the ripple effect component
+            effect =  effectObj.GetComponent<RippleEffect>();
+
+            //do the ripple affect
+            effect.DoRippleEffect(sprite.color);
         }
     }
 }

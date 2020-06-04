@@ -261,10 +261,7 @@ public class NoteEffector : MonoBehaviour
     /// Return the percentage of a Note Object.
     /// </summary>
     /// <returns></returns>
-    protected virtual float GetPercentage()
-    {
-        return 0;
-    }
+    protected virtual float GetPercentage() => 0f;
 
     /// <summary>
     /// Get effect configs from read RFTM File

@@ -87,7 +87,7 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 0
+  m_DrawMode: 1
   m_Size: {x: 1.28, y: 1.28}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
@@ -138,6 +138,11 @@ MonoBehaviour:
   - name: Arrows
     size: 10
     prefab: {fileID: 3636205369442568879, guid: 9bd1312e450b7a84f90bb6b898168204,
+      type: 3}
+    expandPool: 1
+  - name: RippleEffect
+    size: 10
+    prefab: {fileID: 2054928299523056528, guid: ccb5b2152e4a3ae4ea9fdd169025702a,
       type: 3}
     expandPool: 1
   pooledObjects: []
