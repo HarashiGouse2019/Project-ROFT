@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class PulseEffect : MonoBehaviour
 {
@@ -18,34 +19,33 @@ public class PulseEffect : MonoBehaviour
         normalScale = scale;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (!GameManager.Instance.IsGamePaused)
-            if (waiting) Wait(waitDuration, shrinkRate);
-    }
-
     //When I hit a note, this function will be called
     public void DoPulseReaction(float _size = 0.2f)
     {
         Vector3 pulseSize = new Vector3(_size, _size, _size);
         scale += pulseSize;
         m_transform.localScale = scale;
-        waiting = true;
+        StartCoroutine(Run());
     }
 
-    public void Wait(float _duration, float _shrinkRate)
+   IEnumerator Run()
     {
-        
-        time += Time.deltaTime;
-        scale = new Vector3(scale.x - _shrinkRate, scale.y - _shrinkRate, 1f);
-        m_transform.localScale = scale;
-        if (time >= _duration)
+        const float SIXTYITH_OF_SEC = (1f / 60f);
+
+        while (true)
         {
-            scale = normalScale;
-            m_transform.localScale = scale;
-            waiting = false;
-            time = 0;
+            if (!GameManager.Instance.IsGamePaused)
+            {
+                scale = new Vector3(scale.x - shrinkRate, scale.y - shrinkRate, 1f);
+                m_transform.localScale = scale;
+
+                if (scale.x <= normalScale.x && scale.y <= normalScale.y)
+                {
+                    m_transform.localScale = scale;
+                    StopAllCoroutines();
+                }
+            }
+            yield return new WaitForSeconds(SIXTYITH_OF_SEC);
         }
     }
 }

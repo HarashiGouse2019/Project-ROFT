@@ -370,7 +370,7 @@ GameManager.Instance.GetGameMode == GameManager.GameMode.STANDARD)
 
     public long GetMaxScore() => maxScore;
 
-    public ObjectTypes GetReaderType<T>()
+    public ObjectTypes GetReaderType<T>() where T : ObjectTypes
     {
         if (typeof(T) == tapObjectReader.GetType())
             return tapObjectReader;

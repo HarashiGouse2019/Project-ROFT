@@ -37,7 +37,7 @@ public class SongProgression : MonoBehaviour
         //We get out percentage
         float lastNotePercentile = 
             (RoftPlayer.musicSource.timeSamples - firstNoteInSamples) /
-            (lastNoteInSamples);
+            (lastNoteInSamples - firstNoteInSamples);
 
         if (!isPassedFirstNote)
         {

@@ -44,30 +44,35 @@ public class RippleEffect : MonoBehaviour
 
     IEnumerator Run()
     {
-        while(true)
+        const float SIXTYITH_OF_SEC = (1f / 60f);
+
+        while (true)
         {
-            //We want the object to set itself to inactive one the opacity is 0 (transparent)
-            //We'll going between value 1 and 0 on the color alpha channel
-            //There is no limit to the size of the ripple.
+            if (!GameManager.Instance.IsGamePaused)
+            {
+                //We want the object to set itself to inactive one the opacity is 0 (transparent)
+                //We'll going between value 1 and 0 on the color alpha channel
+                //There is no limit to the size of the ripple.
 
-            //Size is incremented by spreadRate
-            size += spreadSpeed;
+                //Size is incremented by spreadRate
+                size += spreadSpeed;
 
-            //Then is added to the localScale
-            objTransform.localScale = new Vector3(size, size, DEFAULT_VALUE);
+                //Then is added to the localScale
+                objTransform.localScale = new Vector3(size, size, DEFAULT_VALUE);
 
-            //Opacity will be subtracted from OpacityDelat
-            opacity -= deltaOpacity;
+                //Opacity will be subtracted from OpacityDelat
+                opacity -= deltaOpacity;
 
-            //Add opacity to sprite alpha channel
-            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, opacity - 0.5f);
+                //Add opacity to sprite alpha channel
+                spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, opacity - 0.5f);
 
-            //Now we check if the opacity is 0
-            if (opacity <= 0f)
-                //Disable the object
-                gameObject.SetActive(false);
+                //Now we check if the opacity is 0
+                if (opacity <= 0f)
+                    //Disable the object
+                    gameObject.SetActive(false);
+            }
 
-            yield return null;
+            yield return new WaitForSeconds(SIXTYITH_OF_SEC);
         }
     }
 

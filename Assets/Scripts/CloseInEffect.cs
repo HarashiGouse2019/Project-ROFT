@@ -93,7 +93,10 @@ public class CloseInEffect : NoteEffector
     {
         transform.localScale = new Vector3(1f / GetPercentage(), 1f / GetPercentage(), 1f);
 
-        sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, Mathf.Sin((GetPercentage() * 2f) - 0.25f));
+        if (RoftPlayer.musicSource.timeSamples < initiatedNoteSample)
+             sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, Mathf.Sin((GetPercentage() * 2f) - 0.25f));
+        else 
+            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, Mathf.Sin((GetPercentage() * 2f) - 0.5f));
 
         innerSprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.15f);
 

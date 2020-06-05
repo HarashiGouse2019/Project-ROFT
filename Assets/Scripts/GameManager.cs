@@ -172,7 +172,6 @@ public class GameManager : MonoBehaviour
     private Main core;
 
     EventManager.CallbackMethod scoutingDelegate;
-    private bool uiUpdate;
 
     private void Awake()
     {
@@ -211,7 +210,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         if (IMG_STRESS != null) IMG_STRESS.fillAmount = 0f;
-        Application.targetFrameRate = 60;
 
         //Reference our roftPlayer
         /*I may be right or wrong, but this may be a flyweight pattern...
@@ -220,22 +218,30 @@ public class GameManager : MonoBehaviour
          */
         roftPlayer = RoftPlayer.Instance;
         mapReader = MapReader.Instance;
+
+        if (RoftPlayer.Instance != null && RoftPlayer.Instance.record == false)
+        {
+            StartCoroutine(RUN_GAME_MANAGEMENT());
+            StartCoroutine(StressBuildRoutine());
+        }
     }
 
     private void Update()
     {
-        if (RoftPlayer.Instance != null && RoftPlayer.Instance.record == false)
-            StartCoroutine(RUN_GAME_MANAGEMENT());
+        
     }
 
     //GAME_MANAGEMENT Update
     IEnumerator RUN_GAME_MANAGEMENT()
     {
-        if (inSong && MapReader.KeysReaded)
-            //Invoke core and all methods associated with it
-            core.Invoke();
+        while (true)
+        {
+            if (inSong && MapReader.KeysReaded)
+                //Invoke core and all methods associated with it
+                core.Invoke();
 
-        yield return null;
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     void RunScoreSystem()
@@ -245,7 +251,6 @@ public class GameManager : MonoBehaviour
         {
             previousScore += Combo ^ initialGain;
             initialGain += Combo;
-            uiUpdate = true;
         }
         else
         {
@@ -256,11 +261,7 @@ public class GameManager : MonoBehaviour
 
     void UpdateMaxCombo()
     {
-        if (Combo > maxCombo)
-        {
-            maxCombo = Combo;
-            uiUpdate = true;
-        }
+        if (Combo > maxCombo) maxCombo = Combo;
     }
 
     void RunUI()
@@ -305,7 +306,16 @@ public class GameManager : MonoBehaviour
         if (isCountingDown == false)
             PAUSE_OVERLAY.SetActive(isGamePaused);
 
-        if (RoftPlayer.musicSource.isPlaying && SongProgression.isPassedFirstNote && !SongProgression.isFinished) ManageStressMeter();
+        
+    }
+
+    IEnumerator StressBuildRoutine()
+    {
+        while (true)
+        {
+            if (RoftPlayer.musicSource.isPlaying && SongProgression.isPassedFirstNote && !SongProgression.isFinished) ManageStressMeter();
+            yield return new WaitForSeconds(1f / 60f);
+        }
     }
 
     void ManageStressMeter()
@@ -492,10 +502,7 @@ public class GameManager : MonoBehaviour
         yield return null;
     }
 
-    public bool IsInteractable()
-    {
-        return (isGamePaused == false && isCountingDown == false);
-    }
+    public bool IsInteractable() => (isGamePaused == false && isCountingDown == false);
 
     public void ExecuteScouting()
     {
@@ -525,36 +532,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SetCombo(int _value)
-    {
-        Combo = _value;
-    }
+    public void SetCombo(int _value) => Combo = _value;
 
-    public void IncrementCombo()
-    {
-        Combo++;
-    }
+    public void IncrementCombo() => Combo++;
 
     #region Get Methods
-    public Image GetSongProgressionFill()
-    {
-        return IMG_PROGRESSION_FILL;
-    }
+    public Image GetSongProgressionFill() => IMG_PROGRESSION_FILL;
 
-    public TextMeshProUGUI GetTMCombo()
-    {
-        return TM_COMBO;
-    }
+    public TextMeshProUGUI GetTMCombo() => TM_COMBO;
 
-    public TextMeshProUGUI GetTMComboUnderlay()
-    {
-        return TM_COMBO_UNDERLAY;
-    }
+    public TextMeshProUGUI GetTMComboUnderlay() => TM_COMBO_UNDERLAY;
 
-    public Image GetScreenOverlay()
-    {
-        return IMG_SCREEN_OVERLAY;
-    }
+    public Image GetScreenOverlay() => IMG_SCREEN_OVERLAY;
 
     /// <summary>
     /// Check if the game's directory are present in PersistantPath
@@ -567,5 +556,15 @@ public class GameManager : MonoBehaviour
             ROFTIO.GenerateDirectory(ROFTIO.GAME_DIRECTORY + @"/Songs");
         }
     }
+
+    /// <summary>
+    /// Turn on Cursor
+    /// </summary>
+    public static void TurnOnCursor() => Cursor.visible = true;
+
+    /// <summary>
+    /// Turn off Cursor
+    /// </summary>
+    public static void TurnOffCursor() => Cursor.visible = false;
     #endregion
 }
