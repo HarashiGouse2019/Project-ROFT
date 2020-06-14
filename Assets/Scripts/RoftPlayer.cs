@@ -135,6 +135,7 @@ public class RoftPlayer : MonoBehaviour
     {
         musicSource = gameObject.AddComponent<AudioSource>();
 
+        musicSource.outputAudioMixerGroup = MusicManager.GetInstance().musicMixer;
 
         if (record)
             musicSource.clip = RoftCreator.Instance.GetAudioFile();
@@ -143,7 +144,6 @@ public class RoftPlayer : MonoBehaviour
             musicSource.clip = MapReader.SongEntityBeingRead.AudioFile;
 
         musicLengthInSamples = musicSource.clip.length * musicSource.clip.frequency;
-        musicSource.outputAudioMixerGroup = pitchMixer;
         music = musicSource.clip;
     }
 

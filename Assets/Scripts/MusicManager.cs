@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class MusicManager : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class MusicManager : MonoBehaviour
      */
 
     private static MusicManager Instance;
+
+    public AudioMixerGroup musicMixer;
 
     public List<Song_Entity> songs;
 

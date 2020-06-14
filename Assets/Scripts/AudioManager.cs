@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
 
 public class AudioManager : MonoBehaviour
@@ -23,6 +24,8 @@ public class AudioManager : MonoBehaviour
 
         [HideInInspector] public AudioSource source;
     }
+
+    public AudioMixerGroup audioMixer;
 
     public Slider musicVolumeAdjust, soundVolumeAdjust; //Reference to our volume sliders
 
@@ -48,6 +51,7 @@ public class AudioManager : MonoBehaviour
             a.source.volume = a.volume;
             a.source.pitch = a.pitch;
             a.source.loop = a.enableLoop;
+            a.source.outputAudioMixerGroup = audioMixer;
         }
     }
     /// <summary>
