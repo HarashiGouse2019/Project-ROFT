@@ -2264,7 +2264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba7aefe640f18a741b404b4082386e48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetFrameRate: 300
+  targetFrameRate: -1
   fpsText: {fileID: 515974253}
 --- !u!1 &1177057892
 GameObject:
@@ -9284,6 +9284,11 @@ PrefabInstance:
       propertyPath: IMG_PROGRESSION_FILL
       value: 
       objectReference: {fileID: 1039563774}
+    - target: {fileID: 8840939106478104643, guid: d42c8b68ea8056946a9b376c8ea5d9e9,
+        type: 3}
+      propertyPath: IMG_INGAMEBACKGROUND
+      value: 
+      objectReference: {fileID: 7113210979909691134}
     - target: {fileID: 8840939106478112700, guid: d42c8b68ea8056946a9b376c8ea5d9e9,
         type: 3}
       propertyPath: m_LocalPosition.x

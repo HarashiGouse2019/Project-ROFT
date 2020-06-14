@@ -119,6 +119,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Image IMG_SCREEN_OVERLAY = null;
     [SerializeField] private Image IMG_PROGRESSION_FILL = null;
 
+    [Header("In Game Background")]
+    [SerializeField] private Image IMG_INGAMEBACKGROUND = null;
+
     [Header("In-Game Statistics and Values")]
     private long totalScore;
     private long previousScore; //This will be used for a increasing effect
@@ -435,6 +438,22 @@ public class GameManager : MonoBehaviour
             sumOfStats += value;
         }
         return sumOfStats;
+    }
+
+    public void SetInGameBackground(Sprite sprite)
+    {
+        try
+        {
+            //If the background image is inactive, set it active
+            if (!IMG_INGAMEBACKGROUND.gameObject.activeInHierarchy && sprite != null)
+            {
+                IMG_INGAMEBACKGROUND.gameObject.SetActive(gameObject.activeSelf);
+                IMG_INGAMEBACKGROUND.sprite = sprite;
+            }
+        } catch
+        {
+            Debug.Log("Can't set an image if it doesn't exist");
+        }
     }
 
     void CheckSignsOfInput()

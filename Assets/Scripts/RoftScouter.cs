@@ -32,17 +32,17 @@ public class RoftScouter
         VIDEO
     }
 
-    public static string CurApp_Dir { get; set; } = Application.persistentDataPath + "/Songs";
+    public static string CurApp_Dir { get; private set; } = Application.persistentDataPath + "/Songs";
 
-    public static DirectoryInfo DirectoryInfo { get; set; }
+    public static DirectoryInfo DirectoryInfo { get; private set; }
 
-    public static List<Song_Entity> SongsFound { get; set; } = new List<Song_Entity>();
+    public static List<Song_Entity> SongsFound { get; private set; } = new List<Song_Entity>();
 
-    public static bool ScoutingComplete { get; set; }
+    public static bool ScoutingComplete { get; private set; }
 
-    private static AudioClip RequestedClip { get; set; }
-    private static Sprite RequestedImage { get; set; }
-    private static VideoClip RequestedVideo { get; set; }
+    public static AudioClip RequestedClip { get; private set; }
+    public static Sprite RequestedImage { get; private set; }
+    public static VideoClip RequestedVideo { get; private set; }
 
     public RoftScouter()
     {
@@ -196,6 +196,11 @@ public class RoftScouter
                     }
                 }
 
+                if(newEntity.BackgroundImage == null)
+                {
+                    RequestingImage(fileNum, backgroundImageFile);
+                    newEntity.BackgroundImage = GetRawImage();
+                }
                 
 
                 //Now that our SongEntity has been set, we'll add it to our list for further conversion.
@@ -244,7 +249,7 @@ public class RoftScouter
 
     static bool RequestingImage(FileInfo _fileInfo, string _name)
     {
-        string path = @"file:\\\" + _fileInfo.Directory + @"\" + _name;
+        string path =  _fileInfo.Directory + @"\" + _name;
 
         Debug.Log(path);
 
@@ -258,33 +263,42 @@ public class RoftScouter
     static Sprite ConvertTextureToSprite(Texture2D _texture, float _pixelPerUnit = 100.0f, SpriteMeshType _spriteType = SpriteMeshType.Tight)
     {
         //Converts a Texture2D to a sprite, assign this texture to a new sprite and return its reference
+        try
+        {
+            Sprite newSprite = Sprite.Create(_texture, new Rect(0, 0, _texture.width, _texture.height), new Vector2(0, 0), _pixelPerUnit, 0, _spriteType);
 
-        Sprite newSprite = Sprite.Create(_texture, new Rect(0, 0, _texture.width, _texture.height), new Vector2(0,0), _pixelPerUnit, 0, _spriteType);
-
-        return newSprite;
+            return newSprite;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     static Texture2D LoadTexture(string _filePath)
     {
-        /*We'll load a png or jpg file from disk to a Texture2D
-         If we fail at doing so, return null.*/
-
-        Texture2D tex2D;
-
-        //We want to read the binary data of this file,
-        //in order to know the formatting. With the formatting,
-        //we'll use the data to create the image that we requested
-        byte[] fileData;
-
-        if (File.Exists(_filePath))
+        try
         {
-            fileData = File.ReadAllBytes(_filePath);
-            tex2D = new Texture2D(2, 2);
-            if (tex2D.LoadImage(fileData))
-                return tex2D;
+            /*We'll load a png or jpg file from disk to a Texture2D
+             If we fail at doing so, return null.*/
 
+            Texture2D tex2D;
+
+            //We want to read the binary data of this file,
+            //in order to know the formatting. With the formatting,
+            //we'll use the data to create the image that we requested
+            byte[] fileData;
+
+            if (File.Exists(_filePath))
+            {
+                fileData = File.ReadAllBytes(_filePath);
+                tex2D = new Texture2D(2, 2);
+                if (tex2D.LoadImage(fileData))
+                    return tex2D;
+
+            }
         }
-
+        catch { }
         return null;
     }
 

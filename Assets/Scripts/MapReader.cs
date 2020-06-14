@@ -106,11 +106,21 @@ public class MapReader : MonoBehaviour
         //Get other values such as Approach Speed, Stress Build, and Accuracy Harshness
         if (RoftPlayer.Instance != null && RoftPlayer.Instance.record == false)
         {
+            //Set the number where to find the difficulty tag
             int difficultyTag = InRFTMJumpTo("Difficulty", m_name);
+
+            //Start assigning file data to following objects
             NoteEffector.Instance.ApproachSpeed = ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", m_name);
             GameManager.Instance.stressBuild = ReadPropertyFrom<float>(difficultyTag, "StressBuild", m_name);
             NoteEffector.Instance.Accuracy = ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", m_name);
+
+            //Set background image
+            GameManager.Instance.SetInGameBackground(SongEntityBeingRead.BackgroundImage);
+
+            //Calculate the max score
             maxScore = CalculateMaxScore();
+
+            //Calculate difficulty rating
             CalculateDifficultyRating();
         }
         else

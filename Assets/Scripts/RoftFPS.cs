@@ -9,7 +9,7 @@ public class RoftFPS : MonoBehaviour
         FPS30 = 30,
         FPS60 = 60,
         FPS120 = 120,
-        UNLIMITED = 300
+        UNLIMITED = -1
     }
 
     //Shows the current fps of the game
