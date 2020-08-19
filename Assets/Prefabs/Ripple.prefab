@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8678294638831579882}
   - component: {fileID: 3140158315553769240}
   - component: {fileID: -6564659816799830508}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ripple
   m_TagString: approachCircle
   m_Icon: {fileID: 0}

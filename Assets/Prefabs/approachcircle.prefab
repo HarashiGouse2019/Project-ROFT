@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3256075576104862044}
   - component: {fileID: 4874918667938659239}
   - component: {fileID: 3002950400439775412}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: innerTexture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 8086417929962295784}
   - component: {fileID: 7439277699086993969}
   - component: {fileID: 5354671254315473490}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -186,7 +186,7 @@ GameObject:
   - component: {fileID: 7544047459120237185}
   - component: {fileID: 8432298229018716898}
   - component: {fileID: 1799893738899272384}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: approachcircle
   m_TagString: approachCircle
   m_Icon: {fileID: 0}

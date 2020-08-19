@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6174661993294546236}
   - component: {fileID: 3358920504996276679}
   - component: {fileID: 2828573570754556420}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: keys
   m_TagString: key
   m_Icon: {fileID: 0}
@@ -215,7 +215,7 @@ GameObject:
   - component: {fileID: 8433763089853209452}
   - component: {fileID: 9177574899582565313}
   - component: {fileID: 3275375603851660603}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -420,7 +420,7 @@ PrefabInstance:
     - target: {fileID: 5661888556525302133, guid: dc71359671f99f0438f5b24182e3994c,
         type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5661888556525302133, guid: dc71359671f99f0438f5b24182e3994c,
         type: 3}
