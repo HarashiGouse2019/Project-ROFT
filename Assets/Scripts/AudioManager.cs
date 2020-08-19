@@ -101,9 +101,9 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public AudioClip GetAudio(string _name, float _volume = 100)
+    public static AudioClip PlayScheduled(string _name, float time, float _volume = 100)
     {
-        Audio a = Array.Find(getAudio, sound => sound.name == _name);
+        Audio a = Array.Find(Instance.getAudio, sound => sound.name == _name);
         if (a == null)
         {
             Debug.LogWarning("Sound name " + _name + " was not found.");
@@ -111,7 +111,7 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
-            a.source.Play();
+            a.source.PlayScheduled(time);
             a.source.volume = _volume / 100;
             return a.source.clip;
         }
