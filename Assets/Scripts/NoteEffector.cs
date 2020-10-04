@@ -132,7 +132,7 @@ public class NoteEffector : MonoBehaviour
             #endregion
             NoteObj objToBeSpawned = _objReader.objects[sequencePos];
 
-            int objId = (int)objToBeSpawned.GetInstanceID();
+            int objId = (int)objToBeSpawned.GetKey();
 
             ObjectPooler keyPooler = Key_Layout.keyObjects[objId].GetComponent<ObjectPooler>();
 
@@ -166,8 +166,8 @@ public class NoteEffector : MonoBehaviour
         NoteObj targetObj = _objReader.objects[sequencePos];
 
         _obj.SetActive(true);
-        _obj.transform.position = Key_Layout.keyObjects[(int)targetObj.GetInstanceID()].transform.position;
-        _obj.transform.localScale = Key_Layout.keyObjects[(int)targetObj.GetInstanceID()].transform.localScale;
+        _obj.transform.position = Key_Layout.keyObjects[(int)targetObj.GetKey()].transform.position;
+        _obj.transform.localScale = Key_Layout.keyObjects[(int)targetObj.GetKey()].transform.localScale;
     }
 
     /// <summary>
@@ -193,7 +193,7 @@ public class NoteEffector : MonoBehaviour
         {
             NoteObj targetObj = _objReader.objects[sequencePos];
 
-            noteSample = (int)targetObj.GetInstanceSample() - (int)alignment;
+            noteSample = (int)targetObj.GetInitialeSample() - (int)alignment;
 
             float offsetStart = noteSample - noteOffset;
 
@@ -251,10 +251,10 @@ public class NoteEffector : MonoBehaviour
         //This is the index regarding each "key" on screen
         noteObj = _objReader.objects[_effect.keyNum];
 
-        _effect.keyNumPosition = (int)noteObj.GetInstanceID();
+        _effect.keyNumPosition = (int)noteObj.GetKey();
 
         //Change look of circle
-        _effect.Modifier.ChangeType((int)noteObj.GetInstanceType());
+        _effect.Modifier.ChangeType((int)noteObj.GetType());
     }
 
     /// <summary>

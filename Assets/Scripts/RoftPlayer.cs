@@ -17,6 +17,8 @@ public class RoftPlayer : MonoBehaviour
 
     public bool record;
 
+    public ObjectLogger objectLogger;
+
     public enum TickSignature
     {
         Normal = 4,
@@ -49,7 +51,7 @@ public class RoftPlayer : MonoBehaviour
 
     public static AudioSource musicSource;
     #endregion
-
+   
 
     #region Private Members
     private bool musicIsPlaying = false;
@@ -86,7 +88,7 @@ public class RoftPlayer : MonoBehaviour
 
     private void Awake()
     {
-        
+
         #region Singleton
         if (Instance == null)
         {
@@ -119,6 +121,9 @@ public class RoftPlayer : MonoBehaviour
     {
         if (record)
         {
+            if (Input.GetAxis("Mouse ScrollWheel") == 0)
+                caretIsBeingDragged = false;
+
             if (!caretIsBeingDragged) UpdateCaret();
 
             if (songTrackPosition != null && songTrackPosition.value > 1)
@@ -128,8 +133,11 @@ public class RoftPlayer : MonoBehaviour
             }
 
             TimeStamp();
+
+            
         }
     }
+
 
     public void LoadMusic()
     {
@@ -178,8 +186,9 @@ public class RoftPlayer : MonoBehaviour
 
     public void UpdateCaret()
     {
+       
 
-        if (musicSource != null && record)
+        if (musicSource != null && record && !caretIsBeingDragged)
         {
             //So, here's how this is going to work...
             //The Track Position is between values 0 and 1
@@ -196,6 +205,12 @@ public class RoftPlayer : MonoBehaviour
 
             samplesText.text = minutes.ToString() + ":" + Mathf.FloorToInt(seconds).ToString("D2");
         }
+    }
+
+    public void ScrollCaret()
+    {
+        songTrackPosition.value -= Input.GetAxis("Mouse ScrollWheel");
+        UpdateSampleFromCaretPosition();
     }
 
     public void UpdateSampleFromCaretPosition()

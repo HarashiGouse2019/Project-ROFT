@@ -8,6 +8,7 @@ public class NoteObj
     {
         Tap,
         Hold,
+        Track,
         Burst
     }
 
@@ -24,25 +25,25 @@ public class NoteObj
     public object miscellaneousValue1;
     public object miscellaneousValue2;
 
-    public void SetInstanceID(uint value)
+    public void SetKeyID(uint value)
     {
         instID = value;
     }
 
-    public void SetInstanceSample(long value)
+    public void SetInitialSample(long value)
     {
         instSample = value;
     }
 
-    public void SetInstanceType(NoteObjType type)
+    public void SetType(NoteObjType type)
     {
         instType = type;
     }
 
-    public uint GetInstanceID() => instID;
+    public uint GetKey() => instID;
 
-    public long GetInstanceSample() => instSample;
+    public long GetInitialeSample() => instSample;
 
-    public NoteObjType GetInstanceType() => instType;
+    public NoteObjType GetType() => instType;
 }
 

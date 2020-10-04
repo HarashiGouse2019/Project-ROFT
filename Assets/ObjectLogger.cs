@@ -6,16 +6,34 @@ using UnityEngine.UI;
 
 public class ObjectLogger : MonoBehaviour
 {
-    //Logger Size is simply how many blocks the object has
-    public int loggerSize = 4;
+    public ObjectLogger Instance;
+    public TextMeshProUGUI TMP_Tick;
+    public enum LoggerSize {
+        WALTZ = 3,
+        WHOLE = 4,
+        SIXTH = 6,
+        EIGHTH = 8,
+        SIXTEEN = 16,
+        THRITY_SECNOND = 32,
+        SIXTY_FORTH = 64,
+        ONE_HUNTRED_TWENTY_EIGHTH = 128
+    }
+
+    public LoggerSize loggerSize = LoggerSize.WHOLE;
+
+    [Range(1f, 4f)]
+    public float rate = 1f;
+
+    public float offsetInSeconds = 0;
 
     public GameObject prefab;
 
     readonly Color currentTick = Color.white;
     readonly Color emptyTick = Color.black;
+    readonly Color emptyTickGrey = Color.grey;
 
     [SerializeField]
-    float bpm = 120;
+    public float bpm = 120;
     float oldBPM = 0;
 
     [SerializeField]
@@ -30,26 +48,22 @@ public class ObjectLogger : MonoBehaviour
     bool startTicking = false;
     bool isTicking = false;
 
-    [SerializeField]
-    int tapsAmount = 0;
-    int ticks = 0;
     List<float> loggedTime = new List<float>();
     float time;
 
-    [SerializeField]
-    float firstTap = 0;
-
-    bool isTapping;
-    bool started = false;
+    float tick = -1;
+    float inGameTime = 0;
 
     const float reset = 0f;
 
-    float ticksDelta;
-
+    private void OnEnable()
+    {
+        Instance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
-        Init(loggerSize);
+        Init((int)loggerSize);
         oldBPM = bpm;
     }
 
@@ -62,23 +76,16 @@ public class ObjectLogger : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        ref float delta = ref ticksDelta;
-        delta = MINUTEINSEC / bpm;
+        inGameTime = RoftPlayer.musicSource.time - offsetInSeconds;
 
-        
+        var currentTick = Mathf.Floor(inGameTime / (60f / (bpm * rate * ((float)loggerSize / (float)LoggerSize.WHOLE))));
 
-        if (startTicking && isTicking == false)
+        if (tick != currentTick && inGameTime > 0f)
         {
-            InvokeRepeating("Tick", 0, delta);
-            isTicking = true;
-        }
-
-        //Detect change in BPM
-        if(isTicking && bpm != oldBPM)
-        {
-            CancelInvoke("Tick");
-            oldBPM = bpm;
-            InvokeRepeating("Tick", delta / 4, delta);
+            tick = currentTick;
+            TMP_Tick.text = ((tick % (int)loggerSize) + 1).ToString();
+            if (Mathf.Floor(inGameTime % (60f / bpm)) == 0)
+                Tick();
         }
     }
 
@@ -95,63 +102,26 @@ public class ObjectLogger : MonoBehaviour
             blocks[iter].transform.rotation = Quaternion.identity;
             blocks[iter].transform.localScale = Vector3.one;
 
-            blocks[iter].GetComponent<Button>().image.color = iter < 1 ? currentTick : emptyTick;
+            blocks[iter].GetComponent<Button>().image.color = iter < 1 ? currentTick : iter % ((int)loggerSize/4) != 0 ? emptyTickGrey : emptyTick;
         }
 
-        StartCoroutine(TapCoroutine());
     }
 
     void Tick()
     {
-        AudioManager.Play("Tick", 100f, true);
-        ticks++;
         for(int iter = 0; iter < blocks.Length; iter++)
         {
-            if(ticks % loggerSize == iter)
+            if(tick % (int)loggerSize == iter)
             {
                 blocks[iter].GetComponent<Button>().image.color = currentTick;
             }
             else
             {
-                blocks[iter].GetComponent<Button>().image.color = emptyTick;
+                if (iter % ((int)loggerSize/4) != 0)
+                    blocks[iter].GetComponent<Button>().image.color = emptyTickGrey;
+                else
+                    blocks[iter].GetComponent<Button>().image.color = emptyTick;
             }
         }
     }
-
-    IEnumerator TapCoroutine()
-    {
-        while (true)
-        {
-            time += Time.deltaTime * 1000;
-
-            if (Input.GetKeyDown(KeyCode.T) && tapsAmount == 0)
-            {
-                isTapping = true;
-                started = true;
-                Tap();
-            }
-
-            else if (Input.GetKeyDown(KeyCode.T))
-            {
-                if (tapsAmount == 1)
-                    firstTap = time;
-                CalculateAverageBPM();
-                Tap();
-            }
-
-            yield return null;
-        }
-    }
-
-    void Tap()
-    {
-        tapsAmount++;
-        Debug.Log(ticks);
-    }
-
-    void CalculateAverageBPM()
-    {
-        bpm = tapsAmount / ((time - firstTap) / 1000 / MINUTEINSEC);
-    }
-
 }
