@@ -143,7 +143,7 @@ public class Key_Layout : MonoBehaviour
         for (int keyID = 0; keyID < secondaryLayout[(int)KeyLayout].Length; keyID++)
         {
             GameObject keyObj = keyObjects[keyID];
-            keyObj.GetComponent<ShowLetter>().SetAssignedKeyBind(secondaryLayout[(int)KeyLayout][keyID]);
+            //keyObj.GetComponent<ShowLetter>().SetAssignedKeyBind(secondaryLayout[(int)KeyLayout][keyID]);
             InvokeKeyBind(secondaryLayout[(int)KeyLayout][keyID], _rank: "secondary");
         }
     }

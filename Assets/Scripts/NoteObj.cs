@@ -45,5 +45,22 @@ public class NoteObj
     public long GetInitialeSample() => instSample;
 
     public NoteObjType GetType() => instType;
+
+    public string AsString()
+    {
+        switch (instType)
+        {
+            case NoteObjType.Tap: return string.Format("{0},{1},{2}", instID, instSample, (int)instType);
+            case NoteObjType.Hold: return string.Format("{0},{1},{2},{3}", instID, instSample, (int)instType, null);
+            case NoteObjType.Track: return string.Format("{0},{1},{2},{3}", instID, instSample, (int)instType, null);
+            case NoteObjType.Burst: return string.Format("{0},{1},{2},{3}", instID, instSample, (int)instType, null);
+        }
+        return string.Empty;
+    }
+
+    public  bool Empty()
+    {
+        return (instID == 0 && instSample == 0 && instType == default);
+    }
 }
 

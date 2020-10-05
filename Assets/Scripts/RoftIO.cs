@@ -293,8 +293,7 @@ namespace ROFTIOMANAGEMENT
         /// <param name="_path">The path in which to create the file.</param>
         public static void CreateNewRFTM(string _name, string _path)
         {
-            string rftmFileName = _name + ".rftm";
-            string rftmFilePath = _path + rftmFileName;
+            string rftmFilePath = Path.Combine(_path, string.Format("{0}.rftm", _name));
 
             if (!File.Exists(rftmFilePath))
             {
@@ -418,10 +417,9 @@ namespace ROFTIOMANAGEMENT
         /// <param name="_name">The name of the .rftm file.</param>
         /// <param name="_path">The path in which to find the .rftm file.</param>
         /// <param name="_data">The data in which to pass in.</param>
-        public static void WriteNewObjectToRFTM(string _name, string _path, string _data)
+        public static void OVerrideObjects(string _name, string _path, string _data)
         {
-            string rftmFileName = _name + ".rftm";
-            string rftmFilePath = _path + rftmFileName;
+            string rftmFilePath = Path.Combine(_path, string.Format("{0}.rftm", _name));
 
             StreamWriter rftmWriter = File.AppendText(rftmFilePath);
 
@@ -429,6 +427,30 @@ namespace ROFTIOMANAGEMENT
 
             rftmWriter.WriteLine(_data);
             rftmWriter.Close();
+        }
+
+        /// <summary>
+        /// Override RFTM file with new information
+        /// </summary>
+        /// <param name="_path"></param>
+        /// <param name=""></param>
+        public static void OverrideFileChanges(string _name, string _path)
+        {
+            string rftmFilePath = Path.Combine(_path, string.Format("{0}.rftm", _name));
+
+            if (!File.Exists(rftmFilePath))
+            {
+                Debug.Log("Creating new .rftm file...");
+                using (StreamWriter rftmWriter = File.CreateText(rftmFilePath))
+                {
+
+                    string[] rftmInfo = ROFTFormat.GetFormatInfo();
+
+                    for (int line = 0; line < rftmInfo.Length; line++)
+                        rftmWriter.WriteLine(rftmInfo[line]);
+                }
+                Debug.Log(".rftm file created!");
+            }
         }
 
         /// <summary>

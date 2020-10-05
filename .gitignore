@@ -65,3 +65,5 @@ crashlytics-build.properties
 *.resource
 ProjectROFT/Library/PlayerDataCache/Win64/Data/sharedassets0.resource
 ProjectROFT/Library/PlayerDataCache/Win64/Data/sharedassets0.resource
+
+Assets/Scripts/RoftScouter.cs

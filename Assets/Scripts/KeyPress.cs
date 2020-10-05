@@ -60,7 +60,7 @@ public class KeyPress : MonoBehaviour
                              + RoftPlayer.musicSource.timeSamples.ToString() + ","
                             + 0.ToString();
 
-                        RoftIO.WriteNewObjectToRFTM(RoftCreator.filename, RoftCreator.newSongDirectoryPath + "/", data);
+                        RoftIO.OVerrideObjects(RoftCreator.filename, RoftCreator.newSongDirectoryPath + "/", data);
                     }
                     #endregion
 

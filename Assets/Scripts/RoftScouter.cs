@@ -232,6 +232,8 @@ public class RoftScouter
             while (!operation.isDone)
                 continue;
 
+            Debug.Log(link);
+
             if (requestAudio.isNetworkError || requestAudio.isHttpError)
             {
                 Debug.Log("Failed to load audio.");

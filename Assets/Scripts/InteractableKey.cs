@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 using static ROFTIOMANAGEMENT.RoftIO;
 
@@ -19,23 +17,45 @@ public class InteractableKey : MonoBehaviour
     {
         sprite.color = Color.green;
         //Collect Data
-        string data = keyNum + ", " + RoftPlayer.musicSource.timeSamples + ", " + 0.ToString();
-        Key_Layout.Instance.dataText.text = data;
+        string[] data = {
+            string.Format("{0}, {1}, {2}", keyNum, RoftPlayer.musicSource.timeSamples, ((int)ObjectLogger.noteTool).ToString()),
+            string.Format("{0}, {1}, {2}, {3}", keyNum, RoftPlayer.musicSource.timeSamples, ((int)ObjectLogger.noteTool).ToString(), ObjectLogger.Instance.finishSample),
+            string.Format("{0}, {1}, {2}, {3}", keyNum, RoftPlayer.musicSource.timeSamples, ((int)ObjectLogger.noteTool).ToString(), ObjectLogger.Instance.trackPoints),
+            string.Format("{0}, {1}, {2}, {3}", keyNum, RoftPlayer.musicSource.timeSamples, ((int)ObjectLogger.noteTool).ToString(), ObjectLogger.Instance.burstDirection)
+        };
+        Key_Layout.Instance.dataText.text = data[(int)ObjectLogger.noteTool];
+        
     }
 
     private void OnMouseDown()
     {
         #region Write to RFTM File
+
+        /*If we happen to be recording, and we hit the second set of binded keys, the
+                data will be written to a file.*/
+        //if (RoftPlayer.Instance.record)
+        //{
+        //    string data =
+        //        keyNum.ToString() + ","
+        //         + RoftPlayer.musicSource.timeSamples.ToString() + ","
+        //        + ((int)ObjectLogger.noteTool).ToString();
+
+        //    WriteNewObjectToRFTM(RoftCreator.filename, RoftCreator.newSongDirectoryPath + "/", data);
+        //}
+        #endregion
+
+        //Check the type, then note the object data from ObjectLogger
         if (RoftPlayer.Instance.record)
         {
-            string data =
-                keyNum.ToString() + ","
-                 + RoftPlayer.musicSource.timeSamples.ToString() + ","
-                + 0.ToString();
-
-           WriteNewObjectToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
+            if(ObjectLogger.noteTool == ObjectLogger.NoteTool.TAP)
+                ObjectLogger.LogInNoteObject(ObjectLogger.noteTool, keyNum, (long)RoftPlayer.musicSource.timeSamples, (int)ObjectLogger.noteTool);
+            else if (ObjectLogger.noteTool == ObjectLogger.NoteTool.HOLD)
+                ObjectLogger.LogInNoteObject(ObjectLogger.noteTool, keyNum, (long)RoftPlayer.musicSource.timeSamples, (int)ObjectLogger.noteTool);
+            else if (ObjectLogger.noteTool == ObjectLogger.NoteTool.TRACK)
+                ObjectLogger.LogInNoteObject(ObjectLogger.noteTool, keyNum, (long)RoftPlayer.musicSource.timeSamples, (int)ObjectLogger.noteTool);
+            else if (ObjectLogger.noteTool == ObjectLogger.NoteTool.BURST)
+                ObjectLogger.LogInNoteObject(ObjectLogger.noteTool, keyNum, (long)RoftPlayer.musicSource.timeSamples, (int)ObjectLogger.noteTool, ObjectLogger.Instance.burstDirection);
         }
-        #endregion
     }
 
     private void OnMouseExit()
