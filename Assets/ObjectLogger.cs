@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using System.Linq;
 using ROFTIOMANAGEMENT;
 using System;
-using System.Linq.Expressions;
+using System.Text;
 
 public class ObjectLogger : MonoBehaviour
 {
@@ -45,6 +45,21 @@ public class ObjectLogger : MonoBehaviour
                 return logObject != null && logObject[value].Empty();
             }
             catch { return true; }
+        }
+
+        public string ExtractData()
+        {
+            StringBuilder data = new StringBuilder();
+            foreach (NoteObj obj in logObject)
+            {
+                if (obj != null && !obj.Empty())
+                {
+                    data.Append(obj.AsString() + "\n");
+                    Debug.Log("Doing the thing...");
+                }
+            }
+
+            return data.ToString();
         }
     }
 
@@ -126,6 +141,8 @@ public class ObjectLogger : MonoBehaviour
     float currentPatternSet;
 
     bool sequenceDone = false;
+
+    public static string ObjectData;
 
     private void Awake()
     {
@@ -224,7 +241,7 @@ public class ObjectLogger : MonoBehaviour
                 blocks[iter].GetComponent<Button>().image.color = (int)loggerSize != 4 && iter % ((int)loggerSize / 8) != 0 ? c_emptyTickGrey :
                 iter % ((int)loggerSize / 4) != 0 ? c_emptyTickDarkGrey :
                 c_emptyTick;
-                
+
             }
         }
 
@@ -303,11 +320,24 @@ public class ObjectLogger : MonoBehaviour
         noteTool = (NoteTool)value;
     }
 
-    public static void WriteToFile()
+    public void SaveToFile()
     {
         //Write all data collected 
-        foreach (NoteObj obj in Instance.objects)
-            RoftIO.OVerrideObjects(RoftCreator.filename, RoftCreator.newSongDirectoryPath + "/", obj.AsString());
+        StringBuilder data = new StringBuilder();
+
+        foreach (PatternSet set in Instance.patternSets)
+        {
+            data.Append(set.ExtractData());
+        }
+
+        StackSavedData(data.ToString());
+
+        RoftIO.CreateNewRFTM(RoftCreator.filename, RoftCreator.newSongDirectoryPath);
+    }
+
+    static void StackSavedData(string data)
+    {
+        ObjectData = data;
     }
 
     public static int GetObjectCount() => Instance.objects.Count + 1;

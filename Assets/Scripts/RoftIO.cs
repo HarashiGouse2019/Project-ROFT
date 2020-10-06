@@ -5,109 +5,11 @@ using System.IO;
 using UnityEngine;
 
 using Random = UnityEngine.Random;
-
+using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
 
 namespace ROFTIOMANAGEMENT
 {
-    public static class ROFTFormat
-    {
-        const string newLine = "\n";
-
-        #region Format Version
-        readonly static string t_version = "[Format Version]\n";
-        readonly static string p_formatVer = "1.0v" + newLine;
-        #endregion
-
-        #region [General]
-        readonly static string t_general = "[General]\n";
-        readonly static string p_Author = "Author: " + System.Environment.UserName + newLine;
-        readonly static string p_AudioFileName = "AudioFilename: " + RoftCreator.audioFilePath + newLine;
-        readonly static string p_BackgroundImage = "BackgroundImage: " + RoftCreator.backgroundFilePath + newLine;
-        readonly static string p_BackgroundVideo = "BackgroundVideo: " + newLine;
-        #endregion
-
-        #region [Metadata]
-        readonly static string t_metadata = "[Metadata]\n";
-        readonly static string p_Title = "Title: " + RoftCreator.Instance.GetSongTitle() + newLine;
-        readonly static string p_TitleUnicode = "TitleUnicode: " + RoftCreator.Instance.GetSongTitle(true) + newLine;
-        readonly static string p_Artist = "Artist: " + RoftCreator.Instance.GetSongArtist() + newLine;
-        readonly static string p_ArtistUnicode = "ArtistUnicode: " + RoftCreator.Instance.GetSongArtist(true) + newLine;
-        readonly static string p_Creator = "Creator: " + System.Environment.UserName + newLine;
-        readonly static string p_ROFTID = "ROFTID: " + RoftCreator.Instance.GetROFTID() + newLine;
-        readonly static string p_GROUPID = "GROUPID: " + RoftCreator.Instance.GetGROUPID() + newLine;
-        #endregion
-
-        #region [Difficulty]
-        readonly static string t_difficulty = "[Difficulty]\n";
-        readonly static string p_DifficultyName = "DifficultyName: " + RoftCreator.Instance.GetDifficultyName() + newLine;
-        readonly static string p_StressBuild = "StressBuild: " + RoftCreator.Instance.GetStressBuild().ToString() + newLine;
-        readonly static string p_ObjectCount = "ObjectCount: " + newLine;
-        #region Key Count
-        readonly static string keyInfo = GetLayoutType();
-
-
-        #endregion
-        readonly static string p_KeyCount = "KeyLayout: " + keyInfo + newLine;
-
-        readonly static string p_AccuracyHarshness = "AccuracyHarshness: " + RoftCreator.Instance.GetAccuracyHarshness() + newLine;
-        readonly static string p_ApproachSpeed = "ApproachSpeed: " + RoftCreator.Instance.GetApproachSpeed() + newLine;
-        #endregion
-
-        #region [Objects]
-        readonly static string t_objects = "[Objects]";
-        #endregion
-
-        #region .rftm Information
-        readonly static string[] rftmInformation = new string[]
-        {
-                   //Format Version
-                   t_version +
-                   p_formatVer,
-
-                   //General
-                   t_general +
-                   p_Author +
-                   p_AudioFileName +
-                   p_BackgroundImage +
-                   p_BackgroundVideo,
-
-                   //Metadata
-                   t_metadata +
-                   p_Title +
-                   p_TitleUnicode +
-                   p_Artist +
-                   p_ArtistUnicode +
-                   p_Creator +
-                   p_ROFTID +
-                   p_GROUPID,
-
-                   //Difficulty
-                   t_difficulty +
-                   p_DifficultyName +
-                   p_StressBuild +
-                   p_ObjectCount +
-                   p_KeyCount +
-                   p_AccuracyHarshness +
-                   p_ApproachSpeed,
-
-                   //Objects
-                   t_objects
-        };
-        #endregion
-
-        /// <summary>
-        /// Get Layouttype used in generating format.
-        /// </summary>
-        /// <returns>Layout type, or how many keys are used.</returns>
-        static string GetLayoutType() => RoftCreator.Instance.GetTotalKeys().ToString();
-
-        /// <summary>
-        /// Get the newly generated format as an array.
-        /// </summary>
-        /// <returns>An array of information that include tags and their properties.</returns>
-        public static string[] GetFormatInfo() => rftmInformation;
-    }
-
     public static class IDHIST
     {
         //Defalt Identity History path.
@@ -249,6 +151,16 @@ namespace ROFTIOMANAGEMENT
 
     public static class RoftIO
     {
+        public static string AsTag(this string tagName)
+        {
+            return string.Format("[{0}]\n", tagName);
+        }
+
+        public static string AsProperty(this string propertyName, object value = null)
+        {
+            return string.Format("{0}: {1}", propertyName, value);
+        }
+
         public static FileInfo GAME_DIRECTORY { get; private set; } = new FileInfo(Application.persistentDataPath);
 
         /// <summary>
@@ -293,21 +205,139 @@ namespace ROFTIOMANAGEMENT
         /// <param name="_path">The path in which to create the file.</param>
         public static void CreateNewRFTM(string _name, string _path)
         {
-            string rftmFilePath = Path.Combine(_path, string.Format("{0}.rftm", _name));
+            #region Formatting (RFTM FILE FORMAT VERSION 1.4)
+            string newLine = "\n";
 
-            if (!File.Exists(rftmFilePath))
+            #region Format Version
+            string t_version = "Format Version".AsTag();
+            string p_formatVer = "1.4v" + newLine;
+            #endregion
+
+            #region [General]
+            string t_general = "General".AsTag();
+            string p_Author = "Author".AsProperty(System.Environment.UserName) + newLine;
+            string p_AudioFileName = "AudioFilename".AsProperty(RoftCreator.audioFilePath) + newLine;
+            string p_BackgroundImage = "BackgroundImage".AsProperty(RoftCreator.backgroundFilePath) + newLine;
+            string p_BackgroundVideo = "BackgroundVideo".AsProperty() + newLine;
+            #endregion
+
+            #region [Metadata]
+            string t_metadata = "Metadata".AsTag();
+            string p_Title = "Title".AsProperty(RoftCreator.GetSongTitle()) + newLine;
+            string p_TitleUnicode = "TitleUnicode".AsProperty(RoftCreator.GetSongTitle(true)) + newLine;
+            string p_Artist = "Artist".AsProperty(RoftCreator.GetSongArtist()) + newLine;
+            string p_ArtistUnicode = "ArtistUnicode".AsProperty(RoftCreator.GetSongArtist(true)) + newLine;
+            string p_Creator = "Creator".AsProperty(System.Environment.UserName) + newLine;
+            string p_ROFTID = "ROFTID".AsProperty(RoftCreator.GetROFTID()) + newLine;
+            string p_GROUPID = "GROUPID".AsProperty(RoftCreator.GetGROUPID()) + newLine;
+            #endregion
+
+            #region [Difficulty]
+            string t_difficulty = "Difficulty".AsTag();
+            string p_DifficultyName = "DifficultyName".AsProperty(RoftCreator.GetDifficultyName()) + newLine;
+            string p_StressBuild = "StressBuild".AsProperty(RoftCreator.GetStressBuild().ToString()) + newLine;
+            string p_ObjectCount = "ObjectCount".AsProperty(ObjectLogger.Instance != null ? ObjectLogger.GetObjectCount() : 0) + newLine;
+            #region Key Count
+            string keyInfo = RoftCreator.GetTotalKeys().ToString();
+
+            #endregion
+            string p_KeyCount = "KeyLayout".AsProperty(keyInfo) + newLine;
+
+            string p_AccuracyHarshness = "AccuracyHarshness".AsProperty(RoftCreator.GetAccuracyHarshness()) + newLine;
+            string p_ApproachSpeed = "ApproachSpeed".AsProperty(RoftCreator.GetApproachSpeed()) + newLine;
+            #endregion
+
+            #region [Timing]
+            string t_timing = "Timing".AsTag() + newLine;
+            #endregion
+
+            #region [Objects]
+            string t_objects = "Objects".AsTag();
+            string objectData = ObjectLogger.Instance != null ? ObjectLogger.ObjectData : "NIL";
+            #endregion
+
+            #region .RFTM Information Compilation
+            string[] rftmInformation = new string[]
             {
-                Debug.Log("Creating new .rftm file...");
-                using (StreamWriter rftmWriter = File.CreateText(rftmFilePath))
+                   //Format Version
+                   t_version +
+                   p_formatVer,
+
+                   //General
+                   t_general +
+                   p_Author +
+                   p_AudioFileName +
+                   p_BackgroundImage +
+                   p_BackgroundVideo,
+
+                   //Metadata
+                   t_metadata +
+                   p_Title +
+                   p_TitleUnicode +
+                   p_Artist +
+                   p_ArtistUnicode +
+                   p_Creator +
+                   p_ROFTID +
+                   p_GROUPID,
+
+                   //Timing
+                   t_timing,
+
+                   //Difficulty
+                   t_difficulty +
+                   p_DifficultyName +
+                   p_StressBuild +
+                   p_ObjectCount +
+                   p_KeyCount +
+                   p_AccuracyHarshness +
+                   p_ApproachSpeed,
+
+                   //Objects
+                   t_objects +
+                   objectData
+            };
+            #endregion
+
+            #endregion
+
+            #region Creation/Overwrite Process
+            try
+            {
+                string rftmFilePath = Path.Combine(_path, string.Format("{0}.rftm", _name));
+
+                if (!File.Exists(rftmFilePath))
                 {
-
-                    string[] rftmInfo = ROFTFormat.GetFormatInfo();
-
-                    for (int line = 0; line < rftmInfo.Length; line++)
-                        rftmWriter.WriteLine(rftmInfo[line]);
+                    Debug.Log("Creating new .rftm file...");
+                    using (StreamWriter rftmWriter = File.CreateText(rftmFilePath))
+                    {
+                        for (int line = 0; line < rftmInformation.Length; line++)
+                            rftmWriter.WriteLine(rftmInformation[line]);
+                    }
+                    Debug.Log(".rftm file created!");
                 }
-                Debug.Log(".rftm file created!");
+                else
+                {
+                    Debug.Log(string.Format("Overwritting {0}.rftm", _name));
+
+                    using (FileStream outStream = File.Open(rftmFilePath, FileMode.Create, FileAccess.Write, FileShare.Read))
+                    {
+                        using (StreamWriter rftmWriter = new StreamWriter(outStream))
+                        {
+                            rftmWriter.Flush();
+
+                            for (int line = 0; line < rftmInformation.Length; line++)
+                                rftmWriter.WriteLine(rftmInformation[line]);
+                        }
+                    }
+                    Debug.Log("Successfully overwritten!");
+                }
             }
+            catch
+            {
+                Debug.LogError("Error occurred with Creating/Overwritting .rftm file.");
+                return;
+            }
+            #endregion
         }
 
         /// <summary>
@@ -409,48 +439,6 @@ namespace ROFTIOMANAGEMENT
             //Create a Directory Specific for a song
             Directory.CreateDirectory(_path);
             return _path;
-        }
-
-        /// <summary>
-        /// Creates a new note object into the specified .rftm file.
-        /// </summary>
-        /// <param name="_name">The name of the .rftm file.</param>
-        /// <param name="_path">The path in which to find the .rftm file.</param>
-        /// <param name="_data">The data in which to pass in.</param>
-        public static void OVerrideObjects(string _name, string _path, string _data)
-        {
-            string rftmFilePath = Path.Combine(_path, string.Format("{0}.rftm", _name));
-
-            StreamWriter rftmWriter = File.AppendText(rftmFilePath);
-
-            MapReader.Instance.SetName(_name);
-
-            rftmWriter.WriteLine(_data);
-            rftmWriter.Close();
-        }
-
-        /// <summary>
-        /// Override RFTM file with new information
-        /// </summary>
-        /// <param name="_path"></param>
-        /// <param name=""></param>
-        public static void OverrideFileChanges(string _name, string _path)
-        {
-            string rftmFilePath = Path.Combine(_path, string.Format("{0}.rftm", _name));
-
-            if (!File.Exists(rftmFilePath))
-            {
-                Debug.Log("Creating new .rftm file...");
-                using (StreamWriter rftmWriter = File.CreateText(rftmFilePath))
-                {
-
-                    string[] rftmInfo = ROFTFormat.GetFormatInfo();
-
-                    for (int line = 0; line < rftmInfo.Length; line++)
-                        rftmWriter.WriteLine(rftmInfo[line]);
-                }
-                Debug.Log(".rftm file created!");
-            }
         }
 
         /// <summary>
@@ -560,6 +548,62 @@ namespace ROFTIOMANAGEMENT
                             if (line.Contains(_property))
                             {
                                 foundProperty = true;
+                                targetVal = line.Replace(_property + ": ", "");
+
+                                return (T)Convert.ChangeType(targetVal, typeof(T));
+                            }
+                        }
+                        position++;
+                    }
+                }
+            }
+            return default;
+        }
+
+        public static T SetPropertyValue<T>(object value, int _startPosition, string _property, string _path)
+        {
+            string line;
+            string rftmFilePath = _path;
+
+            //This is used to iterate and find the tag specified by the _startPosition parameter.
+            int position = 0;
+
+            //Check if it actually found something
+            bool foundProperty = false;
+
+            if (File.Exists(rftmFilePath))
+            {
+                using (StreamWriter rftmWriter = new StreamWriter(rftmFilePath))
+                {
+                    while (true)
+                    {
+                        string targetVal = null;
+
+                        line = rftmWriter.ToString();
+
+                        /*If we iterate through the file and can not find
+                         the tag needed to access its property, we
+                         return default
+                         */
+                        if (line == null)
+                        {
+                            if (!foundProperty) Debug.Log("This tag does not exist");
+                            return default;
+                        }
+
+                        /*If we're at the position where our tag is defined in file
+                         we then check for our property.
+                         */
+                        if (position > _startPosition)
+                        {
+                            if (line == "")
+                                return default;
+
+                            //If not empty, you can do whatever!!!
+                            if (line.Contains(_property))
+                            {
+                                foundProperty = true;
+                                rftmWriter.WriteLine("_property".AsProperty(value));
                                 targetVal = line.Replace(_property + ": ", "");
 
                                 return (T)Convert.ChangeType(targetVal, typeof(T));

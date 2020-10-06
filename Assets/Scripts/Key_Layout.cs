@@ -208,7 +208,7 @@ public class Key_Layout : MonoBehaviour
         //We do a double for loop! Columns and Rows (At least for the 8x8, 12x12, and 3Row
 
         if (RoftPlayer.Instance.record)
-            KeyLayout = RoftCreator.Instance.GetKeyLayout();
+            KeyLayout = RoftCreator.GetKeyLayout();
 
         //float xOffset = setXOffset[(int)keyLayout];
         //float yOffset = setYOffset[(int)keyLayout];

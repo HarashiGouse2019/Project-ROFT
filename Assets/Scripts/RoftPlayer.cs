@@ -146,7 +146,7 @@ public class RoftPlayer : MonoBehaviour
         musicSource.outputAudioMixerGroup = MusicManager.GetInstance().musicMixer;
 
         if (record)
-            musicSource.clip = RoftCreator.Instance.GetAudioFile();
+            musicSource.clip = RoftCreator.GetAudioFile();
 
         else
             musicSource.clip = MapReader.SongEntityBeingRead.AudioFile;

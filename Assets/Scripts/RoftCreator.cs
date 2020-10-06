@@ -115,25 +115,8 @@ public class RoftCreator : MonoBehaviour
 
             RoftPlayer.Instance.LoadMusic();
         }
-#endif
-
+#endif 
         
-        
-    }
-
-    /// <summary>
-    /// This is calculated by the beats per minute
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator Tick(float _bpm)
-    {
-        while (true)
-        {
-            AudioManager.Play("Tick");
-            yield return new WaitForSeconds(60f / _bpm);
-           
-
-        }
     }
 
     /// <summary>
@@ -161,81 +144,81 @@ public class RoftCreator : MonoBehaviour
     /// Get audio file being used.
     /// </summary>
     /// <returns>AudioClip</returns>
-    public AudioClip GetAudioFile() => audioFile;
+    public static AudioClip GetAudioFile() => Instance.audioFile;
 
     /// <summary>
     /// Get background image being used.
     /// </summary>
     /// <returns>RawImage</returns>
-    public Texture GetBackgroundImage() => backgroundImage;
+    public static Texture GetBackgroundImage() => Instance.backgroundImage;
 
     /// <summary>
     /// Get background video being used.
     /// </summary>
     /// <returns>VideoClip</returns>
-    public  VideoClip GetVideoClip() => backgroundVideo;
+    public static VideoClip GetVideoClip() => Instance.backgroundVideo;
 
     /// <summary>
     /// Get song title being used.
     /// </summary>
     /// <param name="_inUnicode">Return the unicode of song title</param>
     /// <returns>String</returns>
-    public string GetSongTitle(bool _inUnicode = false) => (_inUnicode == true) ? songTitleUnicode : songTitle;
+    public static string GetSongTitle(bool _inUnicode = false) => (_inUnicode == true) ? Instance.songTitleUnicode : Instance.songTitle;
 
     /// <summary>
     /// Get song artist being used.
     /// </summary>
     /// <param name="_inUnicode">Return the unicode of song artist</param>
     /// <returns></returns>
-    public string GetSongArtist(bool _inUnicode = false) => (_inUnicode == true) ? songArtistUnicode : songArtist;
+    public static string GetSongArtist(bool _inUnicode = false) => (_inUnicode == true) ? Instance.songArtistUnicode : Instance.songArtist;
 
     /// <summary>
     /// Get difficulty name being used.
     /// </summary>
     /// <returns></returns>
-    public  string GetDifficultyName() => difficultyName;
+    public static  string GetDifficultyName() => Instance.difficultyName;
 
     /// <summary>
     /// Get total keys being used.
     /// </summary>
     /// <returns></returns>
-    public  Key_Layout.KeyLayoutType GetTotalKeys() => keyLayout;
+    public static Key_Layout.KeyLayoutType GetTotalKeys() => Instance.keyLayout;
 
     /// <summary>
     /// Get the harshness of difficulty being used.
     /// </summary>
     /// <returns></returns>
-    public float GetAccuracyHarshness() => accuracyHarshness;
+    public static float GetAccuracyHarshness() => Instance.accuracyHarshness;
 
     /// <summary>
     /// Get the speed of circle enclosing.
     /// </summary>
     /// <returns></returns>
-    public float GetApproachSpeed() => approachSpeed;
+    public static  float GetApproachSpeed() => Instance.approachSpeed;
 
     /// <summary>
     /// Get how much stress will build up.
     /// </summary>
     /// <returns></returns>
-    public float GetStressBuild() => stressBuild;
+    public static float GetStressBuild() => Instance.stressBuild;
 
     /// <summary>
     /// Get Group ID.
     /// </summary>
     /// <returns></returns>
-    public string GetGROUPID() => GROUPID.ToString();
+    public static string GetGROUPID() => Instance.GROUPID.ToString();
 
     /// <summary>
     /// Get Roft ID.
     /// </summary>
     /// <returns></returns>
-    public string GetROFTID() => ROFTID.ToString();
+    public static string GetROFTID() => Instance.ROFTID.ToString();
 
     /// <summary>
     /// Get Key Layout being used.
     /// </summary>
     /// <returns></returns>
-    public Key_Layout.KeyLayoutType GetKeyLayout() => keyLayout;
+    public static Key_Layout.KeyLayoutType GetKeyLayout() => Instance.keyLayout;
 
     #endregion
 }
