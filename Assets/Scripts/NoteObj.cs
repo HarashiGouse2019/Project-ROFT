@@ -62,5 +62,14 @@ public class NoteObj
     {
         return (instID == 0 && instSample == 0 && instType == default);
     }
+
+    public void Clear()
+    {
+        instID = 0;
+        instSample = 0;
+        instType = default;
+        miscellaneousValue1 = null;
+        miscellaneousValue2 = null;
+    }
 }
 

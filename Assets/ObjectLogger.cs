@@ -36,6 +36,11 @@ public class ObjectLogger : MonoBehaviour
             logObject[position] = obj;
         }
 
+        public void RemoveObject(int position)
+        {
+            logObject[position].Clear();
+        }
+
         public int Size() => logObject.Length;
 
         public bool IsCellEmpty(int value)
@@ -155,6 +160,13 @@ public class ObjectLogger : MonoBehaviour
         Init((int)loggerSize);
     }
 
+    private void Update()
+    {
+        //Keyboard Responses
+        if (Input.GetKeyDown(KeyCode.Backspace))
+            RemoveNoteObject();
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -218,7 +230,7 @@ public class ObjectLogger : MonoBehaviour
 
             totalPatternSets = Mathf.Floor(samplesPerBeat / (float)loggerSize);
         }
-
+        Debug.Log(totalPatternSets);
         for (int i = 0; i < totalPatternSets; i++)
         {
             PatternSet newSet = new PatternSet();
@@ -248,18 +260,6 @@ public class ObjectLogger : MonoBehaviour
         ShowMarksInPatternSet();
     }
 
-    void AddObject(NoteObj newObject)
-    {
-        objects.Add(newObject);
-        RefreshLog();
-    }
-
-    void RemoveObject(NoteObj objectTarget)
-    {
-        objects.Remove(objectTarget);
-        RefreshLog();
-    }
-
     void RefreshLog()
     {
         var _objects = from o in objects orderby o.GetInitialeSample() select o;
@@ -281,7 +281,6 @@ public class ObjectLogger : MonoBehaviour
                 noteObj.SetInitialSample(Instance.sampleData);
                 noteObj.SetType((NoteObj.NoteObjType)Instance.typeData);
 
-                Instance.objects.Add(noteObj);
                 break;
 
             case NoteTool.HOLD:
@@ -311,6 +310,13 @@ public class ObjectLogger : MonoBehaviour
         }
 
         Instance.patternSets[(int)Instance.currentPatternSet].LogObject(noteObj, ((int)Instance.tick % (int)Instance.loggerSize));
+        Instance.RefreshLog();
+        ShowMarksInPatternSet();
+    }
+
+    public void RemoveNoteObject()
+    {
+        Instance.patternSets[(int)Instance.currentPatternSet].RemoveObject(((int)Instance.tick % (int)Instance.loggerSize));
         Instance.RefreshLog();
         ShowMarksInPatternSet();
     }
@@ -351,6 +357,16 @@ public class ObjectLogger : MonoBehaviour
             if (Instance.patternSets[(int)Instance.currentPatternSet] != null &&
                 !Instance.patternSets[(int)Instance.currentPatternSet].IsCellEmpty(cell))
                 Instance.blocks[cell].GetComponent<Button>().image.color = Instance.c_tickNoteData;
+            else if (Instance.tick % (int)Instance.loggerSize == cell)
+            {
+                Instance.blocks[cell].GetComponent<Button>().image.color = Instance.c_currentTick;
+            }
+            else
+            {
+                Instance.blocks[cell].GetComponent<Button>().image.color = (int)Instance.loggerSize != 4 && cell % ((int)Instance.loggerSize / 8) != 0 ? Instance.c_emptyTickGrey :
+                cell % ((int)Instance.loggerSize / 4) != 0 ? Instance.c_emptyTickDarkGrey :
+                Instance.c_emptyTick;
+            }
         }
     }
 

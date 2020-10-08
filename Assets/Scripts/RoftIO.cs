@@ -560,6 +560,15 @@ namespace ROFTIOMANAGEMENT
             return default;
         }
 
+        /// <summary>
+        /// Set a property value based on a specified tag name
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="_startPosition"></param>
+        /// <param name="_property"></param>
+        /// <param name="_path"></param>
+        /// <returns></returns>
         public static T SetPropertyValue<T>(object value, int _startPosition, string _property, string _path)
         {
             string line;
@@ -616,6 +625,11 @@ namespace ROFTIOMANAGEMENT
             return default;
         }
 
+        /// <summary>
+        /// Get how many objects the song file has
+        /// </summary>
+        /// <param name="_path"></param>
+        /// <returns></returns>
         public static int GetNoteObjectCountInRFTMFile(string _path)
         {
             //Position tracking
