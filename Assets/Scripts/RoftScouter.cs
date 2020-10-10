@@ -59,33 +59,41 @@ public class RoftScouter
 
     static IEnumerator ScoutingRoutine()
     {
+
         while (!ScoutingComplete)
         {
-            //Target our defined directory to read information and data.
-            DirectoryInfo = new DirectoryInfo(CurApp_Dir);
+            try
+            {
+                //Target our defined directory to read information and data.
+                DirectoryInfo = new DirectoryInfo(CurApp_Dir);
 
-            /*We will then "Commence Scouting" by looking for all
-            files with the .rftm extenstion in our CurApp_Dir variable.*/
+                /*We will then "Commence Scouting" by looking for all
+                files with the .rftm extenstion in our CurApp_Dir variable.*/
 
-            Func<List<FileInfo>> scoutingProcess = Commence_Scouting;
+                Func<List<FileInfo>> scoutingProcess = Commence_Scouting;
 
-            List<FileInfo> obj = scoutingProcess.Invoke();
+                List<FileInfo> obj = scoutingProcess.Invoke();
 
-            /*With the files now collected, we read each individual file
-            and convert them and their subfolders to SongEntities, which
-            defines a songs and it's related difficulties.*/
-            SongsFound = ConvertDiscoveredRFTMFilesToSongEntityObj(obj);
+                /*With the files now collected, we read each individual file
+                and convert them and their subfolders to SongEntities, which
+                defines a songs and it's related difficulties.*/
+                SongsFound = ConvertDiscoveredRFTMFilesToSongEntityObj(obj);
 
-            /*We then assign information to our MusicManager will all the
-            songs that's be found and converted.*/
-            MusicManager.Songs = SongsFound;
-            MusicManager.DisplaySongs(SongsFound);
+                /*We then assign information to our MusicManager will all the
+                songs that's be found and converted.*/
+                MusicManager.Songs = SongsFound;
+                MusicManager.DisplaySongs(SongsFound);
 
-            ScoutingComplete = true;
+                ScoutingComplete = true;
 
 
-            MapReader.Instance.Read();
-
+                MapReader.Instance.Read();
+            }
+            catch
+            {
+                //TODO: Let the player know that scouting has failed. Give them the reason.
+                break;
+            }
             yield return new WaitForEndOfFrame();
         }
     }
