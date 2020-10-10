@@ -336,7 +336,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Highlighted
-  m_Speed: 1
+  m_Speed: 100
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -396,7 +396,7 @@ AnimatorStateMachine:
     m_Position: {x: 200, y: 10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 2063066853629078999}
-    m_Position: {x: 200, y: 80, z: 0}
+    m_Position: {x: 230, y: 90, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2251735334859561380}
     m_Position: {x: 200, y: 220, z: 0}
