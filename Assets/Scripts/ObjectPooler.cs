@@ -33,36 +33,6 @@ public class ObjectPooler : MonoBehaviour
         InitObjectPooler(spawnInParent);
     }
 
-    private void Start()
-    {
-        //if (readFromMusicManager == true)
-        //{
-        //    OverridePoolSizeOf("Song Panel", MusicManager.Instance.getMusic.Length);
-        //}
-    }
-
-    private void Update()
-    {
-
-        //for (int musicIndex = 0; musicIndex < pooledObjects.Count; musicIndex++)
-        //    if (!pooledObjects[musicIndex].activeInHierarchy)
-        //    {
-        //        const float defaultSpread = -1.5f;
-
-        //        pooledObjects[musicIndex].SetActive(true);
-
-        //        Image IMG_SONGPANEL = pooledObjects[musicIndex].GetComponent<Image>();
-
-        //        RectTransform IMG_TRANSFORM = IMG_SONGPANEL.rectTransform;
-
-        //        IMG_TRANSFORM.position = new Vector3(IMG_TRANSFORM.position.x, IMG_TRANSFORM.position.y + (defaultSpread * musicIndex));
-
-        //    }
-        //    else
-        //        break;
-
-    }
-
 
     /// <summary>
     /// Start creating Object Pools

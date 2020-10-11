@@ -95,7 +95,7 @@ public class RoftCreator : MonoBehaviour
             string backgroundImgExt = Path.GetExtension(AssetDatabase.GetAssetPath(backgroundImage));
 
             audioFilePath = audioFile.name + audioExt;
-            //backgroundFilePath = backgroundImage.name + backgroundImgExt;
+            backgroundFilePath = backgroundImage.name + backgroundImgExt;
 
             //Filename will include the ID, Artis, SongName, and what Difficulty
             filename = songID + songArtist + " - " + songTitle + " (" + difficultyName + ")";

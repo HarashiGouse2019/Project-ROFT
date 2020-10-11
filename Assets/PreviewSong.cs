@@ -19,7 +19,8 @@ public class PreviewSong : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(currentSongPreviewing.timeSamples >= (currentSongPreviewing.clip.frequency * currentSongPreviewing.clip.length) &&
+        if(currentSongPreviewing.clip != null &&
+            currentSongPreviewing.timeSamples >= (currentSongPreviewing.clip.frequency * currentSongPreviewing.clip.length) &&
             !currentSongPreviewing.isPlaying)
         {
             currentSongPreviewing.timeSamples = 0;
@@ -31,9 +32,18 @@ public class PreviewSong : MonoBehaviour
     {
         //Convert the offsetStart to samples, and add the samples to the song samples
         //Then play the song.
-        currentSongPreviewing.timeSamples += (int)(currentSongPreviewing.clip.frequency * offsetStart);
-        FadeIn();
-        currentSongPreviewing.Play();
+        if (currentSongPreviewing.clip != null)
+        {
+            currentSongPreviewing.timeSamples = 0;
+            currentSongPreviewing.timeSamples += (int)(currentSongPreviewing.clip.frequency * offsetStart);
+            FadeIn();
+            currentSongPreviewing.Play();
+        }
+    }
+
+    internal void SetSongToPreview(AudioClip song)
+    {
+        currentSongPreviewing.clip = song;
     }
 
     void FadeIn()

@@ -72,6 +72,10 @@ public class GameManager : MonoBehaviour
         TBR_HOMEROW,
         TBR_ALL
     };
+
+    [SerializeField]
+    private SongList SongList;
+
     [Header("Game Pause Overlay")]
     [SerializeField] private bool isGamePaused = false;
     public bool IsGamePaused
@@ -554,6 +558,8 @@ public class GameManager : MonoBehaviour
     public void SetCombo(int _value) => Combo = _value;
 
     public void IncrementCombo() => Combo++;
+
+    public static SongList GetSongList() => Instance.SongList;
 
     #region Get Methods
     public Image GetSongProgressionFill() => IMG_PROGRESSION_FILL;
