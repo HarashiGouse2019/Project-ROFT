@@ -27,7 +27,7 @@ public class SongList : MonoBehaviour
     private PreviewSong songPreviewer;
 
     [SerializeField]
-    private TextMeshProUGUI TMP_SongTitle;
+    private TextMeshProUGUI TMP_SongTitle, TMP_SongTitleSecondary;
 
     [SerializeField]
     private Image songCover, songBackDrop;
@@ -164,6 +164,7 @@ public class SongList : MonoBehaviour
     }
 
     public TextMeshProUGUI GetTMP() => TMP_SongTitle;
+    public TextMeshProUGUI GetSecondaryTMP() => TMP_SongTitleSecondary;
     public Image GetSongCover() => songCover;
     public Image GetSongBackDrop() => songBackDrop;
     public PreviewSong GetSongPreviewer() => songPreviewer;

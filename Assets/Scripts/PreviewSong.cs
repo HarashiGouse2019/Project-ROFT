@@ -34,9 +34,10 @@ public class PreviewSong : MonoBehaviour
         //Then play the song.
         if (currentSongPreviewing.clip != null)
         {
+            currentSongPreviewing.volume = 0f;
+            FadeIn();
             currentSongPreviewing.timeSamples = 0;
             currentSongPreviewing.timeSamples += (int)(currentSongPreviewing.clip.frequency * offsetStart);
-            FadeIn();
             currentSongPreviewing.Play();
         }
     }

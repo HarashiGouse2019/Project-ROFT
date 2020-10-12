@@ -47,7 +47,8 @@ public class SongEntry : MonoBehaviour
     {
         SongList songList = SongList.Instance;
 
-        songList.GetTMP().text = TMP_SongTitle.text;
+        songList.GetTMP().text = string.Format("Now playing: {0}",TMP_SongTitle.text);
+        songList.GetSecondaryTMP().text = songList.GetTMP().text;
 
         songList.FadeInImages();
         songList.GetSongCover().sprite = songCover;
