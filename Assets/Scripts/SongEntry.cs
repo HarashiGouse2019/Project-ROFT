@@ -16,14 +16,14 @@ public class SongEntry : MonoBehaviour
     [SerializeField]
     private AudioClip m_audio;
 
-    private int INDEX_ID = -1;
+    private uint INDEX_ID = uint.MaxValue;
 
     public void UpdateSongTitle(string value)
     {
         TMP_SongTitle.text = value;
     }
 
-    public void AssignIndexID(int value)
+    public void AssignIndexID(uint value)
     {
         INDEX_ID = value;
     }
@@ -43,9 +43,14 @@ public class SongEntry : MonoBehaviour
         ranking.sprite = image;
     }
 
+    /// <summary>
+    /// Preview song selected by the player
+    /// </summary>
     public void PreviewEntry()
     {
         SongList songList = SongList.Instance;
+
+        songList.GetSongNavigator().SetSongEntityPosition((uint)INDEX_ID);
 
         songList.GetTMP().text = string.Format("Now playing: {0}",TMP_SongTitle.text);
         songList.GetSecondaryTMP().text = songList.GetTMP().text;

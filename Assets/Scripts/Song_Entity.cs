@@ -1,10 +1,8 @@
-﻿using System.IO;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 [System.Serializable]
-public class Song_Entity
+public sealed class Song_Entity
 {
     #region Outline/Plan
     //Song_Entity class will take up the following values:
@@ -66,7 +64,7 @@ public class Song_Entity
      */
     #endregion
     [System.Serializable]
-    public class Song_Entity_Difficulty
+    public sealed class Song_Entity_Difficulty
     {
         //Song Difficulty will have a lot of information in it, so yeah.
         public enum FC_STATUS
@@ -97,6 +95,7 @@ public class Song_Entity
     public float InitialDifficultyRating ;
     public AudioClip AudioFile ;
     public Sprite BackgroundImage ;
+    public uint ScoutEntryValue;
     public List<Song_Entity_Difficulty> Difficulties = new List<Song_Entity_Difficulty>();
 
     public void AddNewDifficulty(Song_Entity_Difficulty _difficulty)

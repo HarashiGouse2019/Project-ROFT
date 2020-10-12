@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System;
 
 public class SongList : MonoBehaviour
 {
@@ -27,6 +28,9 @@ public class SongList : MonoBehaviour
     private PreviewSong songPreviewer;
 
     [SerializeField]
+    private SongSelectionNavigator songNavigator;
+
+    [SerializeField]
     private TextMeshProUGUI TMP_SongTitle, TMP_SongTitleSecondary;
 
     [SerializeField]
@@ -42,6 +46,8 @@ public class SongList : MonoBehaviour
     {
         Instance = this;
     }
+
+    
 
     // Start is called before the first frame update
     void Start()
@@ -114,13 +120,14 @@ public class SongList : MonoBehaviour
                     //We will not reposition it. ObjectPooler from SongContent should put the entries for us.
                     //Assigning important values.
                     currentEntity = orderedSongs[index];
+
                     songEntry.UpdateSongTitle(string.Format("{0} - {1}", currentEntity.SongArtistUnicode, currentEntity.SongTitleUnicode));
                     songEntry.UpdateSongCover(currentEntity.BackgroundImage);
                     songEntry.UpdateSongClip(currentEntity.AudioFile);
                     songEntry.UpdateRanking(null);
 
                     //Assign Index ID
-                    songEntry.AssignIndexID(index);
+                    songEntry.AssignIndexID(orderedSongs[index].ScoutEntryValue);
                 }
             }
             catch (IOException e)
@@ -168,4 +175,6 @@ public class SongList : MonoBehaviour
     public Image GetSongCover() => songCover;
     public Image GetSongBackDrop() => songBackDrop;
     public PreviewSong GetSongPreviewer() => songPreviewer;
+
+    public SongSelectionNavigator GetSongNavigator() => songNavigator;
 }

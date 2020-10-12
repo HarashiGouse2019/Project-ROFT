@@ -3,10 +3,8 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 
-public class AudioManager : MonoBehaviour
+public class AudioManager : Singleton<AudioManager>, IVolumeControl
 {
-    private static AudioManager Instance;
-
     [System.Serializable]
     public class Audio
     {
@@ -27,21 +25,12 @@ public class AudioManager : MonoBehaviour
 
     public AudioMixerGroup audioMixer;
 
-    public Slider musicVolumeAdjust, soundVolumeAdjust; //Reference to our volume sliders
+    public Slider soundVolumeAdjust; //Reference to our volume sliders
 
     public Audio[] getAudio;
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        } else
-        {
-            Destroy(gameObject);
-        }
-
         foreach (Audio a in getAudio)
         {
             a.source = gameObject.AddComponent<AudioSource>();
@@ -115,5 +104,13 @@ public class AudioManager : MonoBehaviour
             a.source.volume = _volume / 100;
             return a.source.clip;
         }
+    }
+
+    /// <summary>
+    /// On Volume Change
+    /// </summary>
+    public void OnVolumeChange()
+    {
+        audioMixer.audioMixer.SetFloat("SFXVolume", soundVolumeAdjust.value);
     }
 }

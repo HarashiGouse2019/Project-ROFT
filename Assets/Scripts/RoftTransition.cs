@@ -48,6 +48,7 @@ public class RoftTransition : MonoBehaviour
                 break;
 
             case Transitions.SONGROOM_TO_LOBBY:
+                PanelEvents.Instance.isLobbyTarget = true;
                 PanelEvents.Instance.PanelAnimator.SetBool("isLobbyTarget", PanelEvents.Instance.isLobbyTarget);
                 break;
 

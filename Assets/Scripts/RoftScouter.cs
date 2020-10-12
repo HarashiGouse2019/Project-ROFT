@@ -82,7 +82,6 @@ public class RoftScouter
                 /*We then assign information to our MusicManager will all the
                 songs that's be found and converted.*/
                 MusicManager.Songs = SongsFound;
-                MusicManager.DisplaySongs(SongsFound);
 
                 ScoutingComplete = true;
 
@@ -145,8 +144,9 @@ public class RoftScouter
         regularily create new SongEntities as needed.*/
         long currentGROUPID = 0;
 
-        foreach (FileInfo fileNum in files)
+        for (int index = 0; index < files.Count; index++)
         {
+            FileInfo fileNum = files[index];
             int generalTag = InRFTMJumpTo("General", fileNum.FullName);
             int metadataTag = InRFTMJumpTo("Metadata", fileNum.FullName);
             int difficultyTag = InRFTMJumpTo("Difficulty", fileNum.FullName);
@@ -192,6 +192,7 @@ public class RoftScouter
                 newEntity.SongArtist = songArtist;
                 newEntity.SongArtistUnicode = songArtistUnicode;
                 newEntity.GROUPID = GROUPID;
+                newEntity.ScoutEntryValue = (uint)index;
 
                 /*We'll attempt to "Request" for the audio file defined in the .rftm file.
                 The only way to do that is through the UnityEngine.Networking namespace
