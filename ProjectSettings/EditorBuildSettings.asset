@@ -12,11 +12,11 @@ EditorBuildSettings:
     path: Assets/Scenes/TitleScreen.unity
     guid: ead9b76f258d82b4cabcb3313c818ae6
   - enabled: 1
-    path: Assets/Scenes/SongSelectionMenu.unity
-    guid: f6da84f1092952842a30fa894883b759
-  - enabled: 1
     path: Assets/Scenes/Lobby.unity
     guid: 889b56ca8829cb74587d787e899ab821
+  - enabled: 1
+    path: Assets/Scenes/SongSelectionMenu.unity
+    guid: f6da84f1092952842a30fa894883b759
   - enabled: 1
     path: Assets/Scenes/Gameplay.unity
     guid: 1f0dffbc05b189e4e9f936b17bbf8444
