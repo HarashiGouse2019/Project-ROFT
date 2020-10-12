@@ -91,8 +91,8 @@ public class Song_Entity
 
 
     }
-    public string SongTitle ;
-    public string SongArtist ;
+    public string SongTitle, SongTitleUnicode;
+    public string SongArtist, SongArtistUnicode;
     public long GROUPID ;
     public float InitialDifficultyRating ;
     public AudioClip AudioFile ;

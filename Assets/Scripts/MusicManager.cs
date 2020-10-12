@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.Audio;
+using System.Linq;
 
 public class MusicManager : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class MusicManager : MonoBehaviour
      * it'll be a class that holds not only the song (in which it'll go through and play),
      * but give us all kinds of different information.
      */
+
+
 
     private static MusicManager Instance;
 
@@ -31,6 +34,7 @@ public class MusicManager : MonoBehaviour
     public float timeSamples;
 
     public float[] positionSeconds;
+    private static object s;
 
     public void Awake()
     {
@@ -51,7 +55,6 @@ public class MusicManager : MonoBehaviour
     }
 
     public static List<Song_Entity> GetSongEntity() => Songs;
-
     public static MusicManager GetInstance() => Instance;
 
     public static void DisplaySongs(List<Song_Entity> _songs)

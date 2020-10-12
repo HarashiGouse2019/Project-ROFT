@@ -160,7 +160,9 @@ public class RoftScouter
 
             //In the [Metadata] tag, we will retrieve the following...
             string songTitle = ReadPropertyFrom<string>(metadataTag, "Title", fileNum.FullName);
+            string songTitleUnicode = ReadPropertyFrom<string>(metadataTag, "TitleUnicode", fileNum.FullName);
             string songArtist = ReadPropertyFrom<string>(metadataTag, "Artist", fileNum.FullName);
+            string songArtistUnicode = ReadPropertyFrom<string>(metadataTag, "ArtistUnicode", fileNum.FullName);
             int ROFTID = ReadPropertyFrom<int>(metadataTag, "ROFTID", fileNum.FullName);
             long GROUPID = ReadPropertyFrom<long>(metadataTag, "GROUPID", fileNum.FullName);
 
@@ -186,7 +188,9 @@ public class RoftScouter
                 and the song artist.*/
                 currentGROUPID = GROUPID;
                 newEntity.SongTitle = songTitle;
+                newEntity.SongTitleUnicode = songTitleUnicode;
                 newEntity.SongArtist = songArtist;
+                newEntity.SongArtistUnicode = songArtistUnicode;
                 newEntity.GROUPID = GROUPID;
 
                 /*We'll attempt to "Request" for the audio file defined in the .rftm file.

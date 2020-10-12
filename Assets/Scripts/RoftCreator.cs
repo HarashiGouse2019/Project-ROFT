@@ -7,6 +7,10 @@ using UnityEngine.UI;
 using UnityEngine.Video;
 
 using ROFTIOMANAGEMENT;
+using Extensions;
+
+
+using FileEx = Extensions.File;
 
 public class RoftCreator : MonoBehaviour
 {
@@ -84,18 +88,22 @@ public class RoftCreator : MonoBehaviour
         if (!IDHIST.HistoryExists())
             IDHIST.NewHistory();
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         if (RoftPlayer.Instance.record)
         {
             CheckForGROUPID();
 
             //audioExtension will be very important to take a song in a song folder, and converting it to a UnityAsset in which
             //we can assign to the RoftPlayer.cs
-            string audioExt =  Path.GetExtension(AssetDatabase.GetAssetPath(audioFile));
-            string backgroundImgExt = Path.GetExtension(AssetDatabase.GetAssetPath(backgroundImage));
+            string audioExt, backgroundImgExt;
+
+            audioExt = audioFile != null ? Path.GetExtension(AssetDatabase.GetAssetPath(audioFile)) : string.Empty;
+            backgroundImgExt = backgroundImage != null ? Path.GetExtension(AssetDatabase.GetAssetPath(backgroundImage)) : string.Empty;
 
             audioFilePath = audioFile.name + audioExt;
-            backgroundFilePath = backgroundImage.name + backgroundImgExt;
+
+            if (backgroundImage != null)
+                backgroundFilePath = backgroundImage.name + backgroundImgExt;
 
             //Filename will include the ID, Artis, SongName, and what Difficulty
             filename = songID + songArtist + " - " + songTitle + " (" + difficultyName + ")";
@@ -106,17 +114,14 @@ public class RoftCreator : MonoBehaviour
             //And create our roft file into it, as well as copy the AudioClip, Image, and Video that we used into this folder
             RoftIO.CreateNewRFTM(filename, newSongDirectoryPath + "/");
 
-            try
-            {
-                File.Copy(AssetDatabase.GetAssetPath(audioFile), newSongDirectoryPath + "/" + audioFile.name + audioExt);
-                File.Copy(AssetDatabase.GetAssetPath(backgroundImage), newSongDirectoryPath + "/" + backgroundImage.name + backgroundImgExt);
-            }
-            catch {/*This just means they already exists...*/};
+            FileEx.TryCopy(AssetDatabase.GetAssetPath(audioFile), newSongDirectoryPath + "/" + audioFile.name + audioExt);
+
+            if (backgroundImage != null)
+                FileEx.TryCopy(AssetDatabase.GetAssetPath(backgroundImage), newSongDirectoryPath + "/" + backgroundImage.name + backgroundImgExt);
 
             RoftPlayer.Instance.LoadMusic();
         }
 #endif 
-        
     }
 
     /// <summary>
@@ -176,7 +181,7 @@ public class RoftCreator : MonoBehaviour
     /// Get difficulty name being used.
     /// </summary>
     /// <returns></returns>
-    public static  string GetDifficultyName() => Instance.difficultyName;
+    public static string GetDifficultyName() => Instance.difficultyName;
 
     /// <summary>
     /// Get total keys being used.
@@ -194,7 +199,7 @@ public class RoftCreator : MonoBehaviour
     /// Get the speed of circle enclosing.
     /// </summary>
     /// <returns></returns>
-    public static  float GetApproachSpeed() => Instance.approachSpeed;
+    public static float GetApproachSpeed() => Instance.approachSpeed;
 
     /// <summary>
     /// Get how much stress will build up.

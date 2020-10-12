@@ -199,7 +199,6 @@ public class GameManager : MonoBehaviour
         /*I want to verify the existence of certain files whenever it runs on any computer.
          If the files do not exist, those files will automatic be generated back in.*/
 
-
         //Multicasting core delegate
         //When Invoked, it'll run all of these functions.
         //NEVER USE AN = SIGN WITH MUTLITASKING
@@ -247,7 +246,7 @@ public class GameManager : MonoBehaviour
                 //Invoke core and all methods associated with it
                 core.Invoke();
 
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
     }
 

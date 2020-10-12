@@ -29,6 +29,7 @@ public class RoftFPS : MonoBehaviour
 
     void Awake()
     {
+        DontDestroyOnLoad(this);
         Application.targetFrameRate = (int)targetFrameRate;
     }
 
@@ -44,7 +45,7 @@ public class RoftFPS : MonoBehaviour
         //measure average frames per second
         fpsAccumulator++;
 
-        if(Time.realtimeSinceStartup > fpsNextPeriod)
+        if(fpsText != null && Time.realtimeSinceStartup > fpsNextPeriod)
         {
             currentFPS = (int)(fpsAccumulator / fpsMeasurePeriod);
             fpsAccumulator = 0;
