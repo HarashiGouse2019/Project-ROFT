@@ -130,6 +130,8 @@ public class GameManager : MonoBehaviour
     private long totalScore;
     private long previousScore; //This will be used for a increasing effect
     public int Combo { set; get; }
+    public static Color LogNormalColor { get; internal set; }
+
     private int maxCombo;
     public float overallAccuracy = 100.00f; //The average accuracy during the song
     public float accuracyPercentile; //The data in which gets accuracy in percent;
@@ -557,6 +559,11 @@ public class GameManager : MonoBehaviour
     public void SetCombo(int _value) => Combo = _value;
 
     public void IncrementCombo() => Combo++;
+
+    public static void UpdateLogColor(Color newColor)
+    {
+        LogNormalColor = newColor;
+    }
 
     public static SongList GetSongList() => Instance.SongList;
 

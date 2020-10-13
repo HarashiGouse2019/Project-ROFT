@@ -34,7 +34,7 @@ public class SongList : MonoBehaviour
     private TextMeshProUGUI TMP_SongTitle, TMP_SongTitleSecondary;
 
     [SerializeField]
-    private Image songCover, songBackDrop;
+    private Image[] songCovers;
 
     [SerializeField]
     private TMP_Dropdown TMPDD_SortingOrder;
@@ -163,8 +163,11 @@ public class SongList : MonoBehaviour
     {
         for (float i = 0; i < 255; i += 10f)
         {
-            songCover.color = new Color(songCover.color.r, songCover.color.g, songCover.color.b, i / 255f);
-            songBackDrop.color = new Color(songBackDrop.color.r, songBackDrop.color.g, songBackDrop.color.b, i / 255f);
+            //Index 0: Main Cover Display
+            songCovers[0].color = new Color(songCovers[0].color.r, songCovers[0].color.g, songCovers[0].color.b, i / 255f);
+            
+            //Index 1: Background Cover Display
+            songCovers[1].color = new Color(songCovers[1].color.r, songCovers[1].color.g, songCovers[1].color.b, i / 255f);
 
             yield return null;
         }
@@ -172,8 +175,7 @@ public class SongList : MonoBehaviour
 
     public TextMeshProUGUI GetTMP() => TMP_SongTitle;
     public TextMeshProUGUI GetSecondaryTMP() => TMP_SongTitleSecondary;
-    public Image GetSongCover() => songCover;
-    public Image GetSongBackDrop() => songBackDrop;
+    public Image[] GetSongCovers() => songCovers;
     public PreviewSong GetSongPreviewer() => songPreviewer;
 
     public SongSelectionNavigator GetSongNavigator() => songNavigator;

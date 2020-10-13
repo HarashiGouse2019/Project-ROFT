@@ -56,9 +56,10 @@ public class SongEntry : MonoBehaviour
         songList.GetSecondaryTMP().text = songList.GetTMP().text;
 
         songList.FadeInImages();
-        songList.GetSongCover().sprite = songCover;
-        songList.GetSongBackDrop().sprite = songCover;
 
+        foreach (Image img in songList.GetSongCovers())
+            img.sprite = songCover;
+        
         songList.GetSongPreviewer().SetSongToPreview(m_audio);
         songList.GetSongPreviewer().PlaySongPreview();
     }
