@@ -9,7 +9,7 @@ using static ROFTIOMANAGEMENT.RoftIO;
 public class MapReader : Singleton<MapReader>
 {
     [SerializeField]
-    private Canvas GameOverlayCanvas;
+    private Camera GameOverlayCamera;
 
     [SerializeField] private static string m_name;
 
@@ -249,7 +249,7 @@ public class MapReader : Singleton<MapReader>
 
     static void KeyLayoutAwake()
     {
-        Instance.GameOverlayCanvas.gameObject.SetActive(true);
+        Instance.GameOverlayCamera.gameObject.SetActive(true);
 
         if (!Instance.keyLayoutClass.gameObject.activeInHierarchy)
         {

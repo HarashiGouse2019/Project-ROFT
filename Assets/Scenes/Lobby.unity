@@ -754,7 +754,6 @@ GameObject:
   m_Component:
   - component: {fileID: 369369501}
   - component: {fileID: 369369500}
-  - component: {fileID: 369369499}
   - component: {fileID: 369369502}
   m_Layer: 0
   m_Name: Lobby Camera (Main)
@@ -763,14 +762,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &369369499
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 369369498}
-  m_Enabled: 1
 --- !u!20 &369369500
 Camera:
   m_ObjectHideFlags: 0

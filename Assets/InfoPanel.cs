@@ -20,8 +20,11 @@ public class InfoPanel : MonoBehaviour
         while (true)
         {
             animator.SetBool("isVisible", IsVisible);
-            if (SceneManager.GetActiveScene().name != SceneManager.GetSceneByBuildIndex(0).name)
+            if (SceneManager.GetActiveScene().name != SceneManager.GetSceneByBuildIndex(0).name && 
+                SceneManager.GetActiveScene().name != SceneManager.GetSceneByBuildIndex(3).name)
                 IsVisible = true;
+            else
+                IsVisible = false;
             yield return null;
         }
     }
