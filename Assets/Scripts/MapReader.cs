@@ -10,22 +10,22 @@ public class MapReader : MonoBehaviour
 {
     public static MapReader Instance;
 
-    [SerializeField] private string m_name;
+    [SerializeField] private static string m_name;
 
-    [SerializeField] private float difficultyRating;
+    [SerializeField] private static float difficultyRating;
 
-    [SerializeField] private float totalNotes;
+    [SerializeField] private static float totalNotes;
 
-    [SerializeField] private float totalKeys;
+    [SerializeField] private static float totalKeys;
 
-    [SerializeField] private long maxScore;
+    [SerializeField] private static  long maxScore;
 
-    public int keyLayoutEnum;
+    public static int keyLayoutEnum;
 
-    public List<NoteObj> noteObjs = new List<NoteObj>();
+    public static List<NoteObj> noteObjs = new List<NoteObj>();
 
     [Cakewalk.IoC.Dependency]
-    public Key_Layout keyLayoutClass;
+    public static Key_Layout keyLayoutClass;
 
     //All Object Readers
     [Header("Object Readers")]
@@ -48,7 +48,7 @@ public class MapReader : MonoBehaviour
             return keysReaded;
         }
     }
-    private readonly object keyReadingLock = new object();
+    private static readonly object keyReadingLock = new object();
 
     private void Awake()
     {
@@ -67,10 +67,8 @@ public class MapReader : MonoBehaviour
 
     }
 
-    public void Read()
+    public static void Read(int songEntityID, int difficultyValue)
     {
-
-
         /*After scouting, if songs has been found, go ahead and access
          this song and it's specified difficulty.*/
         if (!RoftPlayer.Instance.record)
@@ -78,8 +76,8 @@ public class MapReader : MonoBehaviour
             if (!GameManager.SongsNotFound)
             {
                 //Start scouting for songs one MapReader is initialized
-                SongEntityBeingRead = MusicManager.GetSongEntity()[0];
-                AssignRFTMNameToRead(SongEntityBeingRead, _difficultValue: 0);
+                SongEntityBeingRead = MusicManager.GetSongEntity()[songEntityID];
+                AssignRFTMNameToRead(SongEntityBeingRead, difficultyValue);
             }
             else
             {
@@ -95,10 +93,9 @@ public class MapReader : MonoBehaviour
             CalculateDifficultyRating();
             return;
         }
-
     }
 
-    void Initialize()
+    static void Initialize()
     {
         if (keyLayoutClass != null)
             KeyLayoutAwake();
@@ -130,7 +127,7 @@ public class MapReader : MonoBehaviour
         }
     }
 
-    void ReadRFTMKeys(string _name)
+    static void ReadRFTMKeys(string _name)
     {
         lock (keyReadingLock)
         {
@@ -205,15 +202,15 @@ public class MapReader : MonoBehaviour
                             switch (newNoteObj.GetType())
                             {
                                 case NoteObj.NoteObjType.Tap:
-                                    DistributeTypeTo(tapObjectReader, newNoteObj);
+                                    DistributeTypeTo(Instance.tapObjectReader, newNoteObj);
                                     break;
 
                                 case NoteObj.NoteObjType.Hold:
-                                    DistributeTypeTo(holdObjectReader, newNoteObj);
+                                    DistributeTypeTo(Instance.holdObjectReader, newNoteObj);
                                     break;
 
                                 case NoteObj.NoteObjType.Burst:
-                                    DistributeTypeTo(burstObjectReader, newNoteObj);
+                                    DistributeTypeTo(Instance.burstObjectReader, newNoteObj);
                                     break;
 
                                 default:
@@ -232,7 +229,7 @@ public class MapReader : MonoBehaviour
         #endregion
     }
 
-    void CalculateDifficultyRating()
+    static void CalculateDifficultyRating()
     {
 
         
@@ -257,7 +254,7 @@ public class MapReader : MonoBehaviour
         }
     }
 
-    long CalculateMaxScore()
+    static long CalculateMaxScore()
     {
         long ini_Score = 0;
         for (long ini_Combo = 1; ini_Combo < totalNotes + 1; ini_Combo++)
@@ -267,7 +264,7 @@ public class MapReader : MonoBehaviour
         return ini_Score;
     }
 
-    void KeyLayoutAwake()
+    static void KeyLayoutAwake()
     {
 
         if (!keyLayoutClass.gameObject.activeInHierarchy)
@@ -279,9 +276,6 @@ public class MapReader : MonoBehaviour
         {
             int difficultyTag = InRFTMJumpTo("Difficulty", m_name);
             string keyLayout = ReadPropertyFrom<string>(difficultyTag, "KeyLayout", m_name);
-
-
-
             keyLayoutClass.KeyLayout = (Key_Layout.KeyLayoutType)Enum.Parse(typeof(Key_Layout.KeyLayoutType), keyLayout);
             #region KeyCount through Enum
             switch (keyLayoutClass.KeyLayout)
@@ -318,19 +312,19 @@ public class MapReader : MonoBehaviour
 
 
         if (Key_Layout.Instance != null &&
-GameManager.Instance.GetGameMode == GameManager.GameMode.TECHMEISTER ||
-GameManager.Instance.GetGameMode == GameManager.GameMode.STANDARD)
+            GameManager.Instance.GetGameMode == GameManager.GameMode.TECHMEISTER ||
+            GameManager.Instance.GetGameMode == GameManager.GameMode.STANDARD)
             keyLayoutClass.SetUpLayout();
 
     }
 
-    void DistributeTypeTo(ObjectTypes _objectReader, NoteObj _key)
+    static void DistributeTypeTo(ObjectTypes _objectReader, NoteObj _key)
     {
         if (_objectReader != null)
             _objectReader.objects.Add(_key);
     }
 
-    public void AssignRFTMNameToRead(Song_Entity _song, int _difficultValue)
+    public static void AssignRFTMNameToRead(Song_Entity _song, int _difficultValue)
     {
         /*We want to be able to get retrieve a song entity, and wiht access to the song
          entity, we are able to read the .rftm (which are the difficulties) of the song.

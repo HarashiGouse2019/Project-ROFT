@@ -150,11 +150,11 @@ public class CloseInEffect : NoteEffector
         CheckIfOutOfWindow();
 
         bool tapType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
-            mapReader.noteObjs[keyNum].GetType() == NoteObj.NoteObjType.Tap &&
+            MapReader.noteObjs[keyNum].GetType() == NoteObj.NoteObjType.Tap &&
             DetectArrowKeyInput(0));
 
         bool BurstType = (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract &&
-            mapReader.noteObjs[keyNum].GetType() == NoteObj.NoteObjType.Burst &&
+            MapReader.noteObjs[keyNum].GetType() == NoteObj.NoteObjType.Burst &&
             attachedArrow != null &&
             DetectArrowKeyInput(1) &&
             GameManager.multiInputValue == 2);

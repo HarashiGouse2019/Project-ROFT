@@ -27,8 +27,8 @@ public class DifficultySelection : MonoBehaviour
     [SerializeField]
     private Color hardModeColor;
 
-    [SerializeField, Header("Insane Mode Description"), TextArea]
-    private string insaneModeDescription;
+    [SerializeField, Header("Expert Mode Description"), TextArea]
+    private string expertModeDescription;
     [SerializeField]
     private Color insaneModeColor;
 
@@ -39,7 +39,7 @@ public class DifficultySelection : MonoBehaviour
         "Easy",
         "Normal",
         "Hard",
-        "Intense"
+        "Expert"
     };
 
     void OnEnable()
@@ -57,7 +57,7 @@ public class DifficultySelection : MonoBehaviour
             easyModeDescription,
             normalModeDescription,
             hardModeDescription,
-            insaneModeDescription
+            expertModeDescription
         };
 
         colors = new Color[]

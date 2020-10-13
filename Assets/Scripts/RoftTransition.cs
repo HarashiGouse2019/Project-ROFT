@@ -53,6 +53,7 @@ public class RoftTransition : MonoBehaviour
                 break;
 
             case Transitions.SONGROOM_TO_GAMEROOM:
+                PanelEvents.Instance.isGameRoomTarget = true;
                 PanelEvents.Instance.PanelAnimator.SetBool("isGameRoomTarget", PanelEvents.Instance.isGameRoomTarget);
                 break;
 

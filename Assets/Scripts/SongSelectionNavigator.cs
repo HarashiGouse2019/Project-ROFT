@@ -1,29 +1,23 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SongSelectionNavigator : MonoBehaviour
 {
-    public enum NavigationState { 
-        SONG_SELECTION,
-        DIFFICULTY_SELECTION,
-        CONFIRMATION
-    }
-
     [SerializeField] private uint SongEntityPosition;
 
     [SerializeField] private uint DifficultyPosition;
 
-    [SerializeField] private NavigationState currentNavigationState;
+    public void Begin()
+    {
+        MapReader.Read((int)SongEntityPosition, (int)DifficultyPosition);
+    }
 
     public void SetSongEntityPosition(uint value)
     {
         SongEntityPosition = value;
     }
 
-    public void SetDifficultyPosition(uint value)
+    public void SetDifficultyPosition(int value)
     {
-        DifficultyPosition = SongEntityPosition;
+        DifficultyPosition = (uint)value;
     }
 }

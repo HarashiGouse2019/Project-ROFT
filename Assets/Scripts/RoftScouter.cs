@@ -84,9 +84,6 @@ public class RoftScouter
                 MusicManager.Songs = SongsFound;
 
                 ScoutingComplete = true;
-
-
-                MapReader.Instance.Read();
             }
             catch
             {

@@ -1417,6 +1417,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 802534012}
+        m_MethodName: SetDifficultyPosition
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &294297075
 GameObject:
   m_ObjectHideFlags: 0
@@ -1961,7 +1972,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 427704941}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 802534012}
+        m_MethodName: Begin
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &427704941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2137,8 +2159,8 @@ MonoBehaviour:
   hardModeDescription: Select this difficulty if you want to get a little bit technical.
     Still comfortable to play in, but it still gives you a challenge nonetheless.
   hardModeColor: {r: 0.76470596, g: 0.3137255, b: 0.31764707, a: 1}
-  insaneModeDescription: You're practically a specialist when it comes to this game,
-    and you can hold your own when the songs complication spikes.
+  expertModeDescription: "You're practically a specialist when it comes to this game,\r
+    and you can hold your own when the songs complication spikes."
   insaneModeColor: {r: 0.7372549, g: 0.28627452, b: 0.5176471, a: 1}
 --- !u!1 &441031467
 GameObject:
@@ -3632,7 +3654,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SongEntityPosition: 0
   DifficultyPosition: 0
-  currentNavigationState: 0
 --- !u!224 &802534013
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8920,6 +8941,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 802534012}
+        m_MethodName: SetDifficultyPosition
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1954284483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9352,6 +9384,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 802534012}
+        m_MethodName: SetDifficultyPosition
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2087652489
 GameObject:
   m_ObjectHideFlags: 0
@@ -9486,6 +9529,17 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 440761672}
         m_MethodName: UpdateDescriptionInfo
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 802534012}
+        m_MethodName: SetDifficultyPosition
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
