@@ -53,7 +53,7 @@ public class RankSystem : MonoBehaviour
             DontDestroyOnLoad(Instance);
         }
         else
-            Destroy(gameObject); 
+            Destroy(gameObject);
         #endregion
     }
 
@@ -84,7 +84,9 @@ public class RankSystem : MonoBehaviour
             {
                 //This will give use string value of our Grade enumerator
                 Instance.gradeRank = (Grade)gradeIndex;
-                Instance.letterRankImg.sprite = Instance.letterSprites[gradeIndex];
+
+                if (Instance.letterRankImg != null)
+                    Instance.letterRankImg.sprite = Instance.letterSprites[gradeIndex];
                 return;
             }
         }

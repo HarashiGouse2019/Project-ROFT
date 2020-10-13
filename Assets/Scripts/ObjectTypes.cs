@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 [System.Serializable]
-public abstract class ObjectTypes : MonoBehaviour, IReadType
+public abstract class ObjectTypes : MonoBehaviour
 {
-    public List<NoteObj> objects { get; set; } = new List<NoteObj>();
+    [SerializeField]
+    public List<NoteObj> objects  = new List<NoteObj>();
 
     [SerializeField]
     public long sequencePos { get; set; } = 0;

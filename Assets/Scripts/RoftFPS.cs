@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
 
-public class RoftFPS : MonoBehaviour
+public class RoftFPS : Singleton<RoftFPS>
 {
     //FrameRate Options
     public enum FrameRate
@@ -29,7 +29,6 @@ public class RoftFPS : MonoBehaviour
 
     void Awake()
     {
-        DontDestroyOnLoad(this);
         Application.targetFrameRate = (int)targetFrameRate;
     }
 

@@ -120,7 +120,7 @@ MonoBehaviour:
   keyNumPosition: 0
   keyNum: 0
   attachedArrow: {fileID: 0}
-  sprite: {fileID: 0}
+  image: {fileID: 0}
   innerSprite: {fileID: 0}
   index: 0
   accuracyString: 

@@ -89,7 +89,7 @@ public class RoftCreator : MonoBehaviour
             IDHIST.NewHistory();
 
 #if UNITY_EDITOR
-        if (RoftPlayer.Instance.record)
+        if (RoftPlayer.Record)
         {
             CheckForGROUPID();
 
@@ -119,7 +119,7 @@ public class RoftCreator : MonoBehaviour
             if (backgroundImage != null)
                 FileEx.TryCopy(AssetDatabase.GetAssetPath(backgroundImage), newSongDirectoryPath + "/" + backgroundImage.name + backgroundImgExt);
 
-            RoftPlayer.Instance.LoadMusic();
+            RoftPlayer.LoadMusic();
         }
 #endif 
     }

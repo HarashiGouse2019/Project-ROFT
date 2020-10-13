@@ -1,6 +1,5 @@
-﻿using System;
-using System.Threading;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class CloseInEffect : NoteEffector
 {
@@ -13,7 +12,7 @@ public class CloseInEffect : NoteEffector
 
     public GameObject attachedArrow;
 
-    public SpriteRenderer sprite;
+    public Image image;
     public SpriteRenderer innerSprite;
 
     public int index;
@@ -50,8 +49,7 @@ public class CloseInEffect : NoteEffector
 
     private void Awake()
     {
-        mapReader = MapReader.Instance;
-        sprite = GetComponent<SpriteRenderer>();
+        image = GetComponent<Image>();
 
         modifier = GetComponent<CircleTypeModifier>();
     }
@@ -67,7 +65,7 @@ public class CloseInEffect : NoteEffector
     // Update is called once per frame
     void Update()
     {
-        if (!RoftPlayer.Instance.record && GameManager.Instance.IsInteractable())
+        if (!RoftPlayer.Record && GameManager.Instance.IsInteractable())
             StartClosingIn();
 
     }
@@ -94,11 +92,12 @@ public class CloseInEffect : NoteEffector
         transform.localScale = new Vector3(1f / GetPercentage(), 1f / GetPercentage(), 1f);
 
         if (RoftPlayer.musicSource.timeSamples < initiatedNoteSample)
-             sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, Mathf.Sin((GetPercentage() * 2f) - 0.25f));
-        else 
-            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, Mathf.Sin((GetPercentage() * 2f) - 0.5f));
+            image.color = new Color(image.color.r, image.color.g, image.color.b, Mathf.Sin((GetPercentage() * 2f) - 0.25f));
+        else
+            image.color = new Color(image.color.r, image.color.g, image.color.b, Mathf.Sin((GetPercentage() * 2f) - 0.5f));
 
-        innerSprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, GetPercentage() - 0.15f);
+        if (innerSprite != null)
+            innerSprite.color = new Color(image.color.r, image.color.g, image.color.b, GetPercentage() - 0.15f);
 
         if (CheckAutoPlay())
             RunAutoPlay();
@@ -314,8 +313,11 @@ public class CloseInEffect : NoteEffector
     //We want it to be clean and refresh when we respond
     private void OnDisable()
     {
-        sprite.color = originalAppearance;
+        if (image != null)
+            image.color = originalAppearance;
+
         if (innerSprite != null) innerSprite.color = originalAppearance;
+
         percentage = 0;
         index = 0;
         initiatedNoteSample = 0;
@@ -323,6 +325,7 @@ public class CloseInEffect : NoteEffector
         offsetStart = 0;
         accuracyString = "";
         keyNum = 0; //We know what note we're on!!
+
         dispose = false;
     }
 
@@ -354,7 +357,7 @@ public class CloseInEffect : NoteEffector
 
         ObjectPooler pooler;
 
-        if(Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract)
+        if (Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Abstract)
         {
             //Get the key object based on position
             key = Key_Layout.keyObjects[keyNumPosition];
@@ -374,10 +377,10 @@ public class CloseInEffect : NoteEffector
             }
 
             //Get the ripple effect component
-            effect =  effectObj.GetComponent<RippleEffect>();
+            effect = effectObj.GetComponent<RippleEffect>();
 
             //do the ripple affect
-            effect.DoRippleEffect(sprite.color);
+            effect.DoRippleEffect(image.color);
         }
     }
 }

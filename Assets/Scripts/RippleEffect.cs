@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RippleEffect : MonoBehaviour
 {
@@ -27,12 +28,12 @@ public class RippleEffect : MonoBehaviour
     const float DEFAULT_VALUE = 1f;
 
     //Sprite Render
-    SpriteRenderer spriteRenderer;
+    Image spriteRenderer;
 
     void Awake()
     {
         objTransform = transform;
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponent<Image>();
     }
 
     // Start is called before the first frame update

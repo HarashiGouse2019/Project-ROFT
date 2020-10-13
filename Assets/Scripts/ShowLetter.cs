@@ -6,7 +6,7 @@ using TMPro;
 
 public class ShowLetter : MonoBehaviour
 {
-    public TextMeshPro TMP_LETTER;
+    public TextMeshProUGUI TMP_LETTER;
     CloseInEffect closeInEffector;
     KeyCode assignedKeyBind;
 

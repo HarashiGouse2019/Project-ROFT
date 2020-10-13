@@ -242,8 +242,6 @@ public class RoftScouter
             while (!operation.isDone)
                 continue;
 
-            Debug.Log(link);
-
             if (requestAudio.isNetworkError || requestAudio.isHttpError)
             {
                 Debug.Log("Failed to load audio.");
@@ -262,8 +260,6 @@ public class RoftScouter
     static bool RequestingImage(FileInfo _fileInfo, string _name)
     {
         string path =  _fileInfo.Directory + @"\" + _name;
-
-        Debug.Log(path);
 
         Sprite image = ConvertTextureToSprite(LoadTexture(path), 100f, SpriteMeshType.Tight);
 

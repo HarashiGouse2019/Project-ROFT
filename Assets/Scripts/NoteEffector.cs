@@ -88,6 +88,10 @@ public class NoteEffector : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void OnEnable()
+    {
         RetrieveEffectConfigs();
         UpdateAccuracyHarshness();
     }
@@ -98,16 +102,16 @@ public class NoteEffector : MonoBehaviour
         UpdateNoteOffset();
         UpdateAccuracyHarshness();
 
-        if (!RoftPlayer.Instance.record)
+        if (!RoftPlayer.Record && RoftPlayer.musicSource != null)
         {
-            if (ManageObjTypeSequence(mapReader.GetReaderType<TapObjectReader>())) 
-                SpawnNoteObj(mapReader.GetReaderType<TapObjectReader>());
+            if (ManageObjTypeSequence(MapReader.GetReaderType<TapObjectReader>())) 
+                SpawnNoteObj(MapReader.GetReaderType<TapObjectReader>());
 
-            if (ManageObjTypeSequence(mapReader.GetReaderType<HoldObjectReader>())) 
-                SpawnNoteObj(mapReader.GetReaderType<HoldObjectReader>());
+            if (ManageObjTypeSequence(MapReader.GetReaderType<HoldObjectReader>())) 
+                SpawnNoteObj(MapReader.GetReaderType<HoldObjectReader>());
 
-            if (ManageObjTypeSequence(mapReader.GetReaderType<BurstObjectReader>())) 
-                SpawnNoteObj(mapReader.GetReaderType<BurstObjectReader>());
+            if (ManageObjTypeSequence(MapReader.GetReaderType<BurstObjectReader>())) 
+                SpawnNoteObj(MapReader.GetReaderType<BurstObjectReader>());
         }
     }
 
@@ -268,14 +272,14 @@ public class NoteEffector : MonoBehaviour
     /// </summary>
     void RetrieveEffectConfigs()
     {
-        if (RoftPlayer.Instance.record == false)
+        if (RoftPlayer.Record == false)
         {
             //Get Position of Difficulty Tag in File
-            int difficultyTag = RoftIO.InRFTMJumpTo("Difficulty", mapReader.GetName());
+            int difficultyTag = RoftIO.InRFTMJumpTo("Difficulty", MapReader.GetName());
 
             //Use difficultyTag to read its property values
-            accuracy = RoftIO.ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", mapReader.GetName());
-            approachSpeed = RoftIO.ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", mapReader.GetName());
+            accuracy = RoftIO.ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", MapReader.GetName());
+            approachSpeed = RoftIO.ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", MapReader.GetName());
         }
     }
 }

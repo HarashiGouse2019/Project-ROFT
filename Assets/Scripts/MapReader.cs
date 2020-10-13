@@ -6,9 +6,10 @@ using UnityEngine;
 
 using static ROFTIOMANAGEMENT.RoftIO;
 
-public class MapReader : MonoBehaviour
+public class MapReader : Singleton<MapReader>
 {
-    public static MapReader Instance;
+    [SerializeField]
+    private Canvas GameOverlayCanvas;
 
     [SerializeField] private static string m_name;
 
@@ -18,14 +19,14 @@ public class MapReader : MonoBehaviour
 
     [SerializeField] private static float totalKeys;
 
-    [SerializeField] private static  long maxScore;
+    [SerializeField] private static long maxScore;
 
     public static int keyLayoutEnum;
 
     public static List<NoteObj> noteObjs = new List<NoteObj>();
 
     [Cakewalk.IoC.Dependency]
-    public static Key_Layout keyLayoutClass;
+    public Key_Layout keyLayoutClass;
 
     //All Object Readers
     [Header("Object Readers")]
@@ -40,54 +41,32 @@ public class MapReader : MonoBehaviour
     public static int DifficultyIndex { get; set; }
 
     readonly Thread readKeyThread;
-    static bool keysReaded = false;
-    public static bool KeysReaded
-    {
-        get
-        {
-            return keysReaded;
-        }
-    }
+
+    public static bool KeysReaded { get; private set; } = false;
     private static readonly object keyReadingLock = new object();
-
-    private void Awake()
-    {
-        #region Singleton
-        //Our singleton
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(Instance);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-        #endregion
-
-    }
 
     public static void Read(int songEntityID, int difficultyValue)
     {
+
+
         /*After scouting, if songs has been found, go ahead and access
          this song and it's specified difficulty.*/
-        if (!RoftPlayer.Instance.record)
+
+        if (!GameManager.SongsNotFound && !RoftPlayer.Record)
         {
-            if (!GameManager.SongsNotFound)
-            {
-                //Start scouting for songs one MapReader is initialized
-                SongEntityBeingRead = MusicManager.GetSongEntity()[songEntityID];
-                AssignRFTMNameToRead(SongEntityBeingRead, difficultyValue);
-            }
-            else
-            {
-                Debug.Log("No songs had been detected.");
-                Initialize();
-                CalculateDifficultyRating();
-                return;
-            }
+            //Start scouting for songs one MapReader is initialized
+            SongEntityBeingRead = MusicManager.GetSongEntity()[songEntityID];
+            AssignRFTMNameToRead(SongEntityBeingRead, difficultyValue);
+            return;
         }
-        else
+        else if (GameManager.SongsNotFound)
+        {
+            Debug.Log("No songs had been detected.");
+            Initialize();
+            CalculateDifficultyRating();
+            return;
+        }
+        else if (RoftPlayer.Record)
         {
             Initialize();
             CalculateDifficultyRating();
@@ -97,11 +76,16 @@ public class MapReader : MonoBehaviour
 
     static void Initialize()
     {
-        if (keyLayoutClass != null)
+        if (Instance.keyLayoutClass != null)
             KeyLayoutAwake();
+        else
+        {
+            Debug.LogError("Seems like KeyLayoutClass is null");
+            return;
+        }
 
         //Get other values such as Approach Speed, Stress Build, and Accuracy Harshness
-        if (RoftPlayer.Instance != null && RoftPlayer.Instance.record == false)
+        if (RoftPlayer.Instance != null && RoftPlayer.Record == false)
         {
             //Set the number where to find the difficulty tag
             int difficultyTag = InRFTMJumpTo("Difficulty", m_name);
@@ -123,7 +107,6 @@ public class MapReader : MonoBehaviour
         else
         {
             Debug.Log("For some reason, this is not being read....");
-
         }
     }
 
@@ -153,7 +136,7 @@ public class MapReader : MonoBehaviour
                         line = rftmReader.ReadLine();
                         if (line == null)
                         {
-                            keysReaded = true;
+                            KeysReaded = true;
                             return;
                         }
 
@@ -232,14 +215,14 @@ public class MapReader : MonoBehaviour
     static void CalculateDifficultyRating()
     {
 
-        
-        if (!RoftPlayer.Instance.record)
+
+        if (!RoftPlayer.Record)
         {
-            RoftPlayer.Instance.LoadMusic();
+            RoftPlayer.LoadMusic();
             int totalNotes = noteObjs.Count;
             float songLengthInSec = RoftPlayer.musicSource.clip.length;
             float notesPerSec = (totalNotes / songLengthInSec);
-            float totalKeys = keyLayoutClass.primaryBindedKeys.Count;
+            float totalKeys = Instance.keyLayoutClass.primaryBindedKeys.Count;
             float approachSpeedInPercent = (float)NoteEffector.Instance.ApproachSpeed / 100;
             float gameModeBoost = 0;
             const int maxKeys = 30;
@@ -266,19 +249,20 @@ public class MapReader : MonoBehaviour
 
     static void KeyLayoutAwake()
     {
+        Instance.GameOverlayCanvas.gameObject.SetActive(true);
 
-        if (!keyLayoutClass.gameObject.activeInHierarchy)
+        if (!Instance.keyLayoutClass.gameObject.activeInHierarchy)
         {
-            keyLayoutClass.gameObject.SetActive(true);
+            Instance.keyLayoutClass.gameObject.SetActive(true);
         }
 
-        if (!RoftPlayer.Instance.record)
+        if (!RoftPlayer.Record)
         {
             int difficultyTag = InRFTMJumpTo("Difficulty", m_name);
             string keyLayout = ReadPropertyFrom<string>(difficultyTag, "KeyLayout", m_name);
-            keyLayoutClass.KeyLayout = (Key_Layout.KeyLayoutType)Enum.Parse(typeof(Key_Layout.KeyLayoutType), keyLayout);
+            Instance.keyLayoutClass.KeyLayout = (Key_Layout.KeyLayoutType)Enum.Parse(typeof(Key_Layout.KeyLayoutType), keyLayout);
             #region KeyCount through Enum
-            switch (keyLayoutClass.KeyLayout)
+            switch (Instance.keyLayoutClass.KeyLayout)
             {
                 case Key_Layout.KeyLayoutType.Layout_1x4:
                     totalKeys = 4;
@@ -314,7 +298,7 @@ public class MapReader : MonoBehaviour
         if (Key_Layout.Instance != null &&
             GameManager.Instance.GetGameMode == GameManager.GameMode.TECHMEISTER ||
             GameManager.Instance.GetGameMode == GameManager.GameMode.STANDARD)
-            keyLayoutClass.SetUpLayout();
+            Instance.keyLayoutClass.SetUpLayout();
 
     }
 
@@ -345,7 +329,6 @@ public class MapReader : MonoBehaviour
 
                 Initialize();
                 CalculateDifficultyRating();
-
                 return;
             }
 
@@ -364,27 +347,28 @@ public class MapReader : MonoBehaviour
     #endregion
 
     #region Get Methods
-    public string GetName() => m_name;
+    public static string GetName() => m_name;
 
-    public float GetDifficultyRating() => difficultyRating;
+    public static float GetDifficultyRating() => difficultyRating;
 
-    public float GetTotalNotes() => totalNotes;
+    public static float GetTotalNotes() => totalNotes;
 
-    public float GetTotalKeys() => totalKeys;
+    public static float GetTotalKeys() => totalKeys;
 
-    public long GetMaxScore() => maxScore;
+    public static long GetMaxScore() => maxScore;
 
-    public ObjectTypes GetReaderType<T>() where T : ObjectTypes
+    public static ObjectTypes GetReaderType<T>() where T : ObjectTypes
     {
-        if (typeof(T) == tapObjectReader.GetType())
-            return tapObjectReader;
+        if (typeof(T) == Instance.tapObjectReader.GetType())
+            return Instance.tapObjectReader;
 
-        if (typeof(T) == holdObjectReader.GetType())
-            return holdObjectReader;
+        if (typeof(T) == Instance.holdObjectReader.GetType())
+            return Instance.holdObjectReader;
 
-        if (typeof(T) == burstObjectReader.GetType())
-            return burstObjectReader;
+        if (typeof(T) == Instance.burstObjectReader.GetType())
+            return Instance.burstObjectReader;
 
+        Debug.LogError("Failed to retrieve object reader...");
         return null;
     }
 

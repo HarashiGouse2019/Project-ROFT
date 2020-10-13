@@ -45,7 +45,7 @@ public class InteractableKey : MonoBehaviour
         #endregion
 
         //Check the type, then note the object data from ObjectLogger
-        if (RoftPlayer.Instance.record)
+        if (RoftPlayer.Record)
         {
             if(ObjectLogger.noteTool == ObjectLogger.NoteTool.TAP)
                 ObjectLogger.LogInNoteObject(ObjectLogger.noteTool, keyNum, (long)RoftPlayer.musicSource.timeSamples, (int)ObjectLogger.noteTool);

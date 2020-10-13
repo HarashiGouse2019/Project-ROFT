@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 using TMPro;
 using Cakewalk.IoC;
-using UnityEngine.AI;
-using ROFTIO = ROFTIOMANAGEMENT.RoftIO;
 
 //This is going to be an abstract class. This will be the base class of all other layouts in the game
 public class Key_Layout : MonoBehaviour
@@ -17,8 +14,6 @@ public class Key_Layout : MonoBehaviour
     //KeyLayout will be given an enumerator
 
     public bool recordKeyInput;
-
-    readonly NavMeshAgent test;
 
     #region Public Members
     public enum KeyLayoutType
@@ -207,7 +202,7 @@ public class Key_Layout : MonoBehaviour
 
         //We do a double for loop! Columns and Rows (At least for the 8x8, 12x12, and 3Row
 
-        if (RoftPlayer.Instance.record)
+        if (RoftPlayer.Record)
             KeyLayout = RoftCreator.GetKeyLayout();
 
         //float xOffset = setXOffset[(int)keyLayout];
@@ -269,25 +264,14 @@ public class Key_Layout : MonoBehaviour
         {
             for (int col = 0; col < numCols; col++)
             {
-                newKey = pooler.GetMember("keys");
+                newKey = pooler.GetMember("keysEnhanced");
 
                 ShowLetter letter = newKey.GetComponent<ShowLetter>();
 
                 if (!newKey.activeInHierarchy)
                 {
                     newKey.SetActive(true);
-
-                    newKey.transform.position = transform.position;
-                    newKey.transform.rotation = Quaternion.identity;
                 }
-
-                newXPosition = (newKey.transform.localPosition.x + (numCols + (keyConfig.GetHorizontalSpread[(int)KeyLayout] * col)));
-                newYPosition = (newKey.transform.localPosition.y - (numRows + (keyConfig.GetVerticalSpread[(int)KeyLayout] * row)));
-
-                keyPosition = new Vector2(newXPosition, newYPosition);
-                newKey.transform.localPosition = keyPosition;
-
-                newKey.transform.localScale = new Vector3(keyConfig.GetDefaultKeyScale[(int)KeyLayout], keyConfig.GetDefaultKeyScale[(int)KeyLayout]);
 
                 keyObjects.Add(newKey);
 
@@ -298,10 +282,6 @@ public class Key_Layout : MonoBehaviour
         //And then autobind keys
         for (int keyNum = 0; keyNum < keyObjects.Count; keyNum++)
         {
-            Vector3 shiftPosition = keyObjects[keyNum].transform.localPosition;
-            Vector2 offset = new Vector2(shiftPosition.x + xOffset, shiftPosition.y + yOffset);
-            keyObjects[keyNum].transform.localPosition = offset;
-
             //Check if these notes are interactable
             if (recordKeyInput)
             {

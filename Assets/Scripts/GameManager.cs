@@ -9,6 +9,7 @@ using TMPro;
 using Cakewalk.IoC;
 
 using ROFTIO = ROFTIOMANAGEMENT.RoftIO;
+using System.Linq.Expressions;
 
 public class GameManager : MonoBehaviour
 {
@@ -215,28 +216,17 @@ public class GameManager : MonoBehaviour
         #endregion
     }
 
-    private void Start()
+    private void OnEnable()
     {
         if (IMG_STRESS != null) IMG_STRESS.fillAmount = 0f;
 
-        //Reference our roftPlayer
-        /*I may be right or wrong, but this may be a flyweight pattern...
-         * I think...
-         * No... This is not... but it'll make things easy
-         */
-        roftPlayer = RoftPlayer.Instance;
-        mapReader = MapReader.Instance;
-
-        if (RoftPlayer.Instance != null && RoftPlayer.Instance.record == false)
-        {
-            StartCoroutine(RUN_GAME_MANAGEMENT());
-            StartCoroutine(StressBuildRoutine());
-        }
+        StartCoroutine(RUN_GAME_MANAGEMENT());
+        StartCoroutine(StressBuildRoutine());
     }
 
     private void Update()
     {
-        
+
     }
 
     //GAME_MANAGEMENT Update
@@ -245,8 +235,10 @@ public class GameManager : MonoBehaviour
         while (true)
         {
             if (inSong && MapReader.KeysReaded)
+            {
                 //Invoke core and all methods associated with it
                 core.Invoke();
+            }
 
             yield return null;
         }
@@ -277,34 +269,34 @@ public class GameManager : MonoBehaviour
         TM_SCORE.text = previousScore.ToString("D10");
         TM_COMBO.text = "x" + Combo.ToString();
         TM_COMBO_UNDERLAY.text = "x" + Combo.ToString();
-        TM_DIFFICULTY.text = "DIFFICULTY: " + mapReader.GetDifficultyRating().ToString("F2", CultureInfo.InvariantCulture);
-        TM_MAXSCORE.text = "MAX SCORE:     " + mapReader.GetMaxScore().ToString();
+        TM_DIFFICULTY.text = "DIFFICULTY: " + MapReader.GetDifficultyRating().ToString("F2", CultureInfo.InvariantCulture);
+        TM_MAXSCORE.text = "MAX SCORE:     " + MapReader.GetMaxScore().ToString();
 
         //This will be temporary
         #region DEBUG_STATS_UI
         TM_PERFECT.text = "PERFECT:   " +
             accuracyStats[0].ToString() +
-            " (" + Mathf.Floor((accuracyStats[0] / MapReader.Instance.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[0] / MapReader.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_GREAT.text = "GREAT:       " +
             accuracyStats[1].ToString() +
-            " (" + Mathf.Floor((accuracyStats[1] / MapReader.Instance.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[1] / MapReader.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_GOOD.text = "GOOD:         " +
             accuracyStats[2].ToString() +
-            " (" + Mathf.Floor((accuracyStats[2] / MapReader.Instance.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[2] / MapReader.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_OK.text = "OK:            " +
             accuracyStats[3].ToString() +
-            " (" + Mathf.Floor((accuracyStats[3] / MapReader.Instance.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[3] / MapReader.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_MISS.text = "MISSES:       " +
             accuracyStats[4].ToString() +
-            " (" + Mathf.Floor((accuracyStats[4] / MapReader.Instance.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[4] / MapReader.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_MAXCOMBO.text = "MAX COMBO:     "
             + maxCombo.ToString() +
-            " (" + Mathf.Floor((maxCombo / MapReader.Instance.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((maxCombo / MapReader.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_ACCURACYPERCENTILE.text = "ACCURACY: "
            + overallAccuracy.ToString("F2", CultureInfo.InvariantCulture) + "%";
@@ -313,15 +305,22 @@ public class GameManager : MonoBehaviour
         //Be able to enable and disable Pause_Overlay
         if (isCountingDown == false)
             PAUSE_OVERLAY.SetActive(isGamePaused);
-
-        
     }
 
     IEnumerator StressBuildRoutine()
     {
         while (true)
         {
-            if (RoftPlayer.musicSource.isPlaying && SongProgression.isPassedFirstNote && !SongProgression.isFinished) ManageStressMeter();
+            try
+            {
+                if (!RoftPlayer.IsNull() &&
+                    RoftPlayer.musicSource.isPlaying &&
+                    SongProgression.isPassedFirstNote &&
+                    !SongProgression.isFinished)
+                    ManageStressMeter();
+            }
+            catch { }
+
             yield return new WaitForSeconds(1f / 60f);
         }
     }
@@ -375,9 +374,9 @@ public class GameManager : MonoBehaviour
 
     public void RestartSong()
     {
-        mapReader.GetReaderType<TapObjectReader>().SequencePositionReset();
-        mapReader.GetReaderType<HoldObjectReader>().SequencePositionReset();
-        mapReader.GetReaderType<BurstObjectReader>().SequencePositionReset();
+        MapReader.GetReaderType<TapObjectReader>().SequencePositionReset();
+        MapReader.GetReaderType<HoldObjectReader>().SequencePositionReset();
+        MapReader.GetReaderType<BurstObjectReader>().SequencePositionReset();
 
         for (int stat = 0; stat < accuracyStats.Length; stat++)
             accuracyStats[stat] = reset;
@@ -455,7 +454,8 @@ public class GameManager : MonoBehaviour
                 IMG_INGAMEBACKGROUND.gameObject.SetActive(gameObject.activeSelf);
                 IMG_INGAMEBACKGROUND.sprite = sprite;
             }
-        } catch
+        }
+        catch
         {
             Debug.Log("Can't set an image if it doesn't exist");
         }

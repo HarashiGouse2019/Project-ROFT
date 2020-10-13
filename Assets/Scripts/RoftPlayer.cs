@@ -6,16 +6,14 @@ using UnityEngine.UI;
 using UnityEngine.Audio;
 using TMPro;
 
-public class RoftPlayer : MonoBehaviour
+public class RoftPlayer : Singleton<RoftPlayer>
 {
-    public static RoftPlayer Instance;
-
     #region Public Members
     //The EditorTool is going to be used to make creating music so much easier.
     //First, we'll get a reference of a song
     public AudioClip music;
 
-    public bool record;
+    public static bool Record;
 
     public ObjectLogger objectLogger;
 
@@ -56,7 +54,7 @@ public class RoftPlayer : MonoBehaviour
     #region Private Members
     private bool musicIsPlaying = false;
     private float timeInSamples;
-    private float musicLengthInSamples;
+    private static float MusicLengthInSamples;
     private float sampleDivisor = 1;
     private float seconds, minutes;
 
@@ -88,18 +86,6 @@ public class RoftPlayer : MonoBehaviour
 
     private void Awake()
     {
-
-        #region Singleton
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(Instance);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-        #endregion
         loadAndPlay += LoadMusic;
         loadAndPlay += PlayMusic;
     }
@@ -107,10 +93,10 @@ public class RoftPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return) && record)
+        if (Input.GetKeyDown(KeyCode.Return) && Record)
             PlayMusic();
 
-        if (Input.GetKeyDown(KeyCode.Return) && !musicSource.isPlaying && !record)
+        if (Input.GetKeyDown(KeyCode.Return) && !musicSource.isPlaying && !Record)
             StartCoroutine(Wait(3, loadAndPlay));
 
         if (musicSource != null)
@@ -119,7 +105,7 @@ public class RoftPlayer : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (record)
+        if (Record)
         {
             if (Input.GetAxis("Mouse ScrollWheel") == 0)
                 caretIsBeingDragged = false;
@@ -129,7 +115,7 @@ public class RoftPlayer : MonoBehaviour
             if (songTrackPosition != null && songTrackPosition.value > 1)
             {
                 PauseMusic();
-                musicSource.timeSamples = (int)musicLengthInSamples;
+                musicSource.timeSamples = (int)MusicLengthInSamples;
             }
 
             TimeStamp();
@@ -139,20 +125,20 @@ public class RoftPlayer : MonoBehaviour
     }
 
 
-    public void LoadMusic()
+    public static void LoadMusic()
     {
-        musicSource = gameObject.AddComponent<AudioSource>();
+        musicSource = Instance.gameObject.AddComponent<AudioSource>();
 
         musicSource.outputAudioMixerGroup = MusicManager.GetInstance().musicMixer;
 
-        if (record)
+        if (Record)
             musicSource.clip = RoftCreator.GetAudioFile();
 
         else
             musicSource.clip = MapReader.SongEntityBeingRead.AudioFile;
 
-        musicLengthInSamples = musicSource.clip.length * musicSource.clip.frequency;
-        music = musicSource.clip;
+        MusicLengthInSamples = musicSource.clip.length * musicSource.clip.frequency;
+        Instance.music = musicSource.clip;
     }
 
     //Play the song
@@ -175,7 +161,7 @@ public class RoftPlayer : MonoBehaviour
         musicSource.Stop();
     }
 
-    public float GetMusicLengthInSamples() => musicLengthInSamples;
+    public float GetMusicLengthInSamples() => MusicLengthInSamples;
 
     IEnumerator Wait(int duration, Action function = null)
     {
@@ -188,7 +174,7 @@ public class RoftPlayer : MonoBehaviour
     {
        
 
-        if (musicSource != null && record && !caretIsBeingDragged)
+        if (musicSource != null && Record && !caretIsBeingDragged)
         {
             //So, here's how this is going to work...
             //The Track Position is between values 0 and 1
@@ -199,7 +185,7 @@ public class RoftPlayer : MonoBehaviour
 
             timeInSamples = musicSource.timeSamples;
 
-            songTrackPosition.value = timeInSamples / musicLengthInSamples;
+            songTrackPosition.value = timeInSamples / MusicLengthInSamples;
 
             songPercentage.text = (songTrackPosition.value * 100).ToString("F1", CultureInfo.InvariantCulture) + "%";
 
@@ -218,7 +204,7 @@ public class RoftPlayer : MonoBehaviour
         ToggleCaretDrag(true);
 
         //We're doing the opposite of the UpdateCaret
-        musicSource.timeSamples = (int)(songTrackPosition.value * musicLengthInSamples);
+        musicSource.timeSamples = (int)(songTrackPosition.value * MusicLengthInSamples);
 
         timeInSamples = musicSource.timeSamples;
 
@@ -262,7 +248,7 @@ public class RoftPlayer : MonoBehaviour
 
     void TimeStamp()
     {
-        if (record)
+        if (Record)
         {
             if (seconds > 59.99f)
             {

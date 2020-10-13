@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class AppearEffect : CloseInEffect
 {
@@ -18,12 +19,12 @@ public class AppearEffect : CloseInEffect
         Instance = this;
 
         //Get sprite renderers
-        sprite = GetComponent<SpriteRenderer>();
+        image = GetComponent<Image>();
         overlaySprites = GetComponentsInChildren<SpriteRenderer>();
 
         foreach (SpriteRenderer overlaySprite in overlaySprites)
         {
-            if (overlaySprite != sprite)
+            if (overlaySprite != image)
                 childSprite = overlaySprite;
         }
 
@@ -32,10 +33,10 @@ public class AppearEffect : CloseInEffect
         {
             //We want these completely transparent from start
             childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, 0f);
-            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0f);
+            image.color = new Color(image.color.r, image.color.g, image.color.b, 0f);
 
             //Assign this to orignal variable
-            originalAppearance = sprite.color;
+            originalAppearance = image.color;
             originalOverlayAppearance = childSprite.color;
         }
     }
@@ -48,7 +49,7 @@ public class AppearEffect : CloseInEffect
 
         foreach (SpriteRenderer overlaySprite in overlaySprites)
         {
-            if (overlaySprite != sprite)
+            if (overlaySprite != image)
                 childSprite = overlaySprite;
         }
 
@@ -57,10 +58,10 @@ public class AppearEffect : CloseInEffect
         {
             //We want these completely transparent from start
             childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, 0f);
-            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0f);
+            image.color = new Color(image.color.r, image.color.g, image.color.b, 0f);
 
             //Assign this to orignal variable
-            originalAppearance = sprite.color;
+            originalAppearance = image.color;
             originalOverlayAppearance = childSprite.color;
         }
     }
@@ -68,7 +69,7 @@ public class AppearEffect : CloseInEffect
     // Update is called once per frame
     void Update()
     {
-        if (!RoftPlayer.Instance.record)
+        if (!RoftPlayer.Record)
             AppearOn();
     }
 
@@ -93,7 +94,7 @@ public class AppearEffect : CloseInEffect
     /// </summary>
     void Dump()
     {
-        sprite.color = originalAppearance;
+        image.color = originalAppearance;
 
         if (childSprite != null)
 

@@ -2,6 +2,7 @@
 using TMPro;
 
 using ROFTIOMANAGEMENT;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Key_Layout))]
 public class KeyPress : MonoBehaviour
@@ -53,7 +54,7 @@ public class KeyPress : MonoBehaviour
                     /*If we happen to be recording, and we hit the second set of binded keys, the
                     data will be written to a file.*/
                     #region Write to RFTM File
-                    if (RoftPlayer.Instance.record && bindKeysPressed)
+                    if (RoftPlayer.Record && bindKeysPressed)
                     {
                         string data =
                             keyNum.ToString() + ","
@@ -77,15 +78,17 @@ public class KeyPress : MonoBehaviour
     //This will turn the keys on, signifying that the key is being pressed
     public bool ActivateKey(int _keyNum, bool _on)
     {
-        SpriteRenderer keySpriteRenderer = Key_Layout.keyObjects[_keyNum].GetComponent<SpriteRenderer>();
+        Image keyImage = Key_Layout.keyObjects[_keyNum].GetComponent<Image>();
 
         if (_on)
         {
-            keySpriteRenderer.sprite = keyActive;
-            debugText.text = "Key " + key_Layout.primaryBindedKeys[_keyNum] + " pressed." + " Key Num: " + _keyNum;
+            keyImage.sprite = keyActive;
+
+            if (debugText != null)
+                debugText.text = "Key " + key_Layout.primaryBindedKeys[_keyNum] + " pressed." + " Key Num: " + _keyNum;
         }
         else
-            keySpriteRenderer.sprite = keyInActive;
+            keyImage.sprite = keyInActive;
 
         return _on;
     }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Runtime.CompilerServices;
+using UnityEngine;
 
 public class Singleton<T>: MonoBehaviour
 {
@@ -13,5 +14,7 @@ public class Singleton<T>: MonoBehaviour
         {
             Destroy(gameObject);
         }
-    } 
+    }
+
+    public static bool IsNull() => Instance == null;
 }
