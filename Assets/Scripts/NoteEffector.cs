@@ -2,6 +2,8 @@
 using UnityEngine;
 
 using ROFTIOMANAGEMENT;
+using System;
+using System.Collections;
 
 public class NoteEffector : MonoBehaviour
 {

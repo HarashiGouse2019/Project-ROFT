@@ -12,6 +12,7 @@ public class RoftPlayer : Singleton<RoftPlayer>
     //The EditorTool is going to be used to make creating music so much easier.
     //First, we'll get a reference of a song
     public AudioClip music;
+    public static Song_Entity SongEntity;
 
     public static bool Record;
 
@@ -34,7 +35,6 @@ public class RoftPlayer : Singleton<RoftPlayer>
     public TextMeshProUGUI samplesText;
     public TextMeshProUGUI songPercentage;
 
-
     //For the rest of the stuff like the Ui Slider and such
     public Slider songTrackPosition;
 
@@ -49,7 +49,6 @@ public class RoftPlayer : Singleton<RoftPlayer>
 
     public static AudioSource musicSource;
     #endregion
-   
 
     #region Private Members
     private bool musicIsPlaying = false;
@@ -135,28 +134,31 @@ public class RoftPlayer : Singleton<RoftPlayer>
             musicSource.clip = RoftCreator.GetAudioFile();
 
         else
-            musicSource.clip = MapReader.SongEntityBeingRead.AudioFile;
+        {
+            SongEntity = MapReader.SongEntityBeingRead;
+            musicSource.clip = SongEntity.AudioFile;
+        }
 
         MusicLengthInSamples = musicSource.clip.length * musicSource.clip.frequency;
         Instance.music = musicSource.clip;
     }
 
     //Play the song
-    public void PlayMusic()
+    public static void PlayMusic()
     {
         musicSource.Play();
         MusicManager.NowPlaying = musicSource.clip.name;
     }
 
     //Pause the song
-    public void PauseMusic()
+    public static void PauseMusic()
     {
         musicSource.Pause();
-        if (!musicIsPlaying) musicSource.Play();
+        if (!Instance.musicIsPlaying) musicSource.Play();
     }
 
     //Stop the Music
-    public void StopMusic()
+    public static void StopMusic()
     {
         musicSource.Stop();
     }

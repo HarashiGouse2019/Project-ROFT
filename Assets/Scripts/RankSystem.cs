@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RankSystem : MonoBehaviour
+public class RankSystem : Singleton<RankSystem>
 {
-    private static RankSystem Instance;
     /*Rank System will be responsible for reading the score of the player, and determining
      what rank they get based on song configuration*/
 
@@ -16,6 +15,8 @@ public class RankSystem : MonoBehaviour
 
     [SerializeField]
     private Image letterRankImg;
+
+    private int rankIndex;
 
     //An enumerator that states our grade
     public enum Grade
@@ -43,19 +44,6 @@ public class RankSystem : MonoBehaviour
 
     //Grade variable
     Grade gradeRank = Grade.SSS;
-
-    void Awake()
-    {
-        #region Singleton
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(Instance);
-        }
-        else
-            Destroy(gameObject);
-        #endregion
-    }
 
     //Be sure that when our score updates we call this function
     //Sense I'm using a for loop, I only want to call it went needed
@@ -91,4 +79,6 @@ public class RankSystem : MonoBehaviour
             }
         }
     }
+
+    public static Sprite GetRankGradeSprite() => Instance.letterSprites[(int)Instance.gradeRank];
 }

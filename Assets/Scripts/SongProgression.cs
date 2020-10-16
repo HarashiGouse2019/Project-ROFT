@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class SongProgression : MonoBehaviour
 {
@@ -11,17 +12,30 @@ public class SongProgression : MonoBehaviour
     //See if the last note was it
     public static bool isFinished;
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
-        if (!RoftPlayer.IsNull() && 
-            !MapReader.IsNull() &&
-            !RoftPlayer.Record && 
-            isFinished == false && 
-            MapReader.GetName() != "")
-            ShowProgression();
+        StartCoroutine(ProgressionRoutine());
     }
+    IEnumerator ProgressionRoutine()
+    {
+        while (true)
+        {
+            if (!RoftPlayer.IsNull() &&
+            !MapReader.IsNull() &&
+            !RoftPlayer.Record &&
+            isFinished == false &&
+            MapReader.GetName() != "")
+                ShowProgression();
 
+            yield return null;
+        }
+    }
+    public static void ResetProgression()
+    {
+        isPassedFirstNote = false;
+        isFinished = false;
+        GameManager.Instance.GetSongProgressionFill().fillAmount = 0;
+    }
     void ShowProgression()
     {
         try
@@ -46,21 +60,38 @@ public class SongProgression : MonoBehaviour
 
             if (!isPassedFirstNote)
             {
-                GameManager.Instance.GetSongProgressionFill().fillAmount = firstNotePercentile;
+                if (GameManager.Instance.GetSongProgressionFill() != null)
+                    GameManager.Instance.GetSongProgressionFill().fillAmount = firstNotePercentile;
 
                 if (firstNotePercentile > 0.99f)
                     isPassedFirstNote = true;
             }
             else
-                GameManager.Instance.GetSongProgressionFill().fillAmount = lastNotePercentile;
-
-            //Now, if the fillAmount is full (or once we hit the last note), have RoftPlayer fade out
-            if (RoftPlayer.musicSource.timeSamples > lastNoteInSamples)
-                isFinished = true;
+            {
+                if (GameManager.Instance.GetSongProgressionFill() != null)
+                    GameManager.Instance.GetSongProgressionFill().fillAmount = lastNotePercentile;
+            }
+            if (IsEndSong())
+            {
+                Debug.Log("Song Finished!!");
+                GameManager.inSong = false;
+                //We should be at the end of the song at this point in time
+                GameManager.DelayAction(3f, () =>
+                {
+                    RoftTransition.TransitionTo(7);
+                });
+            }
         }
         catch
         {
 
         }
+    }
+
+    bool IsEndSong()
+    {
+        //Now, if the fillAmount is full (or once we hit the last note), have RoftPlayer fade out
+        isFinished = RoftPlayer.musicSource.timeSamples > lastNoteInSamples;
+        return isFinished;
     }
 }

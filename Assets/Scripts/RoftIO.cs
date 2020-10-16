@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using UnityEngine;
-
 using Random = UnityEngine.Random;
-using System.Net.NetworkInformation;
-using System.Runtime.CompilerServices;
 
 namespace ROFTIOMANAGEMENT
 {
@@ -704,6 +701,71 @@ namespace ROFTIOMANAGEMENT
             }
             Debug.Log("Path " + _path + " doesn't exist.");
             return FAILURE;
+        }
+
+        public static void AddRecord(string recordString, string _path)
+        {
+            //Position tracking
+            int position = 0;
+
+            //And get the total object
+            int totalNotes = 0;
+
+            string rftmFilePath = _path;
+
+            //We won't be returning anything, but we'll see if there's even something writtern
+            //at the line, so that we can count.
+            string line;
+
+            //Access the Objects tag
+            int objectsTag = InRFTMJumpTo("Records", _path);
+
+            //A bool to check that we've even got to the ObjectsTag
+            bool atObjectsTag = false;
+
+
+            //We check if the targeted file exists before reading data
+            if (File.Exists(rftmFilePath))
+            {
+                using (StreamReader streamReader = new StreamReader(_path))
+                {
+                    while (true)
+                    {
+                        //Read each and every line...
+                        line = streamReader.ReadLine();
+
+                        //Untile we come across a line that has no information
+                        if (line == null)
+                        {
+                            //If we have already made it to our targeted tag to read our data
+                            //which happens to be [Objects], then we'll teach if 
+                            //we got data or not.
+                            if (atObjectsTag == true)
+                            {
+                                line = recordString;
+                            }
+                            else
+                            {
+                                Debug.Log("This tag doesn't exist.");
+                                return;
+                            }
+                        }
+
+                        if (position >= objectsTag)
+                        {
+                            //We will mark true if we have hit or is beyond the objectsTag
+                            //basically reading the tag's properties/objects
+                            atObjectsTag = true;
+
+                            totalNotes++;
+                        }
+
+                        position++;
+                    }
+                }
+            }
+            Debug.Log("Path " + _path + " doesn't exist.");
+            return;
         }
     }
 }

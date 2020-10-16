@@ -5,6 +5,11 @@ using UnityEngine;
 
 namespace Extensions
 {
+    public static class Boolean
+    {
+        public static int AsNumericValue(this bool _) => _ ? 1 : 0;
+    }
+
     public static class String
     {
         #region Extensions

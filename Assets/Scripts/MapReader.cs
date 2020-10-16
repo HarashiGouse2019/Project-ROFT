@@ -38,6 +38,7 @@ public class MapReader : Singleton<MapReader>
 
     //I'll have to keep track of which files the MapReader is actually reading, or else I can't grab the information
     public static Song_Entity SongEntityBeingRead { get; set; }
+    public static int CachedSongEntityID, CachedDifficultyValue;
     public static int DifficultyIndex { get; set; }
 
     readonly Thread readKeyThread;
@@ -47,7 +48,8 @@ public class MapReader : Singleton<MapReader>
 
     public static void Read(int songEntityID, int difficultyValue)
     {
-
+        CachedSongEntityID = songEntityID;
+        CachedDifficultyValue = difficultyValue;
 
         /*After scouting, if songs has been found, go ahead and access
          this song and it's specified difficulty.*/
@@ -214,8 +216,6 @@ public class MapReader : Singleton<MapReader>
 
     static void CalculateDifficultyRating()
     {
-
-
         if (!RoftPlayer.Record)
         {
             RoftPlayer.LoadMusic();
@@ -370,6 +370,19 @@ public class MapReader : Singleton<MapReader>
 
         Debug.LogError("Failed to retrieve object reader...");
         return null;
+    }
+
+    public static void WrapUp()
+    {
+        if (Instance.keyLayoutClass.gameObject.activeInHierarchy)
+            Instance.keyLayoutClass.Flush();
+
+        noteObjs.Clear();
+        Instance.tapObjectReader.objects.Clear();
+        Instance.holdObjectReader.objects.Clear();
+        Instance.burstObjectReader.objects.Clear();
+
+        Instance.GameOverlayCamera.gameObject.SetActive(false);
     }
 
     #endregion

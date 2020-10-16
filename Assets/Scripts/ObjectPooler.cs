@@ -24,7 +24,7 @@ public class ObjectPooler : MonoBehaviour
 
     public List<ObjectPoolItem> itemsToPool;
     public List<GameObject> pooledObjects;
-    
+
     public int poolIndex;
 
     void Awake()
@@ -110,6 +110,15 @@ public class ObjectPooler : MonoBehaviour
         {
             if (itemsToPool[i].name == _name)
                 itemsToPool[i].size = _size;
+        }
+    }
+
+    public void FlushPool()
+    {
+        for (int i = 0; i < pooledObjects.Count; i++)
+        {
+            if (pooledObjects[i].activeInHierarchy)
+                pooledObjects[i].SetActive(false);
         }
     }
 }

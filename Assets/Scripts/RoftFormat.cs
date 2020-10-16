@@ -6,7 +6,7 @@ public class RoftFormat
 
     #region Format Version
     static string t_version = "Format Version".AsTag();
-    static string p_formatVer = "1.4v" + newLine;
+    static string p_formatVer = "1.5v" + newLine;
     #endregion
 
     #region [General]
@@ -53,6 +53,10 @@ public class RoftFormat
     static string objectData = ObjectLogger.Instance != null ? ObjectLogger.ObjectData : "NIL";
     #endregion
 
+    #region [Record]
+    static string t_records = "Records".AsTag() + newLine;
+    #endregion
+
     #region .rftm Information
     static string[] rftmInformation = new string[]
     {
@@ -91,7 +95,10 @@ public class RoftFormat
 
                    //Objects
                    t_objects +
-                   objectData
+                   objectData,
+
+                   //Record
+                   t_records
     };
     #endregion
 
@@ -106,6 +113,4 @@ public class RoftFormat
     /// </summary>
     /// <returns>An array of information that include tags and their properties.</returns>
     public string[] GetFormatInfo() => rftmInformation;
-
-
 }

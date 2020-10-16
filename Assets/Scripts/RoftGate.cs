@@ -16,8 +16,7 @@ public class RoftGate : MonoBehaviour
         {
             tmpAnimator.SetBool("keyPressed", true);
             roftScenePanel.enabled = true;
-            PanelEvents.Instance.isLobbyTarget = true;
-            roftScenePanel.SetBool("isLobbyTarget", PanelEvents.Instance.isLobbyTarget);
+            RoftTransition.TransitionTo((int)RoftTransition.Transitions.TITLE_TO_LOBBY);
         }
     }
 }

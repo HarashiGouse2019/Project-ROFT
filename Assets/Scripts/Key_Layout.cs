@@ -2,12 +2,17 @@
 using UnityEngine;
 using TMPro;
 using Cakewalk.IoC;
+using UnityEngine.UI;
+using System;
 
 //This is going to be an abstract class. This will be the base class of all other layouts in the game
 public class Key_Layout : MonoBehaviour
 {
     [Dependency]
     public static Key_Layout Instance;
+
+    [SerializeField]
+    private GridLayoutGroup gridLayoutGroup;
 
     //So I want to be able to allow the player to freely keybind key layouts (even though there's hardly any reason besides 4x4, 8x8, and 12x12)
     //Other than that, I want to go through a process of getting all homerow, toprow, and bottomrow keys.
@@ -212,7 +217,6 @@ public class Key_Layout : MonoBehaviour
         float yOffset = keyConfig.GetYOffset[(int)KeyLayout];
 
         GameObject newKey;
-        Vector2 keyPosition;
 
         //Determine how many columns and rows before setting up
         switch (KeyLayout)
@@ -260,6 +264,8 @@ public class Key_Layout : MonoBehaviour
                 break;
         }
 
+        gridLayoutGroup.constraintCount = (int)numCols;
+
         for (int row = 0; row < numRows; row++)
         {
             for (int col = 0; col < numCols; col++)
@@ -292,5 +298,23 @@ public class Key_Layout : MonoBehaviour
 
         }
         InitiateAutoKeyBind();
+    }
+
+    internal void Flush()
+    {
+        UnBindKeys();
+
+        pooler.FlushPool();
+
+        KeyLayout = default; 
+    }
+
+    private void UnBindKeys()
+    {
+        //I want to first bind the primary layout
+
+        primaryBindedKeys.Clear();
+        secondaryBindedKeys.Clear();
+        tempShowKeyObjs.Clear();
     }
 }

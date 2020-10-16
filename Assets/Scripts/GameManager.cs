@@ -164,13 +164,6 @@ public class GameManager : MonoBehaviour
         KeyCode.F5
     };
 
-    //Make to much easier to access other classes
-    [Dependency]
-    private RoftPlayer roftPlayer;
-
-    [Dependency]
-    private MapReader mapReader;
-
     //This will be used for the GameManager to assure that
     //when we restart, all approach circles are inactive
     private readonly List<GameObject> activeApproachObjects = new List<GameObject>();
@@ -374,6 +367,8 @@ public class GameManager : MonoBehaviour
 
     public void RestartSong()
     {
+        inSong = true;
+
         MapReader.GetReaderType<TapObjectReader>().SequencePositionReset();
         MapReader.GetReaderType<HoldObjectReader>().SequencePositionReset();
         MapReader.GetReaderType<BurstObjectReader>().SequencePositionReset();
@@ -401,7 +396,8 @@ public class GameManager : MonoBehaviour
         //Now we clear our list.
         activeApproachObjects.Clear();
 
-        SongProgression.isPassedFirstNote = false;
+       
+        SongProgression.ResetProgression();
     }
 
     public void Pause()
@@ -409,7 +405,7 @@ public class GameManager : MonoBehaviour
         //When we pause, we have to stop music, and turn isPaused to true
         if (RoftPlayer.musicSource.isPlaying)
         {
-            roftPlayer.PauseMusic();
+            RoftPlayer.PauseMusic();
             isGamePaused = true;
             Time.timeScale = 0;
         }
@@ -513,7 +509,7 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSecondsRealtime(1f);
         }
         //Now we play music again, and stat
-        roftPlayer.PlayMusic();
+        RoftPlayer.PlayMusic();
 
         //Update isGamePaused
         isGamePaused = !RoftPlayer.musicSource.isPlaying;
@@ -565,10 +561,25 @@ public class GameManager : MonoBehaviour
         LogNormalColor = newColor;
     }
 
+    public static void DelayAction(float duration, Action action)
+    {
+        IEnumerator delay = WaitFor(duration, action);
+        Instance.StartCoroutine(delay);
+    }
+    static IEnumerator WaitFor(float duration, Action action)
+    {
+        yield return new WaitForSecondsRealtime(duration);
+        action.Invoke();
+    }
+
     public static SongList GetSongList() => Instance.SongList;
 
     #region Get Methods
     public Image GetSongProgressionFill() => IMG_PROGRESSION_FILL;
+
+    public static long GetScore() => Instance.totalScore;
+    public static int[] GetAccuracyStats() => Instance.accuracyStats;
+    public static float GetOverallAccuracy() => Instance.overallAccuracy;
 
     public TextMeshProUGUI GetTMCombo() => TM_COMBO;
 
