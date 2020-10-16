@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb111efadfad1c84b957ad8e1cfe5e4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pooler: {fileID: 4731339727150212984}
   keyID: 0
   keyValue: 0
 --- !u!114 &7284824502616348260

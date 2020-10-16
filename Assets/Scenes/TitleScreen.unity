@@ -527,7 +527,6 @@ GameObject:
   - component: {fileID: 161172473}
   - component: {fileID: 161172472}
   - component: {fileID: 161172471}
-  - component: {fileID: 161172475}
   m_Layer: 5
   m_Name: CAN_GAME
   m_TagString: Untagged
@@ -633,18 +632,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 200
   m_TargetDisplay: 0
---- !u!114 &161172475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 161172469}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8811a9376cf983b4b985529bece70e93, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &164237864
 GameObject:
   m_ObjectHideFlags: 0
@@ -9071,7 +9058,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 161172475}
+      - m_Target: {fileID: 1927482222}
         m_MethodName: RunTransition
         m_Mode: 3
         m_Arguments:

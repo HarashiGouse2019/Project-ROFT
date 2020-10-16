@@ -45,5 +45,12 @@ public class PanelEvents : MonoBehaviour
     public void SetSelfOff()
     {
         gameObject.SetActive(false);
+        isLobbyTarget = false;
+        isSongRoomTarget = false;
+        isRecordsTarget = false;
+        isSettingsTarget = false;
+        isHelpTarget = false;
+        isGameRoomTarget = false;
+        isResultsTarget = false;
     }
 }

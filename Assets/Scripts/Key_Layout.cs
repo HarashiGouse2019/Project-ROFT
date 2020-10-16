@@ -291,7 +291,7 @@ public class Key_Layout : MonoBehaviour
             //Check if these notes are interactable
             if (recordKeyInput)
             {
-                InteractableKey newInteractable = keyObjects[keyNum].AddComponent<InteractableKey>();
+                InteractableKey newInteractable = keyObjects[keyNum].gameObject.AddComponent<InteractableKey>();
                 newInteractable.SetKeyNum(keyNum);
                 keyObjects[keyNum].GetComponent<CircleCollider2D>().enabled = true;
             }
@@ -312,7 +312,10 @@ public class Key_Layout : MonoBehaviour
     private void UnBindKeys()
     {
         //I want to first bind the primary layout
-
+        foreach(GameObject keyObject in keyObjects)
+        {
+            keyObject.GetComponent<KeyId>().pooler.FlushPool();
+        }
         primaryBindedKeys.Clear();
         secondaryBindedKeys.Clear();
         tempShowKeyObjs.Clear();

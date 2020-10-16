@@ -175,6 +175,7 @@ public class GameManager : MonoBehaviour
     private Main core;
 
     EventManager.CallbackMethod scoutingDelegate;
+    internal static bool ErrorDetected = false;
 
     private void Awake()
     {
@@ -396,7 +397,7 @@ public class GameManager : MonoBehaviour
         //Now we clear our list.
         activeApproachObjects.Clear();
 
-       
+
         SongProgression.ResetProgression();
     }
 
@@ -412,10 +413,20 @@ public class GameManager : MonoBehaviour
         return;
     }
 
-    public void UnPause()
+    public void UnPause(bool countdown = true)
     {
         //Now we give the player some time to prepare
-        StartCoroutine(CountDown());
+        if (countdown)
+            StartCoroutine(CountDown());
+        else
+        {
+            RestartSong();
+            isGamePaused = false;
+            isCountingDown = false;
+            PAUSE_OVERLAY.SetActive(isGamePaused);
+            //Set time scale back to 1, so everything should show motion over time
+            Time.timeScale = 1;
+        }
         return;
     }
 

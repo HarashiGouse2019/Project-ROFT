@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 public class SongSelectionNavigator : MonoBehaviour
 {
@@ -8,8 +9,9 @@ public class SongSelectionNavigator : MonoBehaviour
 
     public void Begin()
     {
-        GameManager.Instance.RestartSong();
+
         MapReader.Read((int)SongEntityPosition, (int)DifficultyPosition);
+
     }
 
     public void SetSongEntityPosition(uint value)
