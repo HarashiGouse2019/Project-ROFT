@@ -37,7 +37,7 @@ public class RoftTransition : MonoBehaviour
          make sure the Transition enumerate has the existing transition.
          Whatever the destination target is, use "is<Destination>Target
          */
-        if (!GameManager.ErrorDetected)
+        if (GameManager.ErrorDetected == false)
         {
             Transitions transitions = (Transitions)_transitionIndex;
             PanelEvents.Instance.gameObject.SetActive(true);

@@ -176,6 +176,7 @@ public class GameManager : MonoBehaviour
 
     EventManager.CallbackMethod scoutingDelegate;
     internal static bool ErrorDetected = false;
+    public bool detected;
 
     private void Awake()
     {
@@ -220,7 +221,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-
+        detected = ErrorDetected;
     }
 
     //GAME_MANAGEMENT Update

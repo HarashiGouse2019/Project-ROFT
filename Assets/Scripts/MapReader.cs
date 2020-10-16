@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using static ROFTIOMANAGEMENT.RoftIO;
-using UnityEditor.Build;
 
 public class MapReader : Singleton<MapReader>
 {
