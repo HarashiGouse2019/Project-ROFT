@@ -452,15 +452,15 @@ public class GameManager : MonoBehaviour
         return sumOfStats;
     }
 
-    public void SetInGameBackground(Sprite sprite)
+    public static void SetInGameBackground(Sprite sprite)
     {
         try
         {
             //If the background image is inactive, set it active
-            if (!IMG_INGAMEBACKGROUND.gameObject.activeInHierarchy && sprite != null)
+            if ( sprite != null)
             {
-                IMG_INGAMEBACKGROUND.gameObject.SetActive(gameObject.activeSelf);
-                IMG_INGAMEBACKGROUND.sprite = sprite;
+                Instance.IMG_INGAMEBACKGROUND.enabled = true;
+                Instance.IMG_INGAMEBACKGROUND.sprite = sprite;
             }
         }
         catch
@@ -583,7 +583,8 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(duration);
         action.Invoke();
     }
-
+    public static int GetCombo() => Instance.Combo;
+    public static int GetMaxCombo() => Instance.maxCombo;
     public static SongList GetSongList() => Instance.SongList;
 
     #region Get Methods

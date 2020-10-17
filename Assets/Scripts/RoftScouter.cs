@@ -140,7 +140,7 @@ public class RoftScouter
         /*This will be used to compare the file's content, and 
         regularily create new SongEntities as needed.*/
         long currentGROUPID = 0;
-
+        int songId = -1;
         for (int index = 0; index < files.Count; index++)
         {
             FileInfo fileNum = files[index];
@@ -178,6 +178,7 @@ public class RoftScouter
             {
                 //We instanstiate a new song entity
                 Song_Entity newEntity = new Song_Entity();
+                songId++;
 
                 /*For one song in which holds its difficulty,
                 we need to assign it a GROUPID,
@@ -189,7 +190,7 @@ public class RoftScouter
                 newEntity.SongArtist = songArtist;
                 newEntity.SongArtistUnicode = songArtistUnicode;
                 newEntity.GROUPID = GROUPID;
-                newEntity.ScoutEntryValue = (uint)index;
+                newEntity.ScoutEntryValue = (uint)songId;
 
                 /*We'll attempt to "Request" for the audio file defined in the .rftm file.
                 The only way to do that is through the UnityEngine.Networking namespace

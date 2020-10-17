@@ -44,8 +44,6 @@ public class ErrorHandler : Singleton<ErrorHandler>
             {
                 inMessage = false;
                 GameManager.ErrorDetected = false;
-                if (logs.Count == 0)
-                    Debug.Log("Log Count is 0");
             }
 
             yield return null;

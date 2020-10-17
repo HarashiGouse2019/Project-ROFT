@@ -17,6 +17,7 @@ public class MusicManager : Singleton<MusicManager>, IVolumeControl
     public AudioMixerGroup musicMixer;
 
     public static List<Song_Entity> Songs;
+    public List<Song_Entity> songs;
 
     public Slider musicVolumeAdjust; //Reference to our volume sliders
 
@@ -25,6 +26,7 @@ public class MusicManager : Singleton<MusicManager>, IVolumeControl
     void Start()
     {
         GameManager.Instance.ExecuteScouting();
+        songs = Songs;
     }
 
     public static List<Song_Entity> GetSongEntity() => Songs;

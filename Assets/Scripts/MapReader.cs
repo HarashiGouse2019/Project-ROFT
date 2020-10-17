@@ -107,7 +107,7 @@ public class MapReader : Singleton<MapReader>
                 NoteEffector.Instance.Accuracy = ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", m_name);
 
                 //Set background image
-                GameManager.Instance.SetInGameBackground(SongEntityBeingRead.BackgroundImage);
+                GameManager.SetInGameBackground(SongEntityBeingRead.BackgroundImage);
 
                 //Calculate the max score
                 maxScore = CalculateMaxScore();
