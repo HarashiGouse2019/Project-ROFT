@@ -260,7 +260,7 @@ public class NoteEffector : MonoBehaviour
         _effect.keyNumPosition = (int)noteObj.GetKey();
 
         //Change look of circle
-        _effect.Modifier.ChangeType((int)noteObj.GetType());
+        _effect.Modifier.ChangeType((int)noteObj.GetNoteType());
     }
 
     /// <summary>

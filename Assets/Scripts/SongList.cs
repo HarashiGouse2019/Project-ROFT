@@ -104,7 +104,6 @@ public class SongList : MonoBehaviour
         #endregion
 
         #region Initialization
-        Debug.Log(orderedSongs.Count);
         for (int index = 0; index < orderedSongs.Count; index++)
         {
             try

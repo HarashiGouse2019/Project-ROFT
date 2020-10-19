@@ -35,15 +35,6 @@ public class GameManager : MonoBehaviour
         0
     };
 
-    public static char[] accuracyGrade =
-    {
-        'S',
-        'A',
-        'B',
-        'C',
-        'D'
-    };
-
     public static float[] stressAmount =
     {
        0.2f,

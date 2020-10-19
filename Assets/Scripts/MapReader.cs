@@ -45,7 +45,8 @@ public class MapReader : Singleton<MapReader>
 
     public static bool KeysReaded { get; private set; } = false;
     private static readonly object keyReadingLock = new object();
-
+    const char separator = ',';
+    static string line;
     public static void Read(int songEntityID, int difficultyValue)
     {
         GameManager.ErrorDetected = false;
@@ -126,7 +127,7 @@ public class MapReader : Singleton<MapReader>
     {
         lock (keyReadingLock)
         {
-            string line;
+            
 
             string rftmFilePath = _name;
 
@@ -140,7 +141,7 @@ public class MapReader : Singleton<MapReader>
                     //Read each line, split with a array string
                     //Name it separator
                     //Then use string.Split(separator, ...)
-                    const char separator = ',';
+                    
                     int filePosition = 0;
                     int targetPosition = InRFTMJumpTo("Objects", m_name);
                     using (StreamReader rftmReader = new StreamReader(rftmFilePath))
@@ -158,26 +159,11 @@ public class MapReader : Singleton<MapReader>
                             if (filePosition > targetPosition)
                             {
                                 #region Parse and Convert Information
-                                //We'll count the frequency of commas to determine
-                                //that they are more values in the object
-                                int countCommas = 0;
-                                foreach (char c in line)
-                                    if (c == ',')
-                                        countCommas++;
 
                                 //We create a new key, and assign our data value to our key
-                                NoteObj newNoteObj = new NoteObj();
+                                NoteObj newNoteObj = null;
 
-                                newNoteObj.SetKeyID((uint)Convert.ToInt32(line.Split(separator)[0]));
-                                newNoteObj.SetInitialSample(Convert.ToInt32(line.Split(separator)[1]));
-                                newNoteObj.SetType((NoteObj.NoteObjType)Convert.ToInt32(line.Split(separator)[2]));
-
-                                //Check for any miscellaneous values
-                                if (countCommas > 2)
-                                    newNoteObj.miscellaneousValue1 = Convert.ToInt32(line.Split(separator)[3]);
-
-                                else if (countCommas > 3)
-                                    newNoteObj.miscellaneousValue2 = Convert.ToInt32(line.Split(separator)[4]);
+                                newNoteObj = ParseNewNote();
                                 #endregion
 
                                 /*This looks at the noteID
@@ -196,23 +182,7 @@ public class MapReader : Singleton<MapReader>
                                 //We'll be integrating our new Object Readers around this area.
                                 //We'll distribute the basic values to each one.
                                 #region Distribution to Readers
-                                switch (newNoteObj.GetType())
-                                {
-                                    case NoteObj.NoteObjType.Tap:
-                                        DistributeTypeTo(Instance.tapObjectReader, newNoteObj);
-                                        break;
-
-                                    case NoteObj.NoteObjType.Hold:
-                                        DistributeTypeTo(Instance.holdObjectReader, newNoteObj);
-                                        break;
-
-                                    case NoteObj.NoteObjType.Burst:
-                                        DistributeTypeTo(Instance.burstObjectReader, newNoteObj);
-                                        break;
-
-                                    default:
-                                        break;
-                                }
+                                DistributeToObjectMappers(newNoteObj);
                                 #endregion
 
                                 //Update total Notes
@@ -230,11 +200,73 @@ public class MapReader : Singleton<MapReader>
                 
             } catch (Exception e)
             {
-                e = new MapErrorException("Failed to load map");
+                e = new MapErrorException("Failed to load map: " + e.Message);
                 throw e;
             }
         }
         #endregion
+    }
+
+    private static void DistributeToObjectMappers(NoteObj newNoteObj)
+    {
+        switch (newNoteObj.GetNoteType())
+        {
+            case NoteObj.NoteObjType.Tap:
+                DistributeTypeTo(Instance.tapObjectReader, (TapObj)newNoteObj);
+                break;
+
+            case NoteObj.NoteObjType.Hold:
+                DistributeTypeTo(Instance.holdObjectReader, (HoldObj)newNoteObj);
+                break;
+
+            case NoteObj.NoteObjType.Burst:
+                DistributeTypeTo(Instance.burstObjectReader, (BurstObj)newNoteObj);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    static NoteObj ParseNewNote()
+    {
+        NoteObj newNoteObj = new NoteObj();
+        newNoteObj.SetKeyID((uint)Convert.ToInt32(line.Split(separator)[0]));
+        newNoteObj.SetInitialSample(Convert.ToInt32(line.Split(separator)[1]));
+        newNoteObj.SetType((NoteObj.NoteObjType)Convert.ToInt32(line.Split(separator)[2]));
+
+        //Check the type of the New Note Object
+
+        switch (newNoteObj.GetNoteType())
+        {
+            case NoteObj.NoteObjType.Tap:
+                TapObj newTapObj = new TapObj(
+                    (uint)Convert.ToInt32(line.Split(separator)[0]),
+                    Convert.ToInt32(line.Split(separator)[1])
+                    );
+                //Do nothing. There's no misscellaneous data
+                return newTapObj;
+
+            case NoteObj.NoteObjType.Hold:
+                HoldObj newHoldObj = new HoldObj((uint)Convert.ToInt32(line.Split(separator)[0]),
+                    Convert.ToInt32(line.Split(separator)[1]),
+                    Convert.ToInt32(line.Split(separator)[3]));
+                return newHoldObj;
+
+            case NoteObj.NoteObjType.Track:
+                TrackObj newTrackObj = null;
+                //TODO: Convert Split String Data into List of TrackPoints.
+                return newTrackObj;
+
+            case NoteObj.NoteObjType.Burst:
+                BurstObj newBurstObj = new BurstObj((uint)Convert.ToInt32(line.Split(separator)[0]),
+                    Convert.ToInt32(line.Split(separator)[1]),
+                    (uint)Convert.ToInt32(line.Split(separator)[3]));
+                return newBurstObj;
+
+            default:
+                return null;
+        }
     }
 
     static void CalculateDifficultyRating()

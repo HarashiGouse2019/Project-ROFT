@@ -268,27 +268,29 @@ public class ObjectLogger : MonoBehaviour
 
     public static void LogInNoteObject(NoteTool note, params object[] args)
     {
-        NoteObj noteObj = new NoteObj();
-
         switch (note)
         {
             case NoteTool.TAP:
+                
                 Instance.keyData = (int)args[0];
                 Instance.sampleData = (long)args[1];
                 Instance.typeData = (int)args[2];
 
-                noteObj.SetKeyID((uint)Instance.keyData);
-                noteObj.SetInitialSample(Instance.sampleData);
-                noteObj.SetType((NoteObj.NoteObjType)Instance.typeData);
+                TapObj tapObj = new TapObj((uint)Instance.keyData, Instance.sampleData);
 
-                break;
+                LogIntoSet(tapObj);
+                return;
 
             case NoteTool.HOLD:
                 Instance.keyData = (int)args[0];
                 Instance.sampleData = (long)args[1];
                 Instance.typeData = (int)args[2];
                 Instance.finishSample = (long)args[3];
-                break;
+
+                HoldObj holdObj = new HoldObj((uint)Instance.keyData, Instance.sampleData, Instance.finishSample);
+
+                LogIntoSet(holdObj);
+                return;
 
             case NoteTool.TRACK:
                 Instance.keyData = (int)args[0];
@@ -296,20 +298,29 @@ public class ObjectLogger : MonoBehaviour
                 Instance.typeData = (int)args[2];
 
                 //TODO: Start adding points
-                break;
+                return;
 
             case NoteTool.BURST:
                 Instance.keyData = (int)args[0];
                 Instance.sampleData = (long)args[1];
                 Instance.typeData = (int)args[2];
                 Instance.burstDirection = (int)args[3];
-                break;
+
+                BurstObj burstObj = new BurstObj((uint)Instance.keyData, Instance.sampleData, (uint)Instance.burstDirection);
+
+                LogIntoSet(burstObj);
+                return;
 
             default:
-                break;
+                return;
         }
 
-        Instance.patternSets[(int)Instance.currentPatternSet].LogObject(noteObj, ((int)Instance.tick % (int)Instance.loggerSize));
+        
+    }
+
+    static void LogIntoSet(NoteObj obj)
+    {
+        Instance.patternSets[(int)Instance.currentPatternSet].LogObject(obj, ((int)Instance.tick % (int)Instance.loggerSize));
         Instance.RefreshLog();
         ShowMarksInPatternSet();
     }
