@@ -220,11 +220,9 @@ public class GameManager : MonoBehaviour
     {
         while (true)
         {
-            if (inSong && MapReader.KeysReaded)
-            {
-                //Invoke core and all methods associated with it
-                core.Invoke();
-            }
+
+            //Invoke core and all methods associated with it
+            core.Invoke();
 
             yield return null;
         }
@@ -448,7 +446,7 @@ public class GameManager : MonoBehaviour
         try
         {
             //If the background image is inactive, set it active
-            if ( sprite != null)
+            if (sprite != null)
             {
                 Instance.IMG_INGAMEBACKGROUND.enabled = true;
                 Instance.IMG_INGAMEBACKGROUND.sprite = sprite;

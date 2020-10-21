@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 871582474392048426}
   - component: {fileID: 3005786974947797558}
   - component: {fileID: 4731339727150212984}
-  - component: {fileID: 2222737017475543739}
   - component: {fileID: 1722969608711643484}
   - component: {fileID: 7837584431647051175}
   - component: {fileID: 7284824502616348260}
@@ -125,19 +124,6 @@ MonoBehaviour:
     expandPool: 1
   pooledObjects: []
   poolIndex: 0
---- !u!114 &2222737017475543739
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 871582474392048424}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: daf013dc1ab444b4b9fd037b2fa12813, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  origin: {fileID: 0}
 --- !u!114 &1722969608711643484
 MonoBehaviour:
   m_ObjectHideFlags: 0
