@@ -30,7 +30,7 @@ MonoBehaviour:
     value: 65472
   diffusion:
     overrideState: 0
-    value: 3
+    value: 10
   anamorphicRatio:
     overrideState: 0
     value: 0.098
@@ -46,7 +46,7 @@ MonoBehaviour:
     defaultState: 1
   dirtIntensity:
     overrideState: 0
-    value: 1
+    value: 20
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
-using System;
 
 public class SongSelectionNavigator : MonoBehaviour
 {
-    [SerializeField] private uint SongEntityPosition;
+    private uint SongEntityPosition;
 
-    [SerializeField] private uint DifficultyPosition;
+    private uint DifficultyPosition;
 
     public void Begin()
     {

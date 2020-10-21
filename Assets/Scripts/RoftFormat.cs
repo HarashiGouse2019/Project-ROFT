@@ -32,7 +32,7 @@ public class RoftFormat
     static string t_difficulty = "Difficulty".AsTag();
     static string p_DifficultyName = "DifficultyName".AsProperty(RoftCreator.GetDifficultyName()) + newLine;
     static string p_StressBuild = "StressBuild".AsProperty(RoftCreator.GetStressBuild().ToString()) + newLine;
-    static string p_ObjectCount = "ObjectCount".AsProperty(ObjectLogger.Instance != null ? ObjectLogger.GetObjectCount() : 0) + newLine;
+    static string p_ObjectCount = "ObjectCount".AsProperty(!ObjectLogger.IsNull() ? ObjectLogger.GetObjectCount() : 0) + newLine;
     #region Key Count
     static string keyInfo = GetLayoutType();
 
@@ -50,7 +50,7 @@ public class RoftFormat
 
     #region [Objects]
     static string t_objects = "Objects".AsTag() + newLine;
-    static string objectData = ObjectLogger.Instance != null ? ObjectLogger.ObjectData : "NIL";
+    static string objectData = !ObjectLogger.IsNull() ? ObjectLogger.ObjectData : "NIL";
     #endregion
 
     #region [Record]

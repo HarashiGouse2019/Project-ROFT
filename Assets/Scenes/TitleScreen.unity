@@ -4014,10 +4014,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 941597280145003272, guid: 8c8b93ff4eb02f646802cd45e6737713,
     type: 2}
-  soundVolumeAdjust: {fileID: 854853014}
+  soundVolumeAdjust: {fileID: 0}
   getAudio:
-  - name: Highlight
-    clip: {fileID: 8300000, guid: c2a1f1ad1d0808f4faf44c7a527f139a, type: 3}
+  - name: FirstTick
+    clip: {fileID: 8300000, guid: 17525c2114e1f7c4ea4c4529d7abd6a9, type: 3}
+    volume: 1
+    pitch: 1
+    enableLoop: 0
+    source: {fileID: 0}
+  - name: Tick
+    clip: {fileID: 8300000, guid: 776856172f1383b4288f517f2a20e27d, type: 3}
     volume: 1
     pitch: 1
     enableLoop: 0
@@ -4028,8 +4034,20 @@ MonoBehaviour:
     pitch: 1
     enableLoop: 0
     source: {fileID: 0}
-  - name: Tick
-    clip: {fileID: 8300000, guid: 776856172f1383b4288f517f2a20e27d, type: 3}
+  - name: Clap
+    clip: {fileID: 8300000, guid: 91de43678bc16654a866809bc6ddf0f0, type: 3}
+    volume: 1
+    pitch: 1
+    enableLoop: 0
+    source: {fileID: 0}
+  - name: Ding
+    clip: {fileID: 8300000, guid: 5454681da399a83499de7b2b59ca58da, type: 3}
+    volume: 1
+    pitch: 1
+    enableLoop: 0
+    source: {fileID: 0}
+  - name: Highlighted
+    clip: {fileID: 8300000, guid: c2a1f1ad1d0808f4faf44c7a527f139a, type: 3}
     volume: 1
     pitch: 1
     enableLoop: 0
@@ -7779,7 +7797,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f6dcabf6a50814a854e769215e2ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameOverlayCamera: {fileID: 7113210979240481049}
+  ParentOverlay: {fileID: 7113210979240481127}
   keyLayoutClass: {fileID: 934034504}
   tapObjectReader: {fileID: 1377081990}
   holdObjectReader: {fileID: 1377081989}

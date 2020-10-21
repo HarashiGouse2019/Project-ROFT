@@ -9,7 +9,7 @@ using static ROFTIOMANAGEMENT.RoftIO;
 public class MapReader : Singleton<MapReader>
 {
     [SerializeField]
-    private Camera GameOverlayCamera;
+    private GameObject ParentOverlay;
 
     [SerializeField] private static string m_name;
 
@@ -65,22 +65,20 @@ public class MapReader : Singleton<MapReader>
                 AssignRFTMNameToRead(SongEntityBeingRead, difficultyValue);
                 return;
             }
-            else if (GameManager.SongsNotFound)
-            {
-                Debug.Log("No songs had been detected.");
-                Initialize();
-                CalculateDifficultyRating();
-                return;
-            }
+            else if (GameManager.SongsNotFound) throw new SongNotFoundException();
             else if (RoftPlayer.Record)
             {
                 Initialize();
-                CalculateDifficultyRating();
                 return;
             }
-        }catch(MapErrorException mapEE)
+        }
+        catch(MapErrorException mapEE)
         {
             throw mapEE;
+        } 
+        catch(SongNotFoundException songNotFoundE)
+        {
+            throw songNotFoundE;
         }
     }
 
@@ -116,7 +114,7 @@ public class MapReader : Singleton<MapReader>
                 //Calculate difficulty rating
                 CalculateDifficultyRating();
             }
-            else throw new MapErrorException("Failed to Initialize Map");
+            else if(RoftPlayer.Instance == null) throw new MapErrorException("Failed to Initialize Map");
         }catch(MapErrorException mapEE)
         {
             throw mapEE;
@@ -228,23 +226,18 @@ public class MapReader : Singleton<MapReader>
         }
     }
 
+    /// <summary>
+    /// Parse line infomation from the .rftm to Note Objects based on corresponding types
+    /// </summary>
+    /// <returns></returns>
     static NoteObj ParseNewNote()
     {
-        NoteObj newNoteObj = new NoteObj();
-        newNoteObj.SetKeyID((uint)Convert.ToInt32(line.Split(separator)[0]));
-        newNoteObj.SetInitialSample(Convert.ToInt32(line.Split(separator)[1]));
-        newNoteObj.SetType((NoteObj.NoteObjType)Convert.ToInt32(line.Split(separator)[2]));
-
         //Check the type of the New Note Object
-
-        switch (newNoteObj.GetNoteType())
+        switch ((NoteObj.NoteObjType)Convert.ToInt32(line.Split(separator)[2]))
         {
             case NoteObj.NoteObjType.Tap:
-                TapObj newTapObj = new TapObj(
-                    (uint)Convert.ToInt32(line.Split(separator)[0]),
-                    Convert.ToInt32(line.Split(separator)[1])
-                    );
-                //Do nothing. There's no misscellaneous data
+                TapObj newTapObj = new TapObj((uint)Convert.ToInt32(line.Split(separator)[0]),
+                    Convert.ToInt32(line.Split(separator)[1]));
                 return newTapObj;
 
             case NoteObj.NoteObjType.Hold:
@@ -304,7 +297,7 @@ public class MapReader : Singleton<MapReader>
 
     static void KeyLayoutAwake()
     {
-        Instance.GameOverlayCamera.gameObject.SetActive(true);
+        Instance.ParentOverlay.SetActive(true);
 
         if (!Instance.keyLayoutClass.gameObject.activeInHierarchy)
         {
@@ -447,7 +440,7 @@ public class MapReader : Singleton<MapReader>
         Instance.holdObjectReader.objects.Clear();
         Instance.burstObjectReader.objects.Clear();
 
-        Instance.GameOverlayCamera.gameObject.SetActive(false);
+        Instance.ParentOverlay.SetActive(false);
     }
 
 #endregion

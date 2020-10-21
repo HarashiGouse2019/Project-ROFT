@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,56 +6,151 @@ using System.Linq;
 using ROFTIOMANAGEMENT;
 using System;
 using System.Text;
+using Extensions;
+using System.Collections;
 
 public class ObjectLogger : MonoBehaviour
 {
-    public static ObjectLogger Instance;
+    private static ObjectLogger Instance;
 
-    public class TrackPoint
+    [Serializable]
+    public class NoteStack
     {
-        public int initialKey;
-        public long initialSample;
+        public NoteObj[] NoteObjs;
+        int stackValue = 0;
+
+        public void Init(int size)
+        {
+            NoteObjs = new NoteObj[size];
+        }
+        public void AddItem(NoteObj obj)
+        {
+            NoteObjs[stackValue] = obj;
+            stackValue = NoteObjs.Length;
+        }
+
+        public void AddItem(NoteObj obj, int position)
+        {
+            NoteObjs[position] = obj;
+            stackValue = NoteObjs.Length;
+        }
+
+        public void RemoveItem()
+        {
+            NoteObjs[stackValue].Clear();
+            stackValue = NoteObjs.Length;
+        }
+
+        public void RemoveItem(int position)
+        {
+            NoteObjs[position].Clear();
+            stackValue = NoteObjs.Length;
+        }
+
+        /// <summary>
+        /// Return the size of the amount of stacks in this pattern set
+        /// </summary>
+        /// <returns></returns>
+        public int Size() => NoteObjs.Length;
+
+        /// <summary>
+        /// Check if Cell is Empty
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool IsCellEmpty(int value)
+        {
+            try
+            {
+                return NoteObjs != null && NoteObjs[value].Empty();
+            }
+            catch { return true; }
+        }
     }
 
+    /// <summary>
+    /// This class holds all object placement and timing
+    /// </summary>
     [Serializable]
     public class PatternSet
     {
         //We represent a NoteObj at this cell with a given
         //Tick value and Pattern value
-        public int ID = 1;
 
-        NoteObj[] logObject;
+        public NoteStack[] NoteStacks;
+
+        const int MAX_OBJECT_STACK = 4;
+
         public void Init(int size)
         {
-            logObject = new NoteObj[size];
-        }
+            NoteStacks = new NoteStack[MAX_OBJECT_STACK];
 
-        public void LogObject(NoteObj obj, int position)
-        {
-            logObject[position] = obj;
-        }
-
-        public void RemoveObject(int position)
-        {
-            logObject[position].Clear();
-        }
-
-        public int Size() => logObject.Length;
-
-        public bool IsCellEmpty(int value)
-        {
-            try
+            for (int i = 0; i < NoteStacks.Length; i++)
             {
-                return logObject != null && logObject[value].Empty();
+                NoteStacks[i] = new NoteStack();
+                NoteStacks[i].Init(size);
             }
-            catch { return true; }
         }
 
+        public void LogObject(NoteObj obj, int stackValue, int position)
+        {
+            NoteStacks[stackValue].AddItem(obj, position);
+        }
+
+        /// <summary>
+        /// Remove item from set stack
+        /// </summary>
+
+        public void RemoveObject(int stackValue, int position)
+        {
+            NoteStacks[stackValue].RemoveItem(position);
+        }
+
+
+        /// <summary>
+        /// Return the size of the amount of stacks in this pattern set
+        /// </summary>
+        /// <returns></returns>
+        public int Size() => NoteStacks.Length;
+
+
+        /// <summary>
+        /// Turn all object data into a string
+        /// </summary>
+        /// <returns></returns>
         public string ExtractData()
         {
             StringBuilder data = new StringBuilder();
-            foreach (NoteObj obj in logObject)
+
+            List<NoteObj> objectsInOrder = new List<NoteObj>();
+
+            //Add the object notes from each stack into a list
+            for (int row = 0; row < NoteStacks.Length; row++)
             {
+                NoteStack notestack = NoteStacks[row];
+
+                for (int col = 0; col < notestack.NoteObjs.Length; col++)
+                {
+                    NoteObj obj = null;
+
+                    if (notestack.NoteObjs[col] != null)
+                    {
+                        obj = notestack.NoteObjs[col];
+
+                        Debug.Log(obj.GetNoteType());
+                        objectsInOrder.Add(obj);
+                    }
+                }
+            }
+
+            //Order the list by sample position
+            var orderedList = from o in objectsInOrder orderby o.GetInitialeSample() select o;
+            objectsInOrder = orderedList.ToList();
+
+            //Loop throw again, and build string
+            for (int i = 0; i < objectsInOrder.Count; i++)
+            {
+                NoteObj obj = objectsInOrder[i];
                 if (obj != null && !obj.Empty())
                 {
                     data.Append(obj.AsString() + "\n");
@@ -64,12 +158,14 @@ public class ObjectLogger : MonoBehaviour
                 }
             }
 
+            //Return the constructed string
             return data.ToString();
         }
     }
 
     public TextMeshProUGUI TMP_Tick;
     public TextMeshProUGUI TMP_PatternSet;
+    public TextMeshProUGUI TMP_StackValue;
     public enum LoggerSize
     {
         WALTZ = 3,
@@ -121,7 +217,7 @@ public class ObjectLogger : MonoBehaviour
     float tick = -1;
     float inGameTime = 0;
 
-
+    [SerializeField]
     List<NoteObj> objects = new List<NoteObj>();
 
     List<PatternSet> patternSets = new List<PatternSet>();
@@ -144,27 +240,37 @@ public class ObjectLogger : MonoBehaviour
     float tickValue;
     float currentTick;
     float currentPatternSet;
+    float currentStack = 1;
 
     bool sequenceDone = false;
 
     public static string ObjectData;
 
+    //Keyboard controls
+    readonly Dictionary<KeyCode, int> keyCodeStackDictionary = new Dictionary<KeyCode, int>();
+    readonly KeyCode removeNote = KeyCode.Backspace;
+
     private void Awake()
     {
-        Instance = this;
-
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(Instance);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
+
     // Start is called before the first frame update
     void Start()
     {
+        keyCodeStackDictionary.Add(KeyCode.Alpha1, 1);
+        keyCodeStackDictionary.Add(KeyCode.Alpha2, 2);
+        keyCodeStackDictionary.Add(KeyCode.Alpha3, 3);
+        keyCodeStackDictionary.Add(KeyCode.Alpha4, 4);
         Init((int)loggerSize);
-    }
-
-    private void Update()
-    {
-        //Keyboard Responses
-        if (Input.GetKeyDown(KeyCode.Backspace))
-            RemoveNoteObject();
     }
 
     // Update is called once per frame
@@ -179,16 +285,67 @@ public class ObjectLogger : MonoBehaviour
         if (tick != currentTick && inGameTime > 0f)
         {
             tick = currentTick;
-            TMP_Tick.text = ((tick % (int)loggerSize) + 1).ToString();
-            TMP_PatternSet.text = (currentPatternSet + 1).ToString();
+            UpdateUI();
             if (Mathf.Floor(inGameTime % (60f / bpm)) == 0)
                 Tick();
+        }
+    }
+
+    void UpdateUI()
+    {
+        TMP_Tick.text = ((tick % (int)loggerSize) + 1).ToString();
+        TMP_PatternSet.text = (currentPatternSet + 1).ToString();
+        TMP_StackValue.text = currentStack.ToString();
+    }
+
+    IEnumerator KeyboardResponseCycle()
+    {
+        while (true)
+        {
+            //Keyboard Responses
+            if (Input.GetKeyDown(removeNote))
+                RemoveNoteObject();
+
+            if (Input.GetKeyDown(keyCodeStackDictionary.GetKey(1)))
+            {
+                KeyCode key = keyCodeStackDictionary.GetKey(1);
+                currentStack = keyCodeStackDictionary.GetValue(key);
+                Instance.RefreshLog();
+                ShowMarksInPatternSet();
+            }
+
+            if (Input.GetKeyDown(keyCodeStackDictionary.GetKey(2)))
+            {
+                KeyCode key = keyCodeStackDictionary.GetKey(2);
+                currentStack = keyCodeStackDictionary.GetValue(key);
+                Instance.RefreshLog();
+                ShowMarksInPatternSet();
+            }
+
+            if (Input.GetKeyDown(keyCodeStackDictionary.GetKey(3)))
+            {
+                KeyCode key = keyCodeStackDictionary.GetKey(3);
+                currentStack = keyCodeStackDictionary.GetValue(key);
+                Instance.RefreshLog();
+                ShowMarksInPatternSet();
+            }
+
+            if (Input.GetKeyDown(keyCodeStackDictionary.GetKey(4)))
+            {
+                KeyCode key = keyCodeStackDictionary.GetKey(4);
+                currentStack = keyCodeStackDictionary.GetValue(key);
+                Instance.RefreshLog();
+                ShowMarksInPatternSet();
+            }
+            yield return null;
         }
     }
 
 
     void Init(int size)
     {
+        StartCoroutine(KeyboardResponseCycle());
+
         #region BlockUI Setup
         blocks = new GameObject[size];
         float width = 0;
@@ -230,7 +387,7 @@ public class ObjectLogger : MonoBehaviour
 
             totalPatternSets = Mathf.Floor(samplesPerBeat / (float)loggerSize);
         }
-        Debug.Log(totalPatternSets);
+
         for (int i = 0; i < totalPatternSets; i++)
         {
             PatternSet newSet = new PatternSet();
@@ -262,6 +419,7 @@ public class ObjectLogger : MonoBehaviour
 
     void RefreshLog()
     {
+        UpdateUI();
         var _objects = from o in objects orderby o.GetInitialeSample() select o;
         objects = _objects.ToList();
     }
@@ -271,7 +429,7 @@ public class ObjectLogger : MonoBehaviour
         switch (note)
         {
             case NoteTool.TAP:
-                
+
                 Instance.keyData = (int)args[0];
                 Instance.sampleData = (long)args[1];
                 Instance.typeData = (int)args[2];
@@ -315,19 +473,19 @@ public class ObjectLogger : MonoBehaviour
                 return;
         }
 
-        
+
     }
 
     static void LogIntoSet(NoteObj obj)
     {
-        Instance.patternSets[(int)Instance.currentPatternSet].LogObject(obj, ((int)Instance.tick % (int)Instance.loggerSize));
+        Instance.patternSets[(int)Instance.currentPatternSet].LogObject(obj, (int)Instance.currentStack.ZeroBased(), ((int)Instance.tick % (int)Instance.loggerSize));
         Instance.RefreshLog();
         ShowMarksInPatternSet();
     }
 
     public void RemoveNoteObject()
     {
-        Instance.patternSets[(int)Instance.currentPatternSet].RemoveObject(((int)Instance.tick % (int)Instance.loggerSize));
+        Instance.patternSets[(int)Instance.currentPatternSet].RemoveObject((int)currentStack.ZeroBased(), ((int)Instance.tick % (int)Instance.loggerSize));
         Instance.RefreshLog();
         ShowMarksInPatternSet();
     }
@@ -363,15 +521,18 @@ public class ObjectLogger : MonoBehaviour
     {
         //Given the PatternSet, we have to look through all blocks in that pattern set, and
         //mark the blocks accordingly
-        for (int cell = 0; cell < Instance.patternSets[(int)Instance.currentPatternSet].Size(); cell++)
+        for (int cell = 0; cell < Instance.patternSets[(int)Instance.currentPatternSet].NoteStacks[(int)Instance.currentStack.ZeroBased()].Size(); cell++)
         {
-            if (Instance.patternSets[(int)Instance.currentPatternSet] != null &&
-                !Instance.patternSets[(int)Instance.currentPatternSet].IsCellEmpty(cell))
+            int index = (int)Instance.currentStack.ZeroBased();
+
+            NoteStack stack = Instance.patternSets[(int)Instance.currentPatternSet].NoteStacks[index];
+
+            if (stack != null && !stack.IsCellEmpty(cell))
                 Instance.blocks[cell].GetComponent<Button>().image.color = Instance.c_tickNoteData;
+
             else if (Instance.tick % (int)Instance.loggerSize == cell)
-            {
                 Instance.blocks[cell].GetComponent<Button>().image.color = Instance.c_currentTick;
-            }
+
             else
             {
                 Instance.blocks[cell].GetComponent<Button>().image.color = (int)Instance.loggerSize != 4 && cell % ((int)Instance.loggerSize / 8) != 0 ? Instance.c_emptyTickGrey :
@@ -385,4 +546,9 @@ public class ObjectLogger : MonoBehaviour
     {
         Instance.blocks[(int)Instance.tick].GetComponent<Button>().image.color = Instance.c_tickTimeData;
     }
+
+    public static long GetFinishSample() => Instance.finishSample;
+    public static List<TrackPoint> GetTrackPoints() => Instance.trackPoints;
+    public static int GetBurstDirection() => Instance.burstDirection;
+    public static bool IsNull() => Instance == null;
 }

@@ -14,6 +14,7 @@ public class AppearEffect : CloseInEffect
     Color originalOverlayAppearance;
 
     float time;
+
     void Awake()
     {
         Instance = this;
@@ -27,7 +28,6 @@ public class AppearEffect : CloseInEffect
             if (overlaySprite != image)
                 childSprite = overlaySprite;
         }
-
 
         if (Key_Layout.Instance != null && Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
         {
@@ -43,9 +43,7 @@ public class AppearEffect : CloseInEffect
 
     private void OnEnable()
     {
-
         transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-
 
         foreach (SpriteRenderer overlaySprite in overlaySprites)
         {

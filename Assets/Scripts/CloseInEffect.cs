@@ -28,6 +28,7 @@ public class CloseInEffect : NoteEffector
     public bool dontEffectMe = false;
 
     public int mapReaderSeqPos;
+
     public ObjectTypes objReader;
 
     //keyInputDownReceived will be given a true for one frame

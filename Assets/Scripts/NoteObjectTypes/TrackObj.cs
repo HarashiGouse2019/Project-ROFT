@@ -4,6 +4,9 @@ using System.Text;
 [System.Serializable]
 public class TrackObj : NoteObj
 {
+    //Misscellaneous data for Track Type
+    protected List<TrackPoint> points;
+
     
 
     public TrackObj(uint initialKey, long initialSample, List<TrackPoint> points)
@@ -16,6 +19,7 @@ public class TrackObj : NoteObj
 
     public override string AsString() =>
         string.Format("{0},{1},{2},/{{3}/}", initialKey, initialSample, (int)type, PointListToRoftFormatString());
+    
     string PointListToRoftFormatString()
     {
         string formatString = string.Empty;

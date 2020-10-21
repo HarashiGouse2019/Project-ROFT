@@ -1,6 +1,11 @@
 ﻿[System.Serializable]
 public class HoldObj : NoteObj
 {
+    //Miscellaneous data for Hold Type
+    protected long finalSample = -1;
+
+    
+
     public HoldObj(uint initialKey, long initialSample, long finalSample)
     {
         this.initialSample = initialKey;

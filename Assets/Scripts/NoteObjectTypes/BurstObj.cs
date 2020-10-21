@@ -1,6 +1,8 @@
 ﻿[System.Serializable]
 public class BurstObj : NoteObj
 {
+    //Misscellaneous data for Burst Type
+    protected uint direction;
 
     public BurstObj(uint initialKey, long initialSample, uint direction)
     {

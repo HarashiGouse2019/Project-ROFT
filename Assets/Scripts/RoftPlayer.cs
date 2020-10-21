@@ -123,6 +123,20 @@ public class RoftPlayer : Singleton<RoftPlayer>
         }
     }
 
+    public void Play()
+    {
+        PlayMusic();
+    }
+
+    public void Pause()
+    {
+        PauseMusic();
+    }
+
+    public void Stop()
+    {
+        StopMusic();
+    }
 
     public static void LoadMusic()
     {
@@ -265,5 +279,9 @@ public class RoftPlayer : Singleton<RoftPlayer>
 
             seconds = musicSource.time - (60 * minutes);
         }
+    }
+    public static void SetToRecord()
+    {
+        Record = true;
     }
 }

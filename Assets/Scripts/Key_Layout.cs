@@ -264,6 +264,7 @@ public class Key_Layout : MonoBehaviour
                 break;
         }
 
+       
         gridLayoutGroup.constraintCount = (int)numCols;
 
         for (int row = 0; row < numRows; row++)
@@ -289,7 +290,7 @@ public class Key_Layout : MonoBehaviour
         for (int keyNum = 0; keyNum < keyObjects.Count; keyNum++)
         {
             //Check if these notes are interactable
-            if (recordKeyInput)
+            if (RoftPlayer.Record)
             {
                 InteractableKey newInteractable = keyObjects[keyNum].gameObject.AddComponent<InteractableKey>();
                 newInteractable.SetKeyNum(keyNum);

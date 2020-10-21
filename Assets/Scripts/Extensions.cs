@@ -1,10 +1,79 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Text;
 using UnityEngine;
 
 namespace Extensions
 {
+    public static class Convenience
+    {
+        public static int ZeroBased(this int value)
+        {
+            return value - 1;
+        }
+
+        public static float ZeroBased(this float value)
+        {
+            return value - 1f;
+        }
+
+        public static double ZeroBased(this double value)
+        {
+            return value - 1f;
+        }
+    }
+
+    [ImmutableObject(true), Serializable]
+    public struct Var<T>
+    {
+        public T Value;
+
+        public Var(T value)
+        {
+            Value = value;
+        }
+
+        public static Var<T> operator +(Var<T> a, Var<T> b)
+        {
+            return (a + b);
+        }
+
+        public static Var<T> operator -(Var<T> a, Var<T> b)
+        {
+            return (a - b);
+        }
+
+        public static implicit operator Var<T>(T value)
+        {
+            return new Var<T>(value);
+        }
+    }
+
+    public static class Dictionary
+    {
+        public static K GetKey<K, V>(this Dictionary<K,V> keyValuePairs, V value)
+        {
+            foreach(KeyValuePair<K, V> keyValuePair in keyValuePairs)
+            {
+                if (value.ToString() == keyValuePair.Value.ToString())
+                    return keyValuePair.Key;
+            }
+            return default;
+        }
+
+        public static V GetValue<K, V>(this Dictionary<K,V> keyValuePairs, K key)
+        {
+            foreach(KeyValuePair<K, V> keyValuePair in keyValuePairs)
+            {
+                if (key.ToString() == keyValuePair.Key.ToString())
+                    return keyValuePair.Value;
+            }
+            return default;
+        }
+    }
+
     public static class Boolean
     {
         public static int AsNumericValue(this bool _) => _ ? 1 : 0;

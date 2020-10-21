@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class AudioManager : Singleton<AudioManager>, IVolumeControl
 {
-    [System.Serializable]
+    [Serializable]
     public class Audio
     {
         public string name; // Name of the audio

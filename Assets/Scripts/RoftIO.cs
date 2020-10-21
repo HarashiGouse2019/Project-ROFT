@@ -233,7 +233,7 @@ namespace ROFTIOMANAGEMENT
             string t_difficulty = "Difficulty".AsTag();
             string p_DifficultyName = "DifficultyName".AsProperty(RoftCreator.GetDifficultyName()) + newLine;
             string p_StressBuild = "StressBuild".AsProperty(RoftCreator.GetStressBuild().ToString()) + newLine;
-            string p_ObjectCount = "ObjectCount".AsProperty(ObjectLogger.Instance != null ? ObjectLogger.GetObjectCount() : 0) + newLine;
+            string p_ObjectCount = "ObjectCount".AsProperty(!ObjectLogger.IsNull() ? ObjectLogger.GetObjectCount() : 0) + newLine;
             #region Key Count
             string keyInfo = RoftCreator.GetTotalKeys().ToString();
 
@@ -250,7 +250,7 @@ namespace ROFTIOMANAGEMENT
 
             #region [Objects]
             string t_objects = "Objects".AsTag();
-            string objectData = ObjectLogger.Instance != null ? ObjectLogger.ObjectData : "NIL";
+            string objectData = !ObjectLogger.IsNull() ? ObjectLogger.ObjectData : "NIL";
             #endregion
 
             #region .RFTM Information Compilation

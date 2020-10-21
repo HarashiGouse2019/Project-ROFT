@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Singleton<T>: MonoBehaviour
 {

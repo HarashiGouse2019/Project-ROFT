@@ -75,10 +75,13 @@ public class RoftCreator : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        
     }
 
     private void Start()
     {
+        RoftPlayer.SetToRecord();
+
         /*We'll check if we're recording.
          If we are, we generate a new .rftm file.
          
@@ -120,6 +123,7 @@ public class RoftCreator : MonoBehaviour
                 FileEx.TryCopy(AssetDatabase.GetAssetPath(backgroundImage), newSongDirectoryPath + "/" + backgroundImage.name + backgroundImgExt);
 
             RoftPlayer.LoadMusic();
+            MapReader.Read(-1, -1);
         }
 #endif 
     }
