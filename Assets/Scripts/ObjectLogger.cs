@@ -306,36 +306,15 @@ public class ObjectLogger : MonoBehaviour
             if (Input.GetKeyDown(removeNote))
                 RemoveNoteObject();
 
-            if (Input.GetKeyDown(keyCodeStackDictionary.GetKey(1)))
+            foreach (KeyValuePair<KeyCode, int> input in keyCodeStackDictionary)
             {
-                KeyCode key = keyCodeStackDictionary.GetKey(1);
-                currentStack = keyCodeStackDictionary.GetValue(key);
-                Instance.RefreshLog();
-                ShowMarksInPatternSet();
-            }
-
-            if (Input.GetKeyDown(keyCodeStackDictionary.GetKey(2)))
-            {
-                KeyCode key = keyCodeStackDictionary.GetKey(2);
-                currentStack = keyCodeStackDictionary.GetValue(key);
-                Instance.RefreshLog();
-                ShowMarksInPatternSet();
-            }
-
-            if (Input.GetKeyDown(keyCodeStackDictionary.GetKey(3)))
-            {
-                KeyCode key = keyCodeStackDictionary.GetKey(3);
-                currentStack = keyCodeStackDictionary.GetValue(key);
-                Instance.RefreshLog();
-                ShowMarksInPatternSet();
-            }
-
-            if (Input.GetKeyDown(keyCodeStackDictionary.GetKey(4)))
-            {
-                KeyCode key = keyCodeStackDictionary.GetKey(4);
-                currentStack = keyCodeStackDictionary.GetValue(key);
-                Instance.RefreshLog();
-                ShowMarksInPatternSet();
+                if (Input.GetKeyDown(input.Key))
+                {
+                    KeyCode key = input.Key;
+                    currentStack = input.Value;
+                    Instance.RefreshLog();
+                    ShowMarksInPatternSet();
+                }
             }
             yield return null;
         }

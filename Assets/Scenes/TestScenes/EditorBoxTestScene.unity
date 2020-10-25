@@ -2246,7 +2246,7 @@ MonoBehaviour:
   m_material: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
   m_isDefaultMaterial: 0
-  m_padding: 1.25
+  m_padding: 0
   m_canvasRenderer: {fileID: 486564474}
   m_TextComponent: {fileID: 1685984533}
   m_materialReferenceIndex: 1
@@ -8866,6 +8866,7 @@ MonoBehaviour:
   offsetInSeconds: 1.9
   prefab: {fileID: 9073866310013477241, guid: 111100c1cc59f814bb23e304469e5350, type: 3}
   bpm: 220
+  objects: []
   keyData: 0
   sampleData: 0
   typeData: 0

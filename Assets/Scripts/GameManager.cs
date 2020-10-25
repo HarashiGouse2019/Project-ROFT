@@ -6,10 +6,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Cakewalk.IoC;
 
 using ROFTIO = ROFTIOMANAGEMENT.RoftIO;
-using System.Linq.Expressions;
 
 public class GameManager : MonoBehaviour
 {
@@ -123,6 +121,7 @@ public class GameManager : MonoBehaviour
     private long previousScore; //This will be used for a increasing effect
     public int Combo { set; get; }
     public static Color LogNormalColor { get; internal set; }
+    public float GAME_DELTA { get; private set; } = 0.01f;
 
     private int maxCombo;
     public float overallAccuracy = 100.00f; //The average accuracy during the song

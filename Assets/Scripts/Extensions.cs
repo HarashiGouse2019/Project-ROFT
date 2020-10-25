@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -6,7 +7,7 @@ using System.Text;
 using UnityEngine;
 
 namespace Extensions
-{
+{ 
     public static class Convenience
     {
         public static int ZeroBased(this int value)
@@ -22,6 +23,14 @@ namespace Extensions
         public static double ZeroBased(this double value)
         {
             return value - 1f;
+        }
+    }
+
+    public static class Coroutine 
+    {
+        public static void Start(this IEnumerator enumerator)
+        {
+            CoroutineHandler.Execute(enumerator);
         }
     }
 
