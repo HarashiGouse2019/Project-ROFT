@@ -271,16 +271,19 @@ public class RoftScouter
 
     static Sprite ConvertTextureToSprite(Texture2D _texture, float _pixelPerUnit = 100.0f, SpriteMeshType _spriteType = SpriteMeshType.Tight)
     {
+
+        Sprite newSprite = null;
         //Converts a Texture2D to a sprite, assign this texture to a new sprite and return its reference
         try
         {
-            Sprite newSprite = Sprite.Create(_texture, new Rect(0, 0, _texture.width, _texture.height), new Vector2(0, 0), _pixelPerUnit, 0, _spriteType);
+            newSprite = Sprite.Create(_texture, new Rect(0, 0, _texture.width, _texture.height), new Vector2(0, 0), _pixelPerUnit, 0, _spriteType);
 
             return newSprite;
         }
         catch
         {
-            return null;
+            newSprite = GameManager.Instance.unknownSongCover;
+            return newSprite;
         }
     }
 

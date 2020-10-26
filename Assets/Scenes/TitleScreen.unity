@@ -10565,6 +10565,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SongList: {fileID: 0}
+  unknownSongCover: {fileID: 21300000, guid: 7e34a5a21a6deb844b339123c727e963, type: 3}
   isGamePaused: 0
   PAUSE_OVERLAY: {fileID: 214196830}
   gameMode: 0

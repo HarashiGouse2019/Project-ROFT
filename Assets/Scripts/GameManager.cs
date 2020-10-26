@@ -66,6 +66,10 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private SongList SongList;
 
+    [SerializeField]
+    public Sprite unknownSongCover;
+    
+
     [Header("Game Pause Overlay")]
     [SerializeField] private bool isGamePaused = false;
     public bool IsGamePaused
@@ -172,7 +176,7 @@ public class GameManager : MonoBehaviour
     {
         //Check for existing files and directories
         VerifyDirectories();
-
+        
         #region Singleton
         if (Instance == null)
         {
