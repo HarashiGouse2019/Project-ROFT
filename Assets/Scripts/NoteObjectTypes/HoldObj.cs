@@ -2,32 +2,29 @@
 public class HoldObj : NoteObj
 {
     //Miscellaneous data for Hold Type
-    protected long finalSample = -1;
+    protected long FinalSample = -1;
 
-    
 
-    public HoldObj(uint initialKey, long initialSample, long finalSample)
+
+    public HoldObj(uint initialKey, long initialSample, long finalSample) : base()
     {
-        this.initialSample = initialKey;
-        this.initialSample = initialSample;
-        this.finalSample = finalSample;
-        type = NoteObjType.Hold;
+        InitialSample = initialKey;
+        InitialSample = initialSample;
+        FinalSample = finalSample;
+        Type = NoteObjType.Hold;
     }
 
-    public override string AsString() => 
-        string.Format("{0},{1},{2},{3}", initialKey, initialSample, (int)type, finalSample);
+    public override string AsString() => $"{InitialKey},{InitialSample},{Type},{FinalSample},{PatternSetValue},{TickValue},{LayerValue}";
 
     public override bool Empty() =>
-        (initialKey == 0 && initialSample == 0 && type == default && finalSample == 0);
+        (InitialKey == 0 && InitialSample == 0 && Type == default && FinalSample == 0);
 
     public override void Clear()
     {
-        initialKey = 0;
-        initialSample = 0;
-        type = default;
-        finalSample = 0;
+        base.Clear();
+        FinalSample = 0;
     }
 
-    public void SetFinalSample(long value) => finalSample = value; 
-    public long GetFinalSample() => finalSample;
+    public void SetFinalSample(long value) => FinalSample = value; 
+    public long GetFinalSample() => FinalSample;
 }

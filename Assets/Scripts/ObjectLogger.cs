@@ -237,10 +237,10 @@ public class ObjectLogger : MonoBehaviour
     string dataFormat;
 
     public static NoteTool noteTool;
-    float tickValue;
+    public static float TickValue { get; private set; }
     float currentTick;
-    float currentPatternSet;
-    float currentStack = 1;
+    public static float CurrentPatternSet { get; private set; }
+    public static float CurrentStack { get; private set; } = 1;
 
     bool sequenceDone = false;
 
@@ -278,9 +278,9 @@ public class ObjectLogger : MonoBehaviour
     {
         inGameTime = RoftPlayer.musicSource.time - offsetInSeconds;
 
-        tickValue = inGameTime / (60f / (bpm * rate * ((float)loggerSize / (float)LoggerSize.WHOLE)));
-        currentTick = Mathf.Floor(tickValue);
-        currentPatternSet = Mathf.Floor(tickValue / (float)loggerSize);
+        TickValue = inGameTime / (60f / (bpm * rate * ((float)loggerSize / (float)LoggerSize.WHOLE)));
+        currentTick = Mathf.Floor(TickValue);
+        CurrentPatternSet = Mathf.Floor(TickValue / (float)loggerSize);
 
         if (tick != currentTick && inGameTime > 0f)
         {
@@ -294,8 +294,8 @@ public class ObjectLogger : MonoBehaviour
     void UpdateUI()
     {
         TMP_Tick.text = ((tick % (int)loggerSize) + 1).ToString();
-        TMP_PatternSet.text = (currentPatternSet + 1).ToString();
-        TMP_StackValue.text = currentStack.ToString();
+        TMP_PatternSet.text = (CurrentPatternSet + 1).ToString();
+        TMP_StackValue.text = CurrentStack.ToString();
     }
 
     IEnumerator KeyboardResponseCycle()
@@ -311,7 +311,7 @@ public class ObjectLogger : MonoBehaviour
                 if (Input.GetKeyDown(input.Key))
                 {
                     KeyCode key = input.Key;
-                    currentStack = input.Value;
+                    CurrentStack = input.Value;
                     Instance.RefreshLog();
                     ShowMarksInPatternSet();
                 }
@@ -457,14 +457,14 @@ public class ObjectLogger : MonoBehaviour
 
     static void LogIntoSet(NoteObj obj)
     {
-        Instance.patternSets[(int)Instance.currentPatternSet].LogObject(obj, (int)Instance.currentStack.ZeroBased(), ((int)Instance.tick % (int)Instance.loggerSize));
+        Instance.patternSets[(int)CurrentPatternSet].LogObject(obj, (int)CurrentStack.ZeroBased(), ((int)Instance.tick % (int)Instance.loggerSize));
         Instance.RefreshLog();
         ShowMarksInPatternSet();
     }
 
     public void RemoveNoteObject()
     {
-        Instance.patternSets[(int)Instance.currentPatternSet].RemoveObject((int)currentStack.ZeroBased(), ((int)Instance.tick % (int)Instance.loggerSize));
+        Instance.patternSets[(int)CurrentPatternSet].RemoveObject((int)CurrentStack.ZeroBased(), ((int)Instance.tick % (int)Instance.loggerSize));
         Instance.RefreshLog();
         ShowMarksInPatternSet();
     }
@@ -500,11 +500,11 @@ public class ObjectLogger : MonoBehaviour
     {
         //Given the PatternSet, we have to look through all blocks in that pattern set, and
         //mark the blocks accordingly
-        for (int cell = 0; cell < Instance.patternSets[(int)Instance.currentPatternSet].NoteStacks[(int)Instance.currentStack.ZeroBased()].Size(); cell++)
+        for (int cell = 0; cell < Instance.patternSets[(int)CurrentPatternSet].NoteStacks[(int)CurrentStack.ZeroBased()].Size(); cell++)
         {
-            int index = (int)Instance.currentStack.ZeroBased();
+            int index = (int)CurrentStack.ZeroBased();
 
-            NoteStack stack = Instance.patternSets[(int)Instance.currentPatternSet].NoteStacks[index];
+            NoteStack stack = Instance.patternSets[(int)CurrentPatternSet].NoteStacks[index];
 
             if (stack != null && !stack.IsCellEmpty(cell))
                 Instance.blocks[cell].GetComponent<Button>().image.color = Instance.c_tickNoteData;

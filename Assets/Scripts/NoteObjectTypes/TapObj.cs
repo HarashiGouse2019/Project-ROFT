@@ -1,15 +1,14 @@
 ﻿[System.Serializable]
 public class TapObj : NoteObj
 {
-    public TapObj(uint initialKey, long initialSample)
+    public TapObj(uint initialKey, long initialSample) : base()
     {
-        this.initialKey = initialKey;
-        this.initialSample = initialSample;
-        type = NoteObjType.Tap;
+        InitialKey = initialKey;
+        InitialSample = initialSample;
+        Type = NoteObjType.Tap;
     }
 
-    public override string AsString() => 
-        string.Format("{0},{1},{2}", initialKey, initialSample, (int)type);
+    public override string AsString() => $"{InitialKey},{InitialSample},{Type},{PatternSetValue},{TickValue},{LayerValue}";
 
     public override bool Empty() => base.Empty();
     public override void Clear() => base.Clear();

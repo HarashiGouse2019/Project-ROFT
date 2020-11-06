@@ -5,45 +5,42 @@ using System.Text;
 public class TrackObj : NoteObj
 {
     //Misscellaneous data for Track Type
-    protected List<TrackPoint> points;
+    protected List<TrackPoint> Points;
 
     
 
-    public TrackObj(uint initialKey, long initialSample, List<TrackPoint> points)
+    public TrackObj(uint initialKey, long initialSample, List<TrackPoint> points) : base()
     {
-        this.initialKey = initialKey;
-        this.initialSample = initialSample;
-        this.points = points;
-        type = NoteObjType.Track;
+        InitialKey = initialKey;
+        InitialSample = initialSample;
+        Points = points;
+        Type = NoteObjType.Track;
     }
 
-    public override string AsString() =>
-        string.Format("{0},{1},{2},/{{3}/}", initialKey, initialSample, (int)type, PointListToRoftFormatString());
+    public override string AsString() => $"{InitialKey},{InitialSample},{(int)Type},{"{"}{PointListToRoftFormatString()}{"}"}";
     
     string PointListToRoftFormatString()
     {
         string formatString = string.Empty;
         StringBuilder sb = new StringBuilder(formatString);
-        for(int index = 0; index < points.Count; index++)
+        for(int index = 0; index < Points.Count; index++)
         {
-            TrackPoint point = points[index];
-            sb.Append(string.Format(index < points.Count - 1 ? "{0},{1}|" : "{0},{1}", point.connectionKey, point.connectionSample));
+            TrackPoint point = Points[index];
+            sb.Append(string.Format(index < Points.Count - 1 ? "{0},{1}|" : "{0},{1}", point.connectionKey, point.connectionSample));
         }
 
         return formatString;
     }
 
     public override bool Empty() =>
-        initialKey == 0 && initialSample == 0 && type == default && (points == null || points.Count == 0);
+        InitialKey == 0 && InitialSample == 0 && Type == default && (Points == null || Points.Count == 0);
 
     public override void Clear()
     {
-        initialKey = 0;
-        initialSample = 9;
-        type = default;
-        points.Clear();
+        base.Clear();
+        Points.Clear();
     }
 
-    public void SetTrackPoint(List<TrackPoint> pointValues) => points = pointValues;
-    public List<TrackPoint> GetTrackPoints() => points;
+    public void SetTrackPoint(List<TrackPoint> pointValues) => Points = pointValues;
+    public List<TrackPoint> GetTrackPoints() => Points;
 }

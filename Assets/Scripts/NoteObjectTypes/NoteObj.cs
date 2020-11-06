@@ -12,30 +12,57 @@ public class NoteObj
     }
 
     //NoteInstanceID
-    protected uint initialKey;
-    protected long initialSample;
-    protected NoteObjType type; //Use this to Cast Type
+    protected uint InitialKey;
+    protected long InitialSample;
+    protected NoteObjType Type; //Use this to Cast Type
 
-    public virtual void SetKeyID(uint value)
+    //Editor information
+    protected int PatternSetValue;  //Pattern Set that this note is on
+    protected int TickValue;        //The tick that it's positioned
+    protected uint LayerValue;      //On what layer on a selected tick
+
+    public NoteObj()
     {
-        initialKey = value;
+        PatternSetValue = (int)ObjectLogger.CurrentPatternSet;
+        TickValue = (int)ObjectLogger.TickValue;
+        LayerValue = (uint)ObjectLogger.CurrentStack;
+    }
+
+    public virtual void SetInitialKey(uint value)
+    {
+        InitialKey = value;
     }
 
     public virtual void SetInitialSample(long value)
     {
-        initialSample = value;
+        InitialSample = value;
     }
 
     public virtual void SetType(NoteObjType type)
     {
-        this.type = type;
+        Type = type;
     }
 
-    public virtual uint GetKey() => initialKey;
+    public virtual void SetPatternSetValue(int value)
+    {
+        PatternSetValue = value;
+    }
 
-    public virtual long GetInitialeSample() => initialSample;
+    public virtual void SetTickValue(int value)
+    {
+        TickValue = value;
+    }
 
-    public virtual NoteObjType GetNoteType() => type;
+    public virtual void SetLayerValue(uint value)
+    {
+        LayerValue = value;
+    }
+
+    public virtual uint GetKey() => InitialKey;
+
+    public virtual long GetInitialeSample() => InitialSample;
+
+    public virtual NoteObjType GetNoteType() => Type;
 
     public virtual string AsString()
     {
@@ -44,14 +71,22 @@ public class NoteObj
 
     public virtual bool Empty()
     {
-        return (initialKey == 0 && initialSample == 0 && type == default);
+        return (InitialKey == 0 &&
+                InitialSample == 0 &&
+                Type == default &&
+                PatternSetValue == 0 &&
+                TickValue == 0 &&
+                LayerValue == 0);
     }
 
     public virtual void Clear()
     {
-        initialKey = 0;
-        initialSample = 0;
-        type = default;
+        InitialKey = 0;
+        InitialSample = 0;
+        Type = default;
+        PatternSetValue = 0;
+        TickValue = 0;
+        LayerValue = 0;
     }
 }
 
