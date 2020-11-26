@@ -68,6 +68,26 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     public Sprite unknownSongCover;
+
+    //What you can do to a song
+    enum SongSelectionMode
+    {
+        Play,
+        Edit
+    }
+
+    private static SongSelectionMode songMode;
+    public static uint SongMode
+    {
+        get
+        {
+            return (uint)songMode;
+        }
+        set
+        {
+            songMode = (SongSelectionMode)value;
+        }
+    }
     
 
     [Header("Game Pause Overlay")]
@@ -168,7 +188,7 @@ public class GameManager : MonoBehaviour
     private delegate void Main();
     private Main core;
 
-    EventManager.CallbackMethod scoutingDelegate;
+    EventManager.Event scoutingDelegate;
     internal static bool ErrorDetected = false;
     public bool detected;
 
@@ -535,14 +555,14 @@ public class GameManager : MonoBehaviour
         //We'll be using the EventManager to perform this method.
         //We have to create a Callback Method (aka; our delegate)
         //We store the function we want into our delegate
-        scoutingDelegate = () => RoftScouter.OnStart();
+        scoutingDelegate = EventManager.AddNewEvent(000, "ON_BEGIN_SCOUT", () => RoftScouter.OnStart());
 
         //And then we add our delegate (which plays as a listner)
-        EventManager.AddEventListener("ON_BEGIN_SCOUT", scoutingDelegate);
+
 
         //Now we execute it, and then remove it.
         EventManager.TriggerEvent("ON_BEGIN_SCOUT");
-        EventManager.RemoveEventListener("ON_BEGIN_SCOUT", scoutingDelegate);
+        EventManager.RemoveEvent("ON_BEGIN_SCOUT");
     }
 
     void CreateRecords()
@@ -613,5 +633,10 @@ public class GameManager : MonoBehaviour
     /// Turn off Cursor
     /// </summary>
     public static void TurnOffCursor() => Cursor.visible = false;
+
+    public static void ChangeSongSelectionMode(uint value)
+    {
+        SongMode = (value == 0 || value == 1) ? value : (value/value)-1 ;
+    }
     #endregion
 }

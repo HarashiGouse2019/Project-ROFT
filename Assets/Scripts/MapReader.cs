@@ -366,10 +366,9 @@ public class MapReader : Singleton<MapReader>
          That's at least what I hope this will do.*/
         try
         {
-            int count = 0;
-
-            foreach (Song_Entity.Song_Entity_Difficulty diffVal in _song.Difficulties)
+            for(int count = 0; count < _song.Difficulties.Count; count++)
             {
+                Song_Entity.Song_Entity_Difficulty diffVal = _song.Difficulties[count];
                 if (diffVal == null) throw new MapErrorException("Failed to load map...");
                 if (count == _difficultValue)
                 {
@@ -382,8 +381,6 @@ public class MapReader : Singleton<MapReader>
                     CalculateDifficultyRating();
                     return;
                 }
-
-                count++;
             }
             throw new MapErrorException("Failed to load map");
         }
@@ -432,6 +429,7 @@ public class MapReader : Singleton<MapReader>
 
     public static void WrapUp()
     {
+        Debug.Log("Wrapping Up ");
         if (Instance.keyLayoutClass.gameObject.activeInHierarchy)
             Instance.keyLayoutClass.Flush();
 

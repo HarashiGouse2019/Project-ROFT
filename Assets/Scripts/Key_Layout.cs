@@ -66,7 +66,6 @@ public class Key_Layout : MonoBehaviour
     public List<KeyCode> secondaryBindedKeys = new List<KeyCode>();
 
     public static List<GameObject> keyObjects = new List<GameObject>();
-    public List<GameObject> tempShowKeyObjs = new List<GameObject>();
 
     [Header("Creating Layout")]
     public GameObject key;
@@ -125,11 +124,6 @@ public class Key_Layout : MonoBehaviour
 
         keyConfig = new KeyConfig();
         keyConfig = JsonUtility.FromJson<KeyConfig>(keyConfig.GetJSONString());
-    }
-
-    private void Update()
-    {
-        tempShowKeyObjs = keyObjects;
     }
 
     void InitiateAutoKeyBind()
@@ -317,8 +311,8 @@ public class Key_Layout : MonoBehaviour
         {
             keyObject.GetComponent<KeyId>().pooler.FlushPool();
         }
+        keyObjects.Clear();
         primaryBindedKeys.Clear();
         secondaryBindedKeys.Clear();
-        tempShowKeyObjs.Clear();
     }
 }

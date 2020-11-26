@@ -83,9 +83,9 @@ public class RoftTransition : MonoBehaviour
                     break;
 
                 case Transitions.GAMEROOM_TO_SONGROOM:
+                    MapReader.WrapUp();
                     GameManager.Instance.UnPause(false);
                     RoftPlayer.StopMusic();
-                    MapReader.WrapUp();
                     PanelEvents.Instance.isSongRoomTarget = true;
                     PanelEvents.Instance.PanelAnimator.SetBool("isSongRoomTarget", PanelEvents.Instance.isSongRoomTarget);
                     break;

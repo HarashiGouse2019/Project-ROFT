@@ -120,5 +120,6 @@ public class ObjectPooler : MonoBehaviour
             if (pooledObjects[i].activeInHierarchy)
                 pooledObjects[i].SetActive(false);
         }
+
     }
 }

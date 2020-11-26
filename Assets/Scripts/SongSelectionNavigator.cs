@@ -8,8 +8,11 @@ public class SongSelectionNavigator : MonoBehaviour
 
     public void Begin()
     {
-
         MapReader.Read((int)SongEntityPosition, (int)DifficultyPosition);
+    }
+
+    public void BeginEdit()
+    {
 
     }
 
