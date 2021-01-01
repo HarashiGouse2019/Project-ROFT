@@ -18,6 +18,8 @@ public class SongEntry : MonoBehaviour
 
     private uint INDEX_ID = uint.MaxValue;
 
+    SongList songList;
+
     public void UpdateSongTitle(string value)
     {
         TMP_SongTitle.text = value;
@@ -48,7 +50,7 @@ public class SongEntry : MonoBehaviour
     /// </summary>
     public void PreviewEntry()
     {
-        SongList songList = SongList.Instance;
+        songList = SongList.Instance;
 
         songList.GetSongNavigator().SetSongEntityPosition((uint)INDEX_ID);
 

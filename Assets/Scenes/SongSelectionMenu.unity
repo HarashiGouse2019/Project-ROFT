@@ -3654,8 +3654,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 379df8daf1507614db31c1161d3f5fa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SongEntityPosition: 0
-  DifficultyPosition: 0
 --- !u!224 &802534013
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8297,6 +8295,7 @@ GameObject:
   - component: {fileID: 1881851371}
   - component: {fileID: 1881851373}
   - component: {fileID: 1881851372}
+  - component: {fileID: 1881851374}
   m_Layer: 0
   m_Name: Content
   m_TagString: Untagged
@@ -8338,8 +8337,8 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 400
-    m_Bottom: 520
+    m_Top: 406
+    m_Bottom: 490
   m_ChildAlignment: 4
   m_Spacing: -25
   m_ChildForceExpandWidth: 1
@@ -8397,6 +8396,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectPooler: {fileID: 1881851372}
+--- !u!114 &1881851374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1881851368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a47247547b47014e9bafe12ed938b52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1895885323
 GameObject:
   m_ObjectHideFlags: 0

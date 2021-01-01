@@ -2131,7 +2131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba7aefe640f18a741b404b4082386e48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetFrameRate: -1
+  targetFrameRate: 120
   fpsText: {fileID: 873614703}
 --- !u!4 &422856137
 Transform:
@@ -5409,7 +5409,6 @@ MonoBehaviour:
   dataText: {fileID: 0}
   primaryBindedKeys: 
   secondaryBindedKeys: 
-  tempShowKeyObjs: []
   key: {fileID: 871582474392048424, guid: 51b4336d02109f1499bbc0c5ebbc8085, type: 3}
   pooler: {fileID: 934034501}
 --- !u!114 &934034505
@@ -5425,7 +5424,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   approachSpeed: 9.350000381469727
-  alignment: 6000
+  alignment: 0
   accuracy: 8.75
   notePrefab: {fileID: 7740991288490540822, guid: e2796b60eea1436459b59d2b488f1bf2,
     type: 3}
@@ -10596,7 +10595,7 @@ MonoBehaviour:
   overallGrade: 0
   stressBuild: 10
   accuracyStats: 0000000000000000000000000000000000000000
-  isAutoPlaying: 0
+  isAutoPlaying: 1
   isCountingDown: 0
   detected: 0
 --- !u!81 &145309161831652554
