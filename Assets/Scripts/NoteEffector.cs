@@ -77,7 +77,7 @@ public class NoteEffector : MonoBehaviour
     protected MapReader mapReader;
     protected float percentage; //Lerping for effects
     protected int keyObjPosition = 0;
-    protected float noteOffset; //When our note should start appearing
+    protected float noteSpawnOffset; //When our note should start appearing
     protected int noteSample; //The note where you actually hit with timing
     protected int noteSampleForKey; //The time the key is at full capacity (for TBR Modes)
     protected KeyCode randomKey;
@@ -201,7 +201,7 @@ public class NoteEffector : MonoBehaviour
 
             noteSample = (int)targetObj.GetInitialeSample() - (int)alignment;
 
-            float offsetStart = noteSample - noteOffset;
+            float offsetStart = noteSample - noteSpawnOffset;
 
             //This is strictly for checking when notes should appear
             if (RoftPlayer.musicSource.timeSamples > offsetStart)
@@ -216,7 +216,7 @@ public class NoteEffector : MonoBehaviour
     /// </summary>
     void UpdateNoteOffset()
     {
-        noteOffset = maxOffset - (minOffset * (((float)approachSpeed / 1.10f) - 1));
+        noteSpawnOffset = maxOffset - (minOffset * (((float)approachSpeed / 1.10f) - 1));
     }
 
     /// <summary>
@@ -246,8 +246,8 @@ public class NoteEffector : MonoBehaviour
         NoteObj noteObj = null;
 
         _effect.initiatedNoteSample = noteSample;
-        _effect.initiatedNoteOffset = noteOffset;
-        _effect.offsetStart = noteSample - noteOffset;
+        _effect.initiatedNoteOffset = noteSpawnOffset;
+        _effect.noteSpawnOffset = noteSample - noteSpawnOffset;
         _effect.accuracyVal = accuracyVal;
 
         //This is referring to list index in the MapReader

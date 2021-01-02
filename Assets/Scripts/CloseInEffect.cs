@@ -5,7 +5,7 @@ public class CloseInEffect : NoteEffector
 {
     public float initiatedNoteSample;
     public float initiatedNoteOffset;
-    public float offsetStart;
+    public float noteSpawnOffset;
 
     public int keyNumPosition; //So we know which key the notes are closing into
     public int keyNum; //We know what note we're on!!
@@ -59,7 +59,7 @@ public class CloseInEffect : NoteEffector
     private void OnEnable()
     {
         initiatedNoteSample = noteSample;
-        initiatedNoteOffset = noteOffset;
+        initiatedNoteOffset = base.noteSpawnOffset;
         keyNumPosition = mapReaderSeqPos;
     }
 
@@ -217,7 +217,7 @@ public class CloseInEffect : NoteEffector
 
     protected override float GetPercentage()
     {
-        percentage = (RoftPlayer.musicSource.timeSamples - offsetStart) / (initiatedNoteSample - offsetStart);
+        percentage = (RoftPlayer.musicSource.timeSamples - noteSpawnOffset) / (initiatedNoteSample - noteSpawnOffset);
         return percentage;
     }
 
@@ -323,7 +323,7 @@ public class CloseInEffect : NoteEffector
         index = 0;
         initiatedNoteSample = 0;
         initiatedNoteOffset = 0;
-        offsetStart = 0;
+        noteSpawnOffset = 0;
         accuracyString = "";
         keyNum = 0; //We know what note we're on!!
 

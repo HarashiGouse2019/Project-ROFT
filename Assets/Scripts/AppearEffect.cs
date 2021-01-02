@@ -78,7 +78,7 @@ public class AppearEffect : CloseInEffect
 
     protected override float GetPercentage()
     {
-        percentage = ((RoftPlayer.musicSource.timeSamples) - offsetStart) / (initiatedNoteSample - offsetStart);
+        percentage = ((RoftPlayer.musicSource.timeSamples) - noteSpawnOffset) / (initiatedNoteSample - noteSpawnOffset);
         return percentage;
     }
 

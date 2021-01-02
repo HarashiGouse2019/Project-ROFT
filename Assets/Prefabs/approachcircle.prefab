@@ -249,7 +249,7 @@ MonoBehaviour:
   mapReader: {fileID: 0}
   initiatedNoteSample: 0
   initiatedNoteOffset: 0
-  offsetStart: 0
+  noteSpawnOffset: 0
   keyNumPosition: 0
   keyNum: 0
   attachedArrow: {fileID: 7740991288490540822}

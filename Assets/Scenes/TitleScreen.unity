@@ -10595,7 +10595,7 @@ MonoBehaviour:
   overallGrade: 0
   stressBuild: 10
   accuracyStats: 0000000000000000000000000000000000000000
-  isAutoPlaying: 1
+  isAutoPlaying: 0
   isCountingDown: 0
   detected: 0
 --- !u!81 &145309161831652554
