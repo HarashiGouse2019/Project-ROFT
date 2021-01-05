@@ -473,6 +473,7 @@ public class GameManager : MonoBehaviour
             {
                 Instance.IMG_INGAMEBACKGROUND.enabled = true;
                 Instance.IMG_INGAMEBACKGROUND.sprite = sprite;
+                Instance.IMG_INGAMEBACKGROUND.color = sprite.name == "NoCoverImage" ? Color.black : new Color(1f, 1f, 1f, 46f / 255f);
             }
         }
         catch
