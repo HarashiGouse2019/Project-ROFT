@@ -22,7 +22,6 @@ public class CircleTypeModifier : MonoBehaviour
     {
         if(spriteRenderer != null) spriteRenderer.sprite = circleTypes[spriteIndex].typeOuterTexture;
         if(innerSpriteRenderer != null) innerSpriteRenderer.sprite = circleTypes[spriteIndex].typeInnerTexture;
-
         spriteRenderer.color = circleTypes[spriteIndex].typeColor;
     }
 }

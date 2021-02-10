@@ -85,9 +85,10 @@ public class RoftScouter
 
                 ScoutingComplete = true;
             }
-            catch
+            catch (Exception e)
             {
                 //TODO: Let the player know that scouting has failed. Give them the reason.
+                Debug.LogError($"SCOUTING FAILED: REASON: {e.Message}");
                 break;
             }
             yield return new WaitForEndOfFrame();

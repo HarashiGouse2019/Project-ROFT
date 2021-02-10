@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour
             songMode = (SongSelectionMode)value;
         }
     }
-    
+
 
     [Header("Game Pause Overlay")]
     [SerializeField] private bool isGamePaused = false;
@@ -196,7 +196,7 @@ public class GameManager : MonoBehaviour
     {
         //Check for existing files and directories
         VerifyDirectories();
-        
+
         #region Singleton
         if (Instance == null)
         {
@@ -551,12 +551,17 @@ public class GameManager : MonoBehaviour
 
     public void ExecuteScouting()
     {
-        Debug.Log("Scouting...");
+
 
         //We'll be using the EventManager to perform this method.
         //We have to create a Callback Method (aka; our delegate)
         //We store the function we want into our delegate
-        scoutingDelegate = EventManager.AddNewEvent(000, "ON_BEGIN_SCOUT", () => RoftScouter.OnStart());
+        scoutingDelegate = EventManager.AddNewEvent(000, "ON_BEGIN_SCOUT", () =>
+        {
+            Debug.Log("Scouting...");
+            RoftScouter.OnStart();
+        }
+        );
 
         //And then we add our delegate (which plays as a listner)
 
@@ -637,7 +642,7 @@ public class GameManager : MonoBehaviour
 
     public static void ChangeSongSelectionMode(uint value)
     {
-        SongMode = (value == 0 || value == 1) ? value : (value/value)-1 ;
+        SongMode = (value == 0 || value == 1) ? value : (value / value) - 1;
     }
     #endregion
 }
