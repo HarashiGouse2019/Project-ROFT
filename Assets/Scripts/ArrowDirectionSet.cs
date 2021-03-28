@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Random = UnityEngine.Random;
-
+﻿using UnityEngine;
 public class ArrowDirectionSet : MonoBehaviour
 {
     public static ArrowDirectionSet Instance;
@@ -120,8 +115,5 @@ public class ArrowDirectionSet : MonoBehaviour
         }
     }
 
-    public GameObject GetAttachedCircle()
-    {
-        return attachedCircle;
-    }
+    public GameObject GetAttachedCircle() => attachedCircle;
 }

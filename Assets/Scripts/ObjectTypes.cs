@@ -4,12 +4,13 @@ using UnityEngine;
 [System.Serializable]
 public abstract class ObjectTypes : MonoBehaviour
 {
-    public List<NoteObj> objects = new List<NoteObj>();
+    [SerializeField]
+    public List<NoteObj> objects  = new List<NoteObj>();
 
     [SerializeField]
-    private long sequencePos = 0;
+    public long sequencePos { get; set; } = 0;
 
-    private NoteObj.NoteObjType readerType;
+    public NoteObj.NoteObjType readerType { get; set; }
 
     private const uint reset = 0;
 
@@ -39,10 +40,8 @@ public abstract class ObjectTypes : MonoBehaviour
 
     }
 
-    public virtual long GetSequencePosition()
-    {
-        return sequencePos;
-    }
+    public virtual long GetSequencePosition() => sequencePos;
+
 
     public virtual void SequencePositionReset()
     {
@@ -69,7 +68,7 @@ public abstract class ObjectTypes : MonoBehaviour
         sequencePos++;
     }
 
-    protected virtual void SetToType(NoteObj.NoteObjType type)
+    public virtual void SetToType(NoteObj.NoteObjType type)
     {
         readerType = type;
     }

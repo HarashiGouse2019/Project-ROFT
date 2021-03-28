@@ -2,6 +2,7 @@
 using TMPro;
 
 using ROFTIOMANAGEMENT;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Key_Layout))]
 public class KeyPress : MonoBehaviour
@@ -9,6 +10,7 @@ public class KeyPress : MonoBehaviour
     public static KeyPress Instance;
 
     //Taking the binded keys, and making them interactive
+    [Cakewalk.IoC.Dependency]
     public Key_Layout key_Layout;
 
     public Sprite keyActive, keyInActive;
@@ -35,29 +37,35 @@ public class KeyPress : MonoBehaviour
         RunInteractivity();
     }
 
+    /*This is how key presses are being registered in game.
+    This is also how beatmaps can be recorded manually by the user.*/
     void RunInteractivity()
     {
+        //Check if we can interact with keys
         if (GameManager.Instance.IsInteractable())
         {
             for (int keyNum = 0; keyNum < key_Layout.primaryBindedKeys.Count; keyNum++)
             {
-                if (Input.GetKey(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKey(key_Layout.secondaryBindedKeys[keyNum]))
+                bool bindKeys = Input.GetKey(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKey(key_Layout.secondaryBindedKeys[keyNum]);
+                bool bindKeysPressed = Input.GetKeyDown(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKeyDown(key_Layout.secondaryBindedKeys[keyNum]);
+
+                if (bindKeys)
                 {
+                    /*If we happen to be recording, and we hit the second set of binded keys, the
+                    data will be written to a file.*/
                     #region Write to RFTM File
-                    if (RoftPlayer.Instance.record && Input.GetKeyDown(key_Layout.primaryBindedKeys[keyNum]))
+                    if (RoftPlayer.Record && bindKeysPressed)
                     {
                         string data =
                             keyNum.ToString() + ","
                              + RoftPlayer.musicSource.timeSamples.ToString() + ","
                             + 0.ToString();
-
-                        RoftIO.WriteToRFTM(RoftPlayer.musicSource.clip.name, Application.streamingAssetsPath + "/", data);
                     }
                     #endregion
 
                     ActivateKey(keyNum, true);
 
-                    if (Input.GetKey(key_Layout.primaryBindedKeys[keyNum]) || Input.GetKey(key_Layout.secondaryBindedKeys[keyNum]))
+                    if (bindKeys)
                         keyPressInput = activeInput;
                 }
                 else
@@ -67,23 +75,23 @@ public class KeyPress : MonoBehaviour
         }
     }
 
+    //This will turn the keys on, signifying that the key is being pressed
     public bool ActivateKey(int _keyNum, bool _on)
     {
-        SpriteRenderer keySpriteRenderer = Key_Layout.keyObjects[_keyNum].GetComponent<SpriteRenderer>();
+        KeyControls key = Key_Layout.keyObjects[_keyNum].GetComponent<KeyControls>();
 
         if (_on)
         {
-            keySpriteRenderer.sprite = keyActive;
-            debugText.text = "Key " + key_Layout.primaryBindedKeys[_keyNum] + " pressed." + " Key Num: " + _keyNum;
+            key.GetGraphics().sprite = keyActive;
+
+            if (debugText != null)
+                debugText.text = "Key " + key_Layout.primaryBindedKeys[_keyNum] + " pressed." + " Key Num: " + _keyNum;
         }
         else
-            keySpriteRenderer.sprite = keyInActive;
+            key.GetGraphics().sprite = keyInActive;
 
         return _on;
     }
 
-    public int GetKeyPressInputValue()
-    {
-        return keyPressInput;
-    }
+    public int GetKeyPressInputValue() => keyPressInput;
 }

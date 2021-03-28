@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class SongProgression : MonoBehaviour
 {
@@ -11,46 +12,86 @@ public class SongProgression : MonoBehaviour
     //See if the last note was it
     public static bool isFinished;
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
-        if (!RoftPlayer.Instance.record && isFinished == false)
-            ShowProgression();
+        StartCoroutine(ProgressionRoutine());
     }
+    IEnumerator ProgressionRoutine()
+    {
+        while (true)
+        {
+            if (!RoftPlayer.IsNull() &&
+            !MapReader.IsNull() &&
+            !RoftPlayer.Record &&
+            isFinished == false &&
+            MapReader.GetName() != "")
+                ShowProgression();
 
+            yield return null;
+        }
+    }
+    public static void ResetProgression()
+    {
+        isPassedFirstNote = false;
+        isFinished = false;
+        GameManager.Instance.GetSongProgressionFill().fillAmount = 0;
+    }
     void ShowProgression()
     {
-
-        //In order to know how much time we have until the first note,
-        //we'll have to reference to the first note in our MapReader
-        firstNoteInSamples = MapReader.Instance.noteObjs[0].GetInstanceSample();
-
-        //Now we calculate the percentage with the music sample and the firstNoteInSamples
-        float firstNotePercentile = RoftPlayer.musicSource.timeSamples / firstNoteInSamples;
-
-        //Now we want to get the percentage between
-        //Our current sample, and the last key sample in our song!!!
-        int lastKey = MapReader.Instance.noteObjs.Count - 1;
-
-        lastNoteInSamples = MapReader.Instance.noteObjs[lastKey].GetInstanceSample();
-
-        //We get out percentage
-        float lastNotePercentile = 
-            (RoftPlayer.musicSource.timeSamples - firstNoteInSamples) /
-            (lastNoteInSamples);
-
-        if (!isPassedFirstNote)
+        try
         {
-            GameManager.Instance.GetSongProgressionFill().fillAmount = firstNotePercentile;
+            //In order to know how much time we have until the first note,
+            //we'll have to reference to the first note in our MapReader
+            firstNoteInSamples = MapReader.noteObjs[0].GetInitialeSample();
 
-            if (firstNotePercentile > 0.99f)
-                isPassedFirstNote = true;
+            //Now we calculate the percentage with the music sample and the firstNoteInSamples
+            float firstNotePercentile = RoftPlayer.musicSource.timeSamples / firstNoteInSamples;
+
+            //Now we want to get the percentage between
+            //Our current sample, and the last key sample in our song!!!
+            int lastKey = MapReader.noteObjs.Count - 1;
+
+            lastNoteInSamples = MapReader.noteObjs[lastKey].GetInitialeSample();
+
+            //We get out percentage
+            float lastNotePercentile =
+                (RoftPlayer.musicSource.timeSamples - firstNoteInSamples) /
+                (lastNoteInSamples - firstNoteInSamples);
+
+            if (!isPassedFirstNote)
+            {
+                if (GameManager.Instance.GetSongProgressionFill() != null)
+                    GameManager.Instance.GetSongProgressionFill().fillAmount = firstNotePercentile;
+
+                if (firstNotePercentile > 0.99f)
+                    isPassedFirstNote = true;
+            }
+            else
+            {
+                if (GameManager.Instance.GetSongProgressionFill() != null)
+                    GameManager.Instance.GetSongProgressionFill().fillAmount = lastNotePercentile;
+            }
+            if (IsEndSong())
+            {
+                Debug.Log("Song Finished!!");
+                GameManager.inSong = false;
+                //We should be at the end of the song at this point in time
+                GameManager.DelayAction(3f, () =>
+                {
+                    RoftTransition.TransitionTo(7);
+                });
+            }
         }
-        else
-            GameManager.Instance.GetSongProgressionFill().fillAmount = lastNotePercentile;
+        catch
+        {
 
+        }
+    }
+
+    bool IsEndSong()
+    {
         //Now, if the fillAmount is full (or once we hit the last note), have RoftPlayer fade out
-        if (RoftPlayer.musicSource.timeSamples > lastNoteInSamples)
-            isFinished = true;
+        isFinished = RoftPlayer.musicSource.timeSamples > lastNoteInSamples;
+        return isFinished;
     }
 }

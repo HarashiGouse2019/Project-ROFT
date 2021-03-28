@@ -7,6 +7,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+using ROFTIO = ROFTIOMANAGEMENT.RoftIO;
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -31,24 +33,6 @@ public class GameManager : MonoBehaviour
         0
     };
 
-    public static char[] accuracyGrade =
-    {
-        'S',
-        'A',
-        'B',
-        'C',
-        'D'
-    };
-
-    public static float[] gradePrecentageRequirement =
-    {
-        0.95f,
-        0.90f,
-        0.80f,
-        0.70f,
-        0
-    };
-
     public static float[] stressAmount =
     {
        0.2f,
@@ -64,6 +48,8 @@ public class GameManager : MonoBehaviour
 
     public static int consecutiveMisses;
 
+    public static bool SongsNotFound { get; set; } = false;
+
     /*There's 3 modes:
      * STANDARD will be Keyboard and Mouse incorporated
      * KEY_ONLY will be what I've been having for ages
@@ -76,6 +62,34 @@ public class GameManager : MonoBehaviour
         TBR_HOMEROW,
         TBR_ALL
     };
+
+    [SerializeField]
+    private SongList SongList;
+
+    [SerializeField]
+    public Sprite unknownSongCover;
+
+    //What you can do to a song
+    enum SongSelectionMode
+    {
+        Play,
+        Edit
+    }
+
+    private static SongSelectionMode songMode;
+    public static uint SongMode
+    {
+        get
+        {
+            return (uint)songMode;
+        }
+        set
+        {
+            songMode = (SongSelectionMode)value;
+        }
+    }
+
+
     [Header("Game Pause Overlay")]
     [SerializeField] private bool isGamePaused = false;
     public bool IsGamePaused
@@ -114,7 +128,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI TM_OK = null;
     [SerializeField] private TextMeshProUGUI TM_MISS = null;
     [SerializeField] private TextMeshProUGUI TM_ACCURACYPERCENTILE = null;
-    [SerializeField] private TextMeshProUGUI TM_ACCURACYGRADE = null;
+    public TextMeshProUGUI TM_ACCURACYGRADE = null;
     [SerializeField] private TextMeshProUGUI DEBUG_FILEDIR = null;
 
     [Header("UI IMAGES")]
@@ -123,10 +137,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Image IMG_SCREEN_OVERLAY = null;
     [SerializeField] private Image IMG_PROGRESSION_FILL = null;
 
+    [Header("In Game Background")]
+    [SerializeField] private Image IMG_INGAMEBACKGROUND = null;
+
     [Header("In-Game Statistics and Values")]
     private long totalScore;
     private long previousScore; //This will be used for a increasing effect
-    private int Combo { set; get; }
+    public int Combo { set; get; }
+    public static Color LogNormalColor { get; internal set; }
+    public float GAME_DELTA { get; private set; } = 0.01f;
+
     private int maxCombo;
     public float overallAccuracy = 100.00f; //The average accuracy during the song
     public float accuracyPercentile; //The data in which gets accuracy in percent;
@@ -154,16 +174,9 @@ public class GameManager : MonoBehaviour
         KeyCode.Q,
         KeyCode.P,
         KeyCode.Semicolon,
-        KeyCode.Comma
+        KeyCode.Comma,
+        KeyCode.F5
     };
-
-    //RoftScouter will be our "Go collect some songs that I may or may not have
-    //put in this directory.
-    private RoftScouter scouter;
-
-    //Make to much easier to access other classes
-    private RoftPlayer roftPlayer;
-    private MapReader mapReader;
 
     //This will be used for the GameManager to assure that
     //when we restart, all approach circles are inactive
@@ -175,8 +188,15 @@ public class GameManager : MonoBehaviour
     private delegate void Main();
     private Main core;
 
+    EventManager.Event scoutingDelegate;
+    internal static bool ErrorDetected = false;
+    public bool detected;
+
     private void Awake()
     {
+        //Check for existing files and directories
+        VerifyDirectories();
+
         #region Singleton
         if (Instance == null)
         {
@@ -187,6 +207,9 @@ public class GameManager : MonoBehaviour
         else
             Destroy(gameObject);
         #endregion
+
+        /*I want to verify the existence of certain files whenever it runs on any computer.
+         If the files do not exist, those files will automatic be generated back in.*/
 
         //Multicasting core delegate
         //When Invoked, it'll run all of these functions.
@@ -202,37 +225,30 @@ public class GameManager : MonoBehaviour
         #endregion
     }
 
-    private void Start()
+    private void OnEnable()
     {
         if (IMG_STRESS != null) IMG_STRESS.fillAmount = 0f;
-        Application.targetFrameRate = 60;
 
-        //Instanciate new scouter
-        scouter = new RoftScouter();
-
-        //Reference our roftPlayer
-        /*I may be right or wrong, but this may be a flyweight pattern...
-         * I think...
-         * No... This is not... but it'll make things easy
-         */
-        roftPlayer = RoftPlayer.Instance;
-        mapReader = MapReader.Instance;
+        StartCoroutine(RUN_GAME_MANAGEMENT());
+        StartCoroutine(StressBuildRoutine());
     }
 
     private void Update()
     {
-        if (RoftPlayer.Instance.record == false)
-            StartCoroutine(RUN_GAME_MANAGEMENT());
+        detected = ErrorDetected;
     }
 
     //GAME_MANAGEMENT Update
     IEnumerator RUN_GAME_MANAGEMENT()
     {
-        if (inSong && MapReader.KeysReaded)
+        while (true)
+        {
+
             //Invoke core and all methods associated with it
             core.Invoke();
 
-        yield return null;
+            yield return null;
+        }
     }
 
     void RunScoreSystem()
@@ -252,8 +268,7 @@ public class GameManager : MonoBehaviour
 
     void UpdateMaxCombo()
     {
-        if (Combo > maxCombo)
-            maxCombo = Combo;
+        if (Combo > maxCombo) maxCombo = Combo;
     }
 
     void RunUI()
@@ -261,44 +276,60 @@ public class GameManager : MonoBehaviour
         TM_SCORE.text = previousScore.ToString("D10");
         TM_COMBO.text = "x" + Combo.ToString();
         TM_COMBO_UNDERLAY.text = "x" + Combo.ToString();
-        TM_DIFFICULTY.text = "DIFFICULTY: " + mapReader.difficultyRating.ToString("F2", CultureInfo.InvariantCulture);
-        TM_MAXSCORE.text = "MAX SCORE:     " + mapReader.maxScore.ToString();
+        TM_DIFFICULTY.text = "DIFFICULTY: " + MapReader.GetDifficultyRating().ToString("F2", CultureInfo.InvariantCulture);
+        TM_MAXSCORE.text = "MAX SCORE:     " + MapReader.GetMaxScore().ToString();
 
         //This will be temporary
         #region DEBUG_STATS_UI
         TM_PERFECT.text = "PERFECT:   " +
             accuracyStats[0].ToString() +
-            " (" + Mathf.Floor((accuracyStats[0] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[0] / MapReader.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_GREAT.text = "GREAT:       " +
             accuracyStats[1].ToString() +
-            " (" + Mathf.Floor((accuracyStats[1] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[1] / MapReader.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_GOOD.text = "GOOD:         " +
             accuracyStats[2].ToString() +
-            " (" + Mathf.Floor((accuracyStats[2] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[2] / MapReader.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_OK.text = "OK:            " +
             accuracyStats[3].ToString() +
-            " (" + Mathf.Floor((accuracyStats[3] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[3] / MapReader.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_MISS.text = "MISSES:       " +
             accuracyStats[4].ToString() +
-            " (" + Mathf.Floor((accuracyStats[4] / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((accuracyStats[4] / MapReader.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
         TM_MAXCOMBO.text = "MAX COMBO:     "
             + maxCombo.ToString() +
-            " (" + Mathf.Floor((maxCombo / MapReader.Instance.totalNotes) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
+            " (" + Mathf.Floor((maxCombo / MapReader.GetTotalNotes()) * 100).ToString("F0", CultureInfo.InvariantCulture) + "%)";
 
-        TM_ACCURACYPERCENTILE.text = "ACCURACY:     "
+        TM_ACCURACYPERCENTILE.text = "ACCURACY: "
            + overallAccuracy.ToString("F2", CultureInfo.InvariantCulture) + "%";
         #endregion
 
         //Be able to enable and disable Pause_Overlay
         if (isCountingDown == false)
             PAUSE_OVERLAY.SetActive(isGamePaused);
+    }
 
-        if (RoftPlayer.musicSource.isPlaying && SongProgression.isPassedFirstNote && !SongProgression.isFinished) ManageStressMeter();
+    IEnumerator StressBuildRoutine()
+    {
+        while (true)
+        {
+            try
+            {
+                if (!RoftPlayer.IsNull() &&
+                    RoftPlayer.musicSource.isPlaying &&
+                    SongProgression.isPassedFirstNote &&
+                    !SongProgression.isFinished)
+                    ManageStressMeter();
+            }
+            catch { }
+
+            yield return new WaitForSeconds(1f / 60f);
+        }
     }
 
     void ManageStressMeter()
@@ -343,13 +374,18 @@ public class GameManager : MonoBehaviour
                     return;
             }
         }
+
+        if (Input.GetKeyDown(inGameControlKeys[6]))
+            ExecuteScouting();
     }
 
     public void RestartSong()
     {
-        mapReader.tapObjectReader.SequencePositionReset();
-        mapReader.holdObjectReader.SequencePositionReset();
-        mapReader.burstObjectReader.SequencePositionReset();
+        inSong = true;
+
+        MapReader.GetReaderType<TapObjectReader>().SequencePositionReset();
+        MapReader.GetReaderType<HoldObjectReader>().SequencePositionReset();
+        MapReader.GetReaderType<BurstObjectReader>().SequencePositionReset();
 
         for (int stat = 0; stat < accuracyStats.Length; stat++)
             accuracyStats[stat] = reset;
@@ -374,7 +410,8 @@ public class GameManager : MonoBehaviour
         //Now we clear our list.
         activeApproachObjects.Clear();
 
-        SongProgression.isPassedFirstNote = false;
+
+        SongProgression.ResetProgression();
     }
 
     public void Pause()
@@ -382,58 +419,39 @@ public class GameManager : MonoBehaviour
         //When we pause, we have to stop music, and turn isPaused to true
         if (RoftPlayer.musicSource.isPlaying)
         {
-            roftPlayer.PauseMusic();
+            RoftPlayer.PauseMusic();
             isGamePaused = true;
             Time.timeScale = 0;
         }
         return;
     }
 
-    public void UnPause()
+    public void UnPause(bool countdown = true)
     {
         //Now we give the player some time to prepare
-        StartCoroutine(CountDown());
+        if (countdown)
+            StartCoroutine(CountDown());
+        else
+        {
+            RestartSong();
+            isGamePaused = false;
+            isCountingDown = false;
+            PAUSE_OVERLAY.SetActive(isGamePaused);
+            //Set time scale back to 1, so everything should show motion over time
+            Time.timeScale = 1;
+        }
         return;
     }
 
     public void UpdateScore()
     {
         UpdateMaxCombo();
-        UpdateGrade();
+        RankSystem.UpdateGrade();
         initialGain++;
         totalScore += sentScore * Combo;
     }
 
-    //Be sure that when our score updates we call this function
-    //Sense I'm using a for loop, I only want to call it went needed
-    //And that's when the player actually hits a note, and gets a score based
-    //on accuracy.
-    public void UpdateGrade()
-    {
-        /*Grade Calculations...
-         * Grade S) Higher than or equal to 95%
-         * Grade A) Higher than or equal to 90%
-         * Grade B) Higher than or equal to 80%
-         * Grade C) Higher than or equal to 70%
-         * Grade D) Anything lower than 70%
-         * 
-         * This are accounted for Perfect Percentage
-         * 
-         * We want to find a way to use the accuracyGrade array
-         * in terms of percentile (which seems intimidating).
-         */
 
-        for (int gradeIndex = 0; gradeIndex < gradePrecentageRequirement.Length; gradeIndex++)
-        {
-            //Check if overall Accuracy is above percentage values
-            //We'll simple return out of for loop if statement is true
-            if (overallAccuracy >= gradePrecentageRequirement[gradeIndex] * 100f)
-            {
-                TM_ACCURACYGRADE.text = "(" + accuracyGrade[gradeIndex].ToString() + ")";
-                return;
-            }
-        }
-    }
 
     public int GetSumOfStats()
     {
@@ -444,6 +462,24 @@ public class GameManager : MonoBehaviour
             sumOfStats += value;
         }
         return sumOfStats;
+    }
+
+    public static void SetInGameBackground(Sprite sprite)
+    {
+        try
+        {
+            //If the background image is inactive, set it active
+            if (sprite != null)
+            {
+                Instance.IMG_INGAMEBACKGROUND.enabled = true;
+                Instance.IMG_INGAMEBACKGROUND.sprite = sprite;
+                Instance.IMG_INGAMEBACKGROUND.color = sprite.name == "NoCoverImage" ? Color.black : new Color(1f, 1f, 1f, 46f / 255f);
+            }
+        }
+        catch
+        {
+            Debug.Log("Can't set an image if it doesn't exist");
+        }
     }
 
     void CheckSignsOfInput()
@@ -494,11 +530,11 @@ public class GameManager : MonoBehaviour
         PAUSE_OVERLAY.SetActive(isGamePaused);
         for (int num = 3; num > reset; num--)
         {
-            AudioManager.Instance.Play("Tick", _oneShot: true);
+            AudioManager.Play("Tick", _oneShot: true);
             yield return new WaitForSecondsRealtime(1f);
         }
         //Now we play music again, and stat
-        roftPlayer.PlayMusic();
+        RoftPlayer.PlayMusic();
 
         //Update isGamePaused
         isGamePaused = !RoftPlayer.musicSource.isPlaying;
@@ -511,9 +547,28 @@ public class GameManager : MonoBehaviour
         yield return null;
     }
 
-    public bool IsInteractable()
+    public bool IsInteractable() => (isGamePaused == false && isCountingDown == false);
+
+    public void ExecuteScouting()
     {
-        return (isGamePaused == false && isCountingDown == false);
+
+
+        //We'll be using the EventManager to perform this method.
+        //We have to create a Callback Method (aka; our delegate)
+        //We store the function we want into our delegate
+        scoutingDelegate = EventManager.AddNewEvent(000, "ON_BEGIN_SCOUT", () =>
+        {
+            Debug.Log("Scouting...");
+            RoftScouter.OnStart();
+        }
+        );
+
+        //And then we add our delegate (which plays as a listner)
+
+
+        //Now we execute it, and then remove it.
+        EventManager.TriggerEvent("ON_BEGIN_SCOUT");
+        EventManager.RemoveEvent("ON_BEGIN_SCOUT");
     }
 
     void CreateRecords()
@@ -527,35 +582,67 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SetCombo(int _value)
+    public void SetCombo(int _value) => Combo = _value;
+
+    public void IncrementCombo() => Combo++;
+
+    public static void UpdateLogColor(Color newColor)
     {
-        Combo = _value;
+        LogNormalColor = newColor;
     }
 
-    public void IncrementCombo()
+    public static void DelayAction(float duration, Action action)
     {
-        Combo++;
+        IEnumerator delay = WaitFor(duration, action);
+        Instance.StartCoroutine(delay);
     }
+    static IEnumerator WaitFor(float duration, Action action)
+    {
+        yield return new WaitForSecondsRealtime(duration);
+        action.Invoke();
+    }
+    public static int GetCombo() => Instance.Combo;
+    public static int GetMaxCombo() => Instance.maxCombo;
+    public static SongList GetSongList() => Instance.SongList;
 
     #region Get Methods
-    public Image GetSongProgressionFill()
-    {
-        return IMG_PROGRESSION_FILL;
-    } 
+    public Image GetSongProgressionFill() => IMG_PROGRESSION_FILL;
 
-    public TextMeshProUGUI GetTMCombo()
+    public static long GetScore() => Instance.totalScore;
+    public static int[] GetAccuracyStats() => Instance.accuracyStats;
+    public static float GetOverallAccuracy() => Instance.overallAccuracy;
+
+    public TextMeshProUGUI GetTMCombo() => TM_COMBO;
+
+    public TextMeshProUGUI GetTMComboUnderlay() => TM_COMBO_UNDERLAY;
+
+    public Image GetScreenOverlay() => IMG_SCREEN_OVERLAY;
+
+    /// <summary>
+    /// Check if the game's directory are present in PersistantPath
+    /// </summary>
+    public void VerifyDirectories()
     {
-        return TM_COMBO;
+        //Check if song directory exists
+        if (!ROFTIO.DirectoryExists(ROFTIO.GAME_DIRECTORY + @"/Songs"))
+        {
+            ROFTIO.GenerateDirectory(ROFTIO.GAME_DIRECTORY + @"/Songs");
+        }
     }
 
-    public TextMeshProUGUI GetTMComboUnderlay()
-    {
-        return TM_COMBO_UNDERLAY;
-    }
+    /// <summary>
+    /// Turn on Cursor
+    /// </summary>
+    public static void TurnOnCursor() => Cursor.visible = true;
 
-    public Image GetScreenOverlay()
+    /// <summary>
+    /// Turn off Cursor
+    /// </summary>
+    public static void TurnOffCursor() => Cursor.visible = false;
+
+    public static void ChangeSongSelectionMode(uint value)
     {
-        return IMG_SCREEN_OVERLAY;
+        SongMode = (value == 0 || value == 1) ? value : (value / value) - 1;
     }
     #endregion
 }

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-[Serializable]
-public class Song_Entity : MonoBehaviour
+[System.Serializable]
+public sealed class Song_Entity
 {
     #region Outline/Plan
     //Song_Entity class will take up the following values:
@@ -65,51 +63,43 @@ public class Song_Entity : MonoBehaviour
      * APFC (All-Perfect Full-Combo) is achieved with 100% perfect
      */
     #endregion
-
-    public enum FC_STATUS
+    [System.Serializable]
+    public sealed class Song_Entity_Difficulty
     {
-        FC,
-        APFC
-    }
-
-    //Song entity properties
-    private string ent_SongName;
-    private string ent_Artist;
-    private RawImage ent_CoverArt;
-    private uint ent_BPM;
-    private float ent_InitialDifficulty; //Initial Difficulty is the Overall Difficulty of a song with its difficulties
-    private long ent_TopScore;
-    private long ent_TopCombo;
-    private char ent_Grade;
-    private bool ent_MarkAsFavorite;
-    private float[] ent_GradeRequirements; //Some songs can be different to default gradeRequirements
-    private FC_STATUS ent_FCStatus;
-    private RoftRecords ent_Record;
-    private AudioClip ent_clip;
-
-    public object[] songEntityObj;
-
-    // Start is called before the first frame update
-    public Song_Entity()
-    {
-        #region Creating the object data for Song Entity
-        songEntityObj = new object[]
+        //Song Difficulty will have a lot of information in it, so yeah.
+        public enum FC_STATUS
         {
-            ent_SongName,
-            ent_Artist,
-            ent_CoverArt,
-            ent_BPM,
-            ent_Grade,
-            ent_InitialDifficulty,
-            ent_TopScore,
-            ent_TopScore,
-            ent_TopCombo,
-            ent_MarkAsFavorite,
-            ent_GradeRequirements,
-            ent_FCStatus,
-            ent_Record,
-            ent_clip
-        };
-        #endregion
+            NONE,
+            FC,
+            APFC
+        }
+        public int ROFTID ;
+        public string DifficultyName ;
+        public float DifficultyRating ;
+        public float ApproachSpeed ;
+        public float StressBuild ;
+        public float Accuracy ;
+        public float TotalNotes ;
+        public float TotalKeys ;
+        public long PossibleMaxScore ;
+        public FC_STATUS FullComboStatus ;
+
+        //We'll need to stat the file that the difficulty is, so we can read it
+        public string RFTMFile ;
+
+
+    }
+    public string SongTitle, SongTitleUnicode;
+    public string SongArtist, SongArtistUnicode;
+    public long GROUPID ;
+    public float InitialDifficultyRating ;
+    public AudioClip AudioFile ;
+    public Sprite BackgroundImage ;
+    public uint ScoutEntryValue;
+    public List<Song_Entity_Difficulty> Difficulties = new List<Song_Entity_Difficulty>();
+
+    public void AddNewDifficulty(Song_Entity_Difficulty _difficulty)
+    {
+        Difficulties.Add(_difficulty);
     }
 }

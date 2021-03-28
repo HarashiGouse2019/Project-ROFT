@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class AppearEffect : CloseInEffect
 {
@@ -13,42 +14,40 @@ public class AppearEffect : CloseInEffect
     Color originalOverlayAppearance;
 
     float time;
+
     void Awake()
     {
         Instance = this;
 
         //Get sprite renderers
-        sprite = GetComponent<SpriteRenderer>();
+        image = GetComponent<Image>();
         overlaySprites = GetComponentsInChildren<SpriteRenderer>();
 
         foreach (SpriteRenderer overlaySprite in overlaySprites)
         {
-            if (overlaySprite != sprite)
+            if (overlaySprite != image)
                 childSprite = overlaySprite;
         }
-
 
         if (Key_Layout.Instance != null && Key_Layout.Instance.layoutMethod == Key_Layout.LayoutMethod.Region_Scatter)
         {
             //We want these completely transparent from start
             childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, 0f);
-            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0f);
+            image.color = new Color(image.color.r, image.color.g, image.color.b, 0f);
 
             //Assign this to orignal variable
-            originalAppearance = sprite.color;
+            originalAppearance = image.color;
             originalOverlayAppearance = childSprite.color;
         }
     }
 
     private void OnEnable()
     {
-
         transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-
 
         foreach (SpriteRenderer overlaySprite in overlaySprites)
         {
-            if (overlaySprite != sprite)
+            if (overlaySprite != image)
                 childSprite = overlaySprite;
         }
 
@@ -57,10 +56,10 @@ public class AppearEffect : CloseInEffect
         {
             //We want these completely transparent from start
             childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, 0f);
-            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0f);
+            image.color = new Color(image.color.r, image.color.g, image.color.b, 0f);
 
             //Assign this to orignal variable
-            originalAppearance = sprite.color;
+            originalAppearance = image.color;
             originalOverlayAppearance = childSprite.color;
         }
     }
@@ -68,39 +67,35 @@ public class AppearEffect : CloseInEffect
     // Update is called once per frame
     void Update()
     {
-        if (!RoftPlayer.Instance.record)
+        if (!RoftPlayer.Record)
             AppearOn();
     }
 
     void AppearOn()
     {
-        float appearanceRate = GetPercentage() + 0.02f;
 
-        sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, appearanceRate);
-        if (childSprite != null)
-            childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, appearanceRate);
-
-        if (!assignedCircle.activeInHierarchy)
-        {
-            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0);
-            childSprite.color = new Color(childSprite.color.r, childSprite.color.g, childSprite.color.b, 0);
-            assignedKeyBind = KeyCode.None;
-            DelayDestroy(0.5f);
-        }
     }
 
     protected override float GetPercentage()
     {
-        percentage = ((RoftPlayer.musicSource.timeSamples) - offsetStart) / (initiatedNoteSample - offsetStart);
+        percentage = ((RoftPlayer.musicSource.timeSamples) - noteSpawnOffset) / (initiatedNoteSample - noteSpawnOffset);
         return percentage;
     }
 
     private void OnDisable()
     {
-        sprite.color = originalAppearance;
+        Dump();
+    }
 
-        if(childSprite!=null)
-            
+    /// <summary>
+    /// Reset all values to there defaults
+    /// </summary>
+    void Dump()
+    {
+        image.color = originalAppearance;
+
+        if (childSprite != null)
+
             childSprite.color = originalOverlayAppearance;
         percentage = 0;
         assignedKeyBind = KeyCode.None;

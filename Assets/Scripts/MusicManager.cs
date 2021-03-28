@@ -1,8 +1,9 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.Audio;
 
-public class MusicManager : MonoBehaviour
+public class MusicManager : Singleton<MusicManager>, IVolumeControl
 {
     /*Music Manager will essentially collect all music files
      * from all SongEntities detected by RoftScouter,
@@ -13,62 +14,27 @@ public class MusicManager : MonoBehaviour
      * it'll be a class that holds not only the song (in which it'll go through and play),
      * but give us all kinds of different information.
      */
+    public AudioMixerGroup musicMixer;
 
-    public static MusicManager Instance;
+    public static List<Song_Entity> Songs;
 
-    [System.Serializable]
-    public class Music
+    public Slider musicVolumeAdjust; //Reference to our volume sliders
+
+    public static string NowPlaying;
+
+    void Start()
     {
-        public string name; // Name of the audio
-
-        public AudioClip clip; //The Audio Clip Reference
-
-        [Range(0f, 1f)]
-        public float volume; //Adjust Volume
-
-        [Range(.1f, 3f)]
-        public float pitch; //Adject pitch
-
-        public bool enableLoop; //If the audio can repeat
-
-        [HideInInspector] public AudioSource source;
+        GameManager.Instance.ExecuteScouting();
     }
 
-    public Slider musicVolumeAdjust, soundVolumeAdjust; //Reference to our volume sliders
+    public static List<Song_Entity> GetSongEntity() => Songs;
+    public static MusicManager GetInstance() => Instance;
 
-    public string nowPlaying;
-
-    public Music[] getMusic;
-
-    // Start is called before the first frame update
-    public float timeSamples;
-
-    public float[] positionSeconds;
-
-    public void Awake()
+    /// <summary>
+    /// On Volume Change
+    /// </summary>
+    public void OnVolumeChange()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(this);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    public AudioClip GetMusic(string _name)
-    {
-        Music a = Array.Find(getMusic, sound => sound.name == _name);
-        if (a == null)
-        {
-            Debug.LogWarning("Sound name " + _name + " was not found.");
-            return null;
-        }
-        else
-        {
-            return a.clip;
-        }
+        musicMixer.audioMixer.SetFloat("BGMVolume", musicVolumeAdjust.value);
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class AccuracySign : MonoBehaviour
 {
@@ -6,11 +7,11 @@ public class AccuracySign : MonoBehaviour
 
     private SpriteRenderer spriteRender;
 
-    private float time = 0;
-
-    private bool active;
 
     private const float showDuration = 10f;
+
+    //AccuracySignUpdate()
+    public IEnumerator accuracySignRoutine;
 
     // Start is called before the first frame update
     void Awake()
@@ -18,36 +19,37 @@ public class AccuracySign : MonoBehaviour
         spriteRender = GetComponent<SpriteRenderer>();
     }
 
-    private void Update()
-    {
-        if (!GameManager.Instance.IsGamePaused)
-        {
-            FadeOut();
-            if (active) ShowFor(showDuration, 0.5f);
-        }
-    }
-
     //The image/sprite used to show accuracy
     public void ShowSign(int index)
     {
-        active = true;
         spriteRender.sprite = signs[index];
+        StartCoroutine(Run(0.075f));
     }
 
-    //Duration as for how long it should show on screen
-    void ShowFor(float _duration, float _rate = 0.1f)
+    IEnumerator Run(float _rate)
     {
-        time += _rate;
-        if (time > _duration)
+        float opacity = 1f;
+        const float SIXTYITH_OF_SEC = (1f / 60f);
+        while (true)
         {
-            active = false;
-            time = 0;
-            gameObject.SetActive(false);
+            if (!GameManager.Instance.IsGamePaused)
+            {
+                opacity -= _rate;
+                spriteRender.color = new Color(spriteRender.color.r, spriteRender.color.g, spriteRender.color.b, opacity);
+
+                if (opacity <= 0f)
+                {
+                    gameObject.SetActive(false);
+                    opacity = 1f;
+                }
+
+            }
+            yield return new WaitForSeconds(SIXTYITH_OF_SEC);
         }
     }
 
-    void FadeOut()
+    private void OnDisable()
     {
-        spriteRender.color = new Color(spriteRender.color.r, spriteRender.color.g, spriteRender.color.b, 1 / time);
+        StopAllCoroutines();
     }
 }

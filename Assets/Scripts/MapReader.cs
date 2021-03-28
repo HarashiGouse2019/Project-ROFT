@@ -6,217 +6,286 @@ using UnityEngine;
 
 using static ROFTIOMANAGEMENT.RoftIO;
 
-public class MapReader : MonoBehaviour
+public class MapReader : Singleton<MapReader>
 {
-    public static MapReader Instance;
+    [SerializeField]
+    private GameObject ParentOverlay;
 
-    public string m_name;
+    [SerializeField] private static string m_name;
 
-    public float difficultyRating;
+    [SerializeField] private static float difficultyRating;
 
-    public float totalNotes;
+    [SerializeField] private static float totalNotes;
 
-    public float totalKeys;
+    [SerializeField] private static float totalKeys;
 
-    public long maxScore;
+    [SerializeField] private static long maxScore;
 
-    public int keyLayoutEnum;
+    public static int keyLayoutEnum;
 
-    public List<NoteObj> noteObjs = new List<NoteObj>();
+    public static List<NoteObj> noteObjs = new List<NoteObj>();
 
-    public Key_Layout keyLayoutClass = Key_Layout.Instance;
+    [Cakewalk.IoC.Dependency]
+    public Key_Layout keyLayoutClass;
 
     //All Object Readers
     [Header("Object Readers")]
-    public TapObjectReader tapObjectReader;
-    public HoldObjectReader holdObjectReader;
-    public BurstObjectReader burstObjectReader;
-    public TrailObjectReader trailObjectReader;
-    public ClickObjectReader clickObjectReader;
+    [SerializeField] private TapObjectReader tapObjectReader;
+    [SerializeField] private HoldObjectReader holdObjectReader;
+    [SerializeField] private BurstObjectReader burstObjectReader;
+    [SerializeField] private TrailObjectReader trailObjectReader;
+    [SerializeField] private ClickObjectReader clickObjectReader;
 
-    Thread readKeyThread;
-    static bool keysReaded = false;
-    public static bool KeysReaded
+    //I'll have to keep track of which files the MapReader is actually reading, or else I can't grab the information
+    public static Song_Entity SongEntityBeingRead { get; set; }
+    public static int CachedSongEntityID, CachedDifficultyValue;
+    public static int DifficultyIndex { get; set; }
+
+    readonly Thread readKeyThread;
+
+    public static bool KeysReaded { get; private set; } = false;
+    private static readonly object keyReadingLock = new object();
+    const char separator = ',';
+    static string line;
+    public static void Read(int songEntityID, int difficultyValue)
     {
-        get
+        GameManager.ErrorDetected = false;
+        try
         {
-            return keysReaded;
-        }
-    }
-    private readonly object keyReadingLock = new object();
+            CachedSongEntityID = songEntityID;
+            CachedDifficultyValue = difficultyValue;
 
-    private void Awake()
-    {
-        #region Singleton
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(Instance);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-        #endregion
+            /*After scouting, if songs has been found, go ahead and access
+             this song and it's specified difficulty.*/
 
-    }
-
-    private void Start()
-    {
-        readKeyThread = new Thread(() => ReadRFTMKeys(m_name));
-        readKeyThread.Start();
-        while (true)
-        {
-            if (!readKeyThread.IsAlive)
+            if (!GameManager.SongsNotFound && !RoftPlayer.Record)
             {
-                keysReaded = true;
+                //Start scouting for songs one MapReader is initialized
+                SongEntityBeingRead = MusicManager.GetSongEntity()[songEntityID];
+                AssignRFTMNameToRead(SongEntityBeingRead, difficultyValue);
+                return;
+            }
+            else if (GameManager.SongsNotFound) throw new SongNotFoundException();
+            else if (RoftPlayer.Record)
+            {
                 Initialize();
-                CalculateDifficultyRating();
                 return;
             }
         }
+        catch(MapErrorException mapEE)
+        {
+            throw mapEE;
+        } 
+        catch(SongNotFoundException songNotFoundE)
+        {
+            throw songNotFoundE;
+        }
     }
 
-    void Initialize()
+    static void Initialize()
     {
-        if (keyLayoutClass != null)
-            KeyLayoutAwake();
+        try
+        {
+            if (Instance.keyLayoutClass != null)
+                KeyLayoutAwake();
+            else
+            {
+                Debug.LogError("Seems like KeyLayoutClass is null");
+                return;
+            }
 
-        //Get other values such as Approach Speed, Stress Build, and Accuracy Harshness
-        if (RoftPlayer.Instance != null && !RoftPlayer.Instance.record)
+            //Get other values such as Approach Speed, Stress Build, and Accuracy Harshness
+            if (RoftPlayer.Instance != null && RoftPlayer.Record == false)
+            {
+                //Set the number where to find the difficulty tag
+                int difficultyTag = InRFTMJumpTo("Difficulty", m_name);
+
+                //Start assigning file data to following objects
+                NoteEffector.Instance.ApproachSpeed = ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", m_name);
+                GameManager.Instance.stressBuild = ReadPropertyFrom<float>(difficultyTag, "StressBuild", m_name);
+                NoteEffector.Instance.Accuracy = ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", m_name);
+
+                //Set background image
+                GameManager.SetInGameBackground(SongEntityBeingRead.BackgroundImage);
+
+                //Calculate the max score
+                maxScore = CalculateMaxScore();
+
+                //Calculate difficulty rating
+                CalculateDifficultyRating();
+            }
+            else if(RoftPlayer.Instance == null) throw new MapErrorException("Failed to Initialize Map");
+        }catch(MapErrorException mapEE)
         {
-            int difficultyTag = InRFTMJumpTo("Difficulty", m_name);
-            NoteEffector.Instance.ApproachSpeed = ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", m_name);
-            GameManager.Instance.stressBuild = ReadPropertyFrom<float>(difficultyTag, "StressBuild", m_name);
-            NoteEffector.Instance.Accuracy = ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", m_name);
-            maxScore = CalculateMaxScore();
-        }
-        else
-        {
-            Debug.Log("For some reason, this is not being read....");
+            throw mapEE;
         }
     }
 
-    void ReadRFTMKeys(string _name)
+    static void ReadRFTMKeys(string _name)
     {
         lock (keyReadingLock)
         {
-            string line;
+            
 
-            string rftmFileName = _name + ".rftm";
-            string rftmFilePath = Application.streamingAssetsPath + @"/" + rftmFileName;
+            string rftmFilePath = _name;
 
             int maxKey = 0;
 
             #region Read .rftm data
-            if (File.Exists(rftmFilePath))
+            try
             {
-                //Read each line, split with a array string
-                //Name it separator
-                //Then use string.Split(separator, ...)
-                const char separator = ',';
-                int filePosition = 0;
-                int targetPosition = InRFTMJumpTo("Objects", m_name);
-                using (StreamReader rftmReader = new StreamReader(rftmFilePath))
+                if (File.Exists(rftmFilePath))
                 {
-                    while (true)
+                    //Read each line, split with a array string
+                    //Name it separator
+                    //Then use string.Split(separator, ...)
+                    
+                    int filePosition = 0;
+                    int targetPosition = InRFTMJumpTo("Objects", m_name);
+                    using (StreamReader rftmReader = new StreamReader(rftmFilePath))
                     {
-                        line = rftmReader.ReadLine();
-                        if (line == null)
-                            return;
-
-                        if (filePosition > targetPosition)
+                        while (true)
                         {
-                            #region Parse and Convert Information
-                            //We'll count the frequency of commas to determine
-                            //that they are more values in the object
-                            int countCommas = 0;
-                            foreach (char c in line)
-                                if (c == ',')
-                                    countCommas++;
-
-                            //We create a new key, and assign our data value to our key
-                            NoteObj newNoteObj = new NoteObj();
-
-                            newNoteObj.SetInstanceID((uint)Convert.ToInt32(line.Split(separator)[0]));
-                            newNoteObj.SetInstanceSample(Convert.ToInt32(line.Split(separator)[1]));
-                            newNoteObj.SetInstanceType((NoteObj.NoteObjType)Convert.ToInt32(line.Split(separator)[2]));
-
-                            //Check for any miscellaneous values
-                            if (countCommas > 2)
-                                newNoteObj.miscellaneousValue1 = Convert.ToInt32(line.Split(separator)[3]);
-
-                            else if (countCommas > 3)
-                                newNoteObj.miscellaneousValue2 = Convert.ToInt32(line.Split(separator)[4]);
-                            #endregion
-
-                            /*This looks at the noteID
-                             which is simply the number that is linked
-                             to the keyID in the game.
-                             */
-                            if (newNoteObj.GetInstanceID() > maxKey)
+                            line = rftmReader.ReadLine();
+                            if (line == null)
                             {
-                                maxKey = (int)newNoteObj.GetInstanceID();
-                                totalKeys = maxKey + 1;
+                                KeysReaded = true;
+                                return;
                             }
 
-                            //Lastly, add our new key to the list
-                            noteObjs.Add(newNoteObj);
 
-                            //We'll be integrating our new Object Readers around this area.
-                            //We'll distribute the basic values to each one.
-                            #region Distribution to Readers
-                            switch (newNoteObj.GetInstanceType())
+                            if (filePosition > targetPosition)
                             {
-                                case NoteObj.NoteObjType.Tap:
-                                    DistributeTypeTo(tapObjectReader, newNoteObj);
-                                    break;
+                                #region Parse and Convert Information
 
-                                case NoteObj.NoteObjType.Hold:
-                                    DistributeTypeTo(holdObjectReader, newNoteObj);
-                                    break;
+                                //We create a new key, and assign our data value to our key
+                                NoteObj newNoteObj = null;
 
-                                case NoteObj.NoteObjType.Burst:
-                                    DistributeTypeTo(burstObjectReader, newNoteObj);
-                                    break;
+                                newNoteObj = ParseNewNote();
+                                #endregion
 
-                                default:
-                                    break;
+                                /*This looks at the noteID
+                                 which is simply the number that is linked
+                                 to the keyID in the game.
+                                 */
+                                if (newNoteObj.GetKey() > maxKey)
+                                {
+                                    maxKey = (int)newNoteObj.GetKey();
+                                    totalKeys = maxKey + 1;
+                                }
+
+                                //Lastly, add our new key to the list
+                                noteObjs.Add(newNoteObj);
+
+                                //We'll be integrating our new Object Readers around this area.
+                                //We'll distribute the basic values to each one.
+                                #region Distribution to Readers
+                                DistributeToObjectMappers(newNoteObj);
+                                #endregion
+
+                                //Update total Notes
+                                totalNotes = noteObjs.Count;
                             }
-                            #endregion
-
-                            //Update total Notes
-                            totalNotes = noteObjs.Count;
+                            filePosition++;
                         }
-                        filePosition++;
                     }
                 }
+                else throw new MapErrorException("Failed to load map");
+            }
+            catch (MapErrorException mapEE)
+            {
+                throw mapEE;
+                
+            } catch (Exception e)
+            {
+                e = new MapErrorException("Failed to load map: " + e.Message);
+                throw e;
             }
         }
         #endregion
     }
 
-    void CalculateDifficultyRating()
+    private static void DistributeToObjectMappers(NoteObj newNoteObj)
     {
+        switch (newNoteObj.GetNoteType())
+        {
+            case NoteObj.NoteObjType.Tap:
+                DistributeTypeTo(Instance.tapObjectReader, (TapObj)newNoteObj);
+                break;
 
-        int totalNotes = noteObjs.Count;
-        float songLengthInSec = RoftPlayer.musicSource.clip.length;
-        float notesPerSec = (totalNotes / songLengthInSec);
-        float totalKeys = keyLayoutClass.primaryBindedKeys.Count;
-        float approachSpeedInPercent = (float)NoteEffector.Instance.ApproachSpeed / 100;
-        float gameModeBoost = 0;
-        const int maxKeys = 30;
+            case NoteObj.NoteObjType.Hold:
+                DistributeTypeTo(Instance.holdObjectReader, (HoldObj)newNoteObj);
+                break;
 
-        float calculatedRating = notesPerSec +
-            (totalKeys / maxKeys) +
-            approachSpeedInPercent +
-            (RoftPlayer.musicSource.pitch / 2) +
-            gameModeBoost;
+            case NoteObj.NoteObjType.Burst:
+                DistributeTypeTo(Instance.burstObjectReader, (BurstObj)newNoteObj);
+                break;
 
-        difficultyRating = calculatedRating;
+            default:
+                break;
+        }
     }
 
-    long CalculateMaxScore()
+    /// <summary>
+    /// Parse line infomation from the .rftm to Note Objects based on corresponding types
+    /// </summary>
+    /// <returns></returns>
+    static NoteObj ParseNewNote()
+    {
+        //Check the type of the New Note Object
+        switch ((NoteObj.NoteObjType)Convert.ToInt32(line.Split(separator)[2]))
+        {
+            case NoteObj.NoteObjType.Tap:
+                TapObj newTapObj = new TapObj((uint)Convert.ToInt32(line.Split(separator)[0]),
+                    Convert.ToInt32(line.Split(separator)[1]));
+                return newTapObj;
+
+            case NoteObj.NoteObjType.Hold:
+                HoldObj newHoldObj = new HoldObj((uint)Convert.ToInt32(line.Split(separator)[0]),
+                    Convert.ToInt32(line.Split(separator)[1]),
+                    Convert.ToInt32(line.Split(separator)[3]));
+                return newHoldObj;
+
+            case NoteObj.NoteObjType.Track:
+                TrackObj newTrackObj = null;
+                //TODO: Convert Split String Data into List of TrackPoints.
+                return newTrackObj;
+
+            case NoteObj.NoteObjType.Burst:
+                BurstObj newBurstObj = new BurstObj((uint)Convert.ToInt32(line.Split(separator)[0]),
+                    Convert.ToInt32(line.Split(separator)[1]),
+                    (uint)Convert.ToInt32(line.Split(separator)[3]));
+                return newBurstObj;
+
+            default:
+                return null;
+        }
+    }
+
+    static void CalculateDifficultyRating()
+    {
+        if (!RoftPlayer.Record)
+        {
+            RoftPlayer.LoadMusic();
+            int totalNotes = noteObjs.Count;
+            float songLengthInSec = RoftPlayer.musicSource.clip.length;
+            float notesPerSec = (totalNotes / songLengthInSec);
+            float totalKeys = Instance.keyLayoutClass.primaryBindedKeys.Count;
+            float approachSpeedInPercent = (float)NoteEffector.Instance.ApproachSpeed / 100;
+            float gameModeBoost = 0;
+            const int maxKeys = 30;
+
+            float calculatedRating = notesPerSec +
+                (totalKeys / maxKeys) +
+                approachSpeedInPercent +
+                (RoftPlayer.musicSource.pitch / 2) +
+                gameModeBoost;
+
+            difficultyRating = calculatedRating;
+        }
+    }
+
+    static long CalculateMaxScore()
     {
         long ini_Score = 0;
         for (long ini_Combo = 1; ini_Combo < totalNotes + 1; ini_Combo++)
@@ -226,47 +295,151 @@ public class MapReader : MonoBehaviour
         return ini_Score;
     }
 
-    void KeyLayoutAwake()
+    static void KeyLayoutAwake()
     {
+        Instance.ParentOverlay.SetActive(true);
 
-        int difficultyTag = InRFTMJumpTo("Difficulty", m_name);
-        int keyCount = ReadPropertyFrom<int>(difficultyTag, "KeyCount", m_name);
-        totalKeys = keyCount;
-        if (!keyLayoutClass.gameObject.activeInHierarchy)
+        if (!Instance.keyLayoutClass.gameObject.activeInHierarchy)
         {
-            keyLayoutClass.gameObject.SetActive(true);
+            Instance.keyLayoutClass.gameObject.SetActive(true);
         }
 
-        #region Reading KeyCount
-
-        switch (keyCount)
+        if (!RoftPlayer.Record)
         {
-            case 4:
-                keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_1x4;
-                break;
-            case 8:
-                keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_2x4;
-                break;
-            case 12:
-                keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_3x4;
-                break;
-            case 16:
-                keyLayoutClass.keyLayout = Key_Layout.KeyLayoutType.Layout_4x4;
-                break;
+            int difficultyTag = InRFTMJumpTo("Difficulty", m_name);
+            string keyLayout = ReadPropertyFrom<string>(difficultyTag, "KeyLayout", m_name);
+            Instance.keyLayoutClass.KeyLayout = (Key_Layout.KeyLayoutType)Enum.Parse(typeof(Key_Layout.KeyLayoutType), keyLayout);
+            #region KeyCount through Enum
+            switch (Instance.keyLayoutClass.KeyLayout)
+            {
+                case Key_Layout.KeyLayoutType.Layout_1x4:
+                    totalKeys = 4;
+                    break;
+                case Key_Layout.KeyLayoutType.Layout_2x4:
+                    totalKeys = 8;
+                    break;
+                case Key_Layout.KeyLayoutType.Layout_3x4:
+                    totalKeys = 12;
+                    break;
+                case Key_Layout.KeyLayoutType.Layout_4x4:
+                    totalKeys = 16;
+                    break;
+                case Key_Layout.KeyLayoutType.Layout_3x6:
+                    totalKeys = 18;
+                    break;
+                case Key_Layout.KeyLayoutType.Layout_4x6:
+                    totalKeys = 24;
+                    break;
+                case Key_Layout.KeyLayoutType.Layout_3x8:
+                    totalKeys = 24;
+                    break;
+                case Key_Layout.KeyLayoutType.Layout_4x8:
+                    totalKeys = 32;
+                    break;
+                default:
+                    break;
+            }
+            #endregion
         }
-        #endregion
 
-        if
-           (GameManager.Instance.GetGameMode == GameManager.GameMode.TECHMEISTER ||
+
+        if (Key_Layout.Instance != null &&
+            GameManager.Instance.GetGameMode == GameManager.GameMode.TECHMEISTER ||
             GameManager.Instance.GetGameMode == GameManager.GameMode.STANDARD)
-            Key_Layout.Instance.SetUpLayout();
+            Instance.keyLayoutClass.SetUpLayout();
 
     }
 
-
-    void DistributeTypeTo(ObjectTypes _objectReader, NoteObj _key)
+    static void DistributeTypeTo(ObjectTypes _objectReader, NoteObj _key)
     {
         if (_objectReader != null)
             _objectReader.objects.Add(_key);
     }
+
+    public static void AssignRFTMNameToRead(Song_Entity _song, int _difficultValue)
+    {
+        /*We want to be able to get retrieve a song entity, and wiht access to the song
+         entity, we are able to read the .rftm (which are the difficulties) of the song.
+         We will now call the ReadRFTM function to read the data that's been provided to us, thus
+         ROFTPlayer can then retrieve information that is sorted on this object.
+
+         That's at least what I hope this will do.*/
+        try
+        {
+            for(int count = 0; count < _song.Difficulties.Count; count++)
+            {
+                Song_Entity.Song_Entity_Difficulty diffVal = _song.Difficulties[count];
+                if (diffVal == null) throw new MapErrorException("Failed to load map...");
+                if (count == _difficultValue)
+                {
+                    SongEntityBeingRead = _song;
+                    DifficultyIndex = _difficultValue;
+                    m_name = diffVal.RFTMFile;
+                    ReadRFTMKeys(m_name);
+
+                    Initialize();
+                    CalculateDifficultyRating();
+                    return;
+                }
+            }
+            throw new MapErrorException("Failed to load map");
+        }
+        catch (MapErrorException mapEE)
+        {
+#if UNITY_EDITOR
+            //TODO: Have a UI feature that shows these error messages when playing the game
+            Debug.LogException(mapEE);
+#endif //UNITY EDITOR
+        }
+        return;
+    }
+
+#region Set Methods
+    public void SetName(string _value)
+    {
+        m_name = _value;
+    }
+#endregion
+
+#region Get Methods
+    public static string GetName() => m_name;
+
+    public static float GetDifficultyRating() => difficultyRating;
+
+    public static float GetTotalNotes() => totalNotes;
+
+    public static float GetTotalKeys() => totalKeys;
+
+    public static long GetMaxScore() => maxScore;
+
+    public static ObjectTypes GetReaderType<T>() where T : ObjectTypes
+    {
+        if (typeof(T) == Instance.tapObjectReader.GetType())
+            return Instance.tapObjectReader;
+
+        if (typeof(T) == Instance.holdObjectReader.GetType())
+            return Instance.holdObjectReader;
+
+        if (typeof(T) == Instance.burstObjectReader.GetType())
+            return Instance.burstObjectReader;
+
+        Debug.LogError("Failed to retrieve object reader...");
+        return null;
+    }
+
+    public static void WrapUp()
+    {
+        Debug.Log("Wrapping Up ");
+        if (Instance.keyLayoutClass.gameObject.activeInHierarchy)
+            Instance.keyLayoutClass.Flush();
+
+        noteObjs.Clear();
+        Instance.tapObjectReader.objects.Clear();
+        Instance.holdObjectReader.objects.Clear();
+        Instance.burstObjectReader.objects.Clear();
+
+        Instance.ParentOverlay.SetActive(false);
+    }
+
+#endregion
 }

@@ -2,6 +2,8 @@
 using UnityEngine;
 
 using ROFTIOMANAGEMENT;
+using System;
+using System.Collections;
 
 public class NoteEffector : MonoBehaviour
 {
@@ -75,7 +77,7 @@ public class NoteEffector : MonoBehaviour
     protected MapReader mapReader;
     protected float percentage; //Lerping for effects
     protected int keyObjPosition = 0;
-    protected float noteOffset; //When our note should start appearing
+    protected float noteSpawnOffset; //When our note should start appearing
     protected int noteSample; //The note where you actually hit with timing
     protected int noteSampleForKey; //The time the key is at full capacity (for TBR Modes)
     protected KeyCode randomKey;
@@ -88,6 +90,10 @@ public class NoteEffector : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void OnEnable()
+    {
         RetrieveEffectConfigs();
         UpdateAccuracyHarshness();
     }
@@ -97,11 +103,17 @@ public class NoteEffector : MonoBehaviour
     {
         UpdateNoteOffset();
         UpdateAccuracyHarshness();
-        if (!RoftPlayer.Instance.record)
+
+        if (!RoftPlayer.Record && RoftPlayer.musicSource != null)
         {
-            if (ManageObjTypeSequence(mapReader.tapObjectReader)) SpawnNoteObj(mapReader.tapObjectReader);
-            if (ManageObjTypeSequence(mapReader.holdObjectReader)) SpawnNoteObj(mapReader.holdObjectReader);
-            if (ManageObjTypeSequence(mapReader.burstObjectReader)) SpawnNoteObj(mapReader.burstObjectReader);
+            if (ManageObjTypeSequence(MapReader.GetReaderType<TapObjectReader>())) 
+                SpawnNoteObj(MapReader.GetReaderType<TapObjectReader>());
+
+            if (ManageObjTypeSequence(MapReader.GetReaderType<HoldObjectReader>())) 
+                SpawnNoteObj(MapReader.GetReaderType<HoldObjectReader>());
+
+            if (ManageObjTypeSequence(MapReader.GetReaderType<BurstObjectReader>())) 
+                SpawnNoteObj(MapReader.GetReaderType<BurstObjectReader>());
         }
     }
 
@@ -112,7 +124,6 @@ public class NoteEffector : MonoBehaviour
     /// <param name="_objReader">Object Reader of a certain type.</param>
     void SpawnNoteObj(ObjectTypes _objReader = null)
     {
-        ObjectPooler keyPooler;
 
         int sequencePos = (int)_objReader.GetSequencePosition();
 
@@ -127,9 +138,9 @@ public class NoteEffector : MonoBehaviour
             #endregion
             NoteObj objToBeSpawned = _objReader.objects[sequencePos];
 
-            int objId = (int)objToBeSpawned.GetInstanceID();
+            int objId = (int)objToBeSpawned.GetKey();
 
-            keyPooler = Key_Layout.keyObjects[objId].GetComponent<ObjectPooler>();
+            ObjectPooler keyPooler = Key_Layout.keyObjects[objId].GetComponent<ObjectPooler>();
 
             //We want to get our game objects from the same key for both the approach circle, and the arrow
             GameObject approachCircle = _objReader.GetTypeFromPool(keyPooler);
@@ -161,8 +172,8 @@ public class NoteEffector : MonoBehaviour
         NoteObj targetObj = _objReader.objects[sequencePos];
 
         _obj.SetActive(true);
-        _obj.transform.position = Key_Layout.keyObjects[(int)targetObj.GetInstanceID()].transform.position;
-        _obj.transform.localScale = Key_Layout.keyObjects[(int)targetObj.GetInstanceID()].transform.localScale;
+        _obj.transform.position = Key_Layout.keyObjects[(int)targetObj.GetKey()].transform.position;
+        _obj.transform.localScale = Key_Layout.keyObjects[(int)targetObj.GetKey()].transform.localScale;
     }
 
     /// <summary>
@@ -188,9 +199,9 @@ public class NoteEffector : MonoBehaviour
         {
             NoteObj targetObj = _objReader.objects[sequencePos];
 
-            noteSample = (int)targetObj.GetInstanceSample() - (int)alignment;
+            noteSample = (int)targetObj.GetInitialeSample() - (int)alignment;
 
-            float offsetStart = noteSample - noteOffset;
+            float offsetStart = noteSample - noteSpawnOffset;
 
             //This is strictly for checking when notes should appear
             if (RoftPlayer.musicSource.timeSamples > offsetStart)
@@ -205,7 +216,7 @@ public class NoteEffector : MonoBehaviour
     /// </summary>
     void UpdateNoteOffset()
     {
-        noteOffset = maxOffset - (minOffset * (((float)approachSpeed / 1.10f) - 1));
+        noteSpawnOffset = maxOffset - (minOffset * (((float)approachSpeed / 1.10f) - 1));
     }
 
     /// <summary>
@@ -235,8 +246,8 @@ public class NoteEffector : MonoBehaviour
         NoteObj noteObj = null;
 
         _effect.initiatedNoteSample = noteSample;
-        _effect.initiatedNoteOffset = noteOffset;
-        _effect.offsetStart = noteSample - noteOffset;
+        _effect.initiatedNoteOffset = noteSpawnOffset;
+        _effect.noteSpawnOffset = noteSample - noteSpawnOffset;
         _effect.accuracyVal = accuracyVal;
 
         //This is referring to list index in the MapReader
@@ -246,31 +257,31 @@ public class NoteEffector : MonoBehaviour
         //This is the index regarding each "key" on screen
         noteObj = _objReader.objects[_effect.keyNum];
 
-        _effect.keyNumPosition = (int)noteObj.GetInstanceID();
+        _effect.keyNumPosition = (int)noteObj.GetKey();
 
         //Change look of circle
-        _effect.Modifier.ChangeType((int)noteObj.GetInstanceType());
+        _effect.Modifier.ChangeType((int)noteObj.GetNoteType());
     }
 
     /// <summary>
     /// Return the percentage of a Note Object.
     /// </summary>
     /// <returns></returns>
-    protected virtual float GetPercentage()
-    {
-        return 0;
-    }
+    protected virtual float GetPercentage() => 0f;
 
     /// <summary>
     /// Get effect configs from read RFTM File
     /// </summary>
     void RetrieveEffectConfigs()
     {
-        //Get Position of Difficulty Tag in File
-        int difficultyTag = RoftIO.InRFTMJumpTo("Difficulty", mapReader.m_name);
+        if (RoftPlayer.Record == false)
+        {
+            //Get Position of Difficulty Tag in File
+            int difficultyTag = RoftIO.InRFTMJumpTo("Difficulty", MapReader.GetName());
 
-        //Use difficultyTag to read its property values
-        accuracy = RoftIO.ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", mapReader.m_name);
-        approachSpeed = RoftIO.ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", mapReader.m_name);
+            //Use difficultyTag to read its property values
+            accuracy = RoftIO.ReadPropertyFrom<float>(difficultyTag, "AccuracyHarshness", MapReader.GetName());
+            approachSpeed = RoftIO.ReadPropertyFrom<float>(difficultyTag, "ApproachSpeed", MapReader.GetName());
+        }
     }
 }

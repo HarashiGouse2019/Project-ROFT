@@ -59,6 +59,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -115,11 +116,11 @@ MonoBehaviour:
   mapReader: {fileID: 0}
   initiatedNoteSample: 0
   initiatedNoteOffset: 0
-  offsetStart: 0
+  noteSpawnOffset: 0
   keyNumPosition: 0
   keyNum: 0
   attachedArrow: {fileID: 0}
-  sprite: {fileID: 0}
+  image: {fileID: 0}
   innerSprite: {fileID: 0}
   index: 0
   accuracyString: 
