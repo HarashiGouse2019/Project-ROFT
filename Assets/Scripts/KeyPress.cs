@@ -78,17 +78,17 @@ public class KeyPress : MonoBehaviour
     //This will turn the keys on, signifying that the key is being pressed
     public bool ActivateKey(int _keyNum, bool _on)
     {
-        Image keyImage = Key_Layout.keyObjects[_keyNum].GetComponent<Image>();
+        KeyControls key = Key_Layout.keyObjects[_keyNum].GetComponent<KeyControls>();
 
         if (_on)
         {
-            keyImage.sprite = keyActive;
+            key.GetGraphics().sprite = keyActive;
 
             if (debugText != null)
                 debugText.text = "Key " + key_Layout.primaryBindedKeys[_keyNum] + " pressed." + " Key Num: " + _keyNum;
         }
         else
-            keyImage.sprite = keyInActive;
+            key.GetGraphics().sprite = keyInActive;
 
         return _on;
     }

@@ -10,13 +10,13 @@ public class InteractableKey : MonoBehaviour
     bool marked;
     private void Awake()
     {
-        sprite = GetComponent<Image>();
-        originalColor = sprite.color;
+        //sprite = GetComponentInChildren<Image>();
+        //originalColor = sprite.color;
     }
 
     private void OnMouseOver()
     {
-        sprite.color = Color.green;
+        //sprite.color = Color.green;
         //Collect Data
         Var<string[]> data = new[] {
             string.Format("{0}, {1}, {2}", keyNum, RoftPlayer.musicSource.timeSamples, ((int)ObjectLogger.noteTool).ToString()),
@@ -56,7 +56,7 @@ public class InteractableKey : MonoBehaviour
 
     private void OnMouseExit()
     {
-        sprite.color = originalColor;
+
     }
 
     public void SetKeyNum(int _value)

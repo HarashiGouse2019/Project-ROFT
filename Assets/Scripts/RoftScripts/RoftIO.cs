@@ -377,7 +377,7 @@ namespace ROFTIOMANAGEMENT
         /// Generate a GROUPID to be able to create a song with its unique ID.
         /// </summary>
         /// <returns>A GROUPID, which is associated with a new song.</returns>
-        public static int GenerateGROUPID()
+        public static long GenerateGROUPID()
         {
             /*GROUPID is as structured:
              * yy-dd-mm-(1000 to 9990)
@@ -407,7 +407,7 @@ namespace ROFTIOMANAGEMENT
 
             stringGROUPID += (yearDigit + monthDigit + dayDigit + uniqueNum);
 
-            return Convert.ToInt32(stringGROUPID);
+            return Convert.ToInt64(stringGROUPID);
         }
 
         /// <summary>

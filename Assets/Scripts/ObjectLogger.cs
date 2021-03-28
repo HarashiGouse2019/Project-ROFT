@@ -8,8 +8,9 @@ using System;
 using System.Text;
 using Extensions;
 using System.Collections;
+using UnityEngine.EventSystems;
 
-public class ObjectLogger : MonoBehaviour
+public class ObjectLogger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private static ObjectLogger Instance;
 
@@ -19,7 +20,7 @@ public class ObjectLogger : MonoBehaviour
         public NoteObj[] NoteObjs;
         int stackValue = 0;
 
-        public void Init(int size)
+        public void Init(int size, float initSample)
         {
             NoteObjs = new NoteObj[size];
         }
@@ -81,14 +82,17 @@ public class ObjectLogger : MonoBehaviour
 
         const int MAX_OBJECT_STACK = 4;
 
-        public void Init(int size)
+
+
+        public void Init(int size, float initSample)
         {
+
             NoteStacks = new NoteStack[MAX_OBJECT_STACK];
 
             for (int i = 0; i < NoteStacks.Length; i++)
             {
                 NoteStacks[i] = new NoteStack();
-                NoteStacks[i].Init(size);
+                NoteStacks[i].Init(size, initSample);
             }
         }
 
@@ -233,6 +237,7 @@ public class ObjectLogger : MonoBehaviour
     public long finishSample; //For hold type
     public List<TrackPoint> trackPoints; //For track type
     public int burstDirection; //For burst type
+    List<float> fixedSampleData = new List<float>();
 
     string dataFormat;
 
@@ -249,6 +254,8 @@ public class ObjectLogger : MonoBehaviour
     //Keyboard controls
     readonly Dictionary<KeyCode, int> keyCodeStackDictionary = new Dictionary<KeyCode, int>();
     readonly KeyCode removeNote = KeyCode.Backspace;
+
+    bool enableScrolling = false;
 
     private void Awake()
     {
@@ -273,21 +280,47 @@ public class ObjectLogger : MonoBehaviour
         Init((int)loggerSize);
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    IEnumerator LoggerDataCycle()
     {
-        inGameTime = RoftPlayer.musicSource.time - offsetInSeconds;
-
-        TickValue = inGameTime / (60f / (bpm * rate * ((float)loggerSize / (float)LoggerSize.WHOLE)));
-        currentTick = Mathf.Floor(TickValue);
-        CurrentPatternSet = Mathf.Floor(TickValue / (float)loggerSize);
-
-        if (tick != currentTick && inGameTime > 0f)
+        while (true)
         {
-            tick = currentTick;
-            UpdateUI();
-            if (Mathf.Floor(inGameTime % (60f / bpm)) == 0)
-                Tick();
+
+
+            if (enableScrolling)
+            {
+                try
+                {
+                    float scrollDirection = Input.GetAxis("Mouse ScrollWheel");
+
+                    if (scrollDirection != 0)
+                    {
+                        TickValue += Mathf.Sign(scrollDirection);
+                        RefreshLoggerData();
+                        RoftPlayer.musicSource.timeSamples = (int)fixedSampleData[(int)currentTick];
+                        CheckTick();
+                    }
+                    else Next();
+                }
+                catch { }
+            }
+
+            else Next();
+            yield return null;
+
+        }
+    }
+
+    void Next()
+    {
+        if (RoftPlayer.musicSource.isPlaying)
+        {
+            inGameTime = RoftPlayer.musicSource.time - offsetInSeconds;
+
+            TickValue = inGameTime / (60f / (bpm * rate * ((float)loggerSize / (float)LoggerSize.WHOLE)));
+
+            RefreshLoggerData();
+
+            CheckTick();
         }
     }
 
@@ -296,6 +329,17 @@ public class ObjectLogger : MonoBehaviour
         TMP_Tick.text = ((tick % (int)loggerSize) + 1).ToString();
         TMP_PatternSet.text = (CurrentPatternSet + 1).ToString();
         TMP_StackValue.text = CurrentStack.ToString();
+    }
+
+    void CheckTick()
+    {
+        if (tick != currentTick && inGameTime > 0)
+        {
+            tick = currentTick;
+            UpdateUI();
+            if (Mathf.Floor(inGameTime % (60f / bpm)) == 0)
+                Tick();
+        }
     }
 
     IEnumerator KeyboardResponseCycle()
@@ -320,10 +364,38 @@ public class ObjectLogger : MonoBehaviour
         }
     }
 
+    IEnumerator ScrollingCycle()
+    {
+        while (true)
+        {
+
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    void RefreshLoggerData()
+    {
+        currentTick = Mathf.Floor(TickValue);
+        CurrentPatternSet = Mathf.Floor(TickValue / (float)loggerSize);
+    }
+
+    public void OnPointerEnter(PointerEventData pe)
+    {
+        enableScrolling = true;
+
+    }
+
+    public void OnPointerExit(PointerEventData pe)
+    {
+        enableScrolling = false;
+    }
+
 
     void Init(int size)
     {
+        StartCoroutine(LoggerDataCycle());
         StartCoroutine(KeyboardResponseCycle());
+        StartCoroutine(ScrollingCycle());
 
         #region BlockUI Setup
         blocks = new GameObject[size];
@@ -347,30 +419,41 @@ public class ObjectLogger : MonoBehaviour
         //With the given information from BPM, we have to see how many times we'll go over each measure
         //starting when the song begins (or where our offset is)
 
-        //This already gives us how many seconds it takes to go between each beat.
-        var tickValue = inGameTime / (60f / (bpm * rate * ((float)loggerSize / (float)LoggerSize.WHOLE)));
 
         //In order to achieve how many pattern set's we need, we need to take the sample rate of the some
         //get the song length in samples, and iterate as much as we can until we're beyond the song length
         //The number we get is the possible amount of PatternSet we can have when creating the Songmap.
-        var sampleRate = 1f;
-        var songLength = RoftPlayer.musicSource.clip.length - offsetInSeconds;
-        var trackPosition = 0f;
+        float sampleRate = 0.000075f;
+        float songLength = RoftPlayer.musicSource.clip.length - offsetInSeconds;
+        float trackPosition = 0f;
 
-        var totalPatternSets = 0f;
+        float totalPatternSets = 0f;
+        float tickValue = 0f;
+
+
         while (trackPosition < songLength)
         {
             trackPosition += sampleRate;
+            float timePosition = trackPosition - offsetInSeconds;
+            if (timePosition >= offsetInSeconds)
+            {
+                float samplesPerBeat = Mathf.Round(trackPosition / (60f / (bpm * rate * ((float)loggerSize / (float)LoggerSize.WHOLE))));
 
-            var samplesPerBeat = trackPosition / (60f / (bpm * rate * ((float)loggerSize / (float)LoggerSize.WHOLE)));
+                if (tickValue != samplesPerBeat && samplesPerBeat % 1 == 0)
+                {
+                    float sample = timePosition * RoftPlayer.musicSource.clip.frequency;
+                    tickValue = samplesPerBeat;
+                    fixedSampleData.Add(sample);
+                }
 
-            totalPatternSets = Mathf.Floor(samplesPerBeat / (float)loggerSize);
+                totalPatternSets = Mathf.Round(samplesPerBeat / (float)loggerSize);
+            }
         }
 
         for (int i = 0; i < totalPatternSets; i++)
         {
             PatternSet newSet = new PatternSet();
-            newSet.Init((int)loggerSize);
+            newSet.Init((int)loggerSize, fixedSampleData[i]);
             patternSets.Add(newSet);
         }
         #endregion
